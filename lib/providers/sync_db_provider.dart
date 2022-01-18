@@ -206,11 +206,11 @@ class SyncDBProvider {
 
   Future<bool> _writeIntoLocalDB(Map<String, dynamic> res, String table) async {
     bool result = false;
-    if ((res['body']['rows_data'] != null) ||
-        (res['body']['rows_data'] != "[]") ||
-        (res['body']['rows_data'] != [])) {
+    if ((res['body']['data'] != null) ||
+        (res['body']['data'] != "[]") ||
+        (res['body']['data'] != [])) {
       result = await DBProvider.db
-          .insertOrUpdateQuerys(table, res['body']['rows_data']);
+          .insertOrUpdateQuerys(table, res['body']['data']);
     }
     return result;
   }

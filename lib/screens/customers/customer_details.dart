@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:pos_wappsi/bloc/data_bloc.dart';
+
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/go_back_bottom.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/config/endpoints.dart';
+
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/providers/API_provider.dart';
+
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
+import 'package:pos_wappsi/screens/customers/favorites.dart';
 
 class CustomerDetails extends StatefulWidget {
   const CustomerDetails({required this.customer, Key? key}) : super(key: key);
@@ -60,14 +61,9 @@ class _CustomerDetailsState extends State<CustomerDetails> {
   AppButton _favorites(BuildContext context) {
     return AppButton(
       onTap: () async {
-        var dataProvider = DataProvider();
-        Map<String, String> headers = {
-          'content-Type': 'application/json',
-          'Authorization': dataBloc.getToken()
-        };
-
-        final res = await dataProvider.postPetition(getCustomerWishListEndP,
-            {'company_id': widget.customer.idCloud}, headers);
+        
+        
+        ListFavorites(customer:widget.customer).launch(context);
       },
       color: Colors.white,
       padding: kButtonPadding,

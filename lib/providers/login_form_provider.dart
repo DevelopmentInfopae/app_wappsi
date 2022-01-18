@@ -1,8 +1,7 @@
-import 'dart:io';
+
 
 import 'package:flutter/material.dart' hide Key;
-import 'package:encrypt/encrypt.dart';
-import 'package:pos_wappsi/config/host_params.dart';
+
 // import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/API_provider.dart';
 import 'package:pos_wappsi/config/endpoints.dart';

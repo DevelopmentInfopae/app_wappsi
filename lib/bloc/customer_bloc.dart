@@ -15,6 +15,7 @@ import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 // import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/encode_pass.dart';
+import 'package:pos_wappsi/utils/manage_server_resp.dart';
 import 'package:rxdart/subjects.dart';
 
 import 'data_bloc.dart';
@@ -122,17 +123,13 @@ class CustomerBloc {
       'content-Type': 'application/json',
       'Authorization': dataBloc.getToken()
     };
-    bool res = false;
-    final userNameCheck = await apiProvider.postPetition(
+   
+    final response = await apiProvider.postPetition(
         verifyUserNameEndP, {'username': _userNameController.value}, headers);
-    if (userNameCheck['error'] ?? false) {
-      confirmDialog(context, userNameCheck['body']['message'],
-          'assets/images/warning.png');
-      res = false;
-    } else {
-      res = true;
-    }
-    return res;
+    
+    manageResponseAlerts(response, context);
+    
+    return response['error'] ?? true;
   }
 
   void _goHome(BuildContext context) {

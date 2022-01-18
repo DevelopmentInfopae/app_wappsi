@@ -21,6 +21,7 @@ import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/functions.dart';
 import 'package:pos_wappsi/utils/local_db.dart';
+import 'package:pos_wappsi/utils/manage_server_resp.dart';
 import 'package:pos_wappsi/utils/product_price_functions.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -376,7 +377,6 @@ class POSBloc {
     };
     try {
       final res = await api.postPetition(newSaleEndP, sale, headers);
-
       if (res['status'] == -1) {
         reloadDialog(
             context,

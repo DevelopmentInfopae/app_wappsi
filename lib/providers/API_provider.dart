@@ -45,7 +45,10 @@ class DataProvider {
         return {
           'status': 2,
           'error': true,
-          'body': {'message': "Respuesta inesperada"}
+          'body': {
+            'message': "Respuesta inesperada",
+            'data': []
+          }
         };
       }
 

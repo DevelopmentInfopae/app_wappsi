@@ -1,5 +1,7 @@
+import 'package:badges/badges.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
@@ -10,11 +12,12 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/suspended_sale_model.dart';
-import 'package:pos_wappsi/screens/sales/components/suspended_sales.dart';
+import 'package:pos_wappsi/components/app_bar_leading.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 
 import 'package:pos_wappsi/screens/sales/sale_cart.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/screens/sales/suspended_sales.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 
 class NewSale extends StatefulWidget {
@@ -112,7 +115,7 @@ class _NewSaleState extends State<NewSale> {
       context,
       'Venta POS',
       image: 'assets/images/add-to-cart.png',
-      leading: _appBarLeading().paddingRight(8),
+      leading: _appBarLeading(),
       onPop: () {
         dataBloc.homeKey.currentState?.changeBottomIndex(1);
         Navigator.pop(context);
@@ -130,8 +133,23 @@ class _NewSaleState extends State<NewSale> {
         } catch (e) {
           print(e);
         }
-        return SuspendedSalesIcon(
-            quantity: qtty, suspendedSales: snapshot.data);
+        return AppBarLeading(
+            onTap: () => SuspendedSalesScreen(suspendedSales: snapshot.data)
+                .launch(context),
+            widget: Badge(
+                badgeColor: Colors.red,
+                padding: EdgeInsets.all(6),
+                alignment: Alignment.center,
+                position: BadgePosition.topEnd(),
+                badgeContent: Text(
+                  qtty.toString(),
+                  style: TextStyle(color: Colors.white),
+                ),
+                child: Icon(
+                  FontAwesomeIcons.cashRegister,
+                  size: leadingIconSize,
+                  color: pColor,
+                )));
       },
     );
   }

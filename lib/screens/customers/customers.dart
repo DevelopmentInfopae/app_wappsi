@@ -13,6 +13,7 @@ import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/screens/customers/components/customers_card_list.dart';
 import 'package:pos_wappsi/screens/customers/new_customer.dart';
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
+import 'package:pos_wappsi/components/app_bar_leading.dart';
 
 class Customers extends StatefulWidget {
   const Customers({Key? key}) : super(key: key);
@@ -63,21 +64,14 @@ class _ProductsState extends State<Customers> {
       dataBloc.homeKey.currentState?.selectTab(TabItem.home);
       _searchController.close();
     },
-        leading: AppButton(
-          elevation: 1,
-          padding: EdgeInsets.zero,
-          child: Icon(Icons.add, size: leadingIconSize, color: Colors.white),
-          width: leadingWidgetSize,
-          height: leadingWidgetSize,
-          color: pColor,
-          shapeBorder: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-              side: BorderSide(color: Colors.grey[300]!)),
-          onTap: () async {
-            NewCustomer().launch(context);
-            await dataBloc.refreshToken();
-          },
-        ));
+        leading: AppBarLeading(
+            widget: Icon(Icons.add, size: leadingIconSize, color: pColor),
+            onTap: () async {
+              NewCustomer().launch(context);
+              await dataBloc.refreshToken();
+            })
+
+        );
   }
 
   Widget _body() {
