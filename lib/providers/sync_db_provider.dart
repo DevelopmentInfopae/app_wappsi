@@ -1,0 +1,276 @@
+import 'dart:io';
+
+import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
+import 'package:pos_wappsi/bloc/data_bloc.dart';
+// import 'package:pos_wappsi/bloc/printer_bloc.dart';
+import 'package:pos_wappsi/config/bd_sync.dart';
+import 'package:pos_wappsi/models/biller_data_model.dart';
+import 'package:pos_wappsi/models/cities_model.dart';
+import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/models/countries_dart.dart';
+import 'package:pos_wappsi/models/states_model.dart';
+import 'package:pos_wappsi/providers/API_provider.dart';
+import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/utils/alerts.dart';
+
+class SyncDBProvider {
+  String updateDate = '';
+  String syncDate = '';
+  bool firstTime = false;
+
+  _getUpdates(Map<String, dynamic> options) async {
+    // String updateDate = '';
+    DataProvider api = new DataProvider();
+
+    Map<String, String> headers = {
+      'content-Type': 'application/json',
+      'Authorization': dataBloc.getToken()
+    };
+
+    updateDate = await DBProvider.db.getUpdateDate(options['sync_id']);
+    // ignore: unnecessary_null_comparison
+    if (updateDate == '[]' || updateDate == null || updateDate == 'null') {
+      updateDate = DateFormat('yyyy-MM-dd kk:mm:ss').format(DateTime.now());
+      firstTime = true;
+    }
+    Map<String, dynamic> body = {
+      'last_sync': updateDate,
+      'first_time': firstTime
+    };
+
+    final res =
+        await api.postPetition(options['path'], body, headers, awaitTime: 150);
+
+    return res;
+  }
+
+  /// Load sma_countries, sma_states and sma_cities from local json files
+  Future<bool> loadCSC() async {
+    bool res = true;
+    List<Map<String, dynamic>>? temp =
+        await CountriesModel.allCountries() ?? [];
+    if (temp.isEmpty) {
+      res = await CountriesModel.writeToDBfromJsonFile();
+    }
+    temp = await StatesModel.allStates() ?? [];
+    if (temp.isEmpty) {
+      res = await StatesModel.writeToDBfromJson();
+    }
+    temp = await CitiesModel.allCities() ?? [];
+    if (temp.isEmpty) {
+      res = await CitiesModel.writeToDBfromJson();
+    }
+
+    return res;
+  }
+
+  Future<Map> update(String option) async {
+    final res = await _getUpdates(options[option]!);
+    //check if JWT is ok, if not logout
+    if (res['status'] == -1) {
+      return {
+        'error': true,
+        'status': -1,
+        'message': "Error al sincronizar, ${res['body']['message']}"
+      };
+    } else {
+      if (res['error']) {
+        // syncBloc.setProgressMessage(res['body']['message']);
+        return {'error': true, 'status': 2, 'message': res['body']['message']};
+      } else {
+        // syncBloc.setProgressMessage('Escribiendo actualizaciones en la base de datos local');
+        bool result = false;
+        // ignore: unrelated_type_equality_checks
+        result = await _writeIntoLocalDB(res, options[option]!['table']);
+
+        if (options[option]!['table'] == 'sma_settings') {
+          await dataBloc.getSettings();
+        }
+
+        // set update time from server, in theory this always come valid
+        if (result) {
+          // syncBloc.setProgressMessage('Estableciendo fecha de ultima actualización para $option');
+
+          await DBProvider.db.setUpdateDate(
+              res['body']['server_date_time'], options[option]!['sync_id']);
+
+          // syncBloc.setProgressMessage('$option sincronizados');
+          return {
+            'error': false,
+            'status': 1,
+            'message': '$option sincronizados'
+          };
+        } else {
+          // syncBloc.setProgressMessage('Error al sincronizar $option');
+          return {
+            'error': true,
+            'status': 2,
+            'message': 'Error al sincronizar $option'
+          };
+        }
+      }
+    }
+  }
+
+  Future<bool> setUpdateDate(String date, int idSync) async {
+    final bool result = await DBProvider.db.setUpdateDate(date, idSync);
+    return result;
+  }
+
+  Future<Map> updateBillerTables() async {
+    // String updateDate = '';
+    Map<String, dynamic> billerSync = options['Datos de Facturación']!;
+    DataProvider api = new DataProvider();
+
+    Map<String, String> headers = {
+      'content-Type': 'application/json',
+      'Authorization': dataBloc.getToken()
+    };
+    Map<String, dynamic> body = {'biller_id': dataBloc.userData!.billerId};
+
+    Map<String, dynamic> res = await api
+        .postPetition(billerSync['path_data'], body, headers, awaitTime: 150);
+
+    bool result = false;
+
+    if (res['status'] == 1) {
+      result = await _writeIntoLocalDB(res, billerSync['table_data']);
+    } else if (res['status'] == -1) {
+      return {
+        'error': true,
+        'status': -1,
+        'message': "Error al sincronizar, ${res['body']['message']}"
+      };
+    } else {
+      // syncBloc.setProgressMessage('Error al sincronizar datos de sucursal');
+      return {
+        'error': true,
+        'status': 2,
+        'message': 'Error al sincronizar datos de sucursal'
+      };
+    }
+    if (result) {
+      res = await api.postPetition(
+          billerSync['path_documents_data'], body, headers,
+          awaitTime: 150);
+      if (res['status'] == 1) {
+        result =
+            await _writeIntoLocalDB(res, billerSync['table_documents_data']);
+      } else if (res['status'] == -1) {
+        return {
+          'error': true,
+          'status': -1,
+          'message': "Error al sincronizar, ${res['body']['message']}"
+        };
+      } else {
+        // syncBloc.setProgressMessage('Error al sincronizar datos de sucursal');
+        return {
+          'error': true,
+          'status': 2,
+          'message': 'Error al sincronizar datos de sucursal'
+        };
+      }
+    } else {
+      // syncBloc.setProgressMessage('Error al sincronizar datos de sucursal');
+      return {
+        'error': true,
+        'status': 2,
+        'message': 'Error al sincronizar datos de sucursal'
+      };
+    }
+
+    return {
+      'error': false,
+      'status': 1,
+      'message': 'Datos de sucursal sincronizados'
+    };
+  }
+
+  Future<void> _updateBillerInDataBLoc() async {
+    final companyData = await CompanyModel.getCompanyBiller();
+    try {
+      dataBloc.setBillerCompany(companyData!);
+    } catch (e) {
+      print(e);
+    }
+
+    // update current companyBiller on dataBloc
+    final billerData = await BillerDataModel.loadBillerData();
+    try {
+      dataBloc.setBillerData(billerData!);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<bool> _writeIntoLocalDB(Map<String, dynamic> res, String table) async {
+    bool result = false;
+    if ((res['body']['rows_data'] != null) ||
+        (res['body']['rows_data'] != "[]") ||
+        (res['body']['rows_data'] != [])) {
+      result = await DBProvider.db
+          .insertOrUpdateQuerys(table, res['body']['rows_data']);
+    }
+    return result;
+  }
+
+  Future syncOption(BuildContext context, String option) async {
+    if (option == 'Datos de Facturación') {
+      final res = await updateBillerData(context);
+      if (res['status'] == -1) {
+        await reloadDialog(
+            context,
+            'Sesión expirada, es necesario a iniciar sesión',
+            'assets/images/warning.png');
+      } else {
+        if (res['error'] == true) {
+          return await syncOption(context, option);
+        }
+      }
+      return res;
+    } else {
+      final res = await update(option);
+      if (res['status'] == -1) {
+        await reloadDialog(
+            context,
+            'Sesión expirada, es necesario a iniciar sesión',
+            'assets/images/warning.png');
+      } else {
+        if (res['error'] == true) {
+          final choice = await choiceAlert(context,
+              res['message'] + '¿Reintentar?', 'assets/images/warning.png');
+
+          if (choice) {
+            return await syncOption(context, option);
+          }
+        }
+      }
+      if (option == 'Terceros') {
+        // update current companyBiller on dataBloc
+        await _updateBillerInDataBLoc();
+      }
+      // print('xd');
+      return res;
+    }
+  }
+
+  Future<Map> updateBillerData(BuildContext context) async {
+    final res = await updateBillerTables();
+
+    if (res['status'] == -1) {
+      reloadDialog(context, 'Sesión expirada, es necesario a iniciar sesión',
+          'assets/images/warning.png');
+    } else {
+      if (res['error'] == true) {
+        final choice = await choiceAlert(context,
+            res['message'] + '¿Reintentar?', 'assets/images/warning.png');
+
+        if (choice) {
+          return await updateBillerData(context);
+        }
+      }
+    }
+    return res;
+  }
+}

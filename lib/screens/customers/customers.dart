@@ -1,0 +1,187 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+import 'package:nb_utils/nb_utils.dart';
+// ignore: implementation_imports
+import 'package:nb_utils/src/extensions/widget_extensions.dart';
+import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/constant.dart';
+// import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/screens/customers/components/customers_card_list.dart';
+import 'package:pos_wappsi/screens/customers/new_customer.dart';
+import 'package:pos_wappsi/screens/home/components/tab_item.dart';
+
+class Customers extends StatefulWidget {
+  const Customers({Key? key}) : super(key: key);
+
+  @override
+  _ProductsState createState() => _ProductsState();
+}
+
+class _ProductsState extends State<Customers> {
+  List<CompanyModel> products = [];
+  final _customersStream = StreamController<List<CompanyModel>>.broadcast();
+
+  late Size _size;
+  final _searchController = new FloatingSearchBarController();
+  // late Color _pc;
+  late TextTheme _theme;
+
+  Map<String, dynamic> _searchParams = {};
+
+  @override
+  void dispose() {
+    _customersStream.close();
+    super.dispose();
+    _searchController.dispose();
+  }
+
+  // late ThemeData _theme;
+  @override
+  Widget build(BuildContext context) {
+    // avoid errors related to unstability of scaffold with no key
+
+    // _theme = Theme.of(context);
+    _size = MediaQuery.of(context).size;
+    _theme = Theme.of(context).textTheme;
+    // _pc = Theme.of(context).primaryColor;
+
+    return Scaffold(
+      appBar: _appBar(context),
+      body: _body(),
+    );
+  }
+
+  PreferredSize _appBar(BuildContext context) {
+    return appBar(context, 'Clientes',
+        elevation: false,
+        radius: 0,
+        image: 'assets/images/enterprise.png', onPop: () {
+      dataBloc.homeKey.currentState?.selectTab(TabItem.home);
+      _searchController.close();
+    },
+        leading: AppButton(
+          elevation: 1,
+          padding: EdgeInsets.zero,
+          child: Icon(Icons.add, size: leadingIconSize, color: Colors.white),
+          width: leadingWidgetSize,
+          height: leadingWidgetSize,
+          color: pColor,
+          shapeBorder: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+              side: BorderSide(color: Colors.grey[300]!)),
+          onTap: () async {
+            NewCustomer().launch(context);
+            await dataBloc.refreshToken();
+          },
+        ));
+  }
+
+  Widget _body() {
+    return Column(
+      children: [_searchBar().paddingBottom(5), _customersList().expand()],
+    );
+  }
+
+  Widget _searchBar() {
+    return Stack(
+      children: [
+        _searchBarBackground(),
+        _searchField().paddingSymmetric(horizontal: 7),
+      ],
+    );
+  }
+
+  Container _searchBarBackground() {
+    return Container(
+      height: searchHeight + 8,
+      width: _size.width,
+      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+        BoxShadow(
+          color: Colors.grey,
+          offset: Offset(0.0, 1.0), //(x,y)
+          blurRadius: 2.0,
+        )
+      ]),
+    );
+  }
+
+  Widget _searchField() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 6),
+      decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      child: FloatingSearchAppBar(
+          hint: ' Buscar cliente',
+          controller: _searchController,
+          transitionDuration: const Duration(milliseconds: 800),
+          clearQueryOnClose: true,
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+          // alwaysOpened: true,
+          titleStyle: _theme.headline6!,
+          hintStyle: _theme.headline6!,
+          hideKeyboardOnDownScroll: true,
+          onQueryChanged: _onQueryChanged,
+          // height: _size.height * 0.078 < 55 ? 55 : _size.height * 0.078,
+          elevation: 0,
+          actions: [Container()],
+          leadingActions: [Icon(Icons.search)],
+          automaticallyImplyBackButton: false,
+          color: Colors.grey[100],
+          body: null),
+    );
+  }
+
+  Widget _customersList() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 7),
+      child: FutureBuilder<List<Map>?>(
+          future: CompanyModel.getAllCustomers(limit: 50),
+          builder: (BuildContext context, AsyncSnapshot<List<Map>?> snapshot) {
+            if (snapshot.hasData) {
+              return StreamBuilder<List<CompanyModel>?>(
+                  stream: _customersStream.stream,
+                  builder:
+                      (context, AsyncSnapshot<List<CompanyModel>?> snapshot2) {
+                    if (snapshot2.hasData) {
+                      return CustomerCardList(
+                        customer: snapshot2.data!,
+                        searchParams: _searchParams,
+                      );
+                    } else {
+                      _customersStream.sink
+                          .add(CompanyModel.fromJsonList(snapshot.data!));
+
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  });
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          }),
+    );
+  }
+
+  _onQueryChanged(String? query) async {
+    _searchParams['search'] = query;
+    if (query == '' || query == null) {
+      final res = await CompanyModel.getAllCustomers();
+      if (res != null) {
+        _customersStream.sink.add(CompanyModel.fromJsonList(res));
+      }
+    } else {
+      final res = await CompanyModel.findCustomer(query);
+      if (res != null) {
+        _customersStream.sink.add(CompanyModel.fromJsonList(res));
+      }
+    }
+  }
+}

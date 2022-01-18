@@ -1,0 +1,374 @@
+[
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17005",
+        "DEPARTAMENTO": "ANTIOQUIA",
+        "DESADICIONAL": "DE ANTIOQUIA"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17008",
+        "DEPARTAMENTO": "ATLANTICO",
+        "DESADICIONAL": "DE ATLANTICO"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17011",
+        "DEPARTAMENTO": "BOGOTA D.C",
+        "DESADICIONAL": "DE BOGOTA D.C"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17013",
+        "DEPARTAMENTO": "BOLIVAR",
+        "DESADICIONAL": "DE BOLIVAR"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17015",
+        "DEPARTAMENTO": "BOYACA",
+        "DESADICIONAL": "DE BOYACA"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17017",
+        "DEPARTAMENTO": "CALDAS",
+        "DESADICIONAL": "DE CALDAS"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17018",
+        "DEPARTAMENTO": "CAQUETA",
+        "DESADICIONAL": "DE CAQUETA"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17019",
+        "DEPARTAMENTO": "CAUCA",
+        "DESADICIONAL": "DEL CAUCA"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17020",
+        "DEPARTAMENTO": "CESAR",
+        "DESADICIONAL": "DEL CESAR"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17023",
+        "DEPARTAMENTO": "CORDOBA",
+        "DESADICIONAL": "DE CORDOBA"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17025",
+        "DEPARTAMENTO": "CUNDINAMARCA",
+        "DESADICIONAL": "DE CUNDINAMARCA"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17027",
+        "DEPARTAMENTO": "CHOCO",
+        "DESADICIONAL": "DEL CHOCO"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17041",
+        "DEPARTAMENTO": "HUILA",
+        "DESADICIONAL": "DEL HUILA"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17044",
+        "DEPARTAMENTO": "LA GUAJIRA",
+        "DESADICIONAL": "DE LA GUAJIRA"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17047",
+        "DEPARTAMENTO": "MAGDALENA",
+        "DESADICIONAL": "DEL MAGDALENA"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17050",
+        "DEPARTAMENTO": "META",
+        "DESADICIONAL": "DEL META"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17052",
+        "DEPARTAMENTO": "NARIÑO",
+        "DESADICIONAL": "DE NARI"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17054",
+        "DEPARTAMENTO": "NORTE DE SANTANDER",
+        "DESADICIONAL": "DEL NORTE DE SANTAND"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17063",
+        "DEPARTAMENTO": "QUINDIO",
+        "DESADICIONAL": "DEL QUINDIO"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17066",
+        "DEPARTAMENTO": "RISARALDA",
+        "DESADICIONAL": "DE RISARALDA"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17068",
+        "DEPARTAMENTO": "SANTANDER",
+        "DESADICIONAL": "DE SANTANDER"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17070",
+        "DEPARTAMENTO": "SUCRE",
+        "DESADICIONAL": "DE SUCRE"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17073",
+        "DEPARTAMENTO": "TOLIMA",
+        "DESADICIONAL": "DEL TOLIMA"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17076",
+        "DEPARTAMENTO": "VALLE DEL CAUCA",
+        "DESADICIONAL": "DEL VALLE DEL CAUCA"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17081",
+        "DEPARTAMENTO": "ARAUCA",
+        "DESADICIONAL": "DE ARAUCA"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17085",
+        "DEPARTAMENTO": "CASANARE",
+        "DESADICIONAL": "DE CASANARE"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17086",
+        "DEPARTAMENTO": "PUTUMAYO",
+        "DESADICIONAL": "DE PUTUMAYO"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17088",
+        "DEPARTAMENTO": "SAN ANDRÉS Y PROVIDENCIA",
+        "DESADICIONAL": "DEL ARCHIPIELAGO DE "
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17091",
+        "DEPARTAMENTO": "AMAZONAS",
+        "DESADICIONAL": "DE AMAZONAS"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17094",
+        "DEPARTAMENTO": "GUAINIA",
+        "DESADICIONAL": "DE GUAINIA"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17095",
+        "DEPARTAMENTO": "GUAVIARE",
+        "DESADICIONAL": "DEL GUAVIARE"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17097",
+        "DEPARTAMENTO": "VAUPES",
+        "DESADICIONAL": "DEL VAUPES"
+    },
+    {
+        "PAIS": "170",
+        "CODDEPARTAMENTO": "17099",
+        "DEPARTAMENTO": "VICHADA",
+        "DESADICIONAL": "DE VICHADA"
+    },
+    {
+        "PAIS": "218",
+        "CODDEPARTAMENTO": "21800",
+        "DEPARTAMENTO": "PICHINCHA",
+        "DESADICIONAL": "DE PICHINCHA"
+    },
+    {
+        "PAIS": "724",
+        "CODDEPARTAMENTO": "72400",
+        "DEPARTAMENTO": "TODOS LOS DEPARTAMENTOS",
+        "DESADICIONAL": "DE TODOS"
+    },
+    {
+        "PAIS": "724",
+        "CODDEPARTAMENTO": "72401",
+        "DEPARTAMENTO": "CATALUÑA",
+        "DESADICIONAL": "DE CATALUÑA"
+    },
+    {
+        "PAIS": "840",
+        "CODDEPARTAMENTO": "84001",
+        "DEPARTAMENTO": "FLORIDA",
+        "DESADICIONAL": "DE FLORIDA"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86201",
+        "DEPARTAMENTO": "Amazonas",
+        "DESADICIONAL": "DE Amazonas"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86202",
+        "DEPARTAMENTO": "Anzoátegui",
+        "DESADICIONAL": "DE Anzoátegui"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86203",
+        "DEPARTAMENTO": "Apure",
+        "DESADICIONAL": "DE Apure"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86204",
+        "DEPARTAMENTO": "Aragua",
+        "DESADICIONAL": "DE Aragua"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86205",
+        "DEPARTAMENTO": "Barinas",
+        "DESADICIONAL": "DE Barinas"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86206",
+        "DEPARTAMENTO": "Bolívar",
+        "DESADICIONAL": "DE Bolívar"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86207",
+        "DEPARTAMENTO": "Carabobo",
+        "DESADICIONAL": "DE Carabobo"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86208",
+        "DEPARTAMENTO": "Cojedes",
+        "DESADICIONAL": "DE Cojedes"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86209",
+        "DEPARTAMENTO": "Delta Amacuro",
+        "DESADICIONAL": "DE Delta Amacuro"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86210",
+        "DEPARTAMENTO": "Falcón",
+        "DESADICIONAL": "DE Falcón"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86211",
+        "DEPARTAMENTO": "Guárico",
+        "DESADICIONAL": "DE Guárico"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86212",
+        "DEPARTAMENTO": "Lara",
+        "DESADICIONAL": "DE Lara"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86213",
+        "DEPARTAMENTO": "Mérida",
+        "DESADICIONAL": "DE Mérida"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86214",
+        "DEPARTAMENTO": "Miranda",
+        "DESADICIONAL": "DE Miranda"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86215",
+        "DEPARTAMENTO": "Monagas",
+        "DESADICIONAL": "DE Monagas"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86216",
+        "DEPARTAMENTO": "Nueva Esparta",
+        "DESADICIONAL": "DE Nueva Esparta"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86217",
+        "DEPARTAMENTO": "Portuguesa",
+        "DESADICIONAL": "DE Portuguesa"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86218",
+        "DEPARTAMENTO": "Sucre",
+        "DESADICIONAL": "DE Sucre"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86219",
+        "DEPARTAMENTO": "Táchira",
+        "DESADICIONAL": "DE Táchira"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86220",
+        "DEPARTAMENTO": "Trujillo",
+        "DESADICIONAL": "DE Trujillo"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86221",
+        "DEPARTAMENTO": "Vargas",
+        "DESADICIONAL": "DE Vargas"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86222",
+        "DEPARTAMENTO": "Yaracuy",
+        "DESADICIONAL": "DE Yaracuy"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86223",
+        "DEPARTAMENTO": "Zulia",
+        "DESADICIONAL": "DE Zulia"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86224",
+        "DEPARTAMENTO": "Distrito Capital",
+        "DESADICIONAL": "DE Distrito Capital"
+    },
+    {
+        "PAIS": "862",
+        "CODDEPARTAMENTO": "86225",
+        "DEPARTAMENTO": "Dependencias Federales",
+        "DESADICIONAL": "DE Dependencias Fede"
+    }
+]

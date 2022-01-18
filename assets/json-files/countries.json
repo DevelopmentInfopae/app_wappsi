@@ -1,0 +1,1724 @@
+[
+    {
+        "CODIGO": "004",
+        "NOMBRE": "AFGANISTAN",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "008",
+        "NOMBRE": "ALBANIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "010",
+        "NOMBRE": "ANTARTIDA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "012",
+        "NOMBRE": "ARGELIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "016",
+        "NOMBRE": "SAMOA AMERICANA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "020",
+        "NOMBRE": "ANDORRA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "024",
+        "NOMBRE": "ANGOLA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "028",
+        "NOMBRE": "ANTIGUA Y BARBUDA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "031",
+        "NOMBRE": "AZERBAIY",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "032",
+        "NOMBRE": "ARGENTINA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "036",
+        "NOMBRE": "AUSTRALIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "040",
+        "NOMBRE": "AUSTRIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "044",
+        "NOMBRE": "BAHAMAS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "048",
+        "NOMBRE": "BAHREIN",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "050",
+        "NOMBRE": "BANGLADESH",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "051",
+        "NOMBRE": "ARMENIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "052",
+        "NOMBRE": "BARBADOS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "056",
+        "NOMBRE": "BELGICA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "060",
+        "NOMBRE": "BERMUDAS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "064",
+        "NOMBRE": "BHUT",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "068",
+        "NOMBRE": "BOLIVIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "070",
+        "NOMBRE": "BOSNIA Y HERZEGOVINA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "072",
+        "NOMBRE": "BOTSUANA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "074",
+        "NOMBRE": "ISLA BOUVET",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "076",
+        "NOMBRE": "BRASIL",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "084",
+        "NOMBRE": "BELICE",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "086",
+        "NOMBRE": "TERRITORIO BRITANICO DEL OCEANO INDICO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "090",
+        "NOMBRE": "ISLAS SALOMON",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "092",
+        "NOMBRE": "ISLAS VIRGENES BRITANICAS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "096",
+        "NOMBRE": "BRUNEI",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "100",
+        "NOMBRE": "BULGARIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "104",
+        "NOMBRE": "BIRMANIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "108",
+        "NOMBRE": "BURUNDI",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "112",
+        "NOMBRE": "BIELORRUSIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "116",
+        "NOMBRE": "CAMBOYA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "120",
+        "NOMBRE": "CAMERUN",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "124",
+        "NOMBRE": "CANADA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "132",
+        "NOMBRE": "CABO VERDE",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "136",
+        "NOMBRE": "ISLAS CAIM",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "140",
+        "NOMBRE": "REPUBLICA CENTROAFRICANA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "144",
+        "NOMBRE": "SRI LANKA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "148",
+        "NOMBRE": "CHAD",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "152",
+        "NOMBRE": "CHILE",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "156",
+        "NOMBRE": "CHINA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "158",
+        "NOMBRE": "TAIW",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "162",
+        "NOMBRE": "ISLA CHRISTMAS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "166",
+        "NOMBRE": "ISLAS COCOS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "170",
+        "NOMBRE": "COLOMBIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": "CO"
+    },
+    {
+        "CODIGO": "174",
+        "NOMBRE": "COMORES",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "175",
+        "NOMBRE": "MAYOTTE",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "178",
+        "NOMBRE": "CONGO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "180",
+        "NOMBRE": " REP. DEM. DEL CONGO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "184",
+        "NOMBRE": "ISLAS COOK",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "188",
+        "NOMBRE": "COSTA RICA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "191",
+        "NOMBRE": "CROACIA (HRVATSKA)",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "192",
+        "NOMBRE": "CUBA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "196",
+        "NOMBRE": "CHIPRE",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "203",
+        "NOMBRE": "REPUBLICA CHECA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "204",
+        "NOMBRE": "BEN",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "208",
+        "NOMBRE": "DINAMARCA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "212",
+        "NOMBRE": "DOMINICA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "214",
+        "NOMBRE": "REPUBLICA DOMINICANA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "218",
+        "NOMBRE": "ECUADOR",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "222",
+        "NOMBRE": "EL SALVADOR",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "226",
+        "NOMBRE": "GUINEA ECUATORIAL",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "231",
+        "NOMBRE": "ETIOP",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "232",
+        "NOMBRE": "ERITREA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "233",
+        "NOMBRE": "ESTONIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "234",
+        "NOMBRE": "ISLAS FEROE",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "238",
+        "NOMBRE": "ISLAS MALVINAS (FALKLAND ISLANDS)",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "239",
+        "NOMBRE": "GEORGIA DEL SUR Y LAS ISLAS SANDWICH DEL SUR",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "242",
+        "NOMBRE": "ISLAS FIJI",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "246",
+        "NOMBRE": "FINLANDIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "248",
+        "NOMBRE": "ISLAS DE ALAND",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "250",
+        "NOMBRE": "FRANCIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "254",
+        "NOMBRE": "GUAYANA FRANCESA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "258",
+        "NOMBRE": "POLINESIA FRANCESA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "260",
+        "NOMBRE": "TIERRAS AUSTRALES Y ANTARTICAS FRANCESAS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "262",
+        "NOMBRE": "DJIBOURI",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "263",
+        "NOMBRE": "YIBUTI",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "266",
+        "NOMBRE": "GABON",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "268",
+        "NOMBRE": "GEORGIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "270",
+        "NOMBRE": "GAMBIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "275",
+        "NOMBRE": "AUTORIDAD PALESTINA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "276",
+        "NOMBRE": "ALEMANIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "288",
+        "NOMBRE": "GHANA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "292",
+        "NOMBRE": "GIBRALTAR",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "296",
+        "NOMBRE": "KIRIBATI",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "300",
+        "NOMBRE": "GRECIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "304",
+        "NOMBRE": "GROENLANDIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "308",
+        "NOMBRE": "GRANADA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "312",
+        "NOMBRE": "GUADALUPE",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "316",
+        "NOMBRE": "GUAM",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "320",
+        "NOMBRE": "GUATEMALA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "324",
+        "NOMBRE": "GUINEA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "328",
+        "NOMBRE": "GUAYANA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "332",
+        "NOMBRE": "HAIT",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "334",
+        "NOMBRE": "ISLAS HEARD Y MCDONALD",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "336",
+        "NOMBRE": "CIUDAD ESTADO DEL VATICANO (SANTA SEDE)",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "340",
+        "NOMBRE": "HONDURAS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "344",
+        "NOMBRE": "HONG KONG, ZAE",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "348",
+        "NOMBRE": "HUNGR",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "352",
+        "NOMBRE": "ISLANDIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "356",
+        "NOMBRE": "INDIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "360",
+        "NOMBRE": "INDONESIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "364",
+        "NOMBRE": "IR",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "368",
+        "NOMBRE": "IRAK",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "372",
+        "NOMBRE": "IRLANDA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "376",
+        "NOMBRE": "ISRAEL",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "380",
+        "NOMBRE": "ITALIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "384",
+        "NOMBRE": "COSTA DEL MARFIL",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "388",
+        "NOMBRE": "JAMAICA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "392",
+        "NOMBRE": "JAPON",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "398",
+        "NOMBRE": "KAZAJISTAN",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "400",
+        "NOMBRE": "JORDANIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "404",
+        "NOMBRE": "KENIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "408",
+        "NOMBRE": "COREA DEL NORTE",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "410",
+        "NOMBRE": "COREA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "414",
+        "NOMBRE": "KUWAIT",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "417",
+        "NOMBRE": "KIRGUIZIST",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "418",
+        "NOMBRE": "LAOS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "422",
+        "NOMBRE": "LIBANO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "426",
+        "NOMBRE": "LESOTO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "428",
+        "NOMBRE": "LETONIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "430",
+        "NOMBRE": "LIBERIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "434",
+        "NOMBRE": "LIBIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "438",
+        "NOMBRE": "LIECHTENSTEIN",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "440",
+        "NOMBRE": "LITUANIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "442",
+        "NOMBRE": "LUXEMBURGO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "446",
+        "NOMBRE": "MACAO, ZAE",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "450",
+        "NOMBRE": "MADAGASCAR",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "454",
+        "NOMBRE": "MALAISIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "458",
+        "NOMBRE": "MALAWI",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "462",
+        "NOMBRE": "MALDIVAS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "466",
+        "NOMBRE": "MAL",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "470",
+        "NOMBRE": "MALTA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "474",
+        "NOMBRE": "MARTINICA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "478",
+        "NOMBRE": "MAURITANIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "480",
+        "NOMBRE": "MAURICIO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "484",
+        "NOMBRE": "MEXICO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "492",
+        "NOMBRE": "MONACO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "496",
+        "NOMBRE": "MONGOLIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "498",
+        "NOMBRE": "MOLDAVIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "499",
+        "NOMBRE": "MONTENEGRO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "500",
+        "NOMBRE": "MONTSERRAT",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "504",
+        "NOMBRE": "MARRUECOS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "508",
+        "NOMBRE": "MOZAMBIQUE",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "512",
+        "NOMBRE": "OM",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "516",
+        "NOMBRE": "NAMIBIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "520",
+        "NOMBRE": "NAURU",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "524",
+        "NOMBRE": "NEPAL",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "528",
+        "NOMBRE": "PAISES BAJOS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "530",
+        "NOMBRE": "ANTILLAS HOLANDESAS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "533",
+        "NOMBRE": "ARUBA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "540",
+        "NOMBRE": "NUEVA CALEDONIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "548",
+        "NOMBRE": "VANUATU",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "554",
+        "NOMBRE": "NUEVA ZELANDA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "558",
+        "NOMBRE": "NICARAGUA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "562",
+        "NOMBRE": "NIGER",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "566",
+        "NOMBRE": "NIGERIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "570",
+        "NOMBRE": "NIUE",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "574",
+        "NOMBRE": "ISLA NORFOLK",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "578",
+        "NOMBRE": "NORUEGA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "580",
+        "NOMBRE": "ISLAS MARIANAS DEL NORTE",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "583",
+        "NOMBRE": "MICRONESIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "584",
+        "NOMBRE": "ISLAS MARSHALL",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "585",
+        "NOMBRE": "PALAOS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "586",
+        "NOMBRE": "PAKIST",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "591",
+        "NOMBRE": "PANAM",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "598",
+        "NOMBRE": "PAPUA-NUEVA GUINEA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "600",
+        "NOMBRE": "PARAGUAY",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "604",
+        "NOMBRE": "PERU",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "608",
+        "NOMBRE": "FILIPINAS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "612",
+        "NOMBRE": "ISLAS PITCAIRN",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "616",
+        "NOMBRE": "POLONIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "620",
+        "NOMBRE": "PORTUGAL",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "624",
+        "NOMBRE": "GUINEA-BISSAU",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "626",
+        "NOMBRE": "TIMOR ORIENTAL",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "630",
+        "NOMBRE": "PUERTO RICO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "634",
+        "NOMBRE": "QATAR",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "638",
+        "NOMBRE": "REUNION",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "642",
+        "NOMBRE": "RUMANIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "643",
+        "NOMBRE": "RUSIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "646",
+        "NOMBRE": "RUANDA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "652",
+        "NOMBRE": " SAN BARTOLOM",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "654",
+        "NOMBRE": "SANTA ELENA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "659",
+        "NOMBRE": "SAINT KITTS Y NEVIS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "660",
+        "NOMBRE": "ANGUILA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "662",
+        "NOMBRE": "SANTA LUC",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "666",
+        "NOMBRE": " SAN MART",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "667",
+        "NOMBRE": "SAN PEDRO Y MIQUELON",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "670",
+        "NOMBRE": "SAN VICENTE Y LAS GRANADINAS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "674",
+        "NOMBRE": "SAN MARINO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "678",
+        "NOMBRE": "SANTO TOME Y PRINCIPE",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "682",
+        "NOMBRE": "ARABIA SAUD",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "686",
+        "NOMBRE": "SENEGAL",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "688",
+        "NOMBRE": "SERBIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "690",
+        "NOMBRE": "SEYCHELLES",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "694",
+        "NOMBRE": "SIERRA LEONA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "702",
+        "NOMBRE": "SINGAPUR",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "703",
+        "NOMBRE": "ESLOVAQUIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "704",
+        "NOMBRE": "VIETNAM",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "705",
+        "NOMBRE": "ESLOVENIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "706",
+        "NOMBRE": "SOMALIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "710",
+        "NOMBRE": "REPUBLICA DE SUDAFRICA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "716",
+        "NOMBRE": "ZIMBABUE",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "724",
+        "NOMBRE": "ESPAÑA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "732",
+        "NOMBRE": "SAHARA OCCIDENTAL",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "736",
+        "NOMBRE": "SUD",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "740",
+        "NOMBRE": "SURINAM",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "744",
+        "NOMBRE": "ISLAS SVALBARD Y JAN MAYEN",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "748",
+        "NOMBRE": "SUAZILANDIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "752",
+        "NOMBRE": "SUECIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "756",
+        "NOMBRE": "SUIZA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": "EU"
+    },
+    {
+        "CODIGO": "760",
+        "NOMBRE": "SIRIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "762",
+        "NOMBRE": "TAYIKIST",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "764",
+        "NOMBRE": "TAILANDIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "768",
+        "NOMBRE": "TOGO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "772",
+        "NOMBRE": "TOKELAU",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "776",
+        "NOMBRE": "TONGA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "780",
+        "NOMBRE": "TRINIDAD Y TOBAGO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "784",
+        "NOMBRE": "EMIRATOS ?RABES UNIDOS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "788",
+        "NOMBRE": "TUNEZ",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "792",
+        "NOMBRE": "TURQU",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "795",
+        "NOMBRE": "TURKMENIST",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "796",
+        "NOMBRE": "ISLAS TURKS Y CAICOS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "798",
+        "NOMBRE": "TUVALU",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "800",
+        "NOMBRE": "UGANDA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "804",
+        "NOMBRE": "UCRANIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "807",
+        "NOMBRE": "EX-REPUBLICA YUGOSLAVA DE MACEDONIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "818",
+        "NOMBRE": "EGIPTO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "826",
+        "NOMBRE": "REINO UNIDO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "831",
+        "NOMBRE": "GUERNSEY",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "832",
+        "NOMBRE": "JERSEY",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "833",
+        "NOMBRE": "ISLA DE MAN",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "834",
+        "NOMBRE": "TANZANIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "840",
+        "NOMBRE": "ESTADOS UNIDOS",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "850",
+        "NOMBRE": "ISLAS VIRGENES, EE.UU.",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "854",
+        "NOMBRE": "BURKINA FASO",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "858",
+        "NOMBRE": "URUGUAY",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "860",
+        "NOMBRE": "UZBEKIST",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "862",
+        "NOMBRE": "VENEZUELA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "876",
+        "NOMBRE": "ISLAS WALLIS Y FUTUNA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "882",
+        "NOMBRE": "SAMOA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "887",
+        "NOMBRE": "YEMEN",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    },
+    {
+        "CODIGO": "894",
+        "NOMBRE": "ZAMBIA",
+        "INDICATIVO": "0",
+        "MONEDA": "978",
+        "codigo_iso": ""
+    }
+]
