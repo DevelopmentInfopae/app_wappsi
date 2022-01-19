@@ -9,19 +9,20 @@ import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
-import 'package:pos_wappsi/models/local_sale_items_model.dart';
 import 'package:pos_wappsi/models/local_sales_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
-import 'package:pos_wappsi/models/payment_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/sale_model.dart';
 import 'package:pos_wappsi/models/suspended_sale_model.dart';
 import 'package:pos_wappsi/providers/API_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/providers/local_sale_items_provider.dart';
+import 'package:pos_wappsi/providers/payment_provider.dart';
+import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/functions.dart';
 import 'package:pos_wappsi/utils/local_db.dart';
-import 'package:pos_wappsi/utils/manage_server_resp.dart';
+
 import 'package:pos_wappsi/utils/product_price_functions.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -250,7 +251,7 @@ class POSBloc {
         emptyProductsAdded();
         await Future.forEach(temp.values, (ProductModel element) async {
           Map<String, dynamic>? temp2 =
-              await ProductModel.findProductDetails(element.idCloud);
+              await ProductsProvider.findProductDetails(element.idCloud);
           if (temp2 != null) {
             Map<String, dynamic> pData = queryResultToMap(temp2);
             pData[keyInitialQtty] = element.quantity;
@@ -432,10 +433,11 @@ class POSBloc {
             // Verify if sale was saved successfully
             if (saleId != null) {
               // Save sale items into dbUpdated
-              final saleItemsStatus = await LocalSaleItems.saveAllIntoDB(
+              final saleItemsStatus = await SaleItemsProvider.saveAllIntoDB(
                   productsDetails['product_detail_list'], saleId);
 
-              final paymentsStatus = await PaymentsModel.saveAllIntoDB(saleId);
+              final paymentsStatus =
+                  await PaymentProvider.saveAllIntoDB(saleId);
               // Verify if sale items were saved successfully
               if (saleItemsStatus && paymentsStatus) {
                 posBloc.setPrintData(printData);

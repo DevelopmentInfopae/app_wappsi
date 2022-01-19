@@ -4,7 +4,7 @@ import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/models/documents_types_model.dart';
+import 'package:pos_wappsi/providers/document_types_provider.dart';
 
 import '../../constant.dart';
 
@@ -68,7 +68,7 @@ class ProfileScreen extends StatelessWidget {
         FutureDecoratedLabeledContent(
                 label: 'Tipo de documento',
                 mapKey: 'nombre',
-                function: DocumentsTypes.findDocumentsTypesById(
+                function: DocumentsTypesProvider.findDocumentsTypesById(
                     dataBloc.userData!.documentTypeId.toString()))
             .paddingSymmetric(horizontal: 10, vertical: 5),
         DecoratedLabeledContent(

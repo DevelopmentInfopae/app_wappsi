@@ -11,11 +11,11 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/regimen_personT_form_params.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/documentypes_model.dart';
+import 'package:pos_wappsi/providers/documenttypes_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 import 'package:pos_wappsi/screens/customers/components/functions.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/new_costumer_data2.dart';
-import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
 class NewCustomer extends StatefulWidget {
@@ -315,8 +315,8 @@ class _NewCustomerState extends State<NewCustomer> {
   Widget _documents() {
     return FutureBuilder(
       future: customerBloc.getCustomer.tipoDocumento == null
-          ? DocumentypeModel.defaultDocument()
-          : DocumentypeModel.loadDocument(
+          ? DocumenttypesProvider.defaultDocument()
+          : DocumenttypesProvider.loadDocument(
               customerBloc.getCustomer.tipoDocumento!),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData && _doc == null) {
@@ -371,7 +371,8 @@ class _NewCustomerState extends State<NewCustomer> {
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
-      onFind: (String? filter) => DocumentypeModel.loadFromDB(search: filter),
+      onFind: (String? filter) =>
+          DocumenttypesProvider.loadFromDB(search: filter),
       onChanged: (data) async {
         if (data != null) {
           setState(() {

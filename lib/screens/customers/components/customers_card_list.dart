@@ -4,6 +4,7 @@ import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/components/customer_card.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 
 class CustomerCardList extends StatefulWidget {
@@ -72,7 +73,7 @@ class _CustomerCardListState extends State<CustomerCardList> {
       });
 
       _loading = true;
-      final res = await CompanyModel.findCustomer(
+      final res = await CompaniesProvider.findCustomer(
           widget.searchParams['search'] ?? '',
           offset: true,
           limit: 30,

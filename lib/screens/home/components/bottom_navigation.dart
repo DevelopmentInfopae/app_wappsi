@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // ignore: implementation_imports
-import 'package:nb_utils/src/extensions/widget_extensions.dart';
+
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 // import 'package:pos_wappsi/screens/home/home.dart';

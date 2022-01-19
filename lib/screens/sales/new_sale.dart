@@ -13,6 +13,8 @@ import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/suspended_sale_model.dart';
 import 'package:pos_wappsi/components/app_bar_leading.dart';
+import 'package:pos_wappsi/providers/companies_provider.dart';
+import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 
 import 'package:pos_wappsi/screens/sales/sale_cart.dart';
@@ -156,7 +158,7 @@ class _NewSaleState extends State<NewSale> {
 
   Widget _customers() {
     return FutureBuilder(
-      future: CompanyModel.selectDefaultCustomer(returnBool: true),
+      future: CompaniesProvider.selectDefaultCustomer(returnBool: true),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           return _customersDropDown();
@@ -210,7 +212,7 @@ class _NewSaleState extends State<NewSale> {
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
-      onFind: (String? filter) => CompanyModel.getCustomers(filter),
+      onFind: (String? filter) => CompaniesProvider.getCustomers(filter),
       onChanged: _customerSelection,
       selectedItem: posBloc.getCustomer,
       popupItemBuilder: customPopupCustomerItemBuilder,
@@ -261,7 +263,7 @@ class _NewSaleState extends State<NewSale> {
 
   Widget _customerAddresses() {
     return FutureBuilder(
-      future: CustomerAddressesModel.selectDefaultAddrs(returnBool: true),
+      future: CustomerAddressesProvider.selectDefaultAddrs(returnBool: true),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           return _customerAddressesDropDown();
@@ -310,7 +312,7 @@ class _NewSaleState extends State<NewSale> {
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onFind: (String? filter) =>
-          CustomerAddressesModel.getDataAdrreses(filter),
+          CustomerAddressesProvider.getDataAdrreses(filter),
       onChanged: _customerAddrSelection,
       selectedItem: posBloc.getCustomerAddresses,
       popupItemBuilder: popupCustomerAddressesItemBuilder,
@@ -336,8 +338,8 @@ class _NewSaleState extends State<NewSale> {
       color: _pc,
       width: _size.width,
       onTap: () async {
-        await CompanyModel.selectDefaultCustomer();
-        await CustomerAddressesModel.selectDefaultAddrs();
+        await CompaniesProvider.selectDefaultCustomer();
+        await CustomerAddressesProvider.selectDefaultAddrs();
         SaleCart().launch(context);
       },
       child: Text(

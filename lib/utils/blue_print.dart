@@ -75,6 +75,37 @@ class PrintFormat {
     return true;
   }
 
+  /// To print favorite products
+  Future<bool?> printFavorites() async {
+    await bluetooth.isConnected.then((isConnected) async {
+      if (isConnected!) {
+        final _innerPrinter =
+            (printerBloc.getPrinterDevice?.name == 'InnerPrinter');
+        final profile = await CapabilityProfile.load();
+        final generator =
+            Generator(PaperSize.mm58, profile, spaceBetweenRows: 1);
+        List<int> bytes = [];
+        // delete print buffer
+        bytes = await image(generator, 'assets/images/wappsi.png',
+            assetImage: true);
+        bytes += generator.text(
+            'Prueba de funcionamiento de \n' +
+                (_innerPrinter ? 'impresion' : 'impresión'),
+            styles: PosStyles(bold: true, align: PosAlign.center));
+        bytes += generator.emptyLines(1);
+        bytes = wappsiSpam(_innerPrinter, bytes, generator);
+
+        bytes += generator.feed(2);
+        // ignore: unnecessary_statements
+        _innerPrinter ? null : bytes += generator.cut();
+
+        await bluetooth.writeBytes(Uint8List.fromList(bytes));
+      }
+    });
+
+    return true;
+  }
+
   Future<bool?> printMovement(String pathImage) async {
     await bluetooth.isConnected.then((isConnected) async {
       if (isConnected!) {

@@ -4,6 +4,7 @@ import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
@@ -85,7 +86,7 @@ class ProductDetails extends StatelessWidget {
 
   Widget _subCategory() {
     return FutureBuilder(
-      future: ProductModel.findProductCategory(product.subCategoryId),
+      future: ProductsProvider.findProductCategory(product.subCategoryId),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         return descRichText(
           // ignore: unnecessary_null_comparison
@@ -99,7 +100,7 @@ class ProductDetails extends StatelessWidget {
 
   Widget _category() {
     return FutureBuilder(
-      future: ProductModel.findProductCategory(product.categoryId),
+      future: ProductsProvider.findProductCategory(product.categoryId),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         return descRichText(
                 // ignore: unnecessary_null_comparison
@@ -115,7 +116,7 @@ class ProductDetails extends StatelessWidget {
     return Card(
       elevation: 8,
       child: FutureBuilder<Map?>(
-          future: ProductModel.findProductDetails(product.idCloud),
+          future: ProductsProvider.findProductDetails(product.idCloud),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView(
@@ -125,7 +126,7 @@ class ProductDetails extends StatelessWidget {
                       DBProvider.db.findBrand(product.brand), 'name', 'Marca'),
                   hDivider(),
                   futureLabelContent(
-                      ProductModel.findProductUnit(product.unit.toString()),
+                      ProductsProvider.findProductUnit(product.unit.toString()),
                       'name',
                       'Unidad'),
                   hDivider(),
@@ -163,7 +164,7 @@ class ProductDetails extends StatelessWidget {
       children: [
         labelContent('Cantidad ', product.quantity.toString()),
         buttonTextIcon(() async {
-          final res = await ProductModel.findProductQuantities(
+          final res = await ProductsProvider.findProductQuantities(
               product.idCloud.toString());
           if (res != null) {
             listInfoDialog(context, res, 'name', 'quantity', 'Bodega', 'Cant.');
@@ -182,8 +183,8 @@ class ProductDetails extends StatelessWidget {
       children: [
         labelContent('Precio ', price),
         buttonTextIcon(() async {
-          final res =
-              await ProductModel.findProductPrices(product.idCloud.toString());
+          final res = await ProductsProvider.findProductPrices(
+              product.idCloud.toString());
           if (res != null) {
             listInfoDialog(context, res, 'name', 'price', 'Grupo', 'Precio',
                 isPrice: true);

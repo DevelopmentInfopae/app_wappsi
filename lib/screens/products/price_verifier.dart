@@ -9,6 +9,7 @@ import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/product_card.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/providers/products_provider.dart';
 
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
@@ -161,7 +162,7 @@ class _ProductPriceState extends State<ProductPrice> {
       _productsStream.sink.add(null);
       // _searchFocusNode.requestFocus();
     } else {
-      _productsStream.sink.add(await ProductModel.findProducts(value));
+      _productsStream.sink.add(await ProductsProvider.findProducts(value));
     }
   }
 }

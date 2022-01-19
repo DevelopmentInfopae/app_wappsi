@@ -1,0 +1,194 @@
+import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/models/biller_data_model.dart';
+import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/providers/local_db_provider.dart';
+
+class CompaniesProvider {
+  /// Load default customer from db to posBloc
+  static selectDefaultCustomer({bool returnBool = false}) async {
+    if (dataBloc.getBIllerData == null) {
+      final billerData = await DBProvider.db.getBillerData();
+      if (billerData != null) {
+        dataBloc.setBillerData(BillerDataModel.fromJson(billerData));
+      }
+    }
+    if (posBloc.getCustomer == null) {
+      String? idCustomer = dataBloc.getBIllerData!.defaultCustomerId;
+      if (idCustomer != null) {
+        Map<String, dynamic>? customer = await findCompanyById(idCustomer);
+        if (customer != null) {
+          posBloc.setCustomer(CompanyModel.fromJson(customer));
+          if (returnBool) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+
+  static Future<List<CompanyModel>> getCustomers(filter) async {
+    List<Map<String, dynamic>>? data;
+
+    if (filter == '' || filter == null) {
+      data = await getAllCustomers(limit: 20);
+    } else {
+      data = await findCustomer(filter, limit: 20);
+    }
+
+    // ignore: unnecessary_null_comparison
+    if (data != null) {
+      return CompanyModel.fromJsonList(data);
+    }
+
+    return [];
+  }
+
+  /// Write customer and his address created locally into local DB with ids comming from cloud
+  /// DB
+  static Future<bool> writeCustomerInLDB(
+      Map<String, dynamic> body, Map<String, dynamic> res) async {
+    bool dbUpdated = false;
+
+    body['id_cloud'] = res['body']['company_id'];
+    dbUpdated = await DBProvider.db.insertQuery('sma_companies', body);
+    if (dbUpdated) {
+      final address = {
+        'id_cloud': res['body']['address_id'],
+        'company_id': body['id_cloud'],
+        'direccion': body['address'],
+        'sucursal': body['name'],
+        'city': body['city'],
+        'state': body['state'],
+        'country': body['country'],
+        'phone': body['phone'],
+        'city_code': body['city_code'],
+        'customer_group_id': body['customer_group_id'],
+        'customer_group_name': body['customer_group_name'],
+        'price_group_name': body['price_group_name'],
+        'price_group_id': body['price_group_id'],
+        'email': body['email'],
+        'code': body['vat_no'] + '-01',
+      };
+      dbUpdated = await DBProvider.db.insertQuery('sma_addresses', address);
+    }
+    return dbUpdated;
+  }
+
+  //-----------------------------------------------------------------------------
+  //                                CUSTOMERS
+  //
+  //-----------------------------------------------------------------------------
+
+  /// Return all rows in sma_companies with group_id=3 (customers) and status = 1
+  static Future<List<Map<String, dynamic>>?> getAllCustomers(
+      {int? limit,
+      String orderBy = 'name',
+      bool offset = false,
+      int? offsetValue}) async {
+    if (offset) {
+      limit = 50;
+    }
+    return await DBProvider.db.sqlQuery(
+      'sma_companies',
+      where: 'group_id = 3 AND status=1',
+      limit: limit,
+      orderBy: orderBy,
+      offset: offsetValue,
+    );
+  }
+
+  /// Find costumers from sma_companies, with and withoud search params.
+  static Future<List<Map<String, dynamic>>?> findCustomer(String? searchs,
+      {int? limit,
+      String orderBy = 'name',
+      bool offset = false,
+      int offsetValue = 1}) async {
+    if (searchs == null || searchs == '') {
+      return await getAllCustomers(
+          limit: limit,
+          orderBy: orderBy,
+          offset: true,
+          offsetValue: offsetValue);
+    } else {
+      return await findCustomerBySearch(searchs,
+          limit: limit,
+          orderBy: orderBy,
+          offset: offset,
+          offsetValue: offsetValue);
+    }
+  }
+
+  /// Return all rows in sma_companies with group_id=3 (customers) and fields
+  /// (name,company,vat_no ) LIKE given string
+  static Future<List<Map<String, dynamic>>?> findCustomerBySearch(
+      String searchs,
+      {int? limit,
+      String orderBy = 'name',
+      bool offset = false,
+      int offsetValue = 1}) async {
+    return await DBProvider.db.sqlQuery('sma_companies',
+        where:
+            '''group_id = 3 AND status=1 AND (name LIKE "%$searchs%" OR company 
+            LIKE "%$searchs%" OR vat_no LIKE "%$searchs%" OR first_name LIKE "%$searchs%" 
+            OR second_name LIKE "%$searchs%" OR first_lastname LIKE "%$searchs%"
+            OR second_lastname LIKE "%$searchs%") ${offset ? "LIMIT 50 offset " + offsetValue.toString() : ""}''',
+        limit: limit,
+        orderBy: orderBy);
+  }
+
+  /// Return a row of sma_companies given an id
+  static Future<Map<String, dynamic>?> findCompanyById(String id) async {
+    return await DBProvider.db.sqlFirstQuery('sma_companies',
+        // columns: _customerColumns,
+        where: "id_cloud = $id");
+  }
+
+  /// Return a CompanyModel object given a company ID
+  static Future<CompanyModel?> getCompanyById(String id) async {
+    final res = await DBProvider.db.sqlFirstQuery('sma_companies',
+        // columns: _customerColumns,
+        where: "id_cloud = $id");
+    if (res != null) {
+      return CompanyModel.fromJson(res);
+    } else {
+      return null;
+    }
+  }
+
+  /// Return id of current default customer of system
+  static Future<int?> findDefaultCustomer(String billerId) async {
+    try {
+      final res = await DBProvider.db.sqlFirstQuery(
+        'sma_biller_data',
+        columns: ['default_customer_id'],
+        where: "biller_id=$billerId",
+      );
+      int? customerId;
+      if (res != null)
+        customerId = int.tryParse(res['sma_biller_data'].toString()) ?? null;
+
+      if (customerId != null) {
+        return customerId;
+      }
+
+      final res2 = await DBProvider.db
+          .sqlFirstQuery('sma_pos_settings', columns: ['default_customer_id']);
+      if (res2 != null)
+        customerId = int.tryParse(res2['sma_biller_data'].toString()) ?? null;
+
+      if (customerId != null) {
+        return customerId;
+      }
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  /// Return all data in sma_customer_groups of a given id
+  static Future<Map<String, dynamic>?> findCustomerDiscount(String id) async {
+    return await DBProvider.db
+        .sqlFirstQuery('sma_customer_groups', where: "id_cloud = $id");
+  }
+}

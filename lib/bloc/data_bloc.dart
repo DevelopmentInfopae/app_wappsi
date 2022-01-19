@@ -7,6 +7,7 @@ import 'package:pos_wappsi/models/register_model.dart';
 import 'package:pos_wappsi/models/user_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
+import 'package:pos_wappsi/providers/user_provider.dart';
 import 'package:pos_wappsi/screens/home/home.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -108,7 +109,7 @@ class DataBloc {
   /// Request server logout
   Future<Map<String, dynamic>> logout() async {
     dataBloc.homeKey.currentState?.syncLoader(true);
-    final res = await UserModel.logout();
+    final res = await UserProvider.logout();
     dataBloc.homeKey.currentState?.syncLoader(false);
     return res;
   }
@@ -116,7 +117,7 @@ class DataBloc {
   /// update current JWT token to extend session time
   Future refreshToken() async {
     dataBloc.homeKey.currentState?.syncLoader(true);
-    await UserModel.refreshToken();
+    await UserProvider.refreshToken();
     dataBloc.homeKey.currentState?.syncLoader(false);
   }
 

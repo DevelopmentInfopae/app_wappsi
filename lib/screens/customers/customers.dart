@@ -10,6 +10,7 @@ import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/customers_card_list.dart';
 import 'package:pos_wappsi/screens/customers/new_customer.dart';
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
@@ -69,9 +70,7 @@ class _ProductsState extends State<Customers> {
             onTap: () async {
               NewCustomer().launch(context);
               await dataBloc.refreshToken();
-            })
-
-        );
+            }));
   }
 
   Widget _body() {
@@ -134,7 +133,7 @@ class _ProductsState extends State<Customers> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 7),
       child: FutureBuilder<List<Map>?>(
-          future: CompanyModel.getAllCustomers(limit: 50),
+          future: CompaniesProvider.getAllCustomers(limit: 50),
           builder: (BuildContext context, AsyncSnapshot<List<Map>?> snapshot) {
             if (snapshot.hasData) {
               return StreamBuilder<List<CompanyModel>?>(
@@ -167,12 +166,12 @@ class _ProductsState extends State<Customers> {
   _onQueryChanged(String? query) async {
     _searchParams['search'] = query;
     if (query == '' || query == null) {
-      final res = await CompanyModel.getAllCustomers();
+      final res = await CompaniesProvider.getAllCustomers();
       if (res != null) {
         _customersStream.sink.add(CompanyModel.fromJsonList(res));
       }
     } else {
-      final res = await CompanyModel.findCustomer(query);
+      final res = await CompaniesProvider.findCustomer(query);
       if (res != null) {
         _customersStream.sink.add(CompanyModel.fromJsonList(res));
       }

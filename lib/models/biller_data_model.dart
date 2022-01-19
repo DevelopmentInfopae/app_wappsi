@@ -4,8 +4,6 @@
 
 import 'dart:convert';
 
-import 'package:pos_wappsi/providers/local_db_provider.dart';
-
 List<BillerDataModel> billerDataModelFromJson(String str) =>
     List<BillerDataModel>.from(
         json.decode(str).map((x) => BillerDataModel.fromJson(x)));
@@ -209,22 +207,4 @@ class BillerDataModel {
         "random_pin_code_date": randomPinCodeDate,
         "last_update": lastUpdate,
       };
-  static Future<BillerDataModel?> loadBillerData() async {
-    final billerData = await DBProvider.db.getBillerData();
-    if (billerData != null) {
-      return BillerDataModel.fromJson(billerData);
-    } else {
-      return null;
-    }
-  }
-
-  static Future<BillerDataModel?> loadBillerDataId(String id) async {
-    final billerData = await DBProvider.db
-        .sqlFirstQuery('sma_biller_data', where: 'biller_id = $id');
-    if (billerData != null) {
-      return BillerDataModel.fromJson(billerData);
-    } else {
-      return null;
-    }
-  }
 }

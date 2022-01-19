@@ -6,7 +6,6 @@ import 'dart:convert';
 
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
-import 'package:pos_wappsi/models/suspended_sale_model.dart';
 import 'package:pos_wappsi/models/user_model.dart';
 
 SaleModel saleModelFromJson(String str) => SaleModel.fromJson(json.decode(str));

@@ -9,6 +9,8 @@ import 'package:pos_wappsi/config/register_movements.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
+import 'package:pos_wappsi/providers/document_types_provider.dart';
+import 'package:pos_wappsi/providers/payment_methods_provider.dart';
 import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/screens/cash_accounting/components/functions.dart';
 import 'package:pos_wappsi/screens/cash_accounting/components/widgets.dart';
@@ -128,7 +130,8 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onChanged: (data) async {
         if (data != null) {
-          final temp = await PaymentMethods.getPaymentMethods('efectivo');
+          final temp =
+              await PaymentMethodsProvider.getPaymentMethods('efectivo');
 
           setState(() {
             registerFormProvider.movementType = data.value;
@@ -205,7 +208,8 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
 
-      onFind: (String? filter) => PaymentMethods.getPaymentMethods(filter),
+      onFind: (String? filter) =>
+          PaymentMethodsProvider.getPaymentMethods(filter),
       onChanged: (data) {
         print(data);
 
@@ -264,7 +268,8 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
 
-      onFind: (String? filter) => PaymentMethods.getPaymentMethods(filter),
+      onFind: (String? filter) =>
+          PaymentMethodsProvider.getPaymentMethods(filter),
       onChanged: (data) {
         print(data);
 
@@ -284,7 +289,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
 
   Widget _documentMovement() {
     return FutureBuilder(
-      future: DocumentsTypes.loadFromDB(module: registerMovModule),
+      future: DocumentsTypesProvider.loadFromDB(module: registerMovModule),
       builder:
           (BuildContext context, AsyncSnapshot<List<DocumentsTypes>> snapshot) {
         if (snapshot.hasData && snapshot.data!.length > 0) {
@@ -407,7 +412,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
               // Navigator.pop(context);
               /// update JWT token
               await dataBloc.refreshToken();
-              
+
               final Map<String, String> movementData = {
                 'date': res['date'],
                 'reference_no': res['reference_no'],

@@ -1,16 +1,14 @@
 // ignore_for_file: implementation_imports
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 // ignore: unused_import
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/models/groups_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/API_provider.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
-import 'package:pos_wappsi/screens/home/components/tab_item.dart';
+import 'package:pos_wappsi/providers/companies_provider.dart';
+import 'package:pos_wappsi/providers/groups_providers.dart';
 // import 'package:pos_wappsi/screens/customers/new_customer.dart';
 // import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
@@ -43,7 +41,7 @@ class CustomerBloc {
   //_______________________________________________________________________________________________________________
 
   sendCustomerInfo(BuildContext context) async {
-    final customerGroup = await Groups.loadCustomerGroup();
+    final customerGroup = await GroupsProvider.loadCustomerGroup();
     final apiProvider = new DataProvider();
     if (customerGroup == null) {
       return {
@@ -93,7 +91,7 @@ class CustomerBloc {
           context, res['body']['message'], 'assets/images/dizzy-robot.png');
     } else {
       // update local DB with new company info
-      bool dbUpdated = await CompanyModel.writeCustomerInLDB(body, res);
+      bool dbUpdated = await CompaniesProvider.writeCustomerInLDB(body, res);
 
       // if fails we force DB sync
       if (!dbUpdated) {
@@ -123,12 +121,12 @@ class CustomerBloc {
       'content-Type': 'application/json',
       'Authorization': dataBloc.getToken()
     };
-   
+
     final response = await apiProvider.postPetition(
         verifyUserNameEndP, {'username': _userNameController.value}, headers);
-    
+
     manageResponseAlerts(response, context);
-    
+
     return response['error'] ?? true;
   }
 

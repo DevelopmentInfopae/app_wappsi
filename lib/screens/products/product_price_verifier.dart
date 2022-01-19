@@ -5,6 +5,7 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/utils/functions.dart';
 
@@ -32,7 +33,7 @@ class ProductPriceVerifier extends StatelessWidget {
   Widget _productDetails(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return FutureBuilder<Map?>(
-        future: ProductModel.findProductDetails(product.idCloud),
+        future: ProductsProvider.findProductDetails(product.idCloud),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final price = getFormatedCurrency(product.price + 0.0);
@@ -112,7 +113,8 @@ class ProductPriceVerifier extends StatelessWidget {
 
   Widget _quantities(Size size) {
     return FutureBuilder<List<Map>?>(
-      future: ProductModel.findProductQuantities(product.idCloud.toString()),
+      future:
+          ProductsProvider.findProductQuantities(product.idCloud.toString()),
       builder: (BuildContext context, AsyncSnapshot<List<Map>?> snapshot) {
         if (snapshot.hasData) {
           return Column(
@@ -144,7 +146,7 @@ class ProductPriceVerifier extends StatelessWidget {
 
   Widget _prices(Size size) {
     return FutureBuilder<List<Map>?>(
-      future: ProductModel.findProductPrices(product.idCloud.toString()),
+      future: ProductsProvider.findProductPrices(product.idCloud.toString()),
       builder: (BuildContext context, AsyncSnapshot<List<Map>?> snapshot) {
         if (snapshot.hasData && (snapshot.data?.length ?? 0) > 0) {
           return Column(

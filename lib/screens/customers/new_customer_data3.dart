@@ -13,6 +13,8 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/customer_groups_model.dart';
 import 'package:pos_wappsi/models/price_groups_model.dart';
+import 'package:pos_wappsi/providers/customer_groups_provider.dart';
+import 'package:pos_wappsi/providers/price_groups_provider.dart';
 import 'package:pos_wappsi/screens/customers/add_favorites.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 
@@ -141,7 +143,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
       // load customer group if already defined in customerdata, if not load default country
       future: customerBloc.getCustomer.customerGroupId == null
           ? null
-          : CustomerGroupsModel.loadCustomerGroup(
+          : CustomerGroupsProvider.loadCustomerGroup(
               customerBloc.getCustomer.customerGroupId!),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
@@ -192,7 +194,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onFind: (String? filter) =>
-          CustomerGroupsModel.loadFromDB(search: filter),
+          CustomerGroupsProvider.loadFromDB(search: filter),
       onChanged: (data) async {
         customerBloc.getCustomer.customerGroupId = data?.idCloud;
         customerBloc.getCustomer.customerGroupName = data?.name;
@@ -212,7 +214,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
       // load price group if already defined in customerdata, if not load default country
       future: customerBloc.getCustomer.priceGroupId == null
           ? null
-          : PriceGroupsModel.loadPriceGroup(
+          : PriceGroupsProvider.loadPriceGroup(
               customerBloc.getCustomer.priceGroupId!),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
@@ -262,7 +264,8 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
-      onFind: (String? filter) => PriceGroupsModel.loadFromDB(search: filter),
+      onFind: (String? filter) =>
+          PriceGroupsProvider.loadFromDB(search: filter),
       onChanged: (data) async {
         customerBloc.getCustomer.priceGroupId = data?.idCloud;
         customerBloc.getCustomer.priceGroupName = data?.name;

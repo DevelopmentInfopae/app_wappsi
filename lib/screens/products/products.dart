@@ -8,6 +8,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/products/components/product_card_list.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 import 'package:pos_wappsi/utils/barcode_camera_scan.dart';
@@ -139,7 +140,7 @@ class _ProductsState extends State<Products> {
 
   Widget _productsList() {
     return FutureBuilder<List<Map>?>(
-        future: ProductModel.getAllProducts(offset: true, offsetValue: 1),
+        future: ProductsProvider.getAllProducts(offset: true, offsetValue: 1),
         builder: (BuildContext context, AsyncSnapshot<List<Map>?> snapshot) {
           if (snapshot.hasData) {
             return StreamBuilder<List<ProductModel>?>(
@@ -171,13 +172,13 @@ class _ProductsState extends State<Products> {
   _onQueryChanged(String? query) async {
     _searchParams['search'] = query;
     if (query == '' || query == null) {
-      final res = await ProductModel.getAllProducts();
+      final res = await ProductsProvider.getAllProducts();
       if (res != null) {
         _productsStream.sink.add(ProductModel.fromJsonList(res,
             loadInitialQtty: true, qttyKey: 'quantity'));
       }
     } else {
-      final res = await ProductModel.findProducts(query);
+      final res = await ProductsProvider.findProducts(query);
       if (res != null) {
         _productsStream.sink.add(ProductModel.fromJsonList(res));
       }

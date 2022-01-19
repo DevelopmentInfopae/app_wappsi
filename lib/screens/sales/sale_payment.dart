@@ -17,6 +17,8 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
 // import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
+import 'package:pos_wappsi/providers/document_types_provider.dart';
+import 'package:pos_wappsi/providers/payment_methods_provider.dart';
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 // import 'package:pos_wappsi/screens/db_sync/components/sync_popup.dart';
@@ -171,7 +173,7 @@ class _SalePaymentState extends State<SalePayment> {
 
   Widget _paymentMethod() {
     return FutureBuilder(
-      future: PaymentMethods.loadDefaultPaymentMethod(),
+      future: PaymentMethodsProvider.loadDefaultPaymentMethod(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           return _paymentMethodDropDown();
@@ -221,7 +223,8 @@ class _SalePaymentState extends State<SalePayment> {
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
 
-      onFind: (String? filter) => PaymentMethods.getPaymentMethods(filter),
+      onFind: (String? filter) =>
+          PaymentMethodsProvider.getPaymentMethods(filter),
       onChanged: (data) {
         print(data);
 
@@ -256,7 +259,7 @@ class _SalePaymentState extends State<SalePayment> {
 
   Widget _documentPOS() {
     return FutureBuilder(
-      future: DocumentsTypes.loadFromDB(module: posDocModule),
+      future: DocumentsTypesProvider.loadFromDB(module: posDocModule),
       builder:
           (BuildContext context, AsyncSnapshot<List<DocumentsTypes>> snapshot) {
         if (snapshot.hasData && snapshot.data!.length > 0) {

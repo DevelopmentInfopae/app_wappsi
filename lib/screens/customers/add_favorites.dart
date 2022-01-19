@@ -11,7 +11,9 @@ import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/product_card.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 
 import 'package:pos_wappsi/screens/sales/components/search.dart';
@@ -21,7 +23,11 @@ import 'package:pos_wappsi/utils/barcode_camera_scan.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
 class AddFavorites extends StatefulWidget {
-  AddFavorites({Key? key}) : super(key: key);
+  final String currentAction;
+  final CompanyModel? customer;
+  AddFavorites(
+      {Key? key, this.currentAction = 'creating_customer', this.customer})
+      : super(key: key);
 
   @override
   _AddFavoritesState createState() => _AddFavoritesState();
@@ -249,7 +255,7 @@ class _AddFavoritesState extends State<AddFavorites> {
   _onQueryChanged(String query) async {
     List<ProductModel> products = [];
     List<Map>? res;
-    res = await ProductModel.findProducts(query, limit: true);
+    res = await ProductsProvider.findProducts(query, limit: true);
 
     // print('xd');
     if (res != null) {

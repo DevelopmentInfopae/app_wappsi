@@ -6,7 +6,6 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/screens/cash_accounting/components/open_register_alert.dart';
 import 'package:pos_wappsi/screens/cash_accounting/register_options.dart';
-import 'package:pos_wappsi/screens/customers/customers.dart';
 import 'package:pos_wappsi/screens/customers/new_customer.dart';
 import 'package:pos_wappsi/screens/db_sync/sync_elements_screen.dart';
 import 'package:pos_wappsi/screens/home/components/grid_items.dart';

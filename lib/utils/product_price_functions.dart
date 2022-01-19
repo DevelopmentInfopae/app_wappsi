@@ -1,5 +1,6 @@
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/providers/companies_provider.dart';
 
 /// Return ProductModel object with prices calculatd by price_policy
 Future<ProductModel> policyCases(
@@ -50,7 +51,7 @@ Future<List<double>> priceWDiscount(
 
   if (customer != null) {
     final discountData =
-        await CompanyModel.findCustomerDiscount(customer.customerGroupId!);
+        await CompaniesProvider.findCustomerDiscount(customer.customerGroupId!);
 
     // ignore: unnecessary_null_comparison
     discount = discountData!['percent'] ?? null;

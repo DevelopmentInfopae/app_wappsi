@@ -15,6 +15,9 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/cities_model.dart';
 import 'package:pos_wappsi/models/countries_dart.dart';
 import 'package:pos_wappsi/models/states_model.dart';
+import 'package:pos_wappsi/providers/cities_provider.dart';
+import 'package:pos_wappsi/providers/countries_provider.dart';
+import 'package:pos_wappsi/providers/states_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/new_customer_data3.dart';
@@ -139,8 +142,8 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
     return FutureBuilder<CountriesModel?>(
       // load country if already defined in customerdata, if not load default country
       future: customerBloc.getCustomer.country == null
-          ? CountriesModel.defaultCountry()
-          : CountriesModel.loadCountry(customerBloc.getCustomer.country!),
+          ? CountriesProvider.defaultCountry()
+          : CountriesProvider.loadCountry(customerBloc.getCustomer.country!),
       builder: (BuildContext context, AsyncSnapshot<CountriesModel?> snapshot) {
         if (snapshot.hasData && _country == null) {
           _country = snapshot.data;
@@ -157,8 +160,8 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
     return FutureBuilder<StatesModel?>(
       //load state if already defined in customer data, if not load default state
       future: customerBloc.getCustomer.state == null
-          ? StatesModel.defaultState()
-          : StatesModel.loadState(customerBloc.getCustomer.state!),
+          ? StatesProvider.defaultState()
+          : StatesProvider.loadState(customerBloc.getCustomer.state!),
       builder: (BuildContext context, AsyncSnapshot<StatesModel?> snapshot) {
         if (snapshot.hasData && _states == null && _country != null) {
           _states = snapshot.data;
@@ -175,8 +178,8 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
     return FutureBuilder<CitiesModel?>(
       //load city if already defined in customer data, if not load default city
       future: customerBloc.getCustomer.city == null
-          ? CitiesModel.defaultCity()
-          : CitiesModel.loadCity(customerBloc.getCustomer.city!),
+          ? CitiesProvider.defaultCity()
+          : CitiesProvider.loadCity(customerBloc.getCustomer.city!),
       builder: (BuildContext context, AsyncSnapshot<CitiesModel?> snapshot) {
         if (snapshot.hasData &&
             _citys == null &&
@@ -267,7 +270,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
-      onFind: (String? filter) => CountriesModel.loadFromDB(search: filter),
+      onFind: (String? filter) => CountriesProvider.loadFromDB(search: filter),
       onChanged: (data) async {
         if (data != null) {
           _country = data;
@@ -353,7 +356,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onFind: (String? filter) =>
-          StatesModel.loadFromDB(search: filter, country: _country?.codigo),
+          StatesProvider.loadFromDB(search: filter, country: _country?.codigo),
       onChanged: (data) async {
         if (data != null) {
           _states = data;
@@ -439,7 +442,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
-      onFind: (String? filter) => CitiesModel.loadFromDB(
+      onFind: (String? filter) => CitiesProvider.loadFromDB(
           search: filter, departament: _states?.coddepartamento),
       onChanged: (data) async {
         _citys = data;

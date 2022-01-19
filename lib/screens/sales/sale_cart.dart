@@ -10,6 +10,7 @@ import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 import 'package:pos_wappsi/screens/sales/components/product_card.dart';
@@ -45,7 +46,6 @@ class _SaleCartState extends State<SaleCart> {
   ScrollController _scrollController = new ScrollController();
 
   late Size _size;
-  late Color _pc;
   String _query = '';
 
   // TO control changes in products and execute focus task
@@ -67,7 +67,6 @@ class _SaleCartState extends State<SaleCart> {
 
   @override
   Widget build(BuildContext context) {
-    _pc = Theme.of(context).primaryColor;
     _size = MediaQuery.of(context).size;
     _textTheme = Theme.of(context).textTheme;
 
@@ -376,9 +375,9 @@ class _SaleCartState extends State<SaleCart> {
     final settings = await dataBloc.getSettings();
     List<Map>? res;
     if (settings['overselling'] == 1) {
-      res = await ProductModel.findProducts(query, limit: true);
+      res = await ProductsProvider.findProducts(query, limit: true);
     } else {
-      res = await ProductModel.findProducts(query, overselling: false);
+      res = await ProductsProvider.findProducts(query, overselling: false);
     }
     // print('xd');
     if (res != null) {

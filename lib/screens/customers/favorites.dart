@@ -1,22 +1,21 @@
 // ignore_for_file: unnecessary_statements
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/components/app_bar_leading.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/go_back_bottom.dart';
 import 'package:pos_wappsi/components/product_card.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/customers/add_favorites.dart';
 
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/utils/alerts.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
 class ListFavorites extends StatefulWidget {
@@ -31,6 +30,7 @@ class _ListFavoritesState extends State<ListFavorites> {
   late Size _size;
   late Color _pc;
   List<ProductModel> favorites = [];
+  List<ProductModel> favoritesToDelete = [];
 
   @override
   void initState() {
@@ -59,8 +59,15 @@ class _ListFavoritesState extends State<ListFavorites> {
         radius: 0,
         image: 'assets/images/star.png',
         leading: AppBarLeading(
-          onTap: () async{
-            await ProductModel.reloadCustomerFavs(context, widget.customer);
+          onTap: () async {
+            await ProductsProvider.reloadCustomerFavs(context, widget.customer);
+            final pFav =
+                await ProductsProvider.loadCustomerFavorites(widget.customer);
+            if (pFav.length > 0) {
+              setState(() {
+                favorites = pFav;
+              });
+            }
           },
           widget: Icon(
             Icons.refresh,
@@ -79,50 +86,64 @@ class _ListFavoritesState extends State<ListFavorites> {
 
   Widget _products() {
     return Container(
-        padding: EdgeInsets.only(top: 15),
+        padding: EdgeInsets.only(top: 4),
         child: FutureBuilder<List<ProductModel>?>(
-            future: ProductModel.loadCustomerFavorites(widget.customer),
+            future: ProductsProvider.loadCustomerFavorites(widget.customer),
             builder: (context, snapshot) {
-              if (snapshot.hasData && (snapshot.data?.length ?? 0) > 0) {
-                // return Container();
-
-                return ListView(
-                  children: snapshot.data!.map((ProductModel p) {
-                    return Dismissible(
-                      key: new Key(p.id.toString()),
-                      onDismissed: (direction) {},
-                      background: Container(
-                        padding: EdgeInsets.symmetric(vertical: 4),
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.delete,
-                              size: iconSize(context),
-                              color: Colors.white,
-                            ).paddingOnly(left: 16, right: 8),
-                            Text(
-                              'Quitar elemento',
-                              style: buttonsTextStyle(context,
-                                  fontSizeFactor: 1.05),
-                            )
-                          ],
-                        ),
-                      ).paddingSymmetric(vertical: 8),
-                      child: ProductCard(
-                        action: 'details',
-                        product: p,
-                      ),
-                    );
-                  }).toList(),
-                );
+              if (snapshot.hasData) {
+                // setState(() {
+                if (favoritesToDelete.length == 0) {
+                  favorites = snapshot.data!;
+                }
+                // });
+                if (favorites.length > 0) {
+                  return _favoritesList(context);
+                } else {
+                  return _empty(context).center();
+                }
               } else {
                 // ignore: unnecessary_null_comparison
                 return _empty(context).center();
               }
             }));
+  }
+
+  ListView _favoritesList(BuildContext context) {
+    return ListView.builder(
+        itemCount: favorites.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Dismissible(
+            key: new UniqueKey(),
+            onDismissed: (direction) {
+              favoritesToDelete.add(favorites[index]);
+              setState(() {
+                favorites.removeWhere((element) => element == favorites[index]);
+              });
+            },
+            background: Container(
+              padding: EdgeInsets.symmetric(vertical: 4),
+              decoration: BoxDecoration(
+                  color: Colors.red, borderRadius: BorderRadius.circular(10)),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.delete,
+                    size: iconSize(context),
+                    color: Colors.white,
+                  ).paddingOnly(left: 16, right: 8),
+                  Text(
+                    'Remover favorito',
+                    style: buttonsTextStyle(context, fontSizeFactor: 1.05),
+                  )
+                ],
+              ),
+            ).paddingSymmetric(vertical: 8),
+            child: ProductCard(
+              action: 'details',
+              product: favorites[index],
+            ),
+          );
+        });
   }
 
   Widget _empty(BuildContext context) {
@@ -150,7 +171,8 @@ class _ListFavoritesState extends State<ListFavorites> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            GoBackBottom(),
+            _printFavorites(context),
+            _saveChanges(context),
             _addFavorites(context),
           ],
         ),
@@ -172,10 +194,70 @@ class _ListFavoritesState extends State<ListFavorites> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Agregar ',
+            'Agregar',
             style: buttonsSmallTextStyle(context),
           ),
           Icon(Icons.add, size: kIconSize),
+        ],
+      ),
+    );
+  }
+
+  AppButton _saveChanges(BuildContext context) {
+    return AppButton(
+      onTap: () async {
+        if (favoritesToDelete.length > 0) {
+          final List<Map> temp = [];
+          favoritesToDelete.forEach((ProductModel p) {
+            temp.add(p.toJson());
+          });
+          final choice = await listInfoDialogChoice(
+              context, temp, 'code', 'name', 'Codigo', 'Nombre',
+              title: 'Los siguientes productos se eliminaran de favoritos: ',
+              flexCol1: 1,
+              flexCol2: 4);
+          if (choice) {
+            final res = await ProductsProvider.getFavoritesId(
+                widget.customer, favoritesToDelete);
+          }
+        } else {
+          Navigator.pop(context);
+        }
+      },
+      color: Colors.white,
+      padding: kButtonPadding,
+      // disabledColor: Colors.white,
+
+      margin: EdgeInsets.zero,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Guardar',
+            style: buttonsSmallTextStyle(context),
+          ),
+          Icon(Icons.save_outlined, size: kIconSize),
+        ],
+      ),
+    );
+  }
+
+  AppButton _printFavorites(BuildContext context) {
+    return AppButton(
+      onTap: () async {},
+      color: Colors.white,
+      padding: kButtonPadding,
+      // disabledColor: Colors.white,
+
+      margin: EdgeInsets.zero,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Imprimir',
+            style: buttonsSmallTextStyle(context),
+          ),
+          Icon(Icons.print_outlined, size: kIconSize),
         ],
       ),
     );

@@ -6,14 +6,16 @@ import 'dart:convert';
 
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
-import 'package:pos_wappsi/models/biller_data_model.dart';
-import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/local_sale_items_model.dart';
-import 'package:pos_wappsi/models/payment_methods_model.dart';
-import 'package:pos_wappsi/models/payment_model.dart';
+
 import 'package:pos_wappsi/models/user_model.dart';
+import 'package:pos_wappsi/providers/biller_data_provider.dart';
+import 'package:pos_wappsi/providers/companies_provider.dart';
+import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/providers/local_sale_items_provider.dart';
+import 'package:pos_wappsi/providers/payment_methods_provider.dart';
+import 'package:pos_wappsi/providers/payment_provider.dart';
 import 'package:pos_wappsi/utils/functions.dart';
 
 class SalesModel {
@@ -751,15 +753,17 @@ class SalesModel {
   }
 
   Future<Map> buildPrintDataMap() async {
-    final customer = await CompanyModel.getCompanyById(customerId.toString());
-    final biller = await CompanyModel.getCompanyById(billerId.toString());
+    final customer =
+        await CompaniesProvider.getCompanyById(customerId.toString());
+    final biller = await CompaniesProvider.getCompanyById(billerId.toString());
     final billerData =
-        await BillerDataModel.loadBillerDataId(billerId.toString());
-    final customerAddress =
-        await CustomerAddressesModel.loadCustomerAddress(addressId.toString());
+        await BillerDataProvider.loadBillerDataId(billerId.toString());
+    final customerAddress = await CustomerAddressesProvider.loadCustomerAddress(
+        addressId.toString());
     // Load only first sale payment
-    final payment = await PaymentsModel.loadPayment(id!);
-    final paymentMethod = await PaymentMethods.loadPayMByCode(payment!.paidBy);
+    final payment = await PaymentProvider.loadPayment(id!);
+    final paymentMethod =
+        await PaymentMethodsProvider.loadPayMByCode(payment!.paidBy);
 
     final settings = (await DBProvider.db.getSettings())!;
     final docDetails =
@@ -790,7 +794,7 @@ class SalesModel {
   }
 
   static Future<Map<String, dynamic>> _productsMap(int saleId) async {
-    final saleItems = await LocalSaleItems.loadFromDB(saleId);
+    final saleItems = await SaleItemsProvider.loadFromDB(saleId);
 
     List<Map<String, dynamic>> productsMap = [];
     Map<double, dynamic> ivasMap = {};

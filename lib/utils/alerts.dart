@@ -357,3 +357,89 @@ listInfoDialog(BuildContext context, List<Map> info, String column1Key,
         );
       });
 }
+
+Future<bool> listInfoDialogChoice(BuildContext context, List<Map> info,
+    String column1Key, String column2Key, String column1, String column2,
+    {bool isPrice = false,
+    int flexCol1 = 2,
+    int flexCol2 = 1,
+    String? title}) async {
+  // final size = MediaQuery.of(context).size;
+  bool choice = false;
+  await showCupertinoDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Column(
+            children: [
+              Text(
+                title ?? '',
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle1!
+                    .apply(fontWeightDelta: 2),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(column1).flexible(flex: 1),
+                  // Container(),
+                  Text(column2).flexible(flex: 1),
+                ],
+              ).paddingOnly(left: 10, right: 10, bottom: 5),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              children: info.map<Widget>((e) {
+                final value = isPrice
+                    ? getFormatedCurrency(
+                        double.parse(e[column2Key].toString()))
+                    : e[column2Key].toString();
+                return labelContentH(
+                    capitalizeText(e[column1Key].toString()),
+                    isPrice
+                        ? value.substring(1, value.length - 3)
+                        : capitalizeText(value),
+                    context,
+                    flexCol1: flexCol1,
+                    flexCol2: flexCol2);
+              }).toList(),
+            ),
+          ),
+          actions: <Widget>[
+            Container(
+              color: Colors.redAccent,
+              child: CupertinoDialogAction(
+                child: Text(
+                  'Cancelar',
+                  style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ),
+            Container(
+              color: Theme.of(context).primaryColor.withOpacity(0.7),
+              child: CupertinoDialogAction(
+                child: Text(
+                  'Aceptar',
+                  style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+                onPressed: () {
+                  choice = true;
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ),
+          ],
+        );
+      });
+
+  return choice;
+}

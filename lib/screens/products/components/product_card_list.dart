@@ -6,6 +6,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/components/product_card.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 
 class ProductCardList extends StatefulWidget {
@@ -80,7 +81,7 @@ class _ProductCardListState extends State<ProductCardList> {
       });
 
       _loading = true;
-      final res = await ProductModel.findProducts(
+      final res = await ProductsProvider.findProducts(
           widget.searchParams['search'] ?? '',
           offset: true,
           offsetValue: _page * 30);

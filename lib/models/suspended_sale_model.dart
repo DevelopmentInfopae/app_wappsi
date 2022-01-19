@@ -5,11 +5,11 @@
 import 'dart:convert';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/models/customer_addresses_model.dart';
-import 'package:pos_wappsi/models/documents_types_model.dart';
-import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
+import 'package:pos_wappsi/providers/document_types_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/providers/payment_methods_provider.dart';
 
 SuspendedSales suspendedSalesFromJson(String str) =>
     SuspendedSales.fromJson(json.decode(str));
@@ -158,13 +158,13 @@ class SuspendedSales {
     final prodInfo = await ProductModel.loadSuspSaleProducts(id);
     final customer = await CompanyModel.getCompanyDetails(
         suspendedSale!.idCustomer.toString());
-    final customerAdd = await CustomerAddressesModel.loadCustomerAddress(
+    final customerAdd = await CustomerAddressesProvider.loadCustomerAddress(
         suspendedSale.idAddress.toString());
 
-    final payDocument = await DocumentsTypes.loadPayDoc(
+    final payDocument = await DocumentsTypesProvider.loadPayDoc(
         (suspendedSale.idPayDocument ?? '').toString());
 
-    final payMethod = await PaymentMethods.loadPayDoc(
+    final payMethod = await PaymentMethodsProvider.loadPayDoc(
         (suspendedSale.idPayMethod ?? '').toString());
 
     posBloc.setPaymentDocument(payDocument);
@@ -191,13 +191,13 @@ class SuspendedSales {
     final products = await ProductModel.loadSuspSaleProducts(id);
     final customer = await CompanyModel.getCompanyDetails(
         suspendedSale!.idCustomer.toString());
-    final customerAdd = await CustomerAddressesModel.loadCustomerAddress(
+    final customerAdd = await CustomerAddressesProvider.loadCustomerAddress(
         suspendedSale.idAddress.toString());
 
-    final payDocument = await DocumentsTypes.loadPayDoc(
+    final payDocument = await DocumentsTypesProvider.loadPayDoc(
         (suspendedSale.idPayDocument ?? '').toString());
 
-    final payMethod = await PaymentMethods.loadPayDoc(
+    final payMethod = await PaymentMethodsProvider.loadPayDoc(
         (suspendedSale.idPayMethod ?? '').toString());
 
     return {

@@ -1,18 +1,18 @@
-import 'dart:io';
-
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/bloc/printer_bloc.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
-import 'package:pos_wappsi/models/biller_data_model.dart';
-import 'package:pos_wappsi/models/cities_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/models/countries_dart.dart';
-import 'package:pos_wappsi/models/states_model.dart';
+
 import 'package:pos_wappsi/providers/API_provider.dart';
+import 'package:pos_wappsi/providers/cities_provider.dart';
+import 'package:pos_wappsi/providers/countries_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/providers/states_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+
+import 'biller_data_provider.dart';
 
 class SyncDBProvider {
   String updateDate = '';
@@ -49,17 +49,17 @@ class SyncDBProvider {
   Future<bool> loadCSC() async {
     bool res = true;
     List<Map<String, dynamic>>? temp =
-        await CountriesModel.allCountries() ?? [];
+        await CountriesProvider.allCountries() ?? [];
     if (temp.isEmpty) {
-      res = await CountriesModel.writeToDBfromJsonFile();
+      res = await CountriesProvider.writeToDBfromJsonFile();
     }
-    temp = await StatesModel.allStates() ?? [];
+    temp = await StatesProvider.allStates() ?? [];
     if (temp.isEmpty) {
-      res = await StatesModel.writeToDBfromJson();
+      res = await StatesProvider.writeToDBfromJson();
     }
-    temp = await CitiesModel.allCities() ?? [];
+    temp = await CitiesProvider.allCities() ?? [];
     if (temp.isEmpty) {
-      res = await CitiesModel.writeToDBfromJson();
+      res = await CitiesProvider.writeToDBfromJson();
     }
 
     return res;
@@ -196,7 +196,7 @@ class SyncDBProvider {
     }
 
     // update current companyBiller on dataBloc
-    final billerData = await BillerDataModel.loadBillerData();
+    final billerData = await BillerDataProvider.loadBillerData();
     try {
       dataBloc.setBillerData(billerData!);
     } catch (e) {
@@ -209,8 +209,8 @@ class SyncDBProvider {
     if ((res['body']['data'] != null) ||
         (res['body']['data'] != "[]") ||
         (res['body']['data'] != [])) {
-      result = await DBProvider.db
-          .insertOrUpdateQuerys(table, res['body']['data']);
+      result =
+          await DBProvider.db.insertOrUpdateQuerys(table, res['body']['data']);
     }
     return result;
   }

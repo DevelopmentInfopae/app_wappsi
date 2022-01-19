@@ -30,17 +30,17 @@ Widget subTotal({bool large = false}) {
       });
 }
 
-Widget _totalSmall(BuildContext context, String value) {
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.start,
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Text("Total", style: buttonsTextStyle(context, fontSizeFactor: 0.6)),
-      _totalValue(context, value),
-    ],
-  ).paddingBottom(8);
-}
+// Widget _totalSmall(BuildContext context, String value) {
+//   return Column(
+//     mainAxisAlignment: MainAxisAlignment.center,
+//     crossAxisAlignment: CrossAxisAlignment.start,
+//     mainAxisSize: MainAxisSize.min,
+//     children: [
+//       Text("Total", style: buttonsTextStyle(context, fontSizeFactor: 0.6)),
+//       _totalValue(context, value),
+//     ],
+//   ).paddingBottom(8);
+// }
 
 Widget _totalLarge(BuildContext context, String value) {
   return Row(

@@ -215,23 +215,4 @@ class LocalSaleItems {
   Future<bool> saveIntoDB(int saleId) async {
     return await DBProvider.db.insertQuery('sma_sale_items', toJson());
   }
-
-  static Future<List<LocalSaleItems>> loadFromDB(int saleId) async {
-    final res = await DBProvider.db
-        .sqlQuery('sma_sale_items', where: 'sale_id=$saleId');
-    if (res != null) {
-      return LocalSaleItems.fromJsonList(res);
-    } else {
-      return [];
-    }
-  }
-
-  static Future<bool> saveAllIntoDB(
-      List<Map<String, dynamic>> productsDetails, int saleId) async {
-    List<Map<String, dynamic>> productsD = [];
-    productsDetails.forEach((pD) {
-      productsD.add(LocalSaleItems.fromJson(pD, saleId: saleId).toJson());
-    });
-    return await DBProvider.db.insertQuerys('sma_sale_items', productsD);
-  }
 }
