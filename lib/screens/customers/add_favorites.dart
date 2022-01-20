@@ -244,8 +244,13 @@ class _AddFavoritesState extends State<AddFavorites> {
       onTap: _loading
           ? null
           : () async {
-              await dataBloc.refreshToken();
-              await customerBloc.sendCustomerInfo(context);
+              if (widget.currentAction == 'creating_customer') {
+                await dataBloc.refreshToken();
+                await customerBloc.sendCustomerInfo(context);
+              } else {
+                await dataBloc.refreshToken();
+                await customerBloc.addCustomerFavs(context, widget.customer!);
+              }
             },
       color: _pc,
       disabledColor: _pc,

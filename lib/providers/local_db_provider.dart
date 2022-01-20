@@ -291,12 +291,13 @@ class DBProvider {
       return null;
     }
   }
+
   /// Execute a given raw query in a try catch
-  Future<bool> sqlDelete(String table,String where) async {
+  Future<bool> sqlDelete(String table, String where) async {
     final db = await database;
 
     try {
-      await db!.delete(table,where: where);
+      await db!.delete(table, where: where);
       return true;
     } catch (e) {
       print(e);

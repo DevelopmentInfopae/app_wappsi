@@ -12,10 +12,12 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
+import 'package:pos_wappsi/providers/wishlist_provider.dart';
 import 'package:pos_wappsi/screens/customers/add_favorites.dart';
 
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/manage_server_resp.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
 class ListFavorites extends StatefulWidget {
@@ -30,6 +32,7 @@ class _ListFavoritesState extends State<ListFavorites> {
   late Size _size;
   late Color _pc;
   List<ProductModel> favorites = [];
+  bool _reloading = false;
   List<ProductModel> favoritesToDelete = [];
 
   @override
@@ -60,21 +63,35 @@ class _ListFavoritesState extends State<ListFavorites> {
         image: 'assets/images/star.png',
         leading: AppBarLeading(
           onTap: () async {
-            await ProductsProvider.reloadCustomerFavs(context, widget.customer);
-            final pFav =
-                await ProductsProvider.loadCustomerFavorites(widget.customer);
-            if (pFav.length > 0) {
-              setState(() {
-                favorites = pFav;
-              });
-            }
+            await _reload(context);
           },
-          widget: Icon(
-            Icons.refresh,
-            size: leadingIconSize,
-            color: pColor,
-          ),
+          enabled: !_reloading,
+          padding: _reloading ? EdgeInsets.all(8) : kIconButtonPadding,
+          widget: _reloading
+              ? FittedBox(
+                  child: Loader(
+                    decoration: BoxDecoration(),
+                  ),
+                )
+              : Icon(
+                  Icons.refresh,
+                  size: leadingIconSize,
+                  color: pColor,
+                ),
         ));
+  }
+
+  Future<void> _reload(BuildContext context) async {
+    setState(() {
+      _reloading = true;
+    });
+    await WishlistProvider.reloadCustomerFavs(context, widget.customer);
+    final pFav = await WishlistProvider.loadCustomerFavorites(widget.customer);
+
+    setState(() {
+      favorites = pFav;
+      _reloading = false;
+    });
   }
 
   Widget _body() {
@@ -88,7 +105,7 @@ class _ListFavoritesState extends State<ListFavorites> {
     return Container(
         padding: EdgeInsets.only(top: 4),
         child: FutureBuilder<List<ProductModel>?>(
-            future: ProductsProvider.loadCustomerFavorites(widget.customer),
+            future: WishlistProvider.loadCustomerFavorites(widget.customer),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 // setState(() {
@@ -183,7 +200,10 @@ class _ListFavoritesState extends State<ListFavorites> {
   AppButton _addFavorites(BuildContext context) {
     return AppButton(
       onTap: () async {
-        AddFavorites().launch(context);
+        AddFavorites(
+          currentAction: 'adding_fav_to_customer',
+          customer: widget.customer,
+        ).launch(context);
       },
       color: Colors.white,
       padding: kButtonPadding,
@@ -217,8 +237,23 @@ class _ListFavoritesState extends State<ListFavorites> {
               flexCol1: 1,
               flexCol2: 4);
           if (choice) {
-            final res = await ProductsProvider.getFavoritesId(
+            // Get favorites Ids of favoristesToDelete
+            final favoritesIds = await WishlistProvider.getFavoritesId(
                 widget.customer, favoritesToDelete);
+            // Delete them locally and return it's cloud_id to delete it in server
+            final favServerIds = await WishlistProvider.deleteLocalFav(
+                widget.customer, favoritesIds);
+            final res = await WishlistProvider.deleteCustomerFavsOnServer(
+                widget.customer.idCloud.toString(), favServerIds);
+            manageResponseAlerts(res, context);
+            if (!res['error']) {
+              // Navigator.pop(context);
+              favoritesToDelete = [];
+              confirmDialog(
+                  context, res['body']['message'], 'assets/images/success.png');
+            } else {
+              await _reload(context);
+            }
           }
         } else {
           Navigator.pop(context);

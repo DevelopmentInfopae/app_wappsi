@@ -23,11 +23,6 @@ class SyncDBProvider {
     // String updateDate = '';
     DataProvider api = new DataProvider();
 
-    Map<String, String> headers = {
-      'content-Type': 'application/json',
-      'Authorization': dataBloc.getToken()
-    };
-
     updateDate = await DBProvider.db.getUpdateDate(options['sync_id']);
     // ignore: unnecessary_null_comparison
     if (updateDate == '[]' || updateDate == null || updateDate == 'null') {
@@ -39,8 +34,9 @@ class SyncDBProvider {
       'first_time': firstTime
     };
 
-    final res =
-        await api.postPetition(options['path'], body, headers, awaitTime: 150);
+    final res = await api.postPetition(
+        options['path'], body, dataBloc.getHeaders(),
+        awaitTime: 150);
 
     return res;
   }
@@ -123,14 +119,11 @@ class SyncDBProvider {
     Map<String, dynamic> billerSync = options['Datos de Facturación']!;
     DataProvider api = new DataProvider();
 
-    Map<String, String> headers = {
-      'content-Type': 'application/json',
-      'Authorization': dataBloc.getToken()
-    };
     Map<String, dynamic> body = {'biller_id': dataBloc.userData!.billerId};
 
-    Map<String, dynamic> res = await api
-        .postPetition(billerSync['path_data'], body, headers, awaitTime: 150);
+    Map<String, dynamic> res = await api.postPetition(
+        billerSync['path_data'], body, dataBloc.getHeaders(),
+        awaitTime: 150);
 
     bool result = false;
 
@@ -152,7 +145,7 @@ class SyncDBProvider {
     }
     if (result) {
       res = await api.postPetition(
-          billerSync['path_documents_data'], body, headers,
+          billerSync['path_documents_data'], body, dataBloc.getHeaders(),
           awaitTime: 150);
       if (res['status'] == 1) {
         result =

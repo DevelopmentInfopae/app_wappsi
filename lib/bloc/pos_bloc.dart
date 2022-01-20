@@ -372,12 +372,10 @@ class POSBloc {
         SaleModel.buildSale(dataBloc.userData!, productsDetails).toJson();
     // final debug = sale.toString();
     final api = new DataProvider();
-    Map<String, String> headers = {
-      'content-Type': 'application/json',
-      'Authorization': dataBloc.getToken()
-    };
+
     try {
-      final res = await api.postPetition(newSaleEndP, sale, headers);
+      final res =
+          await api.postPetition(newSaleEndP, sale, dataBloc.getHeaders());
       if (res['status'] == -1) {
         reloadDialog(
             context,

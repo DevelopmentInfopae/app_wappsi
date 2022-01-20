@@ -134,6 +134,13 @@ class DataBloc {
     return res;
   }
 
+  Map<String, String> getHeaders() {
+    return {
+      'content-Type': 'application/json',
+      'Authorization': dataBloc.getToken()
+    };
+  }
+
   dispose() {
     _userController.close();
     _homeKeyController.close();

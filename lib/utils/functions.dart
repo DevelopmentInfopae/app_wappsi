@@ -21,6 +21,21 @@ bool isNumeric(String s) {
   return double.tryParse(s) != null;
 }
 
+List getKeyValuesOfListMap(List<Map> map, String key) {
+  if (map.length > 0) {
+    final List temp = [];
+    try {
+      map.forEach((Map m) {
+        temp.add(m[key]);
+      });
+    } catch (e) {
+      print(e);
+    }
+    return temp;
+  } else {
+    return [];
+  }
+}
 // int abd(int i){
 //   return int.parse(sqrt().toString());
 // }

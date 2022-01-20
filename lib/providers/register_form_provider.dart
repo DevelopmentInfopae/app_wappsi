@@ -40,17 +40,13 @@ class RegisterFormProvider extends ChangeNotifier {
   openRegister() async {
     DataProvider api = new DataProvider();
 
-    Map<String, String> headers = {
-      'content-Type': 'application/json',
-      'Authorization': dataBloc.getToken()
-    };
-
     // ignore: unnecessary_null_comparison
     if (value == '' || value == null) {
       value = '0';
     }
     final body = _openToJson();
-    final res = await api.postPetition(regOpenEndP, body, headers);
+    final res =
+        await api.postPetition(regOpenEndP, body, dataBloc.getHeaders());
 
     return res;
   }
@@ -58,18 +54,13 @@ class RegisterFormProvider extends ChangeNotifier {
   movement() async {
     DataProvider api = new DataProvider();
 
-    Map<String, String> headers = {
-      'content-Type': 'application/json',
-      'Authorization': dataBloc.getToken()
-    };
-
     // ignore: unnecessary_null_comparison
     if (value == '' || value == null) {
       value = '0';
     }
     final body = _movementToJson();
-    final res =
-        await api.postPetition(regMovEndP, body, headers, awaitTime: 10);
+    final res = await api.postPetition(regMovEndP, body, dataBloc.getHeaders(),
+        awaitTime: 10);
 
     return res;
   }

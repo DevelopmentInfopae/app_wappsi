@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/bloc/data_bloc.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/go_back_bottom.dart';
@@ -61,9 +62,8 @@ class _CustomerDetailsState extends State<CustomerDetails> {
   AppButton _favorites(BuildContext context) {
     return AppButton(
       onTap: () async {
-        
-        
-        ListFavorites(customer:widget.customer).launch(context);
+        await dataBloc.refreshToken();
+        ListFavorites(customer: widget.customer).launch(context);
       },
       color: Colors.white,
       padding: kButtonPadding,
