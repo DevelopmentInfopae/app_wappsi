@@ -34,14 +34,14 @@ class _DBSyncElementsState extends State<DBSyncElements> {
 
     return WillPopScope(
       onWillPop: () async {
-        await dataBloc.refreshToken();
+        await dataBloc.refreshToken(context);
         return true;
       },
       child: Scaffold(
         appBar: appBar(context, 'Sincronización',
             image: 'assets/images/sync.gif', onPop: () async {
           Navigator.pop(context);
-          await dataBloc.refreshToken();
+          await dataBloc.refreshToken(context);
         }),
         body: _body(),
       ),
@@ -107,7 +107,7 @@ class _DBSyncElementsState extends State<DBSyncElements> {
           ),
           color: pColor,
           onTap: () async {
-            await dataBloc.refreshToken();
+            await dataBloc.refreshToken(context);
 
             Navigator.pushNamedAndRemoveUntil(
               context,

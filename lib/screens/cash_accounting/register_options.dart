@@ -85,7 +85,7 @@ class _RegisterOptionsState extends State<RegisterOptions> {
           await _controlRegister(registerStatus ? 'close' : 'open');
 
           /// update JWT token
-          await dataBloc.refreshToken();
+          await dataBloc.refreshToken(context);
           setState(() {
             registerStatus = dataBloc.registerData.status == 'open';
           });

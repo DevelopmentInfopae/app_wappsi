@@ -1,5 +1,6 @@
 // ignore_for_file: unnecessary_statements
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
@@ -11,13 +12,15 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
-import 'package:pos_wappsi/providers/products_provider.dart';
+import 'package:pos_wappsi/providers/user_provider.dart';
 import 'package:pos_wappsi/providers/wishlist_provider.dart';
 import 'package:pos_wappsi/screens/customers/add_favorites.dart';
 
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/screens/customers/components/create_user_alert.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/manage_server_resp.dart';
+import 'package:pos_wappsi/utils/user_validations.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
 class ListFavorites extends StatefulWidget {
@@ -200,10 +203,29 @@ class _ListFavoritesState extends State<ListFavorites> {
   AppButton _addFavorites(BuildContext context) {
     return AppButton(
       onTap: () async {
-        AddFavorites(
-          currentAction: 'adding_fav_to_customer',
-          customer: widget.customer,
-        ).launch(context);
+        final verifyUserE = await UserProvider.verifyIfCompanyHaveUser(
+            context, widget.customer.idCloud.toString());
+        if (!verifyUserE) {
+          AddFavorites(
+                  currentAction: 'adding_fav_to_customer',
+                  customer: widget.customer)
+              .launch(context);
+        } else {
+          final choice = await showCupertinoDialog(
+              barrierDismissible: true,
+              context: context,
+              builder: (context) {
+                return CreateUserAlertDialog(
+                  customer: widget.customer,
+                );
+              });
+          if (choice) {
+            AddFavorites(
+              currentAction: 'adding_fav_to_customer',
+              customer: widget.customer,
+            ).launch(context);
+          }
+        }
       },
       color: Colors.white,
       padding: kButtonPadding,

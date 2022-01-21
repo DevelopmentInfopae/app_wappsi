@@ -69,7 +69,7 @@ class _ProductsState extends State<Customers> {
             widget: Icon(Icons.add, size: leadingIconSize, color: pColor),
             onTap: () async {
               NewCustomer().launch(context);
-              await dataBloc.refreshToken();
+              await dataBloc.refreshToken(context);
             }));
   }
 

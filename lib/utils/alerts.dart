@@ -114,7 +114,9 @@ reloadDialog(BuildContext context, String msg, String img) async {
                   textAlign: TextAlign.center,
                 ),
                 onPressed: () async {
-                  await posBloc.suspendSale();
+                  if ((posBloc.getProducts?.length ?? 0) > 0) {
+                    await posBloc.suspendSale();
+                  }
                   Restart.restartApp(webOrigin: '/loginForm');
                 },
               ),

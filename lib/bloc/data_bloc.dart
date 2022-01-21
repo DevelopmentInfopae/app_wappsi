@@ -9,6 +9,7 @@ import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/providers/user_provider.dart';
 import 'package:pos_wappsi/screens/home/home.dart';
+import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:rxdart/rxdart.dart';
 
 class DataBloc {
@@ -115,10 +116,14 @@ class DataBloc {
   }
 
   /// update current JWT token to extend session time
-  Future refreshToken() async {
+  Future refreshToken(BuildContext context) async {
     dataBloc.homeKey.currentState?.syncLoader(true);
-    await UserProvider.refreshToken();
+    final res = await UserProvider.refreshToken();
     dataBloc.homeKey.currentState?.syncLoader(false);
+    if (res != null) {
+      reloadDialog(context, res['body']['message'] ?? '',
+          'assets/images/dizzy-robot.png');
+    }
   }
 
   Future<List> syncElements(List<String> elements, BuildContext context) async {

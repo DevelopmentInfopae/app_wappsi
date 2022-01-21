@@ -62,7 +62,7 @@ class _CustomerDetailsState extends State<CustomerDetails> {
   AppButton _favorites(BuildContext context) {
     return AppButton(
       onTap: () async {
-        await dataBloc.refreshToken();
+        await dataBloc.refreshToken(context);
         ListFavorites(customer: widget.customer).launch(context);
       },
       color: Colors.white,

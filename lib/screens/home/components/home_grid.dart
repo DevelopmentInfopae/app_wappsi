@@ -83,6 +83,7 @@ class HomeGridCards extends StatelessWidget {
     if (gridItems.route == 'sales') {
       // to show or hide home bottombar
       await _newSale(context);
+      await dataBloc.refreshToken(context);
     } else if (gridItems.route == 'products') {
       Products().launch(context);
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
@@ -101,7 +102,7 @@ class HomeGridCards extends StatelessWidget {
       // await Future.delayed(Duration(seconds: 1));
       NewCustomer().launch(context);
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
-      await dataBloc.refreshToken();
+      await dataBloc.refreshToken(context);
       // dataBloc.homeKey.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'register') {
       dataBloc.homeKey.currentState?.changeBottomIndex(0);

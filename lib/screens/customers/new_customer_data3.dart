@@ -13,6 +13,7 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/customer_groups_model.dart';
 import 'package:pos_wappsi/models/price_groups_model.dart';
+import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/providers/customer_groups_provider.dart';
 import 'package:pos_wappsi/providers/price_groups_provider.dart';
 import 'package:pos_wappsi/screens/customers/add_favorites.dart';
@@ -128,8 +129,8 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
                     AddFavorites().launch(context);
                   }
                 } else {
-                  await customerBloc.sendCustomerInfo(context);
-                  await dataBloc.refreshToken();
+                  await CompaniesProvider.sendCustomerInfo(context);
+                  await dataBloc.refreshToken(context);
                 }
               }
             },

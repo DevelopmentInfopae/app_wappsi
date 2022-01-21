@@ -1,8 +1,17 @@
+import 'package:flutter/material.dart';
+import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/biller_data_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/providers/API_provider.dart';
+import 'package:pos_wappsi/providers/groups_providers.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/providers/wishlist_provider.dart';
+import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/encode_pass.dart';
+import 'package:pos_wappsi/utils/nav_utils.dart';
 
 class CompaniesProvider {
   /// Load default customer from db to posBloc
@@ -190,5 +199,145 @@ class CompaniesProvider {
   static Future<Map<String, dynamic>?> findCustomerDiscount(String id) async {
     return await DBProvider.db
         .sqlFirstQuery('sma_customer_groups', where: "id_cloud = $id");
+  }
+
+  static sendCustomerInfo(BuildContext context) async {
+    final customerGroup = await GroupsProvider.loadCustomerGroup();
+    final apiProvider = new DataProvider();
+    if (customerGroup == null) {
+      return {
+        'error': true,
+        'body': {'message': 'No fue posible seleccionar grupo de company'}
+      };
+    } else {
+      customerBloc.getCustomer.groupId = customerGroup.idCloud.toString();
+      customerBloc.getCustomer.groupName = customerGroup.name;
+    }
+
+    final body = customerBloc.getCustomer.customerToJson();
+
+    if (customerBloc.getUserName != null && customerBloc.getPassword != null) {
+      final temp = {};
+      temp['username'] = customerBloc.getUserName;
+      temp['password'] = encodePass(customerBloc.getPassword!);
+      body['user_data'] = temp;
+    }
+
+    // ignore: unnecessary_null_comparison
+    if (customerBloc.getProducts() != null) {
+      List<int> favorites = [];
+      customerBloc.getProducts()!.forEach((key, value) {
+        favorites.add(value.idCloud);
+      });
+      body['favorites'] = favorites;
+    }
+
+    scaffoldAlert(context, 'Registrando cliente', Duration(seconds: 10),
+        key: UniqueKey());
+
+    final res = await apiProvider.postPetition(
+        addCompanyEndP, body, dataBloc.getHeaders());
+
+    hideCurrentScaffoldAlert(context);
+    if (res['status'] == -1) {
+      await reloadDialog(
+          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+    } else if (res['error']) {
+      confirmDialog(
+          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+    } else {
+      // update local DB with new company info
+      bool dbUpdated = await CompaniesProvider.writeCustomerInLDB(body, res);
+
+      // if fails we force DB sync
+      if (!dbUpdated) {
+        goHomeAndEmptyCustomerBloc(context);
+        // DBSyncElements(
+        //   options: {'Terceros': true, 'Sucursales': true},
+        // ).launch(context);
+        await dataBloc.syncElements(['Terceros', 'Sucursales'], context);
+        confirmDialog(
+            context, res['body']['message'], 'assets/images/success.png');
+      } else {
+        // if local db update success, go to home
+        goHomeAndEmptyCustomerBloc(context);
+        // dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
+        confirmDialog(
+            context, res['body']['message'], 'assets/images/success.png');
+      }
+
+      // Navigator.pop(context);
+    }
+  }
+
+  static addCompanyFavs(BuildContext context, CompanyModel customer) async {
+    final Map<String, dynamic> body = {};
+
+    if (customerBloc.getUserName != null && customerBloc.getPassword != null) {
+      final temp = {};
+      temp['username'] = customerBloc.getUserName;
+      temp['password'] = encodePass(customerBloc.getPassword!);
+      temp['first_name'] = customer.firstName;
+      temp['last_name'] = customer.firstLastname;
+      temp['company'] = customer.company;
+      temp['company_id'] = customer.idCloud;
+      temp['phone'] = customer.phone;
+      temp['email'] = customer.email;
+      temp['group_id'] = customer.groupId;
+      temp['avtive'] = 1;
+
+      body['user_data'] = temp;
+    }
+
+    // ignore: unnecessary_null_comparison
+    if (customerBloc.getProducts() != null) {
+      List<int> favorites = [];
+      customerBloc.getProducts()!.forEach((key, value) {
+        favorites.add(value.idCloud);
+      });
+      body['favorites'] = favorites;
+    }
+
+    // add customer id
+    body['company_id'] = customer.idCloud;
+
+    scaffoldAlert(context, 'Añadiendo favoritos', Duration(seconds: 10),
+        key: UniqueKey());
+    final apiProvider = new DataProvider();
+    final res = await apiProvider.postPetition(
+        addCompanyFavEndP, body, dataBloc.getHeaders());
+
+    hideCurrentScaffoldAlert(context);
+    if (res['status'] == -1) {
+      await reloadDialog(
+          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+    } else if (res['error']) {
+      confirmDialog(
+          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+    } else {
+      // update local DB with new company info
+      bool dbUpdated =
+          await WishlistProvider.reloadCustomerFavs(context, customer);
+
+      // if fails we force DB sync
+      if (!dbUpdated) {
+        customerBloc.clear();
+        // DBSyncElements(
+        //   options: {'Terceros': true, 'Sucursales': true},
+        // ).launch(context);
+        await dataBloc.syncElements(['Terceros', 'Sucursales'], context);
+        confirmDialog(
+            context, res['body']['message'], 'assets/images/success.png');
+      } else {
+        // if local db update success, go to home
+
+        customerBloc.clear();
+        // dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
+        confirmDialog(
+            context, res['body']['message'], 'assets/images/success.png');
+      }
+
+      // Navigator.pop(context);
+    }
   }
 }

@@ -13,6 +13,7 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 
@@ -20,6 +21,7 @@ import 'package:pos_wappsi/screens/sales/components/search.dart';
 
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/utils/barcode_camera_scan.dart';
+import 'package:pos_wappsi/utils/nav_utils.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
 class AddFavorites extends StatefulWidget {
@@ -245,11 +247,13 @@ class _AddFavoritesState extends State<AddFavorites> {
           ? null
           : () async {
               if (widget.currentAction == 'creating_customer') {
-                await dataBloc.refreshToken();
-                await customerBloc.sendCustomerInfo(context);
-              } else {
-                await dataBloc.refreshToken();
-                await customerBloc.addCustomerFavs(context, widget.customer!);
+                await dataBloc.refreshToken(context);
+                await CompaniesProvider.sendCustomerInfo(context);
+              } else if (widget.currentAction == 'adding_fav_to_customer') {
+                await dataBloc.refreshToken(context);
+                await CompaniesProvider.addCompanyFavs(
+                    context, widget.customer!);
+                gobackTwoTimes(context);
               }
             },
       color: _pc,

@@ -411,7 +411,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
             if (res != null) {
               // Navigator.pop(context);
               /// update JWT token
-              await dataBloc.refreshToken();
+              await dataBloc.refreshToken(context);
 
               final Map<String, String> movementData = {
                 'date': res['date'],
