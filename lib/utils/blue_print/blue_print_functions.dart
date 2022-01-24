@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:image/image.dart';
 import 'package:pos_wappsi/config/regimen_personT_form_params.dart';
 import 'package:pos_wappsi/config/thermal_printer_params.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 // return bytes of two columns labes : values
 List<int> printLabeledValues(Generator generator, List<int> bytes,

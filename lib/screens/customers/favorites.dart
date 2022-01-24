@@ -20,7 +20,6 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/screens/customers/components/create_user_alert.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/manage_server_resp.dart';
-import 'package:pos_wappsi/utils/user_validations.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
 class ListFavorites extends StatefulWidget {

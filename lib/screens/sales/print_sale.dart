@@ -16,7 +16,7 @@ import 'package:pos_wappsi/screens/sales/new_sale.dart';
 import 'package:pos_wappsi/screens/settings/print_settings.dart';
 // import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/blue_print.dart';
+import 'package:pos_wappsi/utils/blue_print/blue_print.dart';
 // import 'package:pos_wappsi/utils/local_files.dart';
 
 class PrintSale extends StatefulWidget {

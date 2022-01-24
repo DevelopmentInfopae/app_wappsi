@@ -16,7 +16,7 @@ import 'package:pos_wappsi/constant.dart';
 
 // import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/blue_print.dart';
+import 'package:pos_wappsi/utils/blue_print/blue_print.dart';
 
 class PrintSettings extends StatefulWidget {
   final String print;

@@ -13,7 +13,7 @@ import 'package:pos_wappsi/providers/products_provider.dart';
 
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
-import 'package:pos_wappsi/utils/barcode_camera_scan.dart';
+import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
 
 // import '../../constant.dart';
 

@@ -20,7 +20,7 @@ import 'package:pos_wappsi/screens/products/components/widgets.dart';
 import 'package:pos_wappsi/screens/sales/components/search.dart';
 
 import 'package:nb_utils/nb_utils.dart';
-import 'package:pos_wappsi/utils/barcode_camera_scan.dart';
+import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
 import 'package:pos_wappsi/utils/nav_utils.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 

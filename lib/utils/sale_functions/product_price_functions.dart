@@ -34,6 +34,9 @@ Future<ProductModel> policyCases(
       product.discount = values[1];
       return product;
     }
+  } else if (policy == 10) {
+    // call an alert dialog to choose product unit
+    return product;
   } else {
     product.priceWithoutDiscount = price;
     product.price = price;

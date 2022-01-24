@@ -8,7 +8,7 @@ import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class ProductDetails extends StatelessWidget {
   const ProductDetails({required this.product, Key? key}) : super(key: key);

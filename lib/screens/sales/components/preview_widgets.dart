@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/config/regimen_personT_form_params.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 Widget imageFile(String pathImage, {BoxFit? fit}) {
   // final imgURL = dataBloc.userData!.hostUrl +

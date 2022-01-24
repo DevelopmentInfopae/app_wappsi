@@ -9,7 +9,7 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/screens/products/product_details.dart';
 import 'package:pos_wappsi/screens/products/product_price_verifier.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 // class to show product indormation in form of a card
 

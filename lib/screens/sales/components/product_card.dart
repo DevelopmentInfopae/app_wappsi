@@ -12,7 +12,7 @@ import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/products/product_details.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 // import 'package:pos_wappsi/providers/register_form_provider.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 // class to show product indormation in form of a card
 

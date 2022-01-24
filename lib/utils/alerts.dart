@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:restart_app/restart_app.dart';
 
 void simpleAlert(BuildContext context, String msj) {

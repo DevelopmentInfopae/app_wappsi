@@ -6,8 +6,8 @@ import 'package:esc_pos_utils/esc_pos_utils.dart';
 // import 'package:image_downloader/image_downloader.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/printer_bloc.dart';
-import 'package:pos_wappsi/utils/blue_print_functions.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/blue_print/blue_print_functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class PrintFormat {
   PrintFormat({this.productsList, this.movementInfo});

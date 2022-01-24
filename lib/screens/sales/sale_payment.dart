@@ -28,8 +28,8 @@ import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/screens/sales/print_sale.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/currency_formater.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/currency_formater.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class SalePayment extends StatefulWidget {
   SalePayment({Key? key}) : super(key: key);

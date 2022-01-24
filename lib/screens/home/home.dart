@@ -13,7 +13,7 @@ import 'package:pos_wappsi/screens/home/components/bottom_navigation.dart';
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 import 'package:pos_wappsi/screens/home/components/tab_navigator.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:restart_app/restart_app.dart';
 
 class Home extends StatefulWidget {

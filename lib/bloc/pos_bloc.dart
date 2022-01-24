@@ -20,10 +20,10 @@ import 'package:pos_wappsi/providers/local_sale_items_provider.dart';
 import 'package:pos_wappsi/providers/payment_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/functions.dart';
-import 'package:pos_wappsi/utils/local_db.dart';
+import 'package:pos_wappsi/utils/local_storage/local_db.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-import 'package:pos_wappsi/utils/product_price_functions.dart';
+import 'package:pos_wappsi/utils/sale_functions/product_price_functions.dart';
 import 'package:rxdart/rxdart.dart';
 
 class POSBloc {

@@ -8,7 +8,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 
 import 'package:pos_wappsi/providers/companies_provider.dart';
 
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 List<CompanyModel> companyModelFromJson(String str) => List<CompanyModel>.from(
     json.decode(str).map((x) => CompanyModel.fromJson(x)));

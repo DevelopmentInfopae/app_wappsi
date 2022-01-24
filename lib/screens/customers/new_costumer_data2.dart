@@ -21,8 +21,8 @@ import 'package:pos_wappsi/providers/states_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/new_customer_data3.dart';
-import 'package:pos_wappsi/utils/functions.dart';
-import 'package:pos_wappsi/utils/regExp.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
+import 'package:pos_wappsi/utils/validation_encoding/regExp.dart';
 
 class NewCustomerData2 extends StatefulWidget {
   NewCustomerData2({Key? key}) : super(key: key);

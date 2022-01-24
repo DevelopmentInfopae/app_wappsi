@@ -10,7 +10,7 @@ import 'package:pos_wappsi/providers/groups_providers.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/wishlist_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/encode_pass.dart';
+import 'package:pos_wappsi/utils/validation_encoding/encode_pass.dart';
 import 'package:pos_wappsi/utils/nav_utils.dart';
 
 class CompaniesProvider {

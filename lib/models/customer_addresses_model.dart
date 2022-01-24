@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 CustomerAddressesModel customerAddressesModelFromJson(
         Map<String, dynamic> str) =>

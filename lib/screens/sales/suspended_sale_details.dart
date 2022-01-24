@@ -16,7 +16,7 @@ import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/sales/components/product_price_dif_alert.dart';
 import 'package:pos_wappsi/screens/sales/new_sale.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class SuspendedSaleDetails extends StatefulWidget {
   final Map<String, dynamic>? suspSaleInfo;

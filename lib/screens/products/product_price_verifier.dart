@@ -7,7 +7,7 @@ import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class ProductPriceVerifier extends StatelessWidget {
   const ProductPriceVerifier({required this.product, Key? key})

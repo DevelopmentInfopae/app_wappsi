@@ -4,8 +4,8 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/config/host_params.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/screens/sales/components/preview_widgets.dart';
-import 'package:pos_wappsi/utils/functions.dart';
-import 'package:pos_wappsi/utils/local_files.dart';
+import 'package:pos_wappsi/utils/local_storage/local_files.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 Widget labelContent(String label, String content,
     {bool padding = true, EdgeInsetsGeometry paddingValue = EdgeInsets.zero}) {

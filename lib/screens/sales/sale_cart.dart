@@ -23,7 +23,7 @@ import 'package:pos_wappsi/screens/sales/new_sale.dart';
 import 'package:pos_wappsi/screens/sales/sale_payment.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/barcode_camera_scan.dart';
+import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
 class SaleCart extends StatefulWidget {

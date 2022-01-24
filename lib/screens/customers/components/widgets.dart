@@ -5,7 +5,7 @@ import 'package:pos_wappsi/components/input_decoration.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 Widget descRichText(String label, String? desc, BuildContext context,
     {double fontsizeF = 0.9, int fontW = 1, Color color = Colors.black}) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 Widget imgTumbnail({String image = 'assets/images/wappsi.png'}) {
   return Image(

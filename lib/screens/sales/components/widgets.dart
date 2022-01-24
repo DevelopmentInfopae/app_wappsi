@@ -8,7 +8,7 @@ import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/config/regimen_personT_form_params.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 Widget subTotal({bool large = false}) {
   return StreamBuilder<double>(

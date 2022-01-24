@@ -4,7 +4,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/bloc/printer_bloc.dart';
 import 'package:pos_wappsi/config/bd_creation.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 

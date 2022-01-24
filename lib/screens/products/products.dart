@@ -11,7 +11,7 @@ import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/products/components/product_card_list.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
-import 'package:pos_wappsi/utils/barcode_camera_scan.dart';
+import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
 
 class Products extends StatefulWidget {
   const Products({Key? key}) : super(key: key);

@@ -5,7 +5,7 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/models/local_sales_model.dart';
 import 'package:pos_wappsi/screens/sales/print_sale.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class SalesCardList extends StatefulWidget {
   const SalesCardList(

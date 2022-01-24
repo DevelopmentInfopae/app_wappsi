@@ -16,7 +16,7 @@ import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/local_sale_items_provider.dart';
 import 'package:pos_wappsi/providers/payment_methods_provider.dart';
 import 'package:pos_wappsi/providers/payment_provider.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class SalesModel {
   SalesModel(

@@ -15,7 +15,7 @@ class UserModel {
   UserModel(
       {required this.id,
       required this.token,
-      required this.gender,
+      this.gender,
       required this.hostUrl,
       required this.lastName,
       required this.sellerId,
@@ -36,7 +36,7 @@ class UserModel {
   String lastName;
   String userName;
   String email;
-  String gender;
+  String? gender;
 
   String companyFolder;
   String hostUrl;
@@ -54,7 +54,7 @@ class UserModel {
       token: json["token"],
       firstName: json["first_name"],
       lastName: json["last_name"],
-      gender: json["gender"],
+      gender: json["gender"] ?? '',
       email: json["email"],
       userName: json["username"],
       hostUrl:

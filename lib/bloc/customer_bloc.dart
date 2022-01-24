@@ -5,15 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
-import 'package:pos_wappsi/providers/API_provider.dart';
-import 'package:pos_wappsi/config/endpoints.dart';
+
 import 'package:pos_wappsi/providers/user_provider.dart';
 
-import 'package:pos_wappsi/utils/manage_server_resp.dart';
-import 'package:pos_wappsi/utils/user_validations.dart';
 import 'package:rxdart/subjects.dart';
-
-import 'data_bloc.dart';
 
 class CustomerBloc {
   // to save data of user

@@ -7,9 +7,9 @@ import 'package:pos_wappsi/providers/API_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:pos_wappsi/utils/manage_server_resp.dart';
-import 'package:pos_wappsi/utils/product_price_functions.dart';
+import 'package:pos_wappsi/utils/sale_functions/product_price_functions.dart';
 
 class WishlistProvider {
   /// given a list of product ids, load them into

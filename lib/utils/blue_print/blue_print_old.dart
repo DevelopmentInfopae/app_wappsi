@@ -8,7 +8,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 // import 'package:pos_wappsi/bloc/printer_bloc.dart';
 import 'package:pos_wappsi/config/regimen_personT_form_params.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 import 'blue_print_functions.dart';
 
@@ -42,11 +42,10 @@ class PrintFormat {
         await bluetooth.printNewLine();
         await _header();
 
-        
-        await  _products();
-        await  _total();
-        await  _paymentDetails();
-        
+        await _products();
+        await _total();
+        await _paymentDetails();
+
         await _ivas();
 
         await _posNote();
@@ -168,7 +167,6 @@ class PrintFormat {
   }
 
   _products() async {
-
     await bluetooth.printCustom("________________________________", 1, 1);
     await bluetooth.printCustom('Cant Producto        Valor', 1, 0);
     await bluetooth.printCustom("--------------------------------", 1, 1);
@@ -198,8 +196,6 @@ class PrintFormat {
     // bluetooth.printNewLine();
   }
 
-
-
   _paymentDetails() async {
     final value = getFormatedCurrency(posBloc.getPrintData!['payment'] + 0.0)
         .toString()
@@ -214,7 +210,8 @@ class PrintFormat {
       cambio,
       1,
     );
-    final payMethod = posBloc.getPrintData!['payment_method']['name'].toString();
+    final payMethod =
+        posBloc.getPrintData!['payment_method']['name'].toString();
     await bluetooth.printLeftRight(
       "Pagado en:",
       payMethod,
@@ -228,8 +225,6 @@ class PrintFormat {
       bluetooth.printCustom(element, 1, 1);
     });
   }
-
-  
 
   String _getEmptySpaces(int n) {
     String empty = ' ';
@@ -246,9 +241,9 @@ class PrintFormat {
           getFormatedCurrency(itemp['value'] * iva).toString().substring(1);
 
       await bluetooth.printNewLine();
-        await bluetooth.printCustom('Resumen de impuestos', 1, 1);
-        await bluetooth.printCustom("Tarifa     Base       Impuesto", 1, 0);
-        await bluetooth.printCustom("--------------------------------", 1, 1);
+      await bluetooth.printCustom('Resumen de impuestos', 1, 1);
+      await bluetooth.printCustom("Tarifa     Base       Impuesto", 1, 0);
+      await bluetooth.printCustom("--------------------------------", 1, 1);
       await bluetooth.printCustom(
           itemp['name'] +
               _getEmptySpaces(13 - temp.length) +

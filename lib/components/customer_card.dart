@@ -6,7 +6,7 @@ import 'package:pos_wappsi/constant.dart';
 
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/screens/customers/customer_details.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 // class to show customer indormation in form of a card
 

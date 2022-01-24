@@ -6,7 +6,7 @@ import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/suspended_sale_model.dart';
 import 'package:pos_wappsi/screens/sales/suspended_sale_details.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class SuspendedSalesScreen extends StatefulWidget {
   final List<SuspendedSales>? suspendedSales;

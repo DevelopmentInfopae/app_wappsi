@@ -5,8 +5,8 @@ import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/screens/cash_accounting/components/functions.dart';
-import 'package:pos_wappsi/utils/currency_formater.dart';
-import 'package:pos_wappsi/utils/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/currency_formater.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 Widget registerInput(BuildContext context, RegisterFormProvider cashAccForm,
     FocusNode valueFocus,

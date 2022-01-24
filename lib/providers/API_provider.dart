@@ -28,7 +28,7 @@ class DataProvider {
 
     String url =
         (dataBloc.userData == null ? HOST : dataBloc.userData?.hostUrl ?? '') +
-            '/wappsi_apis/public/$endpoint';
+            '/wappsi_apis/$endpoint';
     // print(authData);
     try {
       resp = await dio
@@ -100,6 +100,7 @@ class DataProvider {
         }
       };
     } catch (e) {
+      print(e);
       return {
         'status': 0,
         'error': true,
