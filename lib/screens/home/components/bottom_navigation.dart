@@ -27,7 +27,7 @@ class BottomNavigation extends StatelessWidget {
     return BottomNavigationBar(
       // key: GlobalKey().,
 
-      iconSize: iconSize(context),
+      iconSize: bottomBarIconSize(context),
       type: BottomNavigationBarType.fixed,
       items: [
         _buildItem(TabItem.home, Icon(Icons.home_outlined)),

@@ -13,7 +13,7 @@ import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
-import 'package:pos_wappsi/screens/sales/components/product_card.dart';
+import 'package:pos_wappsi/screens/sales/components/sale_product_list_widget.dart';
 
 import 'package:pos_wappsi/screens/sales/components/search.dart';
 import 'package:pos_wappsi/screens/sales/components/suspend_sale_alert.dart';
@@ -194,53 +194,11 @@ class _SaleCartState extends State<SaleCart> {
                     _productsCount = snapshot.data!.length;
                     _itemsCount = posBloc.getItemsCount();
                   }
-
-                  return ListView.builder(
-                      itemCount: snapshot.data!.keys.length,
-                      controller: _scrollController,
-                      itemBuilder: (context, index) {
-                        final k = snapshot.data!.entries.elementAt(index).key;
-                        final pCard = ProductCard(
-                          key: UniqueKey(),
-                          quantityFocusNode: FocusNode(),
-                          formKey: new GlobalObjectKey<FormState>(k),
-                          product: snapshot.data!.entries.elementAt(index),
-                        );
-                        if (index == 0 &&
-                            dataBloc.settings!['set_focus'] == 1) {
-                          if (productRequestFocus) {
-                            pCard.quantityFocusNode.requestFocus();
-                          }
-                        } else {
-                          pCard.quantityFocusNode.unfocus();
-                        }
-                        return Dismissible(
-                            key: new Key(k),
-                            background: Container(
-                              padding: EdgeInsets.symmetric(vertical: 4),
-                              decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.delete,
-                                    size: iconSize(context),
-                                    color: Colors.white,
-                                  ).paddingOnly(left: 16, right: 8),
-                                  Text(
-                                    'Quitar elemento',
-                                    style: buttonsTextStyle(context,
-                                        fontSizeFactor: 1.05),
-                                  )
-                                ],
-                              ),
-                            ).paddingSymmetric(vertical: 4),
-                            onDismissed: (direction) {
-                              posBloc.removeProduct(k);
-                            },
-                            child: pCard);
-                      });
+                  Map<String, ProductModel> saleProductsList = snapshot.data!;
+                  return SaleProductsList(
+                      saleProductsList: saleProductsList,
+                      scrollController: _scrollController,
+                      productRequestFocus: productRequestFocus);
                 }
               } else {
                 // ignore: unnecessary_null_comparison

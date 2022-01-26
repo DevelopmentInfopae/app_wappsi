@@ -125,7 +125,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
                 if (_addFavorites) {
                   final verifyUserN =
                       await customerBloc.verifyUserName(context);
-                  if (verifyUserN) {
+                  if (!verifyUserN) {
                     AddFavorites().launch(context);
                   }
                 } else {

@@ -118,7 +118,12 @@ class DataBloc {
   /// update current JWT token to extend session time
   Future refreshToken(BuildContext context) async {
     dataBloc.homeKey.currentState?.syncLoader(true);
-    final res = await UserProvider.refreshToken();
+    Map<String, dynamic>? res;
+    try {
+      res = await UserProvider.refreshToken();
+    } catch (e) {
+      print(e);
+    }
     dataBloc.homeKey.currentState?.syncLoader(false);
     if (res != null) {
       reloadDialog(context, res['body']['message'] ?? '',

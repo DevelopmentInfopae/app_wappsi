@@ -22,8 +22,8 @@ class WishlistProvider {
       final temp = ProductModel.fromJsonList(products!);
       List<ProductModel> pM = [];
       await Future.forEach(temp, (ProductModel p) async {
-        pM.add(await policyCases(
-            p, dataBloc.settings!['prioridad_precios_producto'], customer));
+        pM.add(await policyCases(p,
+            dataBloc.settings!['prioridad_precios_producto'], customer, true));
       });
 
       return pM;

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports, unnecessary_import
@@ -7,8 +8,10 @@ import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/screens/products/product_details.dart';
 import 'package:pos_wappsi/screens/products/product_price_verifier.dart';
+import 'package:pos_wappsi/screens/sales/components/select_product_unit_alert.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 // class to show product indormation in form of a card
@@ -54,7 +57,18 @@ class _ProductCardState extends State<ProductCard> {
         ),
         onTap: () async {
           if (widget.action == 'add_to_cart') {
-            await posBloc.addProduct(widget.product);
+            final res = await posBloc.addProduct(widget.product);
+            if (res == 'select_product_unit') {
+              // await showCupertinoDialog(
+              //     // to make selection of product unit required
+              //     barrierDismissible: false,
+              //     context: context,
+              //     builder: (context) {
+              //       return SelectProductUnitDialog(product: widget.product);
+              //     });
+              final units = await UnitsProvider.getProductUnits(
+                  widget.product.idCloud.toString());
+            }
 
             // Navigator.pop(context);
           } else if (widget.action == 'price_verifier') {
@@ -119,7 +133,8 @@ class _ProductCardState extends State<ProductCard> {
   Future<double> _getProductPrice() async {
     if (widget.action == 'add_to_cart') {
       // get product price for selected costumer
-      final p = await posBloc.getProductPrices(widget.product);
+      final p =
+          await posBloc.getProductPrices(widget.product, defaultPrice: true);
       return p.getPriceWithIVA();
     } else {
       return widget.product.getPriceWithIVA();

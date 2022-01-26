@@ -96,6 +96,11 @@ TextStyle normalTextStyle(BuildContext context,
 }
 // TODO: Save this in secure storage
 
+double bottomBarIconSize(BuildContext context) {
+  final _size = MediaQuery.of(context).size;
+  return _size.width * 0.085;
+}
+
 double iconSize(BuildContext context) {
   final _size = MediaQuery.of(context).size;
   return _size.height * 0.038 > 30 ? _size.height * 0.038 : 30;
@@ -143,10 +148,7 @@ double loginLogoWidth(BuildContext context) {
 
 /// Height on bottom widget with
 double getBottomNavBarHeight(BuildContext context) {
-  final _size = MediaQuery.of(context).size;
-  return _size.height * 0.094 > 72
-      ? (_size.height * 0.094 > 77 ? 77 : _size.height * 0.094)
-      : 72;
+  return bottomBarIconSize(context) * 2.135;
 }
 
 /// Home grid elements size

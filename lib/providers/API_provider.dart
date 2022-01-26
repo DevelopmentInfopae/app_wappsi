@@ -120,7 +120,7 @@ class DataProvider {
     dio.options.headers = headers;
     String url =
         (dataBloc.userData == null ? HOST : dataBloc.userData?.hostUrl ?? '') +
-            '/wappsi_apis/public/$endpoint';
+            '/wappsi_apis/$endpoint';
     try {
       resp = await dio.get(url).timeout(Duration(seconds: 15), onTimeout: () {
         throw TimeoutException('Now answer, try again.');

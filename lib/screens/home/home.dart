@@ -117,7 +117,7 @@ class HomeState extends State<Home> {
         // bottom(_bottom(), Colors.white, _size,elevation: true)
         _bottom()
       ],
-    ).paddingTop(2);
+    );
   }
 
   Widget _bottom() {

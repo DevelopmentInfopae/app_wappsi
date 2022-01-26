@@ -3,8 +3,8 @@ import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/companies_provider.dart';
 
 /// Return ProductModel object with prices calculatd by price_policy
-Future<ProductModel> policyCases(
-    ProductModel product, int? policy, CompanyModel? customer) async {
+Future<ProductModel> policyCases(ProductModel product, int? policy,
+    CompanyModel? customer, bool defaultPrice) async {
   //tax rate for IVA
 
   double price = product.getPriceWithoutIVA();

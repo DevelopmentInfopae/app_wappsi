@@ -58,7 +58,11 @@ class CompaniesProvider {
   static Future<bool> writeCustomerInLDB(
       Map<String, dynamic> body, Map<String, dynamic> res) async {
     bool dbUpdated = false;
-
+    try {
+      // to remove data for user and favorites creation
+      body.remove('user_data');
+      body.remove('favorites');
+    } catch (e) {}
     body['id_cloud'] = res['body']['company_id'];
     dbUpdated = await DBProvider.db.insertQuery('sma_companies', body);
     if (dbUpdated) {

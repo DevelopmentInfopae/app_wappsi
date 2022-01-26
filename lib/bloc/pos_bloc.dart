@@ -91,9 +91,12 @@ class POSBloc {
   ///Add a producto to a Map where key is the local id of product
   ///and value is an instance of ProductModel(). Param getPrices is
   ///used to know if product prices should or not be calculated
-  Future<bool> addProduct(ProductModel product, {bool getPrices = true}) async {
+  Future addProduct(ProductModel product, {bool getPrices = true}) async {
     bool res = false;
     if (_productsController.hasValue) {
+      if (dataBloc.settings!['prioridad_precios_producto'] == 10) {
+        return 'select_product_unit';
+      }
       res = await _addProductToProductMap(product, getPrices);
     } else {
       emptyProductsAdded();
@@ -200,7 +203,7 @@ class POSBloc {
 
   /// Returns ProductModel object with it's respective prices
   Future<ProductModel> getProductPrices(ProductModel product,
-      {String? customerId}) async {
+      {String? customerId, bool defaultPrice = false}) async {
     if (product.promoPrice != null) {
       product.price = product.promoPrice!;
       product.discount = 0;
@@ -211,7 +214,8 @@ class POSBloc {
         final product2 = await policyCases(
             product,
             dataBloc.settings!['prioridad_precios_producto'],
-            _customerController.valueOrNull);
+            _customerController.valueOrNull,
+            defaultPrice);
 
         return product2;
         //aply discount

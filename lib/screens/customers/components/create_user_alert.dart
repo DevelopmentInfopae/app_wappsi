@@ -5,7 +5,6 @@ import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/screens/customers/add_favorites.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 
 /// Custom alert dialog to manage open and close operations on Register, to open action = 'open'

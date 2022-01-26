@@ -64,6 +64,7 @@ class DBProvider {
       await db.execute(documentTypes);
       await db.execute(pCategories);
       await db.execute(pUnits);
+      await db.execute(unitPrices);
       await db.execute(warehouses);
       await db.execute(billerDocumentTypes);
       //favorite products
