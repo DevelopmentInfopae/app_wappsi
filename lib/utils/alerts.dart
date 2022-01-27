@@ -239,7 +239,6 @@ loadCart(BuildContext context, String msj, String img) {
                   textAlign: TextAlign.center,
                 ),
                 onPressed: () {
-                  posBloc.setProductView(posBloc.productsAdded);
                   Navigator.of(context).pop();
                 },
               ),

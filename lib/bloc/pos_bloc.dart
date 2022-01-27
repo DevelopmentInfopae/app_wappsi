@@ -14,6 +14,7 @@ import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/sale_model.dart';
 import 'package:pos_wappsi/models/suspended_sale_model.dart';
+import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/API_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/local_sale_items_provider.dart';
@@ -28,37 +29,46 @@ import 'package:rxdart/rxdart.dart';
 
 class POSBloc {
   // to save data of user
-  final _productsController = BehaviorSubject<Map<String, ProductModel>>();
+  bool isDisposed = false;
+  BehaviorSubject<Map<String, ProductModel>> _productsController =
+      BehaviorSubject<Map<String, ProductModel>>();
+  BehaviorSubject<Map<String, UnitsModel>> _productUnitController =
+      BehaviorSubject<Map<String, UnitsModel>>();
 
-  final _paymentMthdController = BehaviorSubject<PaymentMethods?>();
+  BehaviorSubject<PaymentMethods?> _paymentMthdController =
+      BehaviorSubject<PaymentMethods?>();
 
-  final _paymentDocumentController = BehaviorSubject<DocumentsTypes?>();
-  final _paymenttermController = BehaviorSubject<int?>();
+  BehaviorSubject<DocumentsTypes?> _paymentDocumentController =
+      BehaviorSubject<DocumentsTypes?>();
+  BehaviorSubject<int?> _paymenttermController = BehaviorSubject<int?>();
 
-  final _printDataController = BehaviorSubject<Map>();
+  BehaviorSubject<Map> _printDataController = BehaviorSubject<Map>();
 
-  final _searchController = BehaviorSubject<FloatingSearchBarController>();
+  BehaviorSubject<FloatingSearchBarController> _searchController =
+      BehaviorSubject<FloatingSearchBarController>();
 
-  final _customerController = BehaviorSubject<CompanyModel?>();
+  BehaviorSubject<CompanyModel?> _customerController =
+      BehaviorSubject<CompanyModel?>();
 
-  final _customerAddressesController =
+  BehaviorSubject<CustomerAddressesModel?> _customerAddressesController =
       BehaviorSubject<CustomerAddressesModel?>();
 
-  final _productsViewController =
-      StreamController<Map<String, ProductModel>>.broadcast();
+  // final _productsViewController =
+  // StreamController<Map<String, ProductModel>>.broadcast();
 
-  final _subtotalController = StreamController<double>.broadcast();
+  StreamController<double> _subtotalController =
+      StreamController<double>.broadcast();
 
-  final _paymentValueController = BehaviorSubject<int>();
+  BehaviorSubject<int> _paymentValueController = BehaviorSubject<int>();
 
   /// To know if sale is loaded from suspended sale and verify or not prices
-  final _verifyPricesController = BehaviorSubject<int>();
+  BehaviorSubject<int> _verifyPricesController = BehaviorSubject<int>();
 
-  final _invoiceNoteController = BehaviorSubject<String>();
+  BehaviorSubject<String> _invoiceNoteController = BehaviorSubject<String>();
 
-  final _dispatchNoteController = BehaviorSubject<String>();
+  BehaviorSubject<String> _dispatchNoteController = BehaviorSubject<String>();
 
-  final StreamController<List<ProductModel>> _productSearchController =
+  StreamController<List<ProductModel>> _productSearchController =
       StreamController<List<ProductModel>>.broadcast();
 
   //-----------------------------------------------------------------------------
@@ -67,13 +77,16 @@ class POSBloc {
   //-----------------------------------------------------------------------------
 
   Stream<Map<String, ProductModel>> get productsStream =>
-      _productsController.stream;
+      _productsController.stream.asBroadcastStream();
 
   Stream<List<ProductModel>> get productSearchStream =>
       _productSearchController.stream;
 
-  Stream<Map<String, ProductModel>> get productViewStream =>
-      _productsViewController.stream;
+  // Stream<Map<String, ProductModel>> get productViewStream =>
+  // _productsViewController.stream;
+
+  Stream<Map<String, UnitsModel>> get productsUnitStream =>
+      _productUnitController.stream;
 
   Stream<double> get subTotalStream => _subtotalController.stream;
 
@@ -91,7 +104,8 @@ class POSBloc {
   ///Add a producto to a Map where key is the local id of product
   ///and value is an instance of ProductModel(). Param getPrices is
   ///used to know if product prices should or not be calculated
-  Future addProduct(ProductModel product, {bool getPrices = true}) async {
+  Future addProduct(ProductModel product,
+      {bool getPrices = true, UnitsModel? unit}) async {
     bool res = false;
     if (_productsController.hasValue) {
       if (dataBloc.settings!['prioridad_precios_producto'] == 10) {
@@ -102,38 +116,47 @@ class POSBloc {
       emptyProductsAdded();
       res = await _addProductToProductMap(product, getPrices);
     }
-    setProductView(_productsController.value);
     setSubTotal(getSubTotal());
     return res;
   }
 
   /// Add product to sale product list, if getPrices = true, calculate
   /// product prices
-  Future<bool> _addProductToProductMap(
-      ProductModel product, bool getPrices) async {
+  Future<bool> _addProductToProductMap(ProductModel product, bool getPrices,
+      {UnitsModel? unit}) async {
     bool res = false;
     if (dataBloc.settings!['item_addition'] == 1) {
-      final p = getProductData(product.id.toString());
+      final key = product.id.toString();
+      final p = getProductData(key);
       if (p == null) {
+        // add product unit if product unit is selected
+        if (unit != null) {
+          addProductUnit(key, unit);
+        }
         final p2 = getPrices ? await getProductPrices(product) : product;
         product = p2;
         // product.quantity = 1;
         final temp = {product.id.toString(): product};
         temp.addAll(_productsController.value);
         _productsController.value = temp;
-        res = await addProductQuantity(product.id.toString(), product.quantity);
+        res = await addProductQuantity(key, product.quantity);
       } else {
-        res = await addProductQuantity(product.id.toString(), p.quantity + 1);
+        // add the incoming product initial value
+        res = await addProductQuantity(key, p.quantity + product.quantity);
       }
     } else if (dataBloc.settings!['item_addition'] == 0) {
+      Random random = new Random();
+      int randomNumber = random.nextInt(300);
+      final key = product.id.toString() + '-' + randomNumber.toString();
+      // add product unit if product unit is selected
+      if (unit != null) {
+        addProductUnit(key, unit);
+      }
       final p2 = getPrices ? await getProductPrices(product) : product;
       product = p2;
       // product.quantity = 1;
-      Random random = new Random();
-      int randomNumber = random.nextInt(300);
 
       /// gen an unique key for each product
-      final key = product.id.toString() + '-' + randomNumber.toString();
       if (_productsController.value.keys.contains(key)) {
         _addProductToProductMap(product, getPrices);
       } else {
@@ -215,7 +238,7 @@ class POSBloc {
             product,
             dataBloc.settings!['prioridad_precios_producto'],
             _customerController.valueOrNull,
-            defaultPrice);
+            defaultPrice: defaultPrice);
 
         return product2;
         //aply discount
@@ -234,7 +257,6 @@ class POSBloc {
     if (customer != null) {
       setCustomer(CompanyModel.fromJson(customer));
       final res = await reloadProducts();
-      setProductView(_productsController.value);
       return res;
     } else {
       return false;
@@ -277,15 +299,19 @@ class POSBloc {
 
   /// Makes product Map empty
   emptyProductsAdded() {
-    setProductView({});
     _productsController.value = {};
   }
 
-  /// Remove a product from products Map given a key
+  /// Remove a product from products Map given a key, if product have an asosiate
+  /// unit, remove unit too
   removeProduct(String key) {
-    setProductView(_productsController.value);
     _productsController.value.remove(key);
     setSubTotal(getSubTotal());
+    if (_productUnitController.hasValue) {
+      try {
+        _productUnitController.value.remove(key);
+      } catch (e) {}
+    }
   }
 
   /// Returns an instance of [ProductModel()] from products Map
@@ -365,126 +391,6 @@ class POSBloc {
     return _productsController.value.length;
   }
 
-  /// Send current pos data to server, if there is any changes between local db and server,
-  /// server response will contain those changes and they'll be writen into local db, then
-  /// reload POS data
-  ///
-  Future<bool> sendPosData(BuildContext context) async {
-    bool result = false;
-    final productsDetails = getProductDetailMapLists();
-    final sale =
-        SaleModel.buildSale(dataBloc.userData!, productsDetails).toJson();
-    // final debug = sale.toString();
-    final api = new DataProvider();
-
-    try {
-      final res =
-          await api.postPetition(newSaleEndP, sale, dataBloc.getHeaders());
-      if (res['status'] == -1) {
-        reloadDialog(
-            context,
-            res['body']['error_message'] ?? res['body']['message'],
-            'assets/images/dizzy-robot.png');
-      } else {
-        if (res['error'] ?? true) {
-          if (res['body']['data'] != [] &&
-              res['body']['data'] != null &&
-              res['body']['sync']) {
-            hideCurrentScaffoldAlert(context);
-            scaffoldAlert(
-                context,
-                res['body']['error_message'] ?? res['body']['message'],
-                Duration(seconds: 2));
-            final Map<String, dynamic> changes = res['body']['data'];
-            // to show changes in costumer or products
-            // String chText = _getChangesString(changes);
-            await Future.forEach(changes.keys.toList(), (String key) async {
-              // ignore: unnecessary_null_comparison
-              if (key != null) {
-                await DBProvider.db
-                    .insertOrUpdateQuerys(key.toString(), changes[key] ?? []);
-              }
-            });
-            final reload = await posBloc.reloadPOSData();
-
-            if (!reload) {
-              confirmDialog(context, 'Error al recargar datos de venta POS',
-                  'assets/images/browser.png');
-            } else {
-              hideCurrentScaffoldAlert(context);
-
-              Navigator.pop(context);
-              confirmDialog(context, 'Datos de venta POS recargados',
-                  'assets/images/success.png');
-            }
-          } else {
-            confirmDialog(context, res['body']['message'] ?? res['message'],
-                'assets/images/browser.png');
-          }
-        } else {
-          try {
-            //Load data into SalesModel instance to work with it
-            final printData = await _buildPrintDataMap(res['body']);
-            final salesModel = SalesModel.fromPosBloc(
-              productsDetails,
-              salePrintData: res['body'],
-            );
-            // Save sale data into local DB
-            final saleId = await salesModel.saveSaleData();
-
-            // Verify if sale was saved successfully
-            if (saleId != null) {
-              // Save sale items into dbUpdated
-              final saleItemsStatus = await SaleItemsProvider.saveAllIntoDB(
-                  productsDetails['product_detail_list'], saleId);
-
-              final paymentsStatus =
-                  await PaymentProvider.saveAllIntoDB(saleId);
-              // Verify if sale items were saved successfully
-              if (saleItemsStatus && paymentsStatus) {
-                posBloc.setPrintData(printData);
-                _emptyPosData();
-                scaffoldAlert(context, 'Venta creada', Duration(seconds: 1));
-                result = true;
-              }
-            }
-          } catch (e) {
-            hideCurrentScaffoldAlert(context);
-            confirmDialog(context, e.toString(), 'assets/images/browser.png');
-          }
-          hideCurrentScaffoldAlert(context);
-        }
-      }
-    } catch (e) {
-      print(e);
-      hideCurrentScaffoldAlert(context);
-      confirmDialog(context, e.toString(), 'assets/images/browser.png');
-    }
-    return result;
-  }
-
-  Future<Map> _buildPrintDataMap(Map saleData) async {
-    final settings = (await DBProvider.db.getSettings())!;
-    final docDetails = await DBProvider.db
-        .getDocumentDetails(dataBloc.userData!.documentTypeId.toString());
-    final temp = removeRareSpaceChr(docDetails?['invoice_footer'] ?? '');
-    return {
-      "products": getProductsListMap(),
-      "customer": _customerController.value!.toJson(),
-      "customer_address": _customerAddressesController.value!.toJson(),
-      "payment_method": _paymentMthdController.value!.toJson(),
-      "sale_data": saleData,
-      "pos_note": _invoiceNoteController.valueOrNull ?? '',
-      "payment": _paymentValueController.value.toDouble(),
-      "total": getSubTotal(),
-      "iva": getIVAs(),
-      "company_data": dataBloc.getBillerCompany,
-      "biller_data": dataBloc.getBIllerData,
-      "settings": settings,
-      "footer": temp
-    };
-  }
-
   Map getIVAs() {
     Map ivasMap = {};
     Map temp = {};
@@ -539,6 +445,18 @@ class POSBloc {
     _invoiceNoteController.value = '';
   }
 
+  bool addProductUnit(String productKey, UnitsModel unit) {
+    try {
+      if (!_productUnitController.hasValue) {
+        _productUnitController.value = {};
+      }
+      _productUnitController.value[productKey] = unit;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   //-----------------------------------------------------------------------------
   //                                CUSTOMER
   //
@@ -558,6 +476,9 @@ class POSBloc {
   //_____________________________________
 
   CompanyModel? get getCustomer => _customerController.valueOrNull;
+
+  Map<String, UnitsModel>? get getProductUnits =>
+      _productUnitController.valueOrNull;
 
   // Map<String, dynamic> get settings => _settingsController.value;
 
@@ -602,14 +523,7 @@ class POSBloc {
   //__________________________
 
   setCustomer(CompanyModel? customer) {
-    // if(customer==null){
-    //   _customerController.value = null;
-    // }else{
-
     _customerController.sink.add(customer);
-    // }
-
-    // OR recalculate prices
   }
 
   // Function(bool) get setPrintState => _printStateController.sink.add;
@@ -631,8 +545,8 @@ class POSBloc {
   Function(List<ProductModel>) get setProductSearchData =>
       _productSearchController.sink.add;
 
-  Function(Map<String, ProductModel>) get setProductView =>
-      _productsViewController.sink.add;
+  // Function(Map<String, ProductModel>) get setProductView =>
+  //     // _productsViewController.sink.add;
 
   Function(String) get setInvoiceNote => _invoiceNoteController.sink.add;
 
@@ -649,9 +563,10 @@ class POSBloc {
       _searchController.sink.add;
 
   dispose() {
+    isDisposed = true;
     _productsController.close();
     _productSearchController.close();
-    _productsViewController.close();
+    // _productsViewController.close();
     _subtotalController.close();
     _paymentValueController.close();
     _invoiceNoteController.close();
@@ -660,12 +575,48 @@ class POSBloc {
     _customerController.close();
     _customerAddressesController.close();
     _paymentMthdController.close();
+    _productUnitController.close();
     // _settingsController.close();
     _paymentDocumentController.close();
     _printDataController.close();
     _searchController.close();
     _paymenttermController.close();
     // _printStateController.close();
+  }
+
+  reload({bool disposeFirst = false}) {
+    if (disposeFirst) {
+      dispose();
+    }
+    isDisposed = false;
+    _productsController = BehaviorSubject<Map<String, ProductModel>>();
+    _productUnitController = BehaviorSubject<Map<String, UnitsModel>>();
+
+    _paymentMthdController = BehaviorSubject<PaymentMethods?>();
+    _paymentDocumentController = BehaviorSubject<DocumentsTypes?>();
+    _paymenttermController = BehaviorSubject<int?>();
+    _printDataController = BehaviorSubject<Map>();
+    _searchController = BehaviorSubject<FloatingSearchBarController>();
+
+    _customerController = BehaviorSubject<CompanyModel?>();
+
+    _customerAddressesController = BehaviorSubject<CustomerAddressesModel?>();
+
+    // final _productsViewController =
+    // StreamController<Map<String, ProductModel>>.broadcast();
+
+    _subtotalController = StreamController<double>.broadcast();
+
+    _paymentValueController = BehaviorSubject<int>();
+
+    /// To know if sale is loaded from suspended sale and verify or not prices
+    _verifyPricesController = BehaviorSubject<int>();
+
+    _invoiceNoteController = BehaviorSubject<String>();
+
+    _dispatchNoteController = BehaviorSubject<String>();
+
+    _productSearchController = StreamController<List<ProductModel>>.broadcast();
   }
 
   disposeSearchController() {

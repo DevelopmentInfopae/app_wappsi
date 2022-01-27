@@ -59,15 +59,24 @@ class _ProductCardState extends State<ProductCard> {
           if (widget.action == 'add_to_cart') {
             final res = await posBloc.addProduct(widget.product);
             if (res == 'select_product_unit') {
-              // await showCupertinoDialog(
-              //     // to make selection of product unit required
-              //     barrierDismissible: false,
-              //     context: context,
-              //     builder: (context) {
-              //       return SelectProductUnitDialog(product: widget.product);
-              //     });
               final units = await UnitsProvider.getProductUnits(
-                  widget.product.idCloud.toString());
+                  widget.product.idCloud.toString(),posBloc.getCustomer!.priceGroupId.toString());
+              if(units.length>1){
+                await showCupertinoDialog(
+                  // to make selection of product unit required
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (context) {
+                    return SelectProductUnitDialog(product: widget.product,units: units,);
+                  });
+              }else{
+
+                final res = await posBloc.addProduct(widget.product);
+                if(res==true){
+                  
+                }
+              }
+              print('here');
             }
 
             // Navigator.pop(context);

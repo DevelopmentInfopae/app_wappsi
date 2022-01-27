@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/models/units_model.dart';
 
 /// Custom alert dialog to manage open and close operations on Register, to open action = 'open'
 /// to close action = 'close'
 ///
 class SelectProductUnitDialog extends StatefulWidget {
-  const SelectProductUnitDialog({Key? key, required this.product})
+  final List<UnitsModel> units;
+  const SelectProductUnitDialog({Key? key, required this.product,required this.units})
       : super(key: key);
   final ProductModel product;
   @override

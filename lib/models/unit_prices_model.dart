@@ -26,7 +26,7 @@ class UnitPricesModel {
     required this.lastUpdate,
   });
 
-  String id;
+  int id;
   int idCloud;
   String code;
   double valorUnitario;

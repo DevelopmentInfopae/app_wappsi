@@ -166,7 +166,7 @@ class _SaleCartState extends State<SaleCart> {
         margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
         padding: EdgeInsets.only(top: 15),
         child: StreamBuilder<Map<String, ProductModel>>(
-            stream: posBloc.productViewStream,
+            stream: posBloc.productsStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 if (posBloc.getItemsCount() == 0) {
@@ -202,7 +202,7 @@ class _SaleCartState extends State<SaleCart> {
                 }
               } else {
                 // ignore: unnecessary_null_comparison
-                posBloc.setProductView(posBloc.productsAdded);
+                
                 return _empty(context).center();
               }
             }));

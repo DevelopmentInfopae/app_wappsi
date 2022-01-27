@@ -23,7 +23,7 @@ class UnitsModel {
     required this.lastUpdate,
   });
 
-  String id;
+  int id;
   int idCloud;
   String code;
   String name;
@@ -39,11 +39,11 @@ class UnitsModel {
         idCloud: json["id_cloud"],
         code: json["code"],
         name: json["name"],
-        baseUnit: json["base_unit"],
+        baseUnit: (json["base_unit"]==""||json["base_unit"]==null)?null:json["base_unit"]??null,
         operator: json["operator"],
-        unitValue: json["unit_value"].toDouble(),
-        operationValue: json["operation_value"].toDouble(),
-        priceGroupId: json["price_group_id"],
+        unitValue: (json['valor_unitario']??json["unit_value"])+0.0,
+        operationValue: (json["operation_value"]==''||json["operation_value"]==null)?null:(json["operation_value"]+0.0),
+        priceGroupId: json["price_group_id"]==''?null:json["price_group_id"],
         lastUpdate: json["last_update"],
       );
 

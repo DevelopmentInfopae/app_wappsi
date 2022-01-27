@@ -82,6 +82,9 @@ class HomeGridCards extends StatelessWidget {
   Future<void> _navigation(BuildContext context) async {
     if (gridItems.route == 'sales') {
       // to show or hide home bottombar
+      if(posBloc.isDisposed){
+        posBloc.reload();
+      }
       await _newSale(context);
       await dataBloc.refreshToken(context);
     } else if (gridItems.route == 'products') {
