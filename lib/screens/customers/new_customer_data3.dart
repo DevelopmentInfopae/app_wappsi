@@ -54,7 +54,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
 
   @override
   Widget build(BuildContext context) {
-    _pc = Theme.of(context).primaryColor;
+    _pc = pColor;
     _size = MediaQuery.of(context).size;
     return Scaffold(appBar: _appBar(), body: _body());
   }

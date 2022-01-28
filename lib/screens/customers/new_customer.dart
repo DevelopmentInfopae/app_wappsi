@@ -90,7 +90,7 @@ class _NewCustomerState extends State<NewCustomer> {
 
   @override
   Widget build(BuildContext context) {
-    _pc = Theme.of(context).primaryColor;
+    _pc = pColor;
     _size = MediaQuery.of(context).size;
     return WillPopScope(
         onWillPop: () async {
@@ -398,7 +398,7 @@ class _NewCustomerState extends State<NewCustomer> {
       decoration: !isSelected
           ? null
           : BoxDecoration(
-              border: Border.all(color: Theme.of(context).primaryColor),
+              border: Border.all(color: pColor),
               borderRadius: BorderRadius.circular(5),
               color: Colors.white,
             ),

@@ -106,7 +106,7 @@ class _SalePaymentState extends State<SalePayment> {
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
-    _pc = Theme.of(context).primaryColor;
+    _pc = pColor;
     _textTheme = Theme.of(context).textTheme;
 
     return Scaffold(

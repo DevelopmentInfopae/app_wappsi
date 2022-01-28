@@ -30,7 +30,7 @@ class _DBSyncElementsState extends State<DBSyncElements> {
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
-    _pc = Theme.of(context).primaryColor;
+    _pc = pColor;
 
     return WillPopScope(
       onWillPop: () async {

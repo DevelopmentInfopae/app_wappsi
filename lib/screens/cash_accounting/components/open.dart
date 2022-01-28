@@ -46,7 +46,8 @@ class _OpenFormState extends State<OpenForm> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          registerInput(context, cashAccForm,_value,style: TextStyle(fontSize: 20)),
+          registerInput(context, cashAccForm, _value,
+              style: TextStyle(fontSize: 20)),
           const SizedBox(height: 15.0),
           _button(context, cashAccForm),
         ],
@@ -62,15 +63,9 @@ class _OpenFormState extends State<OpenForm> {
         cashAccForm.loading
             // ignore: unnecessary_statements
             ? null
-            : sendRegisterAction(context, cashAccForm,_value);
+            : sendRegisterAction(context, cashAccForm, _value);
       },
-      buttonDecoration:
-          kButtonDecoration.copyWith(color: Theme.of(context).primaryColor),
+      buttonDecoration: kButtonDecoration.copyWith(color: pColor),
     );
   }
-
-  
-  
-
-  
 }

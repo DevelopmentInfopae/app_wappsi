@@ -54,7 +54,7 @@ class _PrintSaleState extends State<PrintSale> {
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
-    _pc = Theme.of(context).primaryColor;
+    _pc = pColor;
     return WillPopScope(
       onWillPop: () async {
         // To control pop from nav keys on device

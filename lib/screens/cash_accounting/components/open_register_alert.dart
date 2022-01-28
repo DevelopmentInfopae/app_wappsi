@@ -73,7 +73,7 @@ class RegisterAlertDialogState extends State<RegisterAlertDialog> {
             ),
           ),
           Container(
-            color: Theme.of(context).primaryColor.withOpacity(0.8),
+            color: pColor.withOpacity(0.8),
             child: CupertinoDialogAction(
               child: Text(
                 "Aceptar",

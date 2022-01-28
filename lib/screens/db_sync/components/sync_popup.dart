@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
+import 'package:pos_wappsi/constant.dart';
 
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
 
@@ -39,7 +40,7 @@ class SyncAlertDialogState extends State<SyncAlertDialog> {
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
-    // _pc = Theme.of(context).primaryColor;
+    // _pc = pColor;
     // _textTheme = Theme.of(context).textTheme;
     return Container(
       child: CupertinoAlertDialog(
@@ -47,7 +48,7 @@ class SyncAlertDialogState extends State<SyncAlertDialog> {
         content: _elementsLoading(),
         actions: [
           Container(
-            color: Theme.of(context).primaryColor.withOpacity(0.7),
+            color: pColor.withOpacity(0.7),
             child: CupertinoDialogAction(
               child: Text(
                 'Aceptar',

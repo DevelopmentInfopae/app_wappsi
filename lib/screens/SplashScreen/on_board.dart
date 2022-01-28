@@ -79,7 +79,7 @@ class _OnBoardState extends State<OnBoard> {
                 'Skip',
                 style: GoogleFonts.jost(
                   fontSize: 20.0,
-                  color: Theme.of(context).primaryColor,
+                  color: pColor,
                 ),
               ),
             ),
@@ -153,14 +153,13 @@ class _OnBoardState extends State<OnBoard> {
             dotSize: 6,
             pageController: pageController,
             pages: sliderList,
-            indicatorColor: Theme.of(context).primaryColor,
+            indicatorColor: pColor,
             unselectedIndicatorColor: Colors.grey,
           ),
           ButtonGlobal(
             iconWidget: Icons.arrow_forward,
             buttontext: buttonText,
-            buttonDecoration: kButtonDecoration.copyWith(
-                color: Theme.of(context).primaryColor),
+            buttonDecoration: kButtonDecoration.copyWith(color: pColor),
             onPressed: () {
               setState(
                 () {

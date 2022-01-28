@@ -51,7 +51,7 @@ class _ListFavoritesState extends State<ListFavorites> {
 
   @override
   Widget build(BuildContext context) {
-    _pc = Theme.of(context).primaryColor;
+    _pc = pColor;
     _size = MediaQuery.of(context).size;
 
     // initialize search controller
@@ -180,7 +180,7 @@ class _ListFavoritesState extends State<ListFavorites> {
           ),
         ],
       ),
-      color: Theme.of(context).primaryColor,
+      color: pColor,
       onTap: () async {},
     );
   }

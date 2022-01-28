@@ -53,7 +53,7 @@ priceDiffAlert(
               ),
             ),
             Container(
-              color: Theme.of(context).primaryColor.withOpacity(0.8),
+              color: pColor.withOpacity(0.8),
               child: CupertinoDialogAction(
                 child: Text(
                   "Si",

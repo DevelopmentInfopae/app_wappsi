@@ -53,7 +53,7 @@ class _ProductsState extends State<Products> {
 
     _theme = Theme.of(context).textTheme;
     _size = MediaQuery.of(context).size;
-    // _pc = Theme.of(context).primaryColor;
+    // _pc = pColor;
 
     return WillPopScope(
       onWillPop: () async {

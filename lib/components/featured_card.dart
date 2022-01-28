@@ -69,7 +69,7 @@
 //                           },
 //                           child: Icon(
 //                             Icons.add_shopping_cart,
-//                             color: Theme.of(context).primaryColor,
+//                             color: pColor,
 //                           ),
 //                         ),
 //                       ),

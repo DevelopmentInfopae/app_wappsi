@@ -59,7 +59,7 @@
 //                 ButtonGlobalWithoutIcon(
 //                     buttontext: 'Send OTP',
 //                     buttonDecoration:
-//                         kButtonDecoration.copyWith(color: Theme.of(context).primaryColor),
+//                         kButtonDecoration.copyWith(color: pColor),
 //                     onPressed: () {
 //                       CheckEMail().launch(context);
 //                     },

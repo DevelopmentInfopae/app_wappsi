@@ -150,7 +150,7 @@ class _PrintSettingsState extends State<PrintSettings> {
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
-    _pc = Theme.of(context).primaryColor;
+    _pc = pColor;
     return Scaffold(
       appBar: appBar(context, 'Dispositivos',
           image: 'assets/images/printer-settings.png'),
@@ -331,7 +331,7 @@ class _PrintSettingsState extends State<PrintSettings> {
       decoration: !isSelected
           ? null
           : BoxDecoration(
-              border: Border.all(color: Theme.of(context).primaryColor),
+              border: Border.all(color: pColor),
               borderRadius: BorderRadius.circular(5),
               color: Colors.white,
             ),

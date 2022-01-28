@@ -17,7 +17,7 @@ class UnitsModel {
     required this.name,
     this.baseUnit,
     this.operator,
-    this.unitValue,
+    required this.unitValue,
     this.operationValue,
     this.priceGroupId,
     required this.lastUpdate,
@@ -29,7 +29,7 @@ class UnitsModel {
   String name;
   int? baseUnit;
   String? operator;
-  double? unitValue;
+  double unitValue;
   double? operationValue;
   int? priceGroupId;
   String lastUpdate;
@@ -39,11 +39,17 @@ class UnitsModel {
         idCloud: json["id_cloud"],
         code: json["code"],
         name: json["name"],
-        baseUnit: (json["base_unit"]==""||json["base_unit"]==null)?null:json["base_unit"]??null,
+        baseUnit: (json["base_unit"] == "" || json["base_unit"] == null)
+            ? null
+            : json["base_unit"] ?? null,
         operator: json["operator"],
-        unitValue: (json['valor_unitario']??json["unit_value"])+0.0,
-        operationValue: (json["operation_value"]==''||json["operation_value"]==null)?null:(json["operation_value"]+0.0),
-        priceGroupId: json["price_group_id"]==''?null:json["price_group_id"],
+        unitValue: (json['valor_unitario'] ?? json["unit_value"]) + 0.0,
+        operationValue:
+            (json["operation_value"] == '' || json["operation_value"] == null)
+                ? null
+                : (json["operation_value"] + 0.0),
+        priceGroupId:
+            json["price_group_id"] == '' ? null : json["price_group_id"],
         lastUpdate: json["last_update"],
       );
 

@@ -113,9 +113,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
               Radius.circular(5),
             ),
             // to change color based on _isloading property
-            color: loginForm.loading
-                ? Colors.grey
-                : Theme.of(context).primaryColor),
+            color: loginForm.loading ? Colors.grey : pColor),
         onPressed: loginForm.loading ? null : () => _login(loginForm, context));
   }
 

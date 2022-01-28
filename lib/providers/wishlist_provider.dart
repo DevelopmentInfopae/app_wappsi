@@ -5,11 +5,11 @@ import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/API_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/providers/price_policy_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:pos_wappsi/utils/manage_server_resp.dart';
-import 'package:pos_wappsi/utils/sale_functions/product_price_functions.dart';
 
 class WishlistProvider {
   /// given a list of product ids, load them into
@@ -22,8 +22,8 @@ class WishlistProvider {
       final temp = ProductModel.fromJsonList(products!);
       List<ProductModel> pM = [];
       await Future.forEach(temp, (ProductModel p) async {
-        pM.add(await policyCases(p,
-            dataBloc.settings!['prioridad_precios_producto'], customer));
+        pM.add(await PricePoliciesProvider.policyCases(
+            p, dataBloc.settings!['prioridad_precios_producto'], customer));
       });
 
       return pM;

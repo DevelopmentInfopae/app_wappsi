@@ -55,7 +55,7 @@ class _ProductPriceState extends State<ProductPrice> {
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
-    // _pc = Theme.of(context).primaryColor;
+    // _pc = pColor;
     return Scaffold(
       appBar: appBar(context, 'Verificador',
           elevation: false, image: 'assets/images/give-money.png', onPop: () {

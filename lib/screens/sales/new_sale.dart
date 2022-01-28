@@ -52,7 +52,7 @@ class _NewSaleState extends State<NewSale> {
 
   @override
   Widget build(BuildContext context) {
-    _pc = Theme.of(context).primaryColor;
+    _pc = pColor;
     _size = MediaQuery.of(context).size;
     return WillPopScope(
         onWillPop: () async {

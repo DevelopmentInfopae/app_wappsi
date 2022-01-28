@@ -11,11 +11,13 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
+import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 import 'package:pos_wappsi/screens/sales/components/sale_product_list_widget.dart';
 
 import 'package:pos_wappsi/screens/sales/components/search.dart';
+import 'package:pos_wappsi/screens/sales/components/select_product_unit_alert.dart';
 import 'package:pos_wappsi/screens/sales/components/suspend_sale_alert.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
@@ -202,7 +204,7 @@ class _SaleCartState extends State<SaleCart> {
                 }
               } else {
                 // ignore: unnecessary_null_comparison
-                
+
                 return _empty(context).center();
               }
             }));
@@ -240,7 +242,7 @@ class _SaleCartState extends State<SaleCart> {
           ),
         ],
       ),
-      color: Theme.of(context).primaryColor,
+      color: pColor,
       onTap: () {
         posBloc.getSearchBarController.open();
       },
@@ -348,11 +350,23 @@ class _SaleCartState extends State<SaleCart> {
           _query = query;
         }
       } else {
-        _query = query;
-        if (query != '') {
-          products = ProductModel.fromJsonList(res);
-        } else {
+        if (res.length == 1) {
+          final temp = ProductModel.fromJson(res.first);
+          final productReq =
+              await ProductsProvider.getProductRequirements(context, temp);
+          if (productReq != {}) {
+            final result = await posBloc.addProduct(productReq);
+            print(result);
+          }
+
           products = [];
+        } else {
+          _query = query;
+          if (query != '') {
+            products = ProductModel.fromJsonList(res);
+          } else {
+            products = [];
+          }
         }
       }
     } else {

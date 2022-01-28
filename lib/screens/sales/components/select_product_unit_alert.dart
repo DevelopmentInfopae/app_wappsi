@@ -1,17 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 /// Custom alert dialog to manage open and close operations on Register, to open action = 'open'
 /// to close action = 'close'
 ///
 class SelectProductUnitDialog extends StatefulWidget {
   final List<UnitsModel> units;
-  const SelectProductUnitDialog({Key? key, required this.product,required this.units})
+  const SelectProductUnitDialog(
+      {Key? key, required this.product, required this.units})
       : super(key: key);
   final ProductModel product;
   @override
@@ -23,7 +26,7 @@ class SelectProductUnitDialog extends StatefulWidget {
 class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
   late FocusNode _valueFocus;
 
-  final formKey = new GlobalKey<FormState>();
+  int _selection = 0;
 
   @override
   void initState() {
@@ -39,31 +42,53 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // color: Colors.transparent,
-      child: CupertinoAlertDialog(
-        title: Text(
-          'Seleccione la unidad de producto',
-          style: buttonsSmallTextStyle(context).apply(fontSizeDelta: 1.2),
-        ).paddingBottom(10),
-        content: new SingleChildScrollView(child: _select(context)),
-        actions: <Widget>[
-          Container(
-            color: Theme.of(context).primaryColor.withOpacity(0.8),
-            child: CupertinoDialogAction(
-              child: Text(
-                "Aceptar",
-                style: TextStyle(color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-              onPressed: () async {
-                Navigator.of(context).pop(true);
-                // return widget.product;
-              },
-            ),
+    return CupertinoAlertDialog(
+      title: Column(
+        children: [
+          Text(
+            'Seleccione la unidad de producto para:',
+            style: buttonsSmallTextStyle(context).apply(fontSizeDelta: 1.2),
           ),
+          Text(
+            capitalizeText(widget.product.name),
+            style: normalTextStyle(context, fontSizeFactor: 1.1),
+          ).paddingTop(8)
         ],
-      ),
+      ).paddingBottom(10),
+      content: new SingleChildScrollView(child: _select(context)),
+      actions: <Widget>[
+        Container(
+          color: Colors.red.withOpacity(0.8),
+          child: CupertinoDialogAction(
+            child: Text(
+              "Cancelar",
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () async {
+              Navigator.of(context).pop(null);
+              // return widget.product;
+            },
+          ),
+        ),
+        Container(
+          color: pColor.withOpacity(0.8),
+          child: CupertinoDialogAction(
+            child: Text(
+              "Aceptar",
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () async {
+              if (_selection != 0) {
+                Navigator.of(context).pop(
+                    widget.units.where((u) => u.idCloud == _selection).first);
+              }
+              // return widget.product;
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -71,10 +96,47 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
     // final _textTheme = Theme.of(context).textTheme;
     return Material(
       color: Colors.transparent,
-      child: Form(
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        key: formKey,
-        child: Column(),
+      child: SingleChildScrollView(
+        child: Column(
+          children: widget.units.map((UnitsModel u) {
+            return AppButton(
+              onTap: () {
+                setState(() {
+                  _selection = u.idCloud;
+                });
+              },
+              color: greyLight,
+              shapeBorder: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  side: BorderSide(
+                      color: u.idCloud == _selection ? pColor : Colors.white,
+                      width: 2)),
+              padding: EdgeInsets.zero,
+              child: ListTile(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      u.name,
+                      maxLines: 2,
+                    ).flexible(flex: 6),
+                    Checkbox(
+                      checkColor: Colors.white,
+                      activeColor: pColor,
+                      value: u.idCloud == _selection,
+                      shape: CircleBorder(),
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _selection = u.idCloud;
+                        });
+                      },
+                    ).flexible(flex: 1)
+                  ],
+                ),
+              ),
+            ).paddingSymmetric(vertical: 4);
+          }).toList(),
+        ),
       ),
     );
   }

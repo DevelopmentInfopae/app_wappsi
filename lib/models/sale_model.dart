@@ -162,7 +162,7 @@ class SaleModel {
   List<double> netPrice;
   List<double> unitPrice;
   List<double?> realUnitPrice;
-  List<int> quantity;
+  List<double> quantity;
   List<int> productUnit;
   List<int> productUnitIdSelected;
   List<int> productBaseQuantity;
@@ -290,7 +290,7 @@ class SaleModel {
         unitPrice:
             List<double>.from(json["unit_price"].map((x) => x.toDouble())),
         realUnitPrice: List<double>.from(json["real_unit_price"].map((x) => x)),
-        quantity: List<int>.from(json["quantity"].map((x) => x)),
+        quantity: List<double>.from(json["quantity"].map((x) => x)),
         productUnit: List<int>.from(json["product_unit"].map((x) => x)),
         productUnitIdSelected:
             List<int>.from(json["product_unit_id_selected"].map((x) => x)),

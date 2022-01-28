@@ -49,7 +49,7 @@ class _ProductsState extends State<Customers> {
     // _theme = Theme.of(context);
     _size = MediaQuery.of(context).size;
     _theme = Theme.of(context).textTheme;
-    // _pc = Theme.of(context).primaryColor;
+    // _pc = pColor;
 
     return Scaffold(
       appBar: _appBar(context),

@@ -10,6 +10,7 @@ import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
 import 'package:pos_wappsi/providers/document_types_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/payment_methods_provider.dart';
+import 'package:pos_wappsi/providers/products_provider.dart';
 
 SuspendedSales suspendedSalesFromJson(String str) =>
     SuspendedSales.fromJson(json.decode(str));
@@ -135,7 +136,7 @@ class SuspendedSales {
       final res = await DBProvider.db
           .insertQuery('suspended_sales', saleBasicData, returnId: true);
       if (res != 0) {
-        result = await ProductModel.saveProductsSpSale(res ?? 0);
+        result = await ProductsProvider.saveProductsSpSale(res ?? 0);
       }
     }
 
@@ -155,7 +156,7 @@ class SuspendedSales {
       {bool getPrices = true}) async {
     final suspendedSale = await loadFromDB(id);
 
-    final prodInfo = await ProductModel.loadSuspSaleProducts(id);
+    final prodInfo = await ProductsProvider.loadSuspSaleProducts(id);
     final customer = await CompanyModel.getCompanyDetails(
         suspendedSale!.idCustomer.toString());
     final customerAdd = await CustomerAddressesProvider.loadCustomerAddress(
@@ -175,10 +176,10 @@ class SuspendedSales {
     final products = prodInfo['products'];
     List<Map<String, dynamic>> errors = [];
     await Future.forEach(products, (ProductModel p) async {
-      final res = await posBloc.addProduct(p, getPrices: getPrices);
-      if (!res) {
-        errors.add(p.toJson());
-      }
+      // final res = await posBloc.addProduct(p, getPrices: getPrices);
+      // if (!res) {
+      //   errors.add(p.toJson());
+      // }
     });
 
     return errors;
@@ -188,7 +189,7 @@ class SuspendedSales {
       String id, String keyWord, double totalValue, int items) async {
     final suspendedSale = await loadFromDB(id);
 
-    final products = await ProductModel.loadSuspSaleProducts(id);
+    final products = await ProductsProvider.loadSuspSaleProducts(id);
     final customer = await CompanyModel.getCompanyDetails(
         suspendedSale!.idCustomer.toString());
     final customerAdd = await CustomerAddressesProvider.loadCustomerAddress(

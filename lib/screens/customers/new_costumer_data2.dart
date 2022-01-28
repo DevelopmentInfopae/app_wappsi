@@ -88,7 +88,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
 
   @override
   Widget build(BuildContext context) {
-    _pc = Theme.of(context).primaryColor;
+    _pc = pColor;
     _size = MediaQuery.of(context).size;
     return Scaffold(appBar: _appBar(), key: _scaffoldKey, body: _body());
   }
@@ -301,7 +301,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       decoration: !isSelected
           ? null
           : BoxDecoration(
-              border: Border.all(color: Theme.of(context).primaryColor),
+              border: Border.all(color: pColor),
               borderRadius: BorderRadius.circular(5),
               color: Colors.white,
             ),
@@ -388,7 +388,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       decoration: !isSelected
           ? null
           : BoxDecoration(
-              border: Border.all(color: Theme.of(context).primaryColor),
+              border: Border.all(color: pColor),
               borderRadius: BorderRadius.circular(5),
               color: Colors.white,
             ),
@@ -466,7 +466,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       decoration: !isSelected
           ? null
           : BoxDecoration(
-              border: Border.all(color: Theme.of(context).primaryColor),
+              border: Border.all(color: pColor),
               borderRadius: BorderRadius.circular(5),
               color: Colors.white,
             ),

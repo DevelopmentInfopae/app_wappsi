@@ -152,7 +152,7 @@ class _DBSyncState extends State<DBSync> {
   }
 
   _navigate() {
-    // final _pc = Theme.of(context).primaryColor;
+    // final _pc = pColor;
     if (_status.values.where((element) => element == false).isEmpty) {
       // return ;
       // confirmDialog(context, 'Base de datos sincronizada con exito',

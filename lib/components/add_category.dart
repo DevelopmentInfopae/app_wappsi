@@ -17,9 +17,13 @@ class _AddCategoryState extends State<AddCategory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: (){
-        Navigator.pop(context);
-      }, icon: Image(image: AssetImage('assets/images/x.png'),)),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Image(
+              image: AssetImage('assets/images/x.png'),
+            )),
         title: Text(
           'Add Category',
           style: GoogleFonts.poppins(
@@ -47,7 +51,7 @@ class _AddCategoryState extends State<AddCategory> {
             ),
             ButtonGlobalWithoutIcon(
               buttontext: 'Save',
-              buttonDecoration: kButtonDecoration.copyWith(color: Theme.of(context).primaryColor),
+              buttonDecoration: kButtonDecoration.copyWith(color: pColor),
               onPressed: () {
                 finish(context);
               },

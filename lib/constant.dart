@@ -118,6 +118,8 @@ double leadingIconSize = 27;
 /// Color to subtitles
 Color greyColor = Colors.grey[700]!;
 
+Color greyLight = Colors.grey[100]!;
+
 /// Color to subtitles
 Color blueTextColor = Color.fromRGBO(0, 124, 209, 1);
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pos_wappsi/constant.dart';
 
 // ignore: must_be_immutable
 class ButtonGlobal extends StatelessWidget {
@@ -8,18 +9,16 @@ class ButtonGlobal extends StatelessWidget {
   final Decoration buttonDecoration;
   var onPressed;
 
-  ButtonGlobal({
-    required this.iconWidget,
-    required this.buttontext,
-    required this.buttonDecoration,
-    required this.onPressed
-  });
+  ButtonGlobal(
+      {required this.iconWidget,
+      required this.buttontext,
+      required this.buttonDecoration,
+      required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onPressed,
-      
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -30,13 +29,13 @@ class ButtonGlobal extends StatelessWidget {
             Text(
               buttontext,
               style: GoogleFonts.jost(
-                fontSize: 20.0, 
+                fontSize: 20.0,
                 color: Theme.of(context).primaryTextTheme.button!.color,
               ),
             ),
             Icon(
               iconWidget,
-              color: Theme.of(context).primaryColor,
+              color: pColor,
             ),
           ],
         ),
@@ -44,6 +43,7 @@ class ButtonGlobal extends StatelessWidget {
     );
   }
 }
+
 // ignore: must_be_immutable
 class ButtonGlobalWithoutIcon extends StatelessWidget {
   final String buttontext;
@@ -54,7 +54,6 @@ class ButtonGlobalWithoutIcon extends StatelessWidget {
     required this.buttontext,
     required this.buttonDecoration,
     required this.onPressed,
-
   });
 
   @override
@@ -71,7 +70,7 @@ class ButtonGlobalWithoutIcon extends StatelessWidget {
             Text(
               buttontext,
               style: GoogleFonts.jost(
-                fontSize: 20.0, 
+                fontSize: 20.0,
                 color: Theme.of(context).primaryTextTheme.button!.color,
               ),
             ),

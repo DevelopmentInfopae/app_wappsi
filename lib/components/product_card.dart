@@ -8,6 +8,7 @@ import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/screens/products/product_details.dart';
 import 'package:pos_wappsi/screens/products/product_price_verifier.dart';
@@ -57,26 +58,11 @@ class _ProductCardState extends State<ProductCard> {
         ),
         onTap: () async {
           if (widget.action == 'add_to_cart') {
-            final res = await posBloc.addProduct(widget.product);
-            if (res == 'select_product_unit') {
-              final units = await UnitsProvider.getProductUnits(
-                  widget.product.idCloud.toString(),posBloc.getCustomer!.priceGroupId.toString());
-              if(units.length>1){
-                await showCupertinoDialog(
-                  // to make selection of product unit required
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (context) {
-                    return SelectProductUnitDialog(product: widget.product,units: units,);
-                  });
-              }else{
-
-                final res = await posBloc.addProduct(widget.product);
-                if(res==true){
-                  
-                }
-              }
-              print('here');
+            final productReq = await ProductsProvider.getProductRequirements(
+                context, widget.product);
+            if (productReq != {}) {
+              final result = await posBloc.addProduct(productReq);
+              print(result);
             }
 
             // Navigator.pop(context);
@@ -142,8 +128,7 @@ class _ProductCardState extends State<ProductCard> {
   Future<double> _getProductPrice() async {
     if (widget.action == 'add_to_cart') {
       // get product price for selected costumer
-      final p =
-          await posBloc.getProductPrices(widget.product, defaultPrice: true);
+      final p = await ProductsProvider.getProductPrices(widget.product);
       return p.getPriceWithIVA();
     } else {
       return widget.product.getPriceWithIVA();

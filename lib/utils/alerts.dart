@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/widgets.dart';
+import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:restart_app/restart_app.dart';
 
@@ -69,7 +70,7 @@ confirmDialog(BuildContext context, String msg, String img) async {
           ),
           actions: <Widget>[
             Container(
-              color: Theme.of(context).primaryColor.withOpacity(0.7),
+              color: pColor.withOpacity(0.7),
               child: CupertinoDialogAction(
                 child: Text(
                   'Aceptar',
@@ -106,7 +107,7 @@ reloadDialog(BuildContext context, String msg, String img) async {
           ),
           actions: <Widget>[
             Container(
-              color: Theme.of(context).primaryColor.withOpacity(0.7),
+              color: pColor.withOpacity(0.7),
               child: CupertinoDialogAction(
                 child: Text(
                   'Aceptar',
@@ -178,7 +179,7 @@ choiceAlert(BuildContext context, String msj, String img,
               ),
             ),
             Container(
-              color: Theme.of(context).primaryColor.withOpacity(0.8),
+              color: pColor.withOpacity(0.8),
               child: CupertinoDialogAction(
                 child: Text(
                   confirm,
@@ -231,7 +232,7 @@ loadCart(BuildContext context, String msj, String img) {
               ),
             ),
             Container(
-              color: Theme.of(context).primaryColor.withOpacity(0.8),
+              color: pColor.withOpacity(0.8),
               child: CupertinoDialogAction(
                 child: Text(
                   'Aceptar',
@@ -342,7 +343,7 @@ listInfoDialog(BuildContext context, List<Map> info, String column1Key,
           ),
           actions: <Widget>[
             Container(
-              color: Theme.of(context).primaryColor.withOpacity(0.7),
+              color: pColor.withOpacity(0.7),
               child: CupertinoDialogAction(
                 child: Text(
                   'Aceptar',
@@ -425,7 +426,7 @@ Future<bool> listInfoDialogChoice(BuildContext context, List<Map> info,
               ),
             ),
             Container(
-              color: Theme.of(context).primaryColor.withOpacity(0.7),
+              color: pColor.withOpacity(0.7),
               child: CupertinoDialogAction(
                 child: Text(
                   'Aceptar',

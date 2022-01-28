@@ -28,7 +28,7 @@ class _CustomerDetailsState extends State<CustomerDetails> {
 
   @override
   Widget build(BuildContext context) {
-    // _pc = Theme.of(context).primaryColor;
+    // _pc = pColor;
 
     return Scaffold(
       appBar: appBar(context, 'Detalle de cliente',

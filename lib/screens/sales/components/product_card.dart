@@ -85,8 +85,23 @@ class _ProductCardState extends State<ProductCard> {
               productPhoto(widget.product.value.image).withSize(
                   width: _size.width * 0.23,
                   height: _size.height * 0.1 > 70 ? _size.height * 0.1 : 70),
-              _qty().paddingOnly(left: 5, top: 5, bottom: 8),
-              _prices().paddingOnly(right: 8, bottom: 8).expand(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    posBloc.getProductUnits?[widget.product.key]?.name ?? '',
+                    textAlign: TextAlign.end,
+                    style: normalTextStyle(context),
+                  ).paddingRight(8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _qty().paddingOnly(left: 5, top: 5, bottom: 8),
+                      _prices().paddingOnly(right: 8, bottom: 8)
+                    ],
+                  )
+                ],
+              ).expand(),
             ]),
       ],
     );
@@ -139,7 +154,7 @@ class _ProductCardState extends State<ProductCard> {
         textAlign: TextAlign.center,
         onChanged: (String value) async {
           // quantityFocusNode.requestFocus();
-          int productInt = int.tryParse(value) ?? 0;
+          double productInt = double.tryParse(value) ?? 0.0;
           if (productInt == 0) {
             if (value == '') {
               final res =
@@ -278,7 +293,7 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _productPrice() {
-    return Text('${widget.product.value.getFormatedPriceIVA()}',
+    return Text('c/u ${widget.product.value.getFormatedPriceIVA()}',
         style: numbersTextStyle(
             fontSizeFactor: 0.9, fontWeight: FontWeight.normal));
   }
@@ -304,8 +319,11 @@ class _ProductCardState extends State<ProductCard> {
 
   _updateQuantityValue() {
     setState(() {
-      final value =
-          posBloc.getProductData(widget.product.key)!.quantity.toString();
+      final value = posBloc
+          .getProductData(widget.product.key)!
+          .quantity
+          .toInt()
+          .toString();
       _quantityController.text = (value);
       if (value == '1') {
         _quantityController.selection = TextSelection(
