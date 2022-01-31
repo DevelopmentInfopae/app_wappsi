@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/models/companies_model.dart';
 
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/price_policy_provider.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
@@ -32,20 +34,20 @@ class ProductsProvider {
 
   /// Check if suspendedSaleProducts's prices are different of current
   /// product's prices and return the price diff betwen them
-  static Future<List<Map<String, dynamic>>> checkSuspPriceDif(
-      List<Map> res) async {
-    List<Map<String, dynamic>> dif = [];
-    Future.forEach(res, (Map p) async {
-      final temp = ProductModel.fromJsonList([p]);
-      final prodP = await getProductPrices(temp.first);
-      if (prodP.price != p['sp_price']) {
-        dif.add({
-          'product_name': p['name'],
-          'price': prodP.price,
-          'sp_price': p['sp_price']
-        });
-      }
-    });
+  static Future<Map<String, dynamic>> checkSuspPriceDif(
+      Map res, CompanyModel customer) async {
+    Map<String, dynamic> dif = {};
+
+    final temp = ProductModel.fromJsonList([res]);
+    final prodP = await getProductPrices(temp.first, customer: customer);
+    if (prodP.price != res['sp_price']) {
+      dif = {
+        'product_name': res['name'],
+        'price': prodP.price,
+        'sp_price': res['sp_price']
+      };
+    }
+
     return dif;
   }
 
@@ -112,7 +114,7 @@ class ProductsProvider {
     String sql2 = '''
         SELECT p.${productColumns.join(',p.')},wp.quantity,ssp.price AS sp_price,ssp.price_policy,
         ssp.price_without_discount,ssp.discount ,tr.rate, tr.name as tax_rate_name, 
-        ssp.quantity as initial_qtty FROM suspended_sales_product ssp INNER JOIN sma_warehouses_products
+        ssp.quantity as initial_qtty,ssp.unit_id as unit_id FROM suspended_sales_product ssp INNER JOIN sma_warehouses_products
          wp ON (wp.product_id = p.id_cloud AND wp.warehouse_id = ${dataBloc.userData!.warehouseId}) 
         INNER JOIN sma_tax_rates tr ON tr.id_cloud = p.tax_rate INNER JOIN sma_products p
         ON (ssp.id_product = p.id_cloud AND p.discontinued = 0) WHERE ssp.id_suspended_sale=$suspSaleId ORDER BY p.name
@@ -124,40 +126,49 @@ class ProductsProvider {
 
   /// Load products of given suspended sale id
   static Future<Map<String, dynamic>> loadSuspSaleProducts(
-      String suspSaleId) async {
+      String suspSaleId, CompanyModel customer) async {
     final res = await loadSuspendedSProducts(suspSaleId);
-
     List<Map<String, dynamic>> dif = [];
-    if (res != null) {
-      dif = await checkSuspPriceDif(res);
-    }
-
     List<ProductModel> products = [];
-
+    List<UnitsModel> units = [];
     if (res != null) {
-      // Load prices saved on suspended_sale_products
-      products = ProductModel.fromJsonList(res,
-          loadInitialQtty: true,
-          qttyKey: 'initial_qtty',
-          initalPrice: true,
-          inititalPriceKey: 'sp_price');
+      await Future.forEach(res, (Map p) async {
+        dif.add(await checkSuspPriceDif(p, customer));
+        products.add(ProductModel.fromJsonList([p],
+                loadInitialQtty: true,
+                qttyKey: 'initial_qtty',
+                initalPrice: true,
+                inititalPriceKey: 'sp_price')
+            .first);
+        if (p['unit_id'] != null && p['unit_id'] != '') {
+          final unit = await UnitsProvider.getPUnitSuspended(
+              p['id_cloud'].toString(),
+              customer.priceGroupId!,
+              p['unit_id'].toString());
+          if (unit != null) {
+            units.add(unit);
+          }
+        }
+      });
     }
-    return {'products': products, 'dif': dif};
+    return {'products': products, 'dif': dif, 'products_unit': units};
   }
 
   static Future<bool> saveProductsSpSale(int suspSaleId) async {
     bool result = false;
     if (suspSaleId != 0) {
       List<Map<String, dynamic>> productsMap = [];
-      posBloc.getProducts!.values.forEach((element) {
+      posBloc.getProducts!.keys.forEach((k) {
+        final product = posBloc.getProducts![k]!;
         productsMap.add({
           'id_suspended_sale': suspSaleId,
-          'id_product': element.idCloud,
-          'quantity': element.quantity,
-          'price': element.price,
-          'price_policy': element.pricePolicyPrices,
-          'price_without_discount': element.priceWithoutDiscount,
-          'discount': element.discount,
+          'id_product': product.idCloud,
+          'quantity': product.quantity,
+          'price': product.price,
+          'price_policy': product.pricePolicyPrices,
+          'price_without_discount': product.priceWithoutDiscount,
+          'discount': product.discount,
+          'unit_id': posBloc.getProductUnits?[k]?.idCloud ?? null,
         });
       });
       result = await saveSuspSaleProducts(productsMap);
@@ -298,27 +309,20 @@ class ProductsProvider {
   static Future<ProductModel> getProductPrices(ProductModel product,
       {String? productKey,
       String? customerId,
-      bool defaultPrice = false}) async {
-    if (product.promoPrice != null) {
-      product.price = product.promoPrice!;
-      product.discount = 0;
-      product.priceWithoutDiscount = product.promoPrice!;
-      return product;
+      bool defaultPrice = false,
+      CompanyModel? customer,
+      UnitsModel? unit}) async {
+    if (dataBloc.settings != null) {
+      final product2 = await PricePoliciesProvider.policyCases(product,
+          dataBloc.settings!['prioridad_precios_producto'], posBloc.getCustomer,
+          defaultPrice: defaultPrice);
+
+      return product2;
+      //aply discount
+
     } else {
-      if (dataBloc.settings != null) {
-        final product2 = await PricePoliciesProvider.policyCases(
-            product,
-            dataBloc.settings!['prioridad_precios_producto'],
-            posBloc.getCustomer,
-            defaultPrice: defaultPrice);
-
-        return product2;
-        //aply discount
-
-      } else {
-        await dataBloc.getSettings();
-        return getProductPrices(product);
-      }
+      await dataBloc.getSettings();
+      return getProductPrices(product);
     }
   }
 

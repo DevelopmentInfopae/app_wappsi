@@ -8,6 +8,7 @@ import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/products/product_details.dart';
 import 'package:pos_wappsi/screens/products/product_price_verifier.dart';
@@ -15,25 +16,25 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 // class to show product indormation in form of a card
 
-class ProductCard extends StatefulWidget {
+class ProductCardWUnit extends StatefulWidget {
   final ProductModel product;
-
+  final UnitsModel? unit;
   final String action;
-
   final bool searchPrice;
 
-  ProductCard(
+  ProductCardWUnit(
       {Key? key,
       required this.product,
       required this.action,
-      this.searchPrice = true})
+      this.searchPrice = true,
+      required this.unit})
       : super(key: key);
 
   @override
-  _ProductCardState createState() => _ProductCardState();
+  _ProductCardWUnitState createState() => _ProductCardWUnitState();
 }
 
-class _ProductCardState extends State<ProductCard> {
+class _ProductCardWUnitState extends State<ProductCardWUnit> {
   // late TextTheme _textTheme;
 
   @override
@@ -90,30 +91,56 @@ class _ProductCardState extends State<ProductCard> {
       padding: const EdgeInsets.only(top: 8, bottom: 8, right: 8, left: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [_productName(), _productCode(), _productQttyPrice()],
+        children: [_productName(), _productQttyPrice()],
       ),
     );
   }
 
   Row _productQttyPrice() {
+    double uValue = 0;
+    final uValueWidget = FutureBuilder(
+      future: _getProductPrice(),
+      // initialData: widget.product.price,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          uValue = snapshot.data;
+          final value = getFormatedCurrency(uValue);
+          return Text(
+            'c/u ' + value.substring(0, value.length - 1),
+            style: normalTextStyle(context, fontWeightDelta: 2),
+          );
+        } else {
+          return Text('\$ ');
+        }
+      },
+    );
+    final tValue = getFormatedCurrency(
+        widget.unit?.unitValue ?? widget.product.quantity * uValue);
+
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Text(
-        'Cantidad: ${widget.product.inventory}',
-        style: normalTextStyle(context),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // _productCode(),
+          Text(
+            widget.unit?.name ?? '',
+            style: normalTextStyle(context, fontWeightDelta: 2),
+          ),
+          Text(
+            'Cantidad: ${widget.product.quantity}',
+            style: normalTextStyle(context),
+          ),
+        ],
       ),
-      FutureBuilder(
-        future: _getProductPrice(),
-        // initialData: widget.product.price,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return Text(
-              '${getFormatedCurrency(snapshot.data)}',
-              style: normalTextStyle(context, fontWeightDelta: 2),
-            );
-          } else {
-            return Text('\$ ');
-          }
-        },
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            tValue.substring(0, tValue.length - 1),
+            style: normalTextStyle(context),
+          ),
+          uValueWidget
+        ],
       ),
     ]);
   }

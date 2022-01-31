@@ -4,20 +4,14 @@
 
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/bloc/pos_bloc.dart';
-import 'package:pos_wappsi/config/endpoints.dart';
+
 import 'package:pos_wappsi/models/biller_data_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/providers/API_provider.dart';
+
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
-import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/local_storage/local_db.dart';
-import 'package:pos_wappsi/utils/manage_server_resp.dart';
-import 'package:pos_wappsi/utils/sale_functions/product_price_functions.dart';
 
 ProductModel productModelFromJson(Map<String, dynamic> str) =>
     ProductModel.fromJson(str);
@@ -73,12 +67,13 @@ class ProductModel {
   String taxRateName;
   int unit;
   double discount;
-  int inventory;
+  double inventory;
 
   // other data
   // ignore: avoid_init_to_null
   double? taxRate;
 
+  // ignore: unused_element
   static List get _productColumns => [
         'name',
         'slug',
@@ -120,7 +115,7 @@ class ProductModel {
           promoEnd: json["end_date"] ?? '',
           taxMethod: json["tax_method"],
           promoPrice: _promoPrice(json),
-          inventory: int.tryParse(json["quantity"].toString()) ?? 0,
+          inventory: double.tryParse(json["quantity"].toString()) ?? 0.0,
           brand: json["brand"],
           unit: int.tryParse(json['unit'].toString()) ?? 0,
           taxRateId: json["tax_rate"],
@@ -129,7 +124,7 @@ class ProductModel {
           categoryId: json['category_id'].toString(),
           subCategoryId: json['subcategory_id'].toString(),
           taxRateName: json['tax_rate_name'],
-          quantity: loadInitialQtty ? (json[qtyKey]) : 1);
+          quantity: loadInitialQtty ? (json[qtyKey]) + 0.0 : 1.0);
 
   /// Load ProductModel instances of a given list of product data
   static List<ProductModel> fromJsonList(List<Map> list,
@@ -320,6 +315,7 @@ class ProductModel {
         final pIVA = value.getPriceWithIVA();
         final pNoIVA = value.getPriceWithoutIVA();
         final taxValue = pIVA - pNoIVA;
+        final discountVal = (value.priceWithoutDiscount! - value.price);
         _ids.add(value.idCloud);
         _codes.add(value.code);
         _quantitys.add(value.quantity);
@@ -327,7 +323,7 @@ class ProductModel {
         _types.add(value.type);
         _names.add(value.name);
         _discounts.add(value.discount.toInt());
-        _discountValues.add(value.priceWithoutDiscount! - value.price);
+        _discountValues.add(discountVal < 0 ? 0 : discountVal);
         _taxRates.add(value.taxRate!.toInt());
         _taxValues.add(taxValue);
         _prices.add(pNoIVA);

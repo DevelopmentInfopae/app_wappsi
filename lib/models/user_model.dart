@@ -66,7 +66,7 @@ class UserModel {
       sellerName: json['seller_name'],
       billerId: int.parse(json['biller_id']),
       billerName: json['biller_name'],
-      companyFolder: json['companyFolder'] ?? '/forbabys_prueba/',
+      companyFolder: json['company_folder'] ?? CFOLDER,
       documentTypeId:
           int.tryParse(json['document_type_id'].toString()) ?? null);
 

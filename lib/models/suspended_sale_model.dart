@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
 import 'package:pos_wappsi/providers/document_types_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
@@ -156,16 +157,16 @@ class SuspendedSales {
       {bool getPrices = true}) async {
     final suspendedSale = await loadFromDB(id);
 
-    final prodInfo = await ProductsProvider.loadSuspSaleProducts(id);
     final customer = await CompanyModel.getCompanyDetails(
         suspendedSale!.idCustomer.toString());
+    final prodInfo = await ProductsProvider.loadSuspSaleProducts(id, customer!);
     final customerAdd = await CustomerAddressesProvider.loadCustomerAddress(
         suspendedSale.idAddress.toString());
 
     final payDocument = await DocumentsTypesProvider.loadPayDoc(
         (suspendedSale.idPayDocument ?? '').toString());
 
-    final payMethod = await PaymentMethodsProvider.loadPayDoc(
+    final payMethod = await PaymentMethodsProvider.loadPaymentM(
         (suspendedSale.idPayMethod ?? '').toString());
 
     posBloc.setPaymentDocument(payDocument);
@@ -173,13 +174,18 @@ class SuspendedSales {
     posBloc.setCustomer(customer);
     posBloc.setCustomerAddresses(customerAdd);
 
-    final products = prodInfo['products'];
+    final List<ProductModel> products = prodInfo['products'];
+    final List<UnitsModel?> units = prodInfo['products_unit'];
     List<Map<String, dynamic>> errors = [];
     await Future.forEach(products, (ProductModel p) async {
-      // final res = await posBloc.addProduct(p, getPrices: getPrices);
-      // if (!res) {
-      //   errors.add(p.toJson());
-      // }
+      final index = products.indexOf(p);
+
+      final res = await posBloc.addProduct(
+          {'product': p, 'product_unit': units[index] ?? null},
+          getPrices: getPrices);
+      if (!res) {
+        errors.add(p.toJson());
+      }
     });
 
     return errors;
@@ -189,16 +195,16 @@ class SuspendedSales {
       String id, String keyWord, double totalValue, int items) async {
     final suspendedSale = await loadFromDB(id);
 
-    final products = await ProductsProvider.loadSuspSaleProducts(id);
     final customer = await CompanyModel.getCompanyDetails(
         suspendedSale!.idCustomer.toString());
+    final products = await ProductsProvider.loadSuspSaleProducts(id, customer!);
     final customerAdd = await CustomerAddressesProvider.loadCustomerAddress(
         suspendedSale.idAddress.toString());
 
     final payDocument = await DocumentsTypesProvider.loadPayDoc(
         (suspendedSale.idPayDocument ?? '').toString());
 
-    final payMethod = await PaymentMethodsProvider.loadPayDoc(
+    final payMethod = await PaymentMethodsProvider.loadPaymentM(
         (suspendedSale.idPayMethod ?? '').toString());
 
     return {

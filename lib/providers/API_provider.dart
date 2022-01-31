@@ -38,7 +38,7 @@ class DataProvider {
       });
       dynamic decodedRespBody;
 
-      if (resp.toString().isJson()) {
+      if (resp.data is Map) {
         decodedRespBody = resp.data;
       } else {
         // print(resp.body.toString());
@@ -127,7 +127,7 @@ class DataProvider {
       });
 
       dynamic decodedRespBody;
-      if (resp.toString().isJson()) {
+      if (resp.data is Map) {
         decodedRespBody = resp.data;
       } else {
         return {

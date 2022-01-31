@@ -8,10 +8,13 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/components/product_card.dart';
+import 'package:pos_wappsi/components/product_card_w_unit.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/suspended_sale_model.dart';
+import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/sales/components/product_price_dif_alert.dart';
 import 'package:pos_wappsi/screens/sales/new_sale.dart';
@@ -30,11 +33,13 @@ class SuspendedSaleDetails extends StatefulWidget {
 class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
   late Size _size;
   late List<ProductModel> _products;
+  late List<UnitsModel?> _units;
 
   @override
   void initState() {
     super.initState();
     _products = widget.suspSaleInfo?['products_info']['products'] ?? [];
+    _units = widget.suspSaleInfo?['products_info']['products_unit'] ?? [];
   }
 
   @override
@@ -127,15 +132,7 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
                 ),
               ),
             ),
-            Card(
-              child: DataTable(
-                  columnSpacing: 25,
-                  headingTextStyle: normalTextStyle(context),
-                  showCheckboxColumn: true,
-                  dividerThickness: 2,
-                  columns: _pColumns(),
-                  rows: _pRows()),
-            ),
+            _productList()
           ],
         ).expand(),
         bottom(_buttons(), pColor, _size)
@@ -143,42 +140,31 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
     );
   }
 
-  List<DataRow> _pRows() {
-    final List<ProductModel> products = _products;
-    final size = MediaQuery.of(context).size;
-    return products.map((p) {
-      final price = getFormatedCurrency(p.price);
-      return DataRow(cells: <DataCell>[
-        DataCell(Text(p.quantity.toString()).withWidth(size.width * 0.1)),
-        DataCell(Text(p.name).withWidth(size.width * 0.55)),
-        DataCell(Text(price.substring(0, price.length - 3))
-            .withWidth(size.width * 0.25))
-      ]);
-    }).toList();
-  }
-
-  List<DataColumn> _pColumns() {
-    final size = MediaQuery.of(context).size;
-    return [
-      DataColumn(
-        label: Text(
-          'Cant',
-          style: TextStyle(fontStyle: FontStyle.italic),
-        ).withWidth(size.width * 0.1),
+  Widget _productList() {
+    List<Widget> _pCards = [];
+    for (int i = 0; i < _products.length; i++) {
+      if (_units.length > 0) {
+        _products[i].unit = _units[i]?.idCloud ?? _products[i].unit;
+        _pCards.add(ProductCardWUnit(
+          product: _products[i],
+          action: 'product_details',
+          unit: _units[i] ?? null,
+          searchPrice: false,
+        ));
+      } else {
+        _products[i].inventory = _products[i].quantity;
+        _pCards.add(ProductCard(
+          product: _products[i],
+          action: 'prodouct_details',
+          searchPrice: false,
+        ));
+      }
+    }
+    return SingleChildScrollView(
+      child: Column(
+        children: _pCards,
       ),
-      DataColumn(
-        label: Text(
-          'Nombre',
-          style: TextStyle(fontStyle: FontStyle.italic),
-        ).withWidth(size.width * 0.55),
-      ),
-      DataColumn(
-        label: Text(
-          'Precio c/u',
-          style: TextStyle(fontStyle: FontStyle.italic),
-        ).withWidth(size.width * 0.25),
-      ),
-    ];
+    );
   }
 
   Widget _buttons() {

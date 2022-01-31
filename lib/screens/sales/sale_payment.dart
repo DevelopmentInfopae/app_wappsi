@@ -12,6 +12,7 @@ import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/input_decoration.dart';
 import 'package:pos_wappsi/components/widgets.dart';
+import 'package:pos_wappsi/config/POS_params.dart';
 import 'package:pos_wappsi/config/documents_types.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
@@ -332,7 +333,8 @@ class _SalePaymentState extends State<SalePayment> {
       child: Column(
         children: _paymentM == 1
             ? [
-                posBloc.getPaymentMethod?.code == 'cash'
+                (posBloc.getPaymentMethod?.code == 'cash' ||
+                        DEFPAYMENTM == 'cash')
                     ? _defaultValues().paddingSymmetric(vertical: 6)
                     : Container(),
                 (posBloc.getPaymentMethod?.code != 'Credito' &&

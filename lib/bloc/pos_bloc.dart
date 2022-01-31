@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
@@ -14,15 +13,11 @@ import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/suspended_sale_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
-import 'package:pos_wappsi/providers/price_policy_provider.dart';
 
 import 'package:pos_wappsi/providers/products_provider.dart';
-import 'package:pos_wappsi/providers/units_provider.dart';
-import 'package:pos_wappsi/screens/sales/components/select_product_unit_alert.dart';
 
 import 'package:pos_wappsi/utils/local_storage/local_db.dart';
 
-import 'package:pos_wappsi/utils/sale_functions/product_price_functions.dart';
 import 'package:rxdart/rxdart.dart';
 
 class POSBloc {
@@ -128,12 +123,14 @@ class POSBloc {
       if (p == null) {
         // add product unit if product unit is selected
         // product.quantity = 1;
+        if (unit != null) {
+          addProductUnit(key, unit);
+          product.unit = unit.idCloud;
+        }
+
         final temp = {key: product};
         temp.addAll(_productsController.value);
         _productsController.value = temp;
-        if (unit != null) {
-          addProductUnit(key, unit);
-        }
 
         res =
             getPrices ? await ProductsProvider.getPOSProductPrices(key) : false;
@@ -149,15 +146,17 @@ class POSBloc {
       Random random = new Random();
       int randomNumber = random.nextInt(300);
       final key = product.id.toString() + '-' + randomNumber.toString();
-      // add product unit if product unit is selected
-      if (unit != null) {
-        addProductUnit(key, unit);
-      }
 
       /// gen an unique key for each product
       if (_productsController.value.keys.contains(key)) {
         _addProductToProductPOSMap(product, getPrices);
       } else {
+        // add product unit if product unit is selected
+        if (unit != null) {
+          addProductUnit(key, unit);
+          product.unit = unit.idCloud;
+        }
+
         final temp = {key: product};
         temp.addAll(_productsController.value);
         _productsController.value = temp;

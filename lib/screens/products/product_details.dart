@@ -11,8 +11,10 @@ import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class ProductDetails extends StatelessWidget {
-  const ProductDetails({required this.product, Key? key}) : super(key: key);
-
+  const ProductDetails(
+      {required this.product, Key? key, this.searchPrice = true})
+      : super(key: key);
+  final bool searchPrice;
   final ProductModel product;
 
   @override
@@ -132,8 +134,10 @@ class ProductDetails extends StatelessWidget {
                   hDivider(),
                   _pPrice(
                       context,
-                      getFormatedCurrency(
-                          double.parse(snapshot.data!['price'].toString()))),
+                      getFormatedCurrency(double.parse((searchPrice
+                              ? snapshot.data!['price']
+                              : product.price)
+                          .toString()))),
                   hDivider(),
                   // labelContent('Codigo/PLU: : ', product.code),
                   // hDivider(),

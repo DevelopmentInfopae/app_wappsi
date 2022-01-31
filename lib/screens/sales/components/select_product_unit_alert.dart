@@ -110,7 +110,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                   borderRadius: BorderRadius.circular(5),
                   side: BorderSide(
                       color: u.idCloud == _selection ? pColor : Colors.white,
-                      width: 2)),
+                      width: 3)),
               padding: EdgeInsets.zero,
               child: ListTile(
                 title: Row(
@@ -119,18 +119,19 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                     Text(
                       u.name,
                       maxLines: 2,
-                    ).flexible(flex: 6),
-                    Checkbox(
-                      checkColor: Colors.white,
-                      activeColor: pColor,
-                      value: u.idCloud == _selection,
-                      shape: CircleBorder(),
-                      onChanged: (bool? value) {
-                        setState(() {
-                          _selection = u.idCloud;
-                        });
-                      },
-                    ).flexible(flex: 1)
+                    ).flexible(flex: 7),
+                    unitValue(u).flexible(flex: 5),
+                    // Checkbox(
+                    //   checkColor: Colors.white,
+                    //   activeColor: pColor,
+                    //   value: u.idCloud == _selection,
+                    //   shape: CircleBorder(),
+                    //   onChanged: (bool? value) {
+                    //     setState(() {
+                    //       _selection = u.idCloud;
+                    //     });
+                    //   },
+                    // ).flexible(flex: 1)
                   ],
                 ),
               ),
@@ -138,6 +139,15 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
           }).toList(),
         ),
       ),
+    );
+  }
+
+  Text unitValue(UnitsModel u) {
+    final value = getFormatedCurrency(u.unitValue);
+    return Text(
+      value.substring(0, value.length - 3),
+      maxLines: 2,
+      style: normalTextStyle(context, fontWeightDelta: 2),
     );
   }
 }

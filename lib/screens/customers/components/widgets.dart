@@ -104,7 +104,7 @@ Widget customerDesc(BuildContext context, CompanyModel customer) {
       children: [
         // SizedBox(height: 8,),
         descText(customer.company ?? customer.name, context,
-                maxLines: 2, fontSizeFactor: 0.9, fweigth: 10)
+                maxLines: 2, fontSizeFactor: 1.1, fweigth: 10)
             .paddingSymmetric(vertical: 1),
         descText(customer.name, context, fontSizeFactor: 0.75)
             .paddingSymmetric(vertical: 1),

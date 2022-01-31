@@ -165,7 +165,7 @@ class SaleModel {
   List<double> quantity;
   List<int> productUnit;
   List<int> productUnitIdSelected;
-  List<int> productBaseQuantity;
+  List<double> productBaseQuantity;
   List<double>? productAqty;
   List<String>? productPreferencesText;
   int biller;
@@ -295,7 +295,7 @@ class SaleModel {
         productUnitIdSelected:
             List<int>.from(json["product_unit_id_selected"].map((x) => x)),
         productBaseQuantity:
-            List<int>.from(json["product_base_quantity"].map((x) => x)),
+            List<double>.from(json["product_base_quantity"].map((x) => x)),
         productAqty: List<double>.from(json["product_aqty"].map((x) => x)),
         productPreferencesText:
             List<String>.from(json["product_preferences_text"].map((x) => x)),

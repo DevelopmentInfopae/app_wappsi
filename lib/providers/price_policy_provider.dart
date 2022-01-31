@@ -2,6 +2,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/companies_provider.dart';
 
 class PricePoliciesProvider {
@@ -20,7 +21,7 @@ class PricePoliciesProvider {
   /// Return ProductModel object with prices calculatd by price_policy
   static Future<ProductModel> policyCases(
       ProductModel product, int? policy, CompanyModel? customer,
-      {bool defaultPrice = false, String? productKey}) async {
+      {bool defaultPrice = false, String? productKey, UnitsModel? unit}) async {
     //tax rate for IVA
 
     double price = product.getPriceWithoutIVA();
@@ -28,20 +29,27 @@ class PricePoliciesProvider {
     /// For price_plicy with id 6
     if (policy == 6) {
       if (customer != null) {
-        if (customer.priceGroupId != null) {
-          price = await product.customerPrice(
-              customer, product.billerPrice(product.getPrice()));
+        if (product.promoPrice != null) {
+          product.price = product.promoPrice!;
+          product.discount = 0;
+          product.priceWithoutDiscount = product.promoPrice!;
+          return product;
         } else {
-          price = await product.billerPrice(product.getPrice());
-        }
-        // print(price);
-        final values = await priceWDiscount(price, customer);
-        product.price = values[0];
-        product.priceWithoutDiscount = price;
-        product.discount = values[1];
-        product.pricePolicyPrices = price;
+          if (customer.priceGroupId != null) {
+            price = await product.customerPrice(
+                customer, product.billerPrice(product.getPrice()));
+          } else {
+            price = await product.billerPrice(product.getPrice());
+          }
+          // print(price);
+          final values = await priceWDiscount(price, customer);
+          product.price = values[0];
+          product.priceWithoutDiscount = price;
+          product.discount = values[1];
+          product.pricePolicyPrices = price;
 
-        return product;
+          return product;
+        }
       } else {
         //if customer not selected
         final values = await priceWDiscount(price, customer);

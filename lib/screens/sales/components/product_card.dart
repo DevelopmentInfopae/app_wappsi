@@ -154,41 +154,39 @@ class _ProductCardState extends State<ProductCard> {
         textAlign: TextAlign.center,
         onChanged: (String value) async {
           // quantityFocusNode.requestFocus();
-          double productInt = double.tryParse(value) ?? 0.0;
-          if (productInt == 0) {
-            if (value == '') {
-              final res =
-                  await posBloc.addProductQuantity(widget.product.key, 1);
-              if (!res) {
-                _stockAlert();
-                setState(() {
-                  _updateQuantityValue();
-                });
-              } else {
-                setState(() {
-                  _updateQuantityValue();
-                });
-              }
-            } else {
-              confirmDialog(context, 'Cantidad de producto no valida',
-                  'assets/images/alert.png');
-              // setState(() {
-              //   _updateQuantityValue();
-              // });
-            }
-          } else {
-            final res = await posBloc.addProductQuantity(
-                widget.product.key, productInt);
+          if (!value.endsWith('.')) {
+            if (!value.endsWith('.0')) {
+              double productInt = double.tryParse(value) ?? 0.0;
+              if (productInt == 0) {
+                if (value == '') {
+                  final res =
+                      await posBloc.addProductQuantity(widget.product.key, 1);
+                  if (!res) {
+                    _stockAlert();
 
-            if (!res) {
-              _stockAlert();
-              setState(() {
-                _updateQuantityValue();
-              });
-            } else {
-              setState(() {
-                _updateQuantityValue();
-              });
+                    _updateQuantityValue();
+                  } else {
+                    _updateQuantityValue();
+                  }
+                } else {
+                  confirmDialog(context, 'Cantidad de producto no valida',
+                      'assets/images/alert.png');
+                  // setState(() {
+                  //   _updateQuantityValue();
+                  // });
+                }
+              } else {
+                final res = await posBloc.addProductQuantity(
+                    widget.product.key, productInt);
+                // print(res);
+                if (!res) {
+                  _stockAlert();
+
+                  _updateQuantityValue();
+                } else {
+                  _updateQuantityValue();
+                }
+              }
             }
           }
         },
@@ -245,9 +243,9 @@ class _ProductCardState extends State<ProductCard> {
         // posBloc.getProductData(widget.product.key)!.quantity += 1;
         final res = await posBloc.addProductQuantity(widget.product.key,
             posBloc.getProductData(widget.product.key)!.quantity += 1);
-        setState(() {
-          _updateQuantityValue();
-        });
+
+        _updateQuantityValue();
+
         if (!res) {
           confirmDialog(
               context,
@@ -318,21 +316,23 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   _updateQuantityValue() {
-    setState(() {
-      final value = posBloc
-          .getProductData(widget.product.key)!
-          .quantity
-          .toInt()
-          .toString();
-      _quantityController.text = (value);
-      if (value == '1') {
-        _quantityController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _quantityController.text.length);
-      } else {
-        _quantityController.selection = TextSelection.fromPosition(
-            TextPosition(offset: _quantityController.text.length));
-      }
-    });
+    final value = posBloc.getProductData(widget.product.key)!.quantity;
+
+    // print(_quantityController.text);
+    if (value.toString().endsWith('.0')) {
+      _quantityController.text = value.toInt().toString();
+    } else {
+      _quantityController.text = value.toString();
+      // print(_quantityController.text);
+    }
+
+    if (value == 1.0) {
+      _quantityController.selection = TextSelection(
+          baseOffset: 0, extentOffset: _quantityController.text.length);
+    } else {
+      _quantityController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _quantityController.text.length));
+    }
   }
 
   @override

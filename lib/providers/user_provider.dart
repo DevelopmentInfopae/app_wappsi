@@ -33,6 +33,8 @@ class UserProvider {
           res['body']['token'] ?? dataBloc.userData?.token;
     } else if (res['status'] == -1) {
       return res;
+    } else {
+      return res;
     }
 
     print(res);

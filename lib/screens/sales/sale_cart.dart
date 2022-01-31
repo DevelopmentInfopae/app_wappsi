@@ -11,13 +11,13 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
-import 'package:pos_wappsi/providers/units_provider.dart';
+// import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 import 'package:pos_wappsi/screens/sales/components/sale_product_list_widget.dart';
 
 import 'package:pos_wappsi/screens/sales/components/search.dart';
-import 'package:pos_wappsi/screens/sales/components/select_product_unit_alert.dart';
+// import 'package:pos_wappsi/screens/sales/components/select_product_unit_alert.dart';
 import 'package:pos_wappsi/screens/sales/components/suspend_sale_alert.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';

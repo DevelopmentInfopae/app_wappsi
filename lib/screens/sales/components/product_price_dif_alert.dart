@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/constant.dart';
+// import 'package:pos_wappsi/utils/alerts.dart';
 
 priceDiffAlert(
     BuildContext context, List<Map<String, dynamic>> difs, String saleId) {
-  showCupertinoDialog(
+  return showCupertinoDialog(
       barrierDismissible: true,
       context: context,
       builder: (context) {
@@ -25,7 +26,9 @@ priceDiffAlert(
                 textAlign: TextAlign.justify,
               ),
               TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // listInfoDialog(context, difs, column1Key, column2Key, column1, column2)
+                  },
                   child: Text(
                     'Ver cambios',
                     style: buttonsTextStyle(context, color: pColor),
