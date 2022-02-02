@@ -60,6 +60,10 @@ class PricePoliciesProvider {
       }
     } else if (policy == 10) {
       // product.price= posBloc.getProductUnits[]
+      if(unit!=null){
+        product.price = unit.unitValue/(unit.operationValue??1);
+        product.pricePolicyPrices = unit.unitValue/(unit.operationValue??1);
+      }
       return product;
     } else {
       product.priceWithoutDiscount = price;
@@ -114,11 +118,10 @@ class PricePoliciesProvider {
         }
       } else if (policy == 10) {
         // posBloc.getProducts![productKey]!.price= posBloc.getProductUnits[]
-        posBloc.getProducts![productKey]!.quantity =
-            (posBloc.getProductUnits![productKey]!.operationValue ?? 1);
+        
         posBloc.getProducts![productKey]!.pricePolicyPrices =
             posBloc.getProductUnits![productKey]!.unitValue /
-                posBloc.getProducts![productKey]!.quantity;
+                (posBloc.getProductUnits![productKey]!.operationValue ?? 1);
         posBloc.getProducts![productKey]!.price =
             posBloc.getProductUnits![productKey]!.unitValue /
                 posBloc.getProducts![productKey]!.quantity;

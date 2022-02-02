@@ -10,8 +10,9 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
-import 'package:pos_wappsi/screens/customers/components/widgets.dart';
-import 'package:pos_wappsi/screens/db_sync/components/widgets.dart';
+// import 'package:pos_wappsi/screens/customers/components/widgets.dart';
+import 'package:pos_wappsi/screens/db_sync/components/sync_element.dart';
+// import 'package:pos_wappsi/screens/db_sync/components/widgets.dart';
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 
 class DBSyncElements extends StatefulWidget {
@@ -76,25 +77,7 @@ class _DBSyncElementsState extends State<DBSyncElements> {
   }
 
   Widget elementSync(String option, {bool completed = false}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Image.asset('assets/images/' +
-                (options[option]?['image'] ?? 'countries.png'))
-            .paddingSymmetric(horizontal: 10, vertical: 3)
-            .withHeight(
-              _size.height * 0.07 > 60 ? _size.height * 0.07 : 60,
-            ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            descText(option, context, fontSizeFactor: 0.9, maxLines: 2)
-                .withWidth(_size.width * 0.55),
-            syncStatus(completed),
-          ],
-        )
-      ],
-    ).paddingSymmetric(horizontal: 13, vertical: 7);
+    return ElementSync(context: context,status: completed,optionInfo: options[option]!,optionName:option).paddingSymmetric(horizontal: 13, vertical: 7);
   }
 
   Widget _bottom() {
@@ -121,3 +104,4 @@ class _DBSyncElementsState extends State<DBSyncElements> {
         _size);
   }
 }
+

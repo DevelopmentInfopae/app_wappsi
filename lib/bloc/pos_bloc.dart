@@ -10,13 +10,14 @@ import 'package:pos_wappsi/models/documents_types_model.dart';
 
 import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
-import 'package:pos_wappsi/models/suspended_sale_model.dart';
+// import 'package:pos_wappsi/models/suspended_sale_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 
 import 'package:pos_wappsi/providers/products_provider.dart';
+import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 
-import 'package:pos_wappsi/utils/local_storage/local_db.dart';
+// import 'package:pos_wappsi/utils/local_storage/local_db.dart';
 
 import 'package:rxdart/rxdart.dart';
 
@@ -98,14 +99,14 @@ class POSBloc {
   ///and value is an instance of ProductModel(). Param getPrices is
   ///used to know if product prices should or not be calculated
   Future addProduct(Map<String, dynamic> productReq,
-      {bool getPrices = true}) async {
+      {bool getPrices = true,bool getQttys=true}) async {
     bool res = false;
     if (_productsController.hasValue) {
-      res = await _addProductToProductPOSMap(productReq['product'], getPrices,
+      res = await _addProductToProductPOSMap(productReq['product'], getPrices,getQttys,
           unit: productReq['product_unit']);
     } else {
       emptyProductsAdded();
-      res = await _addProductToProductPOSMap(productReq['product'], getPrices,
+      res = await _addProductToProductPOSMap(productReq['product'], getPrices,getQttys,
           unit: productReq['product_unit']);
     }
     setSubTotal(getSubTotal());
@@ -114,7 +115,7 @@ class POSBloc {
 
   /// Add product to sale product list, if getPrices = true, calculate
   /// product prices
-  Future<bool> _addProductToProductPOSMap(ProductModel product, bool getPrices,
+  Future<bool> _addProductToProductPOSMap(ProductModel product, bool getPrices,bool getQttys,
       {UnitsModel? unit}) async {
     bool res = false;
     if (dataBloc.settings!['item_addition'] == 1) {
@@ -131,12 +132,14 @@ class POSBloc {
         final temp = {key: product};
         temp.addAll(_productsController.value);
         _productsController.value = temp;
-
+        // if get prices = true, then we calculate prices based on price policy
         res =
             getPrices ? await ProductsProvider.getPOSProductPrices(key) : false;
 
         if (res) {
-          res = await addProductQuantity(key, product.quantity);
+          if(getQttys){
+            res = await addProductQuantity(key, product.quantity);
+          }
         }
       } else {
         // add the incoming product initial value
@@ -149,7 +152,7 @@ class POSBloc {
 
       /// gen an unique key for each product
       if (_productsController.value.keys.contains(key)) {
-        _addProductToProductPOSMap(product, getPrices);
+        _addProductToProductPOSMap(product, getPrices,getQttys,unit: unit);
       } else {
         // add product unit if product unit is selected
         if (unit != null) {
@@ -163,7 +166,9 @@ class POSBloc {
         res =
             getPrices ? await ProductsProvider.getPOSProductPrices(key) : false;
         if (res) {
-          res = await addProductQuantity(key, product.quantity);
+          if(getQttys){
+            res = await addProductQuantity(key, product.quantity);
+          }
         }
       }
 
@@ -228,7 +233,7 @@ class POSBloc {
     } else {
       return [];
     }
-  }
+}
 
   /// Function to reload product data, costumer data and customer addresses data
   Future<bool> reloadPOSData() async {
@@ -250,7 +255,7 @@ class POSBloc {
   Future<bool> reloadProducts() async {
     if (_productsController.hasValue) {
       try {
-        String keyInitialQtty = 'initial_qtty';
+        // String keyInitialQtty = 'initial_qtty';
         final Map<String, ProductModel> temp = _productsController.value;
         Map<String, UnitsModel> pUnits = {};
         if (_productUnitController.hasValue) {
@@ -260,16 +265,16 @@ class POSBloc {
         /// Empty current product list
         emptyProductsAdded();
         await Future.forEach(temp.keys, (String key) async {
-          Map<String, dynamic>? temp2 =
-              await ProductsProvider.findProductDetails(temp[key]!.idCloud);
-          if (temp2 != null) {
-            Map<String, dynamic> pData = queryResultToMap(temp2);
-            pData[keyInitialQtty] = temp[key]!.quantity;
-            final product = ProductModel.fromJson(pData,
-                loadInitialQtty: true, qtyKey: keyInitialQtty);
+          // Map<String, dynamic>? temp2 =
+          //     await ProductsProvider.findProductDetails(temp[key]!.idCloud);
+          // if (temp2 != null) {
+            // Map<String, dynamic> pData = queryResultToMap(temp2);
+            // pData[keyInitialQtty] = temp[key]!.quantity;
+            // final product = ProductModel.fromJson(pData,
+            //     loadInitialQtty: true, qtyKey: keyInitialQtty);
             await addProduct(
-                {'prodcut': product, 'product_unit': pUnits[key] ?? null});
-          }
+                {'product': temp[key], 'product_unit': pUnits[key] ?? null},getQttys: false);
+          // }
         });
 
         return true;
@@ -398,7 +403,7 @@ class POSBloc {
   }
 
   Future<bool> suspendSale({String keyWord = ''}) async {
-    final res = await SuspendedSales.suspendSale(keyWord: keyWord);
+    final res = await SuspendedSalesProvider.suspendSale(keyWord: keyWord);
     if (res == true) {
       _emptyPosData();
     }
@@ -409,16 +414,16 @@ class POSBloc {
   /// Load suspended sale recalculating product prices
   Future<List<Map<String, dynamic>>> loadSuspendedSale(String id) async {
     _emptyPosData();
-    final res = await SuspendedSales.loadSale(id);
+    final res = await SuspendedSalesProvider.loadSale(id);
 
     return res;
   }
 
   /// Load suspended sale with suspended sale product prices
-  Future loadSuspSaleWPrices(String id) async {
+  Future<List<Map<String, dynamic>>> loadSuspSaleWPrices(String id) async {
     _emptyPosData();
     _verifyPricesController.value = 0;
-    final res = await SuspendedSales.loadSale(id, getPrices: false);
+    final res = await SuspendedSalesProvider.loadSale(id, getPrices: false);
 
     return res;
   }

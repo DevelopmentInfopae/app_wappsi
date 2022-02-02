@@ -11,10 +11,10 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/models/suspended_sale_model.dart';
 import 'package:pos_wappsi/components/app_bar_leading.dart';
 import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
+import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 
 import 'package:pos_wappsi/screens/sales/sale_cart.dart';
@@ -127,7 +127,7 @@ class _NewSaleState extends State<NewSale> {
 
   Widget _appBarLeading() {
     return FutureBuilder(
-      future: SuspendedSales.loadAllSSales(),
+      future: SuspendedSalesProvider.loadAllSSales(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         int qtty = 0;
         try {
@@ -140,7 +140,7 @@ class _NewSaleState extends State<NewSale> {
                 .launch(context),
             widget: Badge(
                 badgeColor: Colors.red,
-                padding: EdgeInsets.all(6),
+                // padding: EdgeInsets.all(6),
                 alignment: Alignment.center,
                 position: BadgePosition.topEnd(),
                 badgeContent: Text(
@@ -148,7 +148,7 @@ class _NewSaleState extends State<NewSale> {
                   style: TextStyle(color: Colors.white),
                 ),
                 child: Icon(
-                  FontAwesomeIcons.cashRegister,
+                  FontAwesomeIcons.moon,
                   size: leadingIconSize,
                   color: pColor,
                 )));

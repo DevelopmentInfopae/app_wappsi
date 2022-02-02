@@ -91,14 +91,16 @@ TextStyle normalTextStyle(BuildContext context,
     {fontSizeFactor: 1.0, int fontWeightDelta: 0, color: Colors.black}) {
   return Theme.of(context).primaryTextTheme.subtitle1!.apply(
       fontSizeFactor: fontSizeFactor,
-      color: color,
+      color: greyDarkerColor,
       fontWeightDelta: fontWeightDelta);
 }
 // TODO: Save this in secure storage
 
 double bottomBarIconSize(BuildContext context) {
-  final _size = MediaQuery.of(context).size;
-  return _size.width * 0.085;
+  final size = MediaQuery.of(context).size;
+  return size.height * 0.04 > 37
+              ? (size.height * 0.07 > 40 ? 40 : size.height * 0.07)
+              : 37;
 }
 
 double iconSize(BuildContext context) {
@@ -119,6 +121,8 @@ double leadingIconSize = 27;
 Color greyColor = Colors.grey[700]!;
 
 Color greyLight = Colors.grey[100]!;
+
+Color greyMediumLight = Colors.grey[200]!;
 
 /// Color to subtitles
 Color blueTextColor = Color.fromRGBO(0, 124, 209, 1);
@@ -150,8 +154,13 @@ double loginLogoWidth(BuildContext context) {
 
 /// Height on bottom widget with
 double getBottomNavBarHeight(BuildContext context) {
-  return bottomBarIconSize(context) * 2.135;
+  Size size = MediaQuery.of(context).size;
+  return size.height * 0.1 > 75
+              ? (size.height * 0.11 > 85 ? 85 : size.height * 0.1)
+              : 75;
 }
+
+Size imageIconSize() => Size(60,60);
 
 /// Home grid elements size
 Size gridItemSize(BuildContext context) {

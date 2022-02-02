@@ -26,7 +26,7 @@ class BottomNavigation extends StatelessWidget {
   BottomNavigationBar buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
       // key: GlobalKey().,
-
+      backgroundColor: Colors.white,
       iconSize: bottomBarIconSize(context),
       type: BottomNavigationBarType.fixed,
       items: [

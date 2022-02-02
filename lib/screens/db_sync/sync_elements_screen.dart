@@ -131,8 +131,9 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
 
   Widget _selectAll() {
     return AppButton(
-      width: 70,
-      padding: kButtonPadding,
+      // width: 70,
+      // height: 50,
+      // padding: kButtonPadding,
       child: Text(
         'Seleccionar todo',
         maxLines: 2,
@@ -156,8 +157,8 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
 
   Widget _sync() {
     return AppButton(
-      padding: kButtonPadding,
-      width: 70,
+      // padding: kButtonPadding,
+      // width: 70,
       child: Row(
         children: [
           Text(

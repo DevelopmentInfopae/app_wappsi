@@ -131,7 +131,7 @@ class _ProductsState extends State<Customers> {
 
   Widget _customersList() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       child: FutureBuilder<List<Map>?>(
           future: CompaniesProvider.getAllCustomers(limit: 50),
           builder: (BuildContext context, AsyncSnapshot<List<Map>?> snapshot) {

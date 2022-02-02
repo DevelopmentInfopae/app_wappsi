@@ -7,14 +7,15 @@ import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/components/app_bar_leading.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/product_card.dart';
 import 'package:pos_wappsi/components/product_card_w_unit.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
-import 'package:pos_wappsi/models/suspended_sale_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
+import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/sales/components/product_price_dif_alert.dart';
 import 'package:pos_wappsi/screens/sales/new_sale.dart';
@@ -48,22 +49,15 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
     return Scaffold(
         appBar: appBar(context, 'Detalles',
             leading: _leading(), image: 'assets/images/sleeping.png'),
-        body: _body().paddingSymmetric());
+        body: _body());
   }
 
   Widget _leading() {
-    return AppButton(
-        padding: kIconButtonPadding,
-        width: 10,
-        elevation: 0,
-        color: Colors.white,
-        shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Icon(
+    return AppBarLeading(
+        widget: Icon(
           FontAwesomeIcons.trashAlt,
           color: Colors.red,
-          size: iconSize(context),
+          size: leadingIconSize-4,
         ),
         onTap: () async {
           final choice = await choiceAlert(
@@ -71,7 +65,7 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
               '¿Desea eliminar esta venta suspendida?',
               'assets/images/alert.png');
           if (choice) {
-            await SuspendedSales.deleteSuspSale(
+            await SuspendedSalesProvider.deleteSuspSale(
                 (widget.suspSaleInfo?['suspended_sale'] ?? 0).toString());
             Navigator.pushNamedAndRemoveUntil(
               context,
@@ -103,12 +97,16 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          descText('Items', context, fontSizeFactor: 1),
+                          descText(
+                            'Items',
+                            context,
+                            fontSizeFactor: 1,
+                          ),
                           descText(
                               widget.suspSaleInfo?['items'].toString() ?? '',
                               context,
                               textStyle: numbersTextStyle(
-                                  fontSizeFactor: 1.1, color: greyDarkerColor))
+                                  fontSizeFactor: 1.1, color: pColor))
                         ],
                       ),
                       alignment: Alignment.center,
@@ -123,7 +121,7 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
                           descText(
                               valueT.substring(0, valueT.length - 3), context,
                               textStyle: numbersTextStyle(
-                                  fontSizeFactor: 1.1, color: greyDarkerColor)),
+                                  fontSizeFactor: 1.1, color: pColor)),
                         ],
                       ),
                       alignment: Alignment.center,
@@ -205,20 +203,20 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
       // disabledColor: Colors.white,
       width: _size.width * 0.1,
       onTap: () async {
-        final dif = widget.suspSaleInfo?['products_info']['dif'] ?? [];
-        if (dif.length != 0) {
-          await priceDiffAlert(context, dif,
-              (widget.suspSaleInfo?['suspended_sale']).toString());
-        } else {
-          bool load = true;
-          if ((posBloc.getProducts?.length ?? 0) > 0) {
-            load = await choiceAlert(
-                context,
-                'Se ha detectado una venta en progreso. \n ¿Desea continuar?',
-                'assets/images/alert.png');
-          }
+        bool load = true;
+        if ((posBloc.getProducts?.length ?? 0) > 0) {
+          load = await choiceAlert(
+              context,
+              'Se ha detectado una venta en progreso. \n ¿Desea continuar?',
+              'assets/images/alert.png');
+        }
 
-          if (load) {
+        if (load) {
+          final dif = widget.suspSaleInfo?['products_info']['dif'] ?? [];
+          if (dif.length != 0) {
+            await priceDiffAlert(context, dif,
+                (widget.suspSaleInfo?['suspended_sale']).toString());
+          } else {
             final res = await posBloc.loadSuspendedSale(
                 (widget.suspSaleInfo?['suspended_sale']).toString());
 
@@ -235,6 +233,9 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
                   flexCol2: 1,
                   title:
                       'Error al cargar los siguientes productos de la venta:');
+            } else {
+              confirmDialog(context, 'Venta suspendida cargada correctamente',
+                  'assets/images/success.png');
             }
           }
         }

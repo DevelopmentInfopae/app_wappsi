@@ -31,7 +31,7 @@ class AppBarLeading extends StatelessWidget {
       color: backgroundColor ?? Colors.white,
       shapeBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(32),
-          side: BorderSide(color: borderSideColor ?? Colors.grey[400]!)),
+          side: BorderSide(color: borderSideColor ?? greyMediumLight)),
       // hoverColor: pColor,
 
       child: widget,

@@ -5,6 +5,8 @@ import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/components/appBar.dart';
+import 'package:pos_wappsi/components/app_bar_leading.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/constant.dart';
@@ -121,43 +123,43 @@ class HomeState extends State<Home> {
   }
 
   Widget _bottom() {
-    // ignore: unnecessary_null_comparison
-    return dataBloc.getBillerCompany != null
-        ? _companyNameLogo(dataBloc.getBillerCompany!)
-        : _futureCompNameLogo();
-  }
-
-  FutureBuilder<dynamic> _futureCompNameLogo() {
-    return FutureBuilder(
-      future: CompanyModel.getCompanyBiller(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          dataBloc.setBillerCompany(snapshot.data);
-          return _companyNameLogo(snapshot.data);
-        } else {
-          return Container();
-        }
-      },
-    );
-  }
-
-  Widget _companyNameLogo(CompanyModel company) {
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          billerThumbNail(company.logoSquare ?? '')
-              .paddingRight(4)
-              .flexible(flex: 1),
-          AutoSizeText(
-            capitalizeText(company.name ?? company.company ?? ''),
-            style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w900),
-            maxLines: 2,
-          ).flexible(flex: 3),
-        ],
-      ).withWidth(_size.width * 0.8),
+            children: [
+              // imgTumbnail().withWidth(_size.width*0.16).paddingSymmetric(horizontal: 10),
+
+              _wappsi().paddingOnly(left: 15, right: 15),
+              // Spacer(),
+              // _cash(),
+
+              // _notifications().withSize(height: 55, width: 55).paddingRight(10)
+            ],
+          ),
+    );
+    // ignore: unnecessary_null_comparison
+   
+  }
+
+   // display information about user in system
+  Widget _wappsi() {
+    return Row(
+      children: [
+        Image.asset('assets/images/wappsi.png').withHeight(
+            _size.height * 0.048 > 30
+                ? (_size.height * 0.04 > 35 ? 35 : _size.height * 0.04)
+                : 30),
+        Image.asset(
+          'assets/images/wappsi_pos_movil.png',
+          width: _size.width * 0.55 > 270
+              ? 270
+              : (_size.width * 0.5 > 280 ? 280 : _size.width * 0.55),
+        )
+      ],
     );
   }
+
+  
 
   /// Change bottom widget to show up on the bottom stack
   void changeBottomIndex(int index) {

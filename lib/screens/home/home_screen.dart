@@ -1,13 +1,21 @@
 // ignore: import_of_legacy_library_into_null_safe
 
+import 'package:auto_size_text_pk/auto_size_text_pk.dart';
 import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/appBar.dart';
-import 'package:pos_wappsi/screens/Notifications/notification_screen.dart';
+import 'package:pos_wappsi/components/app_bar_leading.dart';
+// import 'package:pos_wappsi/screens/Notifications/notification_screen.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/components/widgets.dart';
+import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/screens/home/components/grid_items.dart';
 import 'package:pos_wappsi/screens/home/components/home_grid.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -56,60 +64,83 @@ class _HomeScreenState extends State<HomeScreen> {
   PreferredSize _appBar() {
     return boxAppBar(
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // imgTumbnail().withWidth(_size.width*0.16).paddingSymmetric(horizontal: 10),
+            (dataBloc.getBillerCompany != null
+                ? _companyNameLogo(dataBloc.getBillerCompany!)
+                : _futureCompNameLogo()),
 
-            _wappsi().paddingOnly(left: 15, right: 15).expand(),
-            // Spacer(),
-            // _cash(),
-
-            _notifications().paddingRight(10)
+            _notifications()
           ],
-        ).withHeight(_size.height * 0.11 > 70 ? _size.height * 0.11 : 70),
+        ).paddingSymmetric(horizontal: 8)
+           ,
         _size);
   }
 
-  // display information about user in system
-  Widget _wappsi() {
-    return Row(
-      children: [
-        Image.asset('assets/images/wappsi.png').withHeight(
-            _size.height * 0.048 > 30
-                ? (_size.height * 0.04 > 35 ? 35 : _size.height * 0.04)
-                : 30),
-        Image.asset(
-          'assets/images/wappsi_pos_movil.png',
-          width: _size.width * 0.55 > 270
-              ? 270
-              : (_size.width * 0.5 > 280 ? 280 : _size.width * 0.55),
-        )
-      ],
+  FutureBuilder<dynamic> _futureCompNameLogo() {
+    return FutureBuilder(
+      future: CompanyModel.getCompanyBiller(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          dataBloc.setBillerCompany(snapshot.data);
+          return _companyNameLogo(snapshot.data);
+        } else {
+          return Container();
+        }
+      },
+    );
+  }
+
+  Widget _companyNameLogo(CompanyModel company) {
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          billerThumbNail(company.logoSquare ?? '')
+              .paddingOnly(top: 10,bottom: 10,right: 2)
+              .flexible(flex: 1),
+          AutoSizeText(
+            capitalizeText(company.company ??company.name ??  ''),
+            style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w900,),
+            maxLines: 1,
+            // overflow: TextOverflow.fade,
+          ).flexible(flex: 3),
+        ],
+      ).withWidth(_size.width * 0.7),
     );
   }
 
   // show notification icon and shows notification's page
   Widget _notifications() {
-    return Container(
-        height: (_size.height * 0.05 > 35
-            ? (_size.height * 0.05 > 40 ? 40 : _size.height * 0.05)
-            : 35),
-        // width: _size.width * 0.08 > 60 ?_size.width * 0.08: 60,
-        padding: EdgeInsets.only(right: 15),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          color: Theme.of(context).primaryTextTheme.bodyText2!.color,
-          // color:Colors.red
-        ),
-        child: Center(
-          child: GestureDetector(
-            onTap: () {
-              // select home bottomBar
-              dataBloc.homeKey.currentState?.changeBottomIndex(0);
-              NotificationScreen().launch(context);
-            },
-            child: Image.asset('assets/images/notifications.png').paddingAll(4),
-          ),
-        ));
+    return AppBarLeading(
+        onTap: () {
+          // select home bottomBar
+          // dataBloc.homeKey.currentState?.changeBottomIndex(0);
+          // NotificationScreen().launch(context);
+        },
+        borderSideColor: Colors.white,
+        widget: Icon(FontAwesomeIcons.bell,size: leadingIconSize, color: pColor));
+    // return AppButton(
+    //     padding: EdgeInsets.zero,
+    //     elevation: 0,
+    //     onTap: () {
+    //       // select home bottomBar
+    //       // dataBloc.homeKey.currentState?.changeBottomIndex(0);
+    //       // NotificationScreen().launch(context);
+    //     },
+    //     child: Container(
+    //       height: (_size.height * 0.05 > 35
+    //           ? (_size.height * 0.05 > 40 ? 40 : _size.height * 0.05)
+    //           : 35),
+    //       // width: _size.width * 0.08 > 60 ?_size.width * 0.08: 60,
+    //       // padding: EdgeInsets.only(right: 15),
+    //       decoration: BoxDecoration(
+    //         borderRadius: BorderRadius.circular(10.0),
+    //         color: Theme.of(context).primaryTextTheme.bodyText2!.color,
+    //         // color:Colors.red
+    //       ),
+    //       child: Image.asset('assets/images/notifications.png').paddingAll(4),
+    //     ));
   }
 
   // message above app options

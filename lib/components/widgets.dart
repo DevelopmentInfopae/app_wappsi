@@ -125,13 +125,13 @@ Widget futureLabelContent(Future<Map?> function, String key, String label) {
 }
 
 Widget hDivider(
-    {EdgeInsetsGeometry padding = const EdgeInsets.symmetric(horizontal: 20)}) {
+    {EdgeInsetsGeometry padding = const EdgeInsets.symmetric(horizontal: 20), double height = 0.5}) {
   return Padding(
     padding: padding,
     child: Container(
       width: double.infinity,
       color: Colors.black,
-      height: 0.5,
+      height: height,
     ),
   );
 }

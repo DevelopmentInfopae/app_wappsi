@@ -35,11 +35,11 @@ class ProductsProvider {
   /// Check if suspendedSaleProducts's prices are different of current
   /// product's prices and return the price diff betwen them
   static Future<Map<String, dynamic>> checkSuspPriceDif(
-      Map res, CompanyModel customer) async {
+      Map res, CompanyModel customer,{UnitsModel? unit}) async {
     Map<String, dynamic> dif = {};
 
     final temp = ProductModel.fromJsonList([res]);
-    final prodP = await getProductPrices(temp.first, customer: customer);
+    final prodP = await getProductPrices(temp.first, customer: customer,unit: unit);
     if (prodP.price != res['sp_price']) {
       dif = {
         'product_name': res['name'],
@@ -133,21 +133,26 @@ class ProductsProvider {
     List<UnitsModel> units = [];
     if (res != null) {
       await Future.forEach(res, (Map p) async {
-        dif.add(await checkSuspPriceDif(p, customer));
+        
         products.add(ProductModel.fromJsonList([p],
                 loadInitialQtty: true,
                 qttyKey: 'initial_qtty',
                 initalPrice: true,
                 inititalPriceKey: 'sp_price')
             .first);
+        UnitsModel? unit;
         if (p['unit_id'] != null && p['unit_id'] != '') {
-          final unit = await UnitsProvider.getPUnitSuspended(
+          unit = await UnitsProvider.getPUnitSuspended(
               p['id_cloud'].toString(),
               customer.priceGroupId!,
               p['unit_id'].toString());
           if (unit != null) {
             units.add(unit);
           }
+        }
+        final tdif = await checkSuspPriceDif(p, customer,unit: unit);
+        if(tdif.isNotEmpty){
+          dif.add(tdif);
         }
       });
     }
@@ -293,11 +298,13 @@ class ProductsProvider {
       BuildContext context, ProductModel product) async {
     final policyReq = PricePoliciesProvider.checkProductSelectionRequirements();
     Map<String, dynamic> req = {"product": product, "product_unit": null};
+    UnitsModel? unit;
     if (policyReq['product_unit']) {
-      final unit = await UnitsProvider.getProductUnit(
+      unit = await UnitsProvider.getProductUnit(
           context, product, posBloc.getCustomer!.priceGroupId!);
       if (unit != null) {
         req['product_unit'] = unit;
+        req['product'].quantity = unit.operationValue??1;
       } else {
         req = {};
       }
@@ -315,7 +322,7 @@ class ProductsProvider {
     if (dataBloc.settings != null) {
       final product2 = await PricePoliciesProvider.policyCases(product,
           dataBloc.settings!['prioridad_precios_producto'], posBloc.getCustomer,
-          defaultPrice: defaultPrice);
+          defaultPrice: defaultPrice, unit: unit);
 
       return product2;
       //aply discount

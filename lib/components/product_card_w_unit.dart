@@ -145,12 +145,12 @@ class _ProductCardWUnitState extends State<ProductCardWUnit> {
     ]);
   }
 
-  Text _productCode() {
-    return Text(
-      'Codigo: ' + widget.product.code,
-      style: normalTextStyle(context),
-    );
-  }
+  // Text _productCode() {
+  //   return Text(
+  //     'Codigo: ' + widget.product.code,
+  //     style: normalTextStyle(context),
+  //   );
+  // }
 
   Text _productName() {
     return Text(

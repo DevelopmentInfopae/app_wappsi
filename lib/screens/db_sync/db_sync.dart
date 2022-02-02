@@ -7,9 +7,11 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 // import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
+import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
+import 'package:pos_wappsi/screens/db_sync/components/sync_element.dart';
 import 'package:pos_wappsi/screens/db_sync/components/widgets.dart';
 import 'package:pos_wappsi/screens/home/home.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
@@ -117,7 +119,7 @@ class _DBSyncState extends State<DBSync> {
               // _navigate();
               return Column(
                 children: [
-                  elementSync(option),
+                  ElementSync(context: context,optionInfo: options[option]!,optionName: option,status: false,),
                   Divider(
                     color: Colors.black38,
                     height: 2,
@@ -137,8 +139,8 @@ class _DBSyncState extends State<DBSync> {
       children: [
         Image.asset('assets/images/' +
                 (options[option]?['image'] ?? 'countries.png'))
-            .paddingSymmetric(horizontal: 10, vertical: 3)
-            .flexible(),
+            .paddingSymmetric(horizontal: 10, vertical: 3).withHeight(50)
+            ,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

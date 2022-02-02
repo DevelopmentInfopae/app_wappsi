@@ -2,12 +2,13 @@
 
 import 'package:dio/dio.dart';
 
-import 'package:nb_utils/src/extensions/string_extensions.dart';
+// import 'package:nb_utils/src/extensions/string_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+// import 'package:pos_wappsi/config/environment.dart';
 import 'package:pos_wappsi/config/host_params.dart';
 
 import 'dart:async';
-import 'dart:convert';
+// import 'dart:convert';
 import 'dart:io';
 
 // import 'package:pos_wappsi/constant.dart';
@@ -16,23 +17,33 @@ import 'dart:io';
 
 class DataProvider {
   // POST petitons
-  Future<Map<String, dynamic>> postPetition(String endpoint,
-      Map<String, dynamic> authData, Map<String, String> headers,
+  Future<Map<String, dynamic>> postPetition(
+      String endpoint, Map<String, dynamic> data, Map<String, String> headers,
       {int awaitTime = 30}) async {
     var resp;
-
+    // add Access-Control-Allow-Origin header
+    // headers['Access-Control-Allow-Origin'] = '*';
     var dio = Dio();
+    // dio.options.
+    dio.options.baseUrl = ((dataBloc.userData == null
+            ? HOST
+            : dataBloc.userData?.hostUrl ?? '')) +
+        '/wappsi_apis/';
+    // dio.options.baseUrl = LHOST;
     dio.options.headers = headers;
+    // to seconds to milliseconds, seconds * 1000
+    dio.options.receiveTimeout = awaitTime * 1000;
+    dio.options.method = 'POST';
 
-    String body = jsonEncode(authData);
+    // String body = jsonEncode(data);
 
-    String url =
-        (dataBloc.userData == null ? HOST : dataBloc.userData?.hostUrl ?? '') +
-            '/wappsi_apis/$endpoint';
-    // print(authData);
+    // String url =
+    //     (dataBloc.userData == null ? HOST : dataBloc.userData?.hostUrl ?? '') +
+    //         '/wappsi_apis/$endpoint';
+    // print(data);
     try {
       resp = await dio
-          .post(url, data: body)
+          .post(endpoint, data: data)
           .timeout(Duration(seconds: awaitTime), onTimeout: () {
         throw TimeoutException('Now answer, try again.');
       });
@@ -117,14 +128,19 @@ class DataProvider {
     var resp;
 
     var dio = Dio();
+    // headers['Access-Control-Allow-Origin'] = '*';
+
+    dio.options.baseUrl = ((dataBloc.userData == null
+            ? HOST
+            : dataBloc.userData?.hostUrl ?? '')) +
+        '/wappsi_apis/';
     dio.options.headers = headers;
-    String url =
-        (dataBloc.userData == null ? HOST : dataBloc.userData?.hostUrl ?? '') +
-            '/wappsi_apis/$endpoint';
+    dio.options.method = 'GET';
+    // String url =
+    //     (dataBloc.userData == null ? HOST : dataBloc.userData?.hostUrl ?? '') +
+    //         '/wappsi_apis/$endpoint';
     try {
-      resp = await dio.get(url).timeout(Duration(seconds: 15), onTimeout: () {
-        throw TimeoutException('Now answer, try again.');
-      });
+      resp = await dio.get(endpoint);
 
       dynamic decodedRespBody;
       if (resp.data is Map) {

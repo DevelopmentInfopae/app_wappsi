@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/utils/alerts.dart';
+
 // import 'package:pos_wappsi/utils/alerts.dart';
 
 priceDiffAlert(
     BuildContext context, List<Map<String, dynamic>> difs, String saleId) {
   return showCupertinoDialog(
       barrierDismissible: true,
+      useRootNavigator: false,
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
@@ -51,7 +54,25 @@ priceDiffAlert(
                   textAlign: TextAlign.center,
                 ),
                 onPressed: () async {
-                  await posBloc.loadSuspendedSale(saleId);
+                  final errors = await posBloc.loadSuspendedSale(saleId);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  if (errors.length == 0) {
+                    //close alert
+
+                    confirmDialog(
+                        context,
+                        'Venta suspendida cargada correctamente',
+                        'assets/images/success.png');
+                  } else {
+                    listInfoDialog(context, errors, 'name', 'inventory',
+                        'Producto', 'Stock',
+                        flexCol1: 3,
+                        flexCol2: 1,
+                        title:
+                            'Error al cargar los siguientes productos de la venta:');
+                  }
                 },
               ),
             ),
@@ -67,8 +88,23 @@ priceDiffAlert(
                   // await posBloc.suspendSale(keyWord: _keyWord);
                   //   await posBloc.suspendSale();
                   // THis shouldn't be like this, but it works :)
-                  await posBloc.loadSuspSaleWPrices(saleId);
-                  Navigator.of(context).pop(false);
+                  final errors = await posBloc.loadSuspSaleWPrices(saleId);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  if (errors.length > 0) {
+                    listInfoDialog(context, errors, 'name', 'inventory',
+                        'Producto', 'Stock',
+                        flexCol1: 3,
+                        flexCol2: 1,
+                        title:
+                            'Error al cargar los siguientes productos de la venta:');
+                  } else {
+                    confirmDialog(
+                        context,
+                        'Venta suspendida cargada correctamente',
+                        'assets/images/success.png');
+                  }
                 },
               ),
             ),
