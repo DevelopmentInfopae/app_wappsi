@@ -66,7 +66,11 @@ class _ProductCardState extends State<ProductCard> {
                 context, widget.product);
             if (productReq != {}) {
               final result = await posBloc.addProduct(productReq);
-              print(result);
+              // print(result);
+              if (result) {
+                posBloc.getSearchBarController.clear();
+                posBloc.getSearchBarController.close();
+              }
             }
 
             // Navigator.pop(context);

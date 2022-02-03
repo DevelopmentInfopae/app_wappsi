@@ -597,7 +597,7 @@ class _SalePaymentState extends State<SalePayment> {
       enabled = true;
     }
     return AppButton(
-      padding: kButtonPadding,
+      //padding: kButtonPadding,
       color: okColorWappsi,
       disabledColor: Colors.grey[300],
       enabled: enabled,

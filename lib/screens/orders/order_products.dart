@@ -1,10 +1,9 @@
-// ignore_for_file: unnecessary_statements
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/widgets.dart';
@@ -12,30 +11,27 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 // import 'package:pos_wappsi/providers/units_provider.dart';
-import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 import 'package:pos_wappsi/screens/sales/components/sale_product_list_widget.dart';
 
 import 'package:pos_wappsi/screens/sales/components/search.dart';
-// import 'package:pos_wappsi/screens/sales/components/select_product_unit_alert.dart';
-import 'package:pos_wappsi/screens/sales/components/suspend_sale_alert.dart';
+
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
-import 'package:pos_wappsi/screens/sales/new_sale.dart';
-import 'package:pos_wappsi/screens/sales/sale_payment.dart';
+
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
-class SaleCart extends StatefulWidget {
-  SaleCart({Key? key}) : super(key: key);
+class OrderProducts extends StatefulWidget {
+  OrderProducts({Key? key}) : super(key: key);
 
   @override
-  _SaleCartState createState() => _SaleCartState();
+  _OrderProductsState createState() => _OrderProductsState();
 }
 
-class _SaleCartState extends State<SaleCart> {
+class _OrderProductsState extends State<OrderProducts> {
   late final _leadingActions = [
     FloatingSearchBarAction(
       child: Icon(
@@ -46,6 +42,7 @@ class _SaleCartState extends State<SaleCart> {
   ];
 
   ScrollController _scrollController = new ScrollController();
+  final _searchController = new FloatingSearchBarController();
 
   late Size _size;
   String _query = '';
@@ -63,8 +60,8 @@ class _SaleCartState extends State<SaleCart> {
 
   @override
   void dispose() {
-    posBloc.disposeSearchController();
     super.dispose();
+    _searchController.dispose();
   }
 
   @override
@@ -73,12 +70,12 @@ class _SaleCartState extends State<SaleCart> {
     _textTheme = Theme.of(context).textTheme;
 
     // initialize search controller
-    posBloc.setSearchController(new FloatingSearchBarController());
+    
     return Scaffold(
-        appBar: appBar(context, 'Venta POS',
+        appBar: appBar(context, 'Agregar pedido',
             elevation: false,
             radius: 0,
-            image: 'assets/images/add-to-cart.png'),
+            image: 'assets/images/cargo.png'),
         body: _searchbar());
   }
 
@@ -88,10 +85,10 @@ class _SaleCartState extends State<SaleCart> {
         _searchHeight(),
         _searchField().paddingOnly(left: 5, right: 5, top: 1),
         barCode(context, () async {
-          posBloc.getSearchBarController.open();
+          _searchController.open();
           final res = await scanBarcodeNormal();
-          posBloc.getSearchBarController.query = res ?? '';
-          // posBloc.getSearchBarController.hide();
+          _searchController.query = res ?? '';
+          // _searchController.hide();
         }),
       ],
     );
@@ -133,10 +130,10 @@ class _SaleCartState extends State<SaleCart> {
       leadingActions: _leadingActions,
       hintStyle: _textTheme.headline6!,
       automaticallyImplyBackButton: false,
-      controller: posBloc.getSearchBarController,
+      controller: _searchController,
       body: _body(),
       onSubmitted: (_) {
-        posBloc.getSearchBarController.close();
+        _searchController.close();
       },
       backgroundColor: Colors.grey[200],
       backdropColor: Colors.white30,
@@ -168,10 +165,10 @@ class _SaleCartState extends State<SaleCart> {
         margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
         padding: EdgeInsets.only(top: 15),
         child: StreamBuilder<Map<String, ProductModel>>(
-            stream: posBloc.productsStream,
+            stream: orderBloc.productsStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                if (posBloc.getItemsCount() == 0) {
+                if (orderBloc.getItemsCount() == 0) {
                   _searchBarFocusManagement();
                   _productsCount = 0;
                   _itemsCount = 0;
@@ -181,12 +178,12 @@ class _SaleCartState extends State<SaleCart> {
                   _itemsCount += 1;
                   bool productRequestFocus = false;
                   if (_productsCount == snapshot.data!.length ||
-                      _itemsCount == posBloc.getItemsCount()) {
+                      _itemsCount == orderBloc.getItemsCount()) {
                     if (_scrollController.hasClients) {
                       _scrollController
                           .jumpTo(_scrollController.position.minScrollExtent);
                     }
-                    // final xd = posBloc.settings['set_focus'];
+                    // final xd = orderBloc.settings['set_focus'];
                     // print();
                     productRequestFocus = _searchBarFocusManagement();
                   } else if (_productsCount - 2 == snapshot.data!.length) {
@@ -194,7 +191,7 @@ class _SaleCartState extends State<SaleCart> {
                   } else {
                     // _searchBarFocusManagement();
                     _productsCount = snapshot.data!.length;
-                    _itemsCount = posBloc.getItemsCount();
+                    _itemsCount = orderBloc.getItemsCount();
                   }
                   Map<String, ProductModel> saleProductsList = snapshot.data!;
                   return SaleProductsList(
@@ -213,16 +210,16 @@ class _SaleCartState extends State<SaleCart> {
   _searchBarFocusManagement() {
     if (dataBloc.settings!['set_focus'] == 0) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
-        // posBloc.getSearchBarController.close();
-        if (posBloc.getSearchBarController.isOpen) {
-          posBloc.getSearchBarController.query = '';
+        // _searchController.close();
+        if (_searchController.isOpen) {
+          _searchController.query = '';
         } else {
-          posBloc.getSearchBarController.open();
+          _searchController.open();
         }
       });
       return false;
     } else if (dataBloc.settings!['set_focus'] == 1) {
-      posBloc.getSearchBarController.close();
+      _searchController.close();
       return true;
     }
   }
@@ -244,7 +241,7 @@ class _SaleCartState extends State<SaleCart> {
       ),
       color: pColor,
       onTap: () {
-        posBloc.getSearchBarController.open();
+        _searchController.open();
       },
     );
   }
@@ -253,79 +250,30 @@ class _SaleCartState extends State<SaleCart> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _suspendSale().paddingLeft(20),
-        AppButton(
-          color: pColor,
-          elevation: 0,
-          padding: EdgeInsets.zero,
-          onTap: _send,
-          child: Row(
-            children: [
-              _pay(),
-              subTotal(large: _size.width > 450),
-            ],
-          ),
-        ).paddingOnly(left: 16).expand(),
+        subTotal(large: _size.width > 450),
+        _sendOrder().paddingLeft(20),
+        
       ],
 
       // ),
     );
   }
 
-  Widget _pay() {
-    return Container(
-      //padding: kButtonPadding,
-      decoration: BoxDecoration(
-          color: okColorWappsi, borderRadius: BorderRadius.circular(10)),
-      child: Row(
-        children: [
-          Text(
-            'Pagar',
-            style: buttonsSmallTextStyle(context, color: Colors.white),
-          ),
-          // Icon(Icons.arrow_forward_ios_sharp),
-        ],
-      ),
-    );
-  }
 
-  Widget _suspendSale() {
+
+  Widget _sendOrder() {
     return AppButton(
-      //padding: kButtonPadding,
+      // //padding: kButtonPadding,
       color: Colors.white,
       shapeBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: pColor)),
       width: 10,
       onTap: () async {
-        if ((posBloc.getProducts?.length ?? 0) > 0) {
-          posBloc.getSearchBarController.close();
-          await showCupertinoDialog(
-              barrierDismissible: true,
-              context: context,
-              builder: (context) {
-                return SuspendSaleAlertDialog();
-              });
-          // check if empty products then reload view
-          if (posBloc.getProducts == {} ||
-              posBloc.getProducts == null ||
-              posBloc.getProducts?.length == 0) {
-            posBloc.getSearchBarController.close();
-            WidgetsBinding.instance!.addPostFrameCallback((_) async {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => HomeScreen(),
-                ),
-                (route) => false,
-              );
-              await NewSale().launch(context);
-            });
-          }
-        }
+        
       },
       // child: Icon(FontAwesomeIcons.pause),
-      child: Text('Suspender',
+      child: Text('Enviar pedido',
           style: buttonsSmallTextStyle(context, color: pColor)),
     );
   }
@@ -343,8 +291,8 @@ class _SaleCartState extends State<SaleCart> {
     if (res != null) {
       if (res.length == 0) {
         if ((query.length - _query.length > 1)) {
-          posBloc.getSearchBarController.clear();
-          // posBloc.getSearchBarController.query='';
+          _searchController.clear();
+          // _searchController.query='';
           _query = '';
         } else {
           _query = query;
@@ -355,7 +303,7 @@ class _SaleCartState extends State<SaleCart> {
           final productReq =
               await ProductsProvider.getProductRequirements(context, temp);
           if (productReq != {}) {
-            final result = await posBloc.addProduct(productReq);
+            final result = await orderBloc.addProduct(productReq);
             print(result);
           }
 
@@ -372,16 +320,16 @@ class _SaleCartState extends State<SaleCart> {
     } else {
       products = [];
     }
-    posBloc.setProductSearchData(products);
+    orderBloc.setProductSearchData(products);
   }
 
   void _send() {
-    if ((posBloc.getProducts?.keys.length ?? 0) > 0) {
-      SalePayment().launch(context);
+    if ((orderBloc.getProducts?.keys.length ?? 0) > 0) {
+      // SalePayment().launch(context);
     } else {
       confirmDialog(
           context,
-          "Debe seleccionar productos antes de continuar al pago",
+          "Debe seleccionar productos antes de continuar",
           "assets/images/alert.png");
     }
   }

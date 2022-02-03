@@ -147,7 +147,7 @@ class _PrintSaleState extends State<PrintSale> {
   AppButton _printButton() {
     return AppButton(
       color: Colors.white,
-      padding: kButtonPadding,
+      //padding: kButtonPadding,
       disabledColor: Colors.grey[350],
       width: _size.width * 0.1,
       enabled: !_printing,
@@ -208,7 +208,7 @@ class _PrintSaleState extends State<PrintSale> {
   AppButton _exitButton() {
     return AppButton(
       color: Colors.white,
-      padding: kButtonPadding,
+      //padding: kButtonPadding,
       // disabledColor: Colors.white,
       width: _size.width * 0.1,
       onTap: () async {

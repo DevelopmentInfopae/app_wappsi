@@ -1,3 +1,4 @@
+import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
@@ -19,14 +20,36 @@ class CustomerAddressesProvider {
       ];
 
   /// Load default customer address
-  static selectDefaultAddrs({bool returnBool = false}) async {
+  static selectDefaultAddrs({bool returnBool = false, bool fromOrderCreation=false}) async {
     if (posBloc.getCustomer != null && posBloc.getCustomerAddresses == null) {
       final data = await findCustomerAddresses(
           '', posBloc.getCustomer!.idCloud!.toString());
       if (data != []) {
         final defaultAddrss = data.first;
+        if(fromOrderCreation){
+          orderBloc.setCustomerAddresses(
+            CustomerAddressesModel.fromJson(defaultAddrss));
+        }else{
+          posBloc.setCustomerAddresses(
+            CustomerAddressesModel.fromJson(defaultAddrss));
+        }
+        
+        if (returnBool) {
+          return true;
+        }
+      }
+    }
+  }
 
-        posBloc.setCustomerAddresses(
+  /// Load default customer address
+  static selectDefaultAddrsToOrder({bool returnBool = false}) async {
+    if (orderBloc.getCustomer != null && orderBloc.getCustomerAddresses == null) {
+      final data = await findCustomerAddresses(
+          '', orderBloc.getCustomer!.idCloud!.toString());
+      if (data != []) {
+        final defaultAddrss = data.first;
+
+        orderBloc.setCustomerAddresses(
             CustomerAddressesModel.fromJson(defaultAddrss));
         if (returnBool) {
           return true;
@@ -46,10 +69,31 @@ class CustomerAddressesProvider {
     }
   }
 
+  /// To load POS sale customer addresses
   static Future<List<CustomerAddressesModel>> getDataAdrreses(filter) async {
     List<Map> data;
 
     String customerID = posBloc.getCustomerId();
+
+    if (customerID == '0') {
+      data = [];
+    } else {
+      data = await findCustomerAddresses(filter, customerID);
+    }
+
+    // ignore: unnecessary_null_comparison
+    if (data != null) {
+      return CustomerAddressesModel.fromJsonList(data);
+    }
+
+    return [];
+  }
+
+  /// To load POS sale customer addresses
+  static Future<List<CustomerAddressesModel>> getDataAdrresesToOrder(filter) async {
+    List<Map> data;
+
+    String customerID = orderBloc.getCustomerId();
 
     if (customerID == '0') {
       data = [];

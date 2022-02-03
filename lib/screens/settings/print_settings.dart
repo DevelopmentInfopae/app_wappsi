@@ -359,7 +359,7 @@ class _PrintSettingsState extends State<PrintSettings> {
 
   AppButton _backButton() {
     return AppButton(
-      padding: kButtonPadding,
+      //padding: kButtonPadding,
       onTap: () {
         Navigator.pop(context);
       },
@@ -378,7 +378,7 @@ class _PrintSettingsState extends State<PrintSettings> {
   AppButton _printButton() {
     return AppButton(
       color: Colors.white,
-      padding: kButtonPadding,
+      //padding: kButtonPadding,
       disabledColor: Colors.grey[350],
       width: _size.width * 0.1,
       enabled: !_printing,

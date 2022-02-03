@@ -11,6 +11,11 @@ List<GridItems> freeIcons = [
     icon: 'assets/images/add-to-cart.png',
   ),
   GridItems(
+    title: 'Agregar pedido',
+    route: "orders",
+    icon: 'assets/images/cargo.png',
+  ),
+  GridItems(
     title: 'Listado de ventas',
     route: "list_sales",
     icon: 'assets/images/shopping-list.png',

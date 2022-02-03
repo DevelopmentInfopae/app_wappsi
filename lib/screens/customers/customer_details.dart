@@ -66,7 +66,7 @@ class _CustomerDetailsState extends State<CustomerDetails> {
         ListFavorites(customer: widget.customer).launch(context);
       },
       color: Colors.white,
-      padding: kButtonPadding,
+      //padding: kButtonPadding,
       // disabledColor: Colors.white,
 
       margin: EdgeInsets.zero,

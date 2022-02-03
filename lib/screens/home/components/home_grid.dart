@@ -11,6 +11,7 @@ import 'package:pos_wappsi/screens/db_sync/sync_elements_screen.dart';
 import 'package:pos_wappsi/screens/home/components/grid_items.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
+import 'package:pos_wappsi/screens/orders/new_order.dart';
 import 'package:pos_wappsi/screens/products/products.dart';
 import 'package:pos_wappsi/screens/sales/new_sale.dart';
 import 'package:pos_wappsi/screens/sales/sales_screen.dart';
@@ -87,7 +88,15 @@ class HomeGridCards extends StatelessWidget {
       }
       await _newSale(context);
       await dataBloc.refreshToken(context);
-    } else if (gridItems.route == 'products') {
+    } else if (gridItems.route == 'orders') {
+      // to show or hide home bottombar
+      if(posBloc.isDisposed){
+        posBloc.reload();
+      }
+      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      NewOrder().launch(context);
+      await dataBloc.refreshToken(context);
+    }else if (gridItems.route == 'products') {
       Products().launch(context);
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'customers') {

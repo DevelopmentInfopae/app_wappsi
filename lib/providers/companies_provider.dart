@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/biller_data_model.dart';
@@ -15,14 +16,28 @@ import 'package:pos_wappsi/utils/nav_utils.dart';
 
 class CompaniesProvider {
   /// Load default customer from db to posBloc
-  static selectDefaultCustomer({bool returnBool = false}) async {
+  static selectDefaultCustomer({bool returnBool = false, bool fromOrderCreation=false}) async {
     if (dataBloc.getBIllerData == null) {
       final billerData = await DBProvider.db.getBillerData();
       if (billerData != null) {
         dataBloc.setBillerData(BillerDataModel.fromJson(billerData));
       }
     }
-    if (posBloc.getCustomer == null) {
+    if(fromOrderCreation){
+      if (orderBloc.getCustomer == null) {
+      String? idCustomer = dataBloc.getBIllerData!.defaultCustomerId;
+      if (idCustomer != null) {
+        Map<String, dynamic>? customer = await findCompanyById(idCustomer);
+        if (customer != null) {
+          orderBloc.setCustomer(CompanyModel.fromJson(customer));
+          if (returnBool) {
+            return true;
+          }
+        }
+      }
+    }
+    }else{
+      if (posBloc.getCustomer == null) {
       String? idCustomer = dataBloc.getBIllerData!.defaultCustomerId;
       if (idCustomer != null) {
         Map<String, dynamic>? customer = await findCompanyById(idCustomer);
@@ -33,6 +48,7 @@ class CompaniesProvider {
           }
         }
       }
+    }
     }
   }
 
