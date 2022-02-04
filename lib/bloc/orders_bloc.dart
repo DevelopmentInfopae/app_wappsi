@@ -2,20 +2,21 @@ import 'dart:async';
 
 import 'dart:math';
 
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+// import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/models/documents_types_model.dart';
-
 import 'package:pos_wappsi/models/payment_methods_model.dart';
+// import 'package:pos_wappsi/models/documents_types_model.dart';
+
+// import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 // import 'package:pos_wappsi/models/suspended_sale_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 
 import 'package:pos_wappsi/providers/products_provider.dart';
-import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
+// import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 
 // import 'package:pos_wappsi/utils/local_storage/local_db.dart';
 
@@ -31,6 +32,8 @@ class OrderBloc {
 
   BehaviorSubject<Map> _printDataController = BehaviorSubject<Map>();
 
+  BehaviorSubject<PaymentMethods?> _paymentMthdController =
+      BehaviorSubject<PaymentMethods?>();
 
   BehaviorSubject<CompanyModel?> _customerController =
       BehaviorSubject<CompanyModel?>();
@@ -46,6 +49,10 @@ class OrderBloc {
 
   StreamController<List<ProductModel>> _productSearchController =
       StreamController<List<ProductModel>>.broadcast();
+
+  BehaviorSubject<String> _orderNoteController = BehaviorSubject<String>();
+
+  BehaviorSubject<String> _internalNoteController = BehaviorSubject<String>();
 
   //-----------------------------------------------------------------------------
   //                                STREAMS
@@ -64,8 +71,8 @@ class OrderBloc {
   Stream<Map<String, UnitsModel>> get productsUnitStream =>
       _productUnitController.stream;
 
-  Stream<double> get subTotalStream => _subtotalController.stream.asBroadcastStream();
-
+  Stream<double> get subTotalStream =>
+      _subtotalController.stream.asBroadcastStream();
 
   //______________________________________
   //
@@ -76,14 +83,16 @@ class OrderBloc {
   ///and value is an instance of ProductModel(). Param getPrices is
   ///used to know if product prices should or not be calculated
   Future addProduct(Map<String, dynamic> productReq,
-      {bool getPrices = true,bool getQttys=true}) async {
+      {bool getPrices = true, bool getQttys = true}) async {
     bool res = false;
     if (_productsController.hasValue) {
-      res = await _addProductToProductPOSMap(productReq['product'], getPrices,getQttys,
+      res = await _addProductToProductPOSMap(
+          productReq['product'], getPrices, getQttys,
           unit: productReq['product_unit']);
     } else {
       emptyProductsAdded();
-      res = await _addProductToProductPOSMap(productReq['product'], getPrices,getQttys,
+      res = await _addProductToProductPOSMap(
+          productReq['product'], getPrices, getQttys,
           unit: productReq['product_unit']);
     }
     _subtotalController.sink.add(getSubTotal());
@@ -92,7 +101,8 @@ class OrderBloc {
 
   /// Add product to sale product list, if getPrices = true, calculate
   /// product prices
-  Future<bool> _addProductToProductPOSMap(ProductModel product, bool getPrices,bool getQttys,
+  Future<bool> _addProductToProductPOSMap(
+      ProductModel product, bool getPrices, bool getQttys,
       {UnitsModel? unit}) async {
     bool res = false;
     if (dataBloc.settings!['item_addition'] == 1) {
@@ -111,10 +121,10 @@ class OrderBloc {
         _productsController.value = temp;
         // if get prices = true, then we calculate prices based on price policy
         res =
-            getPrices ? await ProductsProvider.getPOSProductPrices(key) : false;
+            getPrices ? await ProductsProvider.getPOSProductPrices(key,toOrder: true) : false;
 
         if (res) {
-          if(getQttys){
+          if (getQttys) {
             res = await addProductQuantity(key, product.quantity);
           }
         }
@@ -129,7 +139,7 @@ class OrderBloc {
 
       /// gen an unique key for each product
       if (_productsController.value.keys.contains(key)) {
-        _addProductToProductPOSMap(product, getPrices,getQttys,unit: unit);
+        _addProductToProductPOSMap(product, getPrices, getQttys, unit: unit);
       } else {
         // add product unit if product unit is selected
         if (unit != null) {
@@ -141,9 +151,9 @@ class OrderBloc {
         temp.addAll(_productsController.value);
         _productsController.value = temp;
         res =
-            getPrices ? await ProductsProvider.getPOSProductPrices(key) : false;
+            getPrices ? await ProductsProvider.getPOSProductPrices(key,toOrder: true) : false;
         if (res) {
-          if(getQttys){
+          if (getQttys) {
             res = await addProductQuantity(key, product.quantity);
           }
         }
@@ -176,8 +186,7 @@ class OrderBloc {
             _productsController.value[key]!.quantity =
                 _productsController.value[key]!.inventory.toDouble();
             // setProductView(_productsController.value);
-                _subtotalController.sink.add(getSubTotal());
-
+            _subtotalController.sink.add(getSubTotal());
           } else {
             _productsController.value.remove(key);
             res = false;
@@ -185,14 +194,14 @@ class OrderBloc {
         } else {
           _productsController.value[key]!.quantity = value;
           // setProductView(_productsController.value);
-              _subtotalController.sink.add(getSubTotal());
+          _subtotalController.sink.add(getSubTotal());
 
           res = true;
         }
       } else {
         _productsController.value[key]!.quantity = value;
         // setProductView(_productsController.value);
-            _subtotalController.sink.add(getSubTotal());
+        _subtotalController.sink.add(getSubTotal());
 
         res = true;
       }
@@ -213,7 +222,7 @@ class OrderBloc {
     } else {
       return [];
     }
-}
+  }
 
   /// Function to reload product data, costumer data and customer addresses data
   Future<bool> reloadPOSData() async {
@@ -248,12 +257,13 @@ class OrderBloc {
           // Map<String, dynamic>? temp2 =
           //     await ProductsProvider.findProductDetails(temp[key]!.idCloud);
           // if (temp2 != null) {
-            // Map<String, dynamic> pData = queryResultToMap(temp2);
-            // pData[keyInitialQtty] = temp[key]!.quantity;
-            // final product = ProductModel.fromJson(pData,
-            //     loadInitialQtty: true, qtyKey: keyInitialQtty);
-            await addProduct(
-                {'product': temp[key], 'product_unit': pUnits[key] ?? null},getQttys: false);
+          // Map<String, dynamic> pData = queryResultToMap(temp2);
+          // pData[keyInitialQtty] = temp[key]!.quantity;
+          // final product = ProductModel.fromJson(pData,
+          //     loadInitialQtty: true, qtyKey: keyInitialQtty);
+          await addProduct(
+              {'product': temp[key], 'product_unit': pUnits[key] ?? null},
+              getQttys: false);
           // }
         });
 
@@ -281,7 +291,7 @@ class OrderBloc {
   removeProduct(String key) {
     _productsController.value.remove(key);
     reloadProductStream();
-        _subtotalController.sink.add(getSubTotal());
+    _subtotalController.sink.add(getSubTotal());
 
     if (_productUnitController.hasValue) {
       try {
@@ -383,9 +393,6 @@ class OrderBloc {
     return ivasMap;
   }
 
-
-
-
   bool addProductUnit(String productKey, UnitsModel unit) {
     try {
       if (!_productUnitController.hasValue) {
@@ -429,7 +436,9 @@ class OrderBloc {
 
   Map? get getPrintData => _printDataController.valueOrNull;
 
-
+  String? get getInternalNote => _internalNoteController.valueOrNull;
+  String? get getOrderNote => _orderNoteController.valueOrNull;
+  PaymentMethods? get getPaymentMethod => _paymentMthdController.valueOrNull;
 
   CustomerAddressesModel? get getCustomerAddresses =>
       _customerAddressesController.valueOrNull;
@@ -451,10 +460,14 @@ class OrderBloc {
     _customerController.sink.add(customer);
   }
 
+  Function(PaymentMethods?) get setPaymentMethod =>
+      _paymentMthdController.sink.add;
+  Function(String) get setInternalNote => _internalNoteController.sink.add;
+  Function(String) get setOrderNote => _orderNoteController.sink.add;
+
   // Function(bool) get setPrintState => _printStateController.sink.add;
 
   Function(Map) get setPrintData => _printDataController.sink.add;
-
 
   // Function get setSettings =>
   // _settingsController.sink.add;
@@ -468,8 +481,6 @@ class OrderBloc {
   // Function(Map<String, ProductModel>) get setProductView =>
   //     // _productsViewController.sink.add;
 
-
-
   dispose() {
     isDisposed = true;
     _productsController.close();
@@ -478,7 +489,9 @@ class OrderBloc {
     _subtotalController.close();
     _customerController.close();
     _customerAddressesController.close();
-
+    _paymentMthdController.close();
+    _internalNoteController.close();
+    _orderNoteController.close();
     _productUnitController.close();
 
     _printDataController.close();
@@ -495,18 +508,17 @@ class OrderBloc {
     _productUnitController = BehaviorSubject<Map<String, UnitsModel>>();
 
     _printDataController = BehaviorSubject<Map>();
-
-
+    _paymentMthdController = BehaviorSubject<PaymentMethods>();
+    _internalNoteController = BehaviorSubject<String>();
+    _orderNoteController = BehaviorSubject<String>();
     _customerController = BehaviorSubject<CompanyModel?>();
 
     _customerAddressesController = BehaviorSubject<CustomerAddressesModel?>();
 
     _subtotalController = StreamController<double>.broadcast();
 
-
     _productSearchController = StreamController<List<ProductModel>>.broadcast();
   }
-
 }
 
 final orderBloc = OrderBloc();

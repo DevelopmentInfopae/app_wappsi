@@ -146,7 +146,7 @@ class _ProductPriceState extends State<ProductPrice> {
           // height: _size.height * 0.078<55?55:_size.height * 0.078,
           padding: EdgeInsets.all(8),
           elevation: 0,
-          actions: [Container(width: _size.width * 0.14)],
+          actions: [Container(width: _size.width * 0.15)],
           leadingActions: [Icon(Icons.search)],
           automaticallyImplyBackButton: false,
           color: Colors.grey[100],

@@ -11,7 +11,7 @@ class GoBackBottom extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppButton(
       color: Colors.white,
-      //padding: kButtonPadding,
+      padding: kButtonPadding,
       // disabledColor: Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

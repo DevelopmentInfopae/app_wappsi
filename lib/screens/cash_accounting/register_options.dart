@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/screens/cash_accounting/components/open_register_alert.dart';
 import 'package:pos_wappsi/screens/cash_accounting/register_movements.dart';
@@ -45,17 +46,17 @@ class _RegisterOptionsState extends State<RegisterOptions> {
   }
 
   Widget _body(BuildContext context) {
-    final _textTheme = Theme.of(context).textTheme;
+    // final _textTheme = Theme.of(context).textTheme;
     return SingleChildScrollView(
       child: SettingSection(
         title: RichText(
           text: TextSpan(children: [
             TextSpan(
                 text: 'Estado de caja: ',
-                style: _textTheme.headline6!.apply(fontWeightDelta: 5)),
+                style:  buttonsSmallTextStyle(context,)),
             TextSpan(
                 text: registerStatus ? 'Abierta' : 'Cerrada',
-                style: _textTheme.headline6!
+                style:  buttonsSmallTextStyle(context)
                     .apply(color: registerStatus ? Colors.green : Colors.red)),
           ]),
         ),

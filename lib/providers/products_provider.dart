@@ -335,9 +335,25 @@ class ProductsProvider {
 
   /// Return ProductModel product with all it's prices in it
   static Future<bool> getPOSProductPrices(String productKey,
-      {String? customerId, bool defaultPrice = false}) async {
+      {String? customerId, bool defaultPrice = false, bool toOrder=false}) async {
     if (dataBloc.settings != null) {
       final result = await PricePoliciesProvider.policyCasesFromPos(productKey,
+          dataBloc.settings!['prioridad_precios_producto'], posBloc.getCustomer,
+          defaultPrice: defaultPrice, toOrder: toOrder);
+
+      return result;
+      //aply discount
+
+    } else {
+      await dataBloc.getSettings();
+      return getPOSProductPrices(productKey);
+    }
+  }
+  /// Return ProductModel product with all it's prices in it
+  static Future<bool> getPOSOrderProductPrices(String productKey,
+      {String? customerId, bool defaultPrice = false}) async {
+    if (dataBloc.settings != null) {
+      final result = await PricePoliciesProvider.policyCasesFromPosOrder(productKey,
           dataBloc.settings!['prioridad_precios_producto'], posBloc.getCustomer,
           defaultPrice: defaultPrice);
 

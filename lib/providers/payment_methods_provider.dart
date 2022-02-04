@@ -1,16 +1,24 @@
+import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/config/POS_params.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 
 class PaymentMethodsProvider {
-  static loadDefaultPaymentMethod() async {
+  static loadDefaultPaymentMethod({bool fromPOSSale = true}) async {
     final data = await findPaymentMethods(search: DEFPAYMENTM);
 
     if (data != null) {
-      if (data.length > 0 && posBloc.getPaymentMethod == null) {
-        posBloc.setPaymentMethod(PaymentMethods.fromJson(data.first));
+      if (fromPOSSale) {
+        if (data.length > 0 && posBloc.getPaymentMethod == null) {
+          posBloc.setPaymentMethod(PaymentMethods.fromJson(data.first));
+          return true;
+        }
+      }else{
+        if (data.length > 0 && orderBloc.getPaymentMethod == null) {
+        orderBloc.setPaymentMethod(PaymentMethods.fromJson(data.first));
         return true;
+      }
       }
     }
   }

@@ -1,4 +1,5 @@
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
@@ -77,6 +78,88 @@ class PricePoliciesProvider {
   /// Return ProductModel object with prices calculatd by price_policy
   static Future<bool> policyCasesFromPos(
       String? productKey, int? policy, CompanyModel? customer,
+      {bool defaultPrice = false, bool toOrder = false}) async {
+    //tax rate for IVA
+
+    double price = 0.0;
+
+    ProductModel product;
+
+    if(toOrder){
+      product = orderBloc.getProducts![productKey]!;
+    }else{
+      product = posBloc.getProducts![productKey]!;
+    }
+
+    try {
+      /// For price_plicy with id 6
+      if (policy == 6) {
+        if (posBloc.getProducts![productKey]!.promoPrice != null) {
+          product.price =
+              product.promoPrice!;
+          product.discount = 0;
+          product.priceWithoutDiscount =
+              product.promoPrice!;
+        } else {
+          if (customer != null) {
+            if (customer.priceGroupId != null) {
+              price = await product.customerPrice(
+                  customer,
+                  product.billerPrice(
+                      product.getPrice()));
+            } else {
+              price = await product
+                  .billerPrice(product.getPrice());
+            }
+            // print(price);
+            final values = await priceWDiscount(price, customer);
+            product.price = values[0];
+            product.priceWithoutDiscount = price;
+            product.discount = values[1];
+            product.pricePolicyPrices = price;
+          } else {
+            //if customer not selected
+            final values = await priceWDiscount(price, customer);
+            product.price = values[0];
+            product.priceWithoutDiscount = price;
+            product.discount = values[1];
+          }
+        }
+      } else if (policy == 10) {
+        // posBloc.getProducts![productKey]!.price= posBloc.getProductUnits[]
+        UnitsModel unit;
+
+        if(toOrder){
+          unit = orderBloc.getProductUnits![productKey]!;
+        }else{
+          unit = posBloc.getProductUnits![productKey]!;
+        }
+        product.pricePolicyPrices =
+            unit.unitValue /
+                (unit.operationValue ?? 1);
+        product.price =
+            unit.unitValue /
+                product.quantity;
+      } else {
+        product.priceWithoutDiscount = price;
+        product.price = price;
+        product.discount = 0;
+      }
+        if(toOrder){
+          orderBloc.getProducts![productKey!] = product;
+        }else{
+          posBloc.getProducts![productKey!] = product;
+        }
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  /// Return ProductModel object with prices calculatd by price_policy
+  static Future<bool> policyCasesFromPosOrder(
+      String? productKey, int? policy, CompanyModel? customer,
       {bool defaultPrice = false}) async {
     //tax rate for IVA
 
@@ -85,50 +168,50 @@ class PricePoliciesProvider {
     try {
       /// For price_plicy with id 6
       if (policy == 6) {
-        if (posBloc.getProducts![productKey]!.promoPrice != null) {
-          posBloc.getProducts![productKey]!.price =
-              posBloc.getProducts![productKey]!.promoPrice!;
-          posBloc.getProducts![productKey]!.discount = 0;
-          posBloc.getProducts![productKey]!.priceWithoutDiscount =
-              posBloc.getProducts![productKey]!.promoPrice!;
+        if (orderBloc.getProducts![productKey]!.promoPrice != null) {
+          orderBloc.getProducts![productKey]!.price =
+              orderBloc.getProducts![productKey]!.promoPrice!;
+          orderBloc.getProducts![productKey]!.discount = 0;
+          orderBloc.getProducts![productKey]!.priceWithoutDiscount =
+              orderBloc.getProducts![productKey]!.promoPrice!;
         } else {
           if (customer != null) {
             if (customer.priceGroupId != null) {
-              price = await posBloc.getProducts![productKey]!.customerPrice(
+              price = await orderBloc.getProducts![productKey]!.customerPrice(
                   customer,
-                  posBloc.getProducts![productKey]!.billerPrice(
-                      posBloc.getProducts![productKey]!.getPrice()));
+                  orderBloc.getProducts![productKey]!.billerPrice(
+                      orderBloc.getProducts![productKey]!.getPrice()));
             } else {
-              price = await posBloc.getProducts![productKey]!
-                  .billerPrice(posBloc.getProducts![productKey]!.getPrice());
+              price = await orderBloc.getProducts![productKey]!
+                  .billerPrice(orderBloc.getProducts![productKey]!.getPrice());
             }
             // print(price);
             final values = await priceWDiscount(price, customer);
-            posBloc.getProducts![productKey]!.price = values[0];
-            posBloc.getProducts![productKey]!.priceWithoutDiscount = price;
-            posBloc.getProducts![productKey]!.discount = values[1];
-            posBloc.getProducts![productKey]!.pricePolicyPrices = price;
+            orderBloc.getProducts![productKey]!.price = values[0];
+            orderBloc.getProducts![productKey]!.priceWithoutDiscount = price;
+            orderBloc.getProducts![productKey]!.discount = values[1];
+            orderBloc.getProducts![productKey]!.pricePolicyPrices = price;
           } else {
             //if customer not selected
             final values = await priceWDiscount(price, customer);
-            posBloc.getProducts![productKey]!.price = values[0];
-            posBloc.getProducts![productKey]!.priceWithoutDiscount = price;
-            posBloc.getProducts![productKey]!.discount = values[1];
+            orderBloc.getProducts![productKey]!.price = values[0];
+            orderBloc.getProducts![productKey]!.priceWithoutDiscount = price;
+            orderBloc.getProducts![productKey]!.discount = values[1];
           }
         }
       } else if (policy == 10) {
-        // posBloc.getProducts![productKey]!.price= posBloc.getProductUnits[]
+        // orderBloc.getProducts![productKey]!.price= orderBloc.getProductUnits[]
         
-        posBloc.getProducts![productKey]!.pricePolicyPrices =
-            posBloc.getProductUnits![productKey]!.unitValue /
-                (posBloc.getProductUnits![productKey]!.operationValue ?? 1);
-        posBloc.getProducts![productKey]!.price =
-            posBloc.getProductUnits![productKey]!.unitValue /
-                posBloc.getProducts![productKey]!.quantity;
+        orderBloc.getProducts![productKey]!.pricePolicyPrices =
+            orderBloc.getProductUnits![productKey]!.unitValue /
+                (orderBloc.getProductUnits![productKey]!.operationValue ?? 1);
+        orderBloc.getProducts![productKey]!.price =
+            orderBloc.getProductUnits![productKey]!.unitValue /
+                orderBloc.getProducts![productKey]!.quantity;
       } else {
-        posBloc.getProducts![productKey]!.priceWithoutDiscount = price;
-        posBloc.getProducts![productKey]!.price = price;
-        posBloc.getProducts![productKey]!.discount = 0;
+        orderBloc.getProducts![productKey]!.priceWithoutDiscount = price;
+        orderBloc.getProducts![productKey]!.price = price;
+        orderBloc.getProducts![productKey]!.discount = 0;
       }
       return true;
     } catch (e) {

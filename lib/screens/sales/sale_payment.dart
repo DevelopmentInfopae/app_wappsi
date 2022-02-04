@@ -129,7 +129,7 @@ class _SalePaymentState extends State<SalePayment> {
 
   Widget _form() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 16),
       child: ListView(
         children: [
           _productsInfo().paddingSymmetric(vertical: 6),
@@ -150,7 +150,7 @@ class _SalePaymentState extends State<SalePayment> {
         RichText(
           text: TextSpan(
               text: 'Numero de productos: ',
-              style: _textTheme.headline6!.apply(color: _pc),
+              style:  buttonsSmallTextStyle(context).apply(color: _pc),
               children: [
                 TextSpan(
                     text: '${posBloc.getProductsCount()}',
@@ -161,7 +161,7 @@ class _SalePaymentState extends State<SalePayment> {
         RichText(
           text: TextSpan(
               text: 'Numero de items: ',
-              style: _textTheme.headline6!.apply(color: _pc),
+              style:  buttonsSmallTextStyle(context).apply(color: _pc),
               children: [
                 TextSpan(
                     text: '${posBloc.getItemsCount()}',
@@ -556,7 +556,7 @@ class _SalePaymentState extends State<SalePayment> {
               Text('Total entregado: '),
               Text(
                 '${getFormatedCurrency(_valueP.toDouble())}',
-                style: _textTheme.headline6!.apply(color: _pc),
+                style:  buttonsSmallTextStyle(context).apply(color: _pc),
               ),
             ],
           ).withWidth(_size.width * 0.45),
@@ -566,7 +566,7 @@ class _SalePaymentState extends State<SalePayment> {
               Text('Cambio: '),
               Text(
                 '${getFormatedCurrency(_valueP - posBloc.getSubTotal())}',
-                style: _textTheme.headline6!.apply(color: _pc),
+                style:  buttonsSmallTextStyle(context).apply(color: _pc),
               ),
             ],
           ).withWidth(_size.width * 0.45)
@@ -579,7 +579,7 @@ class _SalePaymentState extends State<SalePayment> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        subTotal(large: true).paddingLeft(8).expand(),
+        subTotal(large: true,color: Colors.white, defaultValue: posBloc.getSubTotal()).paddingLeft(8).expand(),
         sendButton().flexible(),
       ],
     );
@@ -597,8 +597,8 @@ class _SalePaymentState extends State<SalePayment> {
       enabled = true;
     }
     return AppButton(
-      //padding: kButtonPadding,
-      color: okColorWappsi,
+      padding: kButtonPadding,
+      color: Colors.white,
       disabledColor: Colors.grey[300],
       enabled: enabled,
       onTap: _sending
@@ -649,7 +649,7 @@ class _SalePaymentState extends State<SalePayment> {
             },
       child: Text('Finalizar venta',
           style: buttonsSmallTextStyle(context,
-              color: enabled ? Colors.white : Colors.black)),
+              color: enabled ? pColor:greyColor)),
     );
   }
 }

@@ -128,9 +128,9 @@ class _AddFavoritesState extends State<AddFavorites> {
       openWidth: _size.width,
 
       height: searchHeight,
-      queryStyle: _textTheme.headline6!,
+      queryStyle:  buttonsSmallTextStyle(context),
       leadingActions: _leadingActions,
-      hintStyle: _textTheme.headline6!,
+      hintStyle:  buttonsSmallTextStyle(context),
       automaticallyImplyBackButton: false,
       controller: _searchController,
       body: _body(),
@@ -146,7 +146,7 @@ class _AddFavoritesState extends State<AddFavorites> {
           buildBody(action: 'add_to_favorites', stream: _searchStream.stream),
       title: Text(
         'Buscar producto',
-        style: _textTheme.headline6!,
+        style:  buttonsSmallTextStyle(context),
       ),
 
       // width: _size.width * 0.84,

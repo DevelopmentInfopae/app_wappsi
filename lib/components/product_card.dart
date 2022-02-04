@@ -4,6 +4,7 @@ import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports, unnecessary_import
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
+import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
@@ -11,6 +12,7 @@ import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/products/product_details.dart';
 import 'package:pos_wappsi/screens/products/product_price_verifier.dart';
+import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 // class to show product indormation in form of a card
@@ -70,11 +72,26 @@ class _ProductCardState extends State<ProductCard> {
               if (result) {
                 posBloc.getSearchBarController.clear();
                 posBloc.getSearchBarController.close();
+                scaffoldAlert(context, "Producto ${widget.product.name} añadido", Duration(seconds: 1));
               }
             }
 
             // Navigator.pop(context);
-          } else if (widget.action == 'price_verifier') {
+          } else if (widget.action == 'add_to_order') {
+            final productReq = await ProductsProvider.getProductRequirements(
+                context, widget.product);
+            if (productReq != {}) {
+              final result = await orderBloc.addProduct(productReq);
+              // print(result);
+              if(result){
+                scaffoldAlert(context, "Producto ${widget.product.name} añadido", Duration(seconds: 1));
+                // to avoid : 
+                // await Future.delayed(Duration(seconds:1));
+              }
+            }
+
+            // Navigator.pop(context);
+          }else if (widget.action == 'price_verifier') {
             ProductPriceVerifier(product: widget.product).launch(context);
           } else if (widget.action == 'add_to_favorites') {
             customerBloc.addProductToFav(
@@ -132,7 +149,7 @@ class _ProductCardState extends State<ProductCard> {
   Text _productName() {
     return Text(
       capitalizeText(widget.product.name),
-      style: buttonsSmallTextStyle(context),
+      style: buttonsSmallTextStyle(context, color: greyDarkerColor),
     );
   }
 

@@ -10,22 +10,23 @@ import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-Widget subTotal({bool large = false}) {
+Widget subTotal({bool large = false, Color? color, Stream<double>? stream, double? defaultValue}) {
   return StreamBuilder<double>(
-      stream: posBloc.subTotalStream,
+      stream: stream??posBloc.subTotalStream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final value = getFormatedCurrency(snapshot.data!);
           return large
-              ? _totalLarge(context, value)
-              : _totalValue(context, value)
-                  .paddingSymmetric(horizontal: 8, vertical: 8);
+              ? _totalLarge(context, value, color: color)
+              : totalValue(context, value, color: color)
+                  .paddingSymmetric(horizontal: 8);
         } else {
-          posBloc.setSubTotal(posBloc.getSubTotal());
+          // posBloc.setSubTotal(posBloc.getSubTotal());
+          final value = getFormatedCurrency(defaultValue??0.0);
           return large
-              ? _totalLarge(context, " 0.00")
-              : _totalValue(context, " 0.00")
-                  .paddingSymmetric(horizontal: 8, vertical: 8);
+              ? _totalLarge(context, value, color: color)
+              : totalValue(context, value, color: color)
+                  .paddingSymmetric(horizontal: 8);
         }
       });
 }
@@ -37,31 +38,28 @@ Widget subTotal({bool large = false}) {
 //     mainAxisSize: MainAxisSize.min,
 //     children: [
 //       Text("Total", style: buttonsTextStyle(context, fontSizeFactor: 0.6)),
-//       _totalValue(context, value),
+//       totalValue(context, value),
 //     ],
 //   ).paddingBottom(8);
 // }
 
-Widget _totalLarge(BuildContext context, String value) {
+Widget _totalLarge(BuildContext context, String value, {Color? color}) {
   return Row(
     children: [
-      Text("Total: ", style: buttonsTextStyle(context, fontSizeFactor: 1.4)),
-      _totalValue(context, value)
-          .paddingOnly(top: 10, bottom: 10, right: 8)
-          .expand(),
+      Text("Total: ", style: buttonsSmallTextStyle(context, color: color)),
+      totalValue(context, value, color: color).paddingOnly(right: 8),
     ],
   );
 }
 
-Widget _totalValue(BuildContext context, String value) {
+Widget totalValue(BuildContext context, String value, {Color? color}) {
   return FittedBox(
     fit: BoxFit.fitHeight,
     child: Text("${value.substring(0, value.length - 3)}",
-            style: numbersTextStyle(
-                color: Colors.white,
-                fontSizeFactor: 1.15,
-                fontWeight: FontWeight.w800))
-        .paddingOnly(bottom: 6, top: 10),
+        style: numbersTextStyle(
+            color: color ?? Colors.white,
+            fontSizeFactor: 1.0,
+            fontWeight: FontWeight.w800)),
   );
 }
 

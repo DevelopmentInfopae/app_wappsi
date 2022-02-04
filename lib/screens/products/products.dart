@@ -27,8 +27,6 @@ class _ProductsState extends State<Products> {
   final _searchController = new FloatingSearchBarController();
 
   late Size _size;
-  // late Color _pc;
-  late TextTheme _theme;
 
   // FloatingSearchBarController _controller = new FloatingSearchBarController();
   Map<String, dynamic> _searchParams = {};
@@ -51,7 +49,6 @@ class _ProductsState extends State<Products> {
     // avoid errors related to unstability of scaffold with no key
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-    _theme = Theme.of(context).textTheme;
     _size = MediaQuery.of(context).size;
     // _pc = pColor;
 
@@ -114,26 +111,31 @@ class _ProductsState extends State<Products> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
-          color: Colors.grey[100],
+          color: Colors.grey[200],
           borderRadius: BorderRadius.all(Radius.circular(10))),
       child: FloatingSearchAppBar(
           controller: _searchController,
           hint: ' Buscar producto',
-          titleStyle: _theme.headline6!,
+          titleStyle: buttonsSmallTextStyle(context),
           transitionDuration: const Duration(milliseconds: 800),
           clearQueryOnClose: true,
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
           // alwaysOpened: true,
 
-          hintStyle: _theme.headline6!,
+          hintStyle: buttonsSmallTextStyle(context),
           hideKeyboardOnDownScroll: true,
           onQueryChanged: _onQueryChanged,
           // height: _size.height * 0.078 < 55 ? 55 : _size.height * 0.078,
           elevation: 0,
-          actions: [Container(width: _size.width * 0.14)],
-          leadingActions: [Icon(Icons.search)],
+          actions: [
+            FloatingSearchBarAction.searchToClear(
+                // showIfClosed: false,
+                ),
+            Container(width: _size.width * 0.15)
+          ],
+          // leadingActions: [Icon(Icons.search)],
           automaticallyImplyBackButton: false,
-          color: Colors.grey[100],
+          color: Colors.grey[200],
           body: null),
     );
   }

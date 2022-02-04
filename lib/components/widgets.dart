@@ -153,11 +153,9 @@ Widget vDivider(
 }
 
 Widget bottom(Widget child, Color _pc, Size _size,
-    {Alignment? alignment, bool elevation = false}) {
+    {Alignment? alignment, bool elevation = true}) {
   return Container(
-      height: _size.height * 0.0805 > 66
-          ? (_size.height * 0.081 > 70 ? 70 : _size.height * 0.0805)
-          : 66,
+      height: 64,
       width: _size.width,
       alignment: alignment,
       decoration: BoxDecoration(

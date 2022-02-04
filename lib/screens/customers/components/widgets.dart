@@ -62,12 +62,14 @@ Widget textFormField(BuildContext context, String label, Function function,
     focusNode: focus,
     readOnly: readOnly,
     keyboardType: keyBType,
+    
     autovalidateMode: autovalidateMode,
     controller: controller,
     style: style ?? normalTextStyle(context),
     maxLines: maxLines,
     decoration:
         InputDecorations.outlineInputDecoration(hintText: '', labelText: label),
+        
     validator: (String? value) {
       return validation(value);
     },

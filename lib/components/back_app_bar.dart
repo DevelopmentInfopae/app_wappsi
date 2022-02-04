@@ -66,7 +66,7 @@ Widget _content(BuildContext context, String title, String? subtitle, bool back,
           .expand(),
       (leading ?? Container())
           .withSize(height: 55, width: leading != null ? 55 : 0)
-          .paddingRight(leading != null ? 15 : 10)
+          .paddingRight(leading != null ? 10 : 16)
     ],
   );
 }

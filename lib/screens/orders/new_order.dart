@@ -92,7 +92,7 @@ class _NewOrderState extends State<NewOrder> {
           _warehouse(),
           _sellerInfo(),
           _customers(),
-          _customerAddresses(),
+          _customerAddressesDropDown()
         ],
       ),
     );
@@ -232,18 +232,18 @@ class _NewOrderState extends State<NewOrder> {
     }
   }
 
-  Widget _customerAddresses() {
-    return FutureBuilder(
-      future: CustomerAddressesProvider.selectDefaultAddrsToOrder(returnBool: true),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          return _customerAddressesDropDown();
-        } else {
-          return _customerAddressesDropDown();
-        }
-      },
-    );
-  }
+  // Widget _customerAddresses() {
+  //   return FutureBuilder(
+  //     future: CustomerAddressesProvider.selectDefaultAddrsToOrder(returnBool: true),
+  //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+  //       if (snapshot.hasData) {
+  //         return _customerAddressesDropDown();
+  //       } else {
+  //         return _customerAddressesDropDown();
+  //       }
+  //     },
+  //   );
+  // }
 
   Widget _customerAddressesDropDown() {
     return DropdownSearch<CustomerAddressesModel>(
@@ -305,18 +305,42 @@ class _NewOrderState extends State<NewOrder> {
   }
 
   Widget _button() {
-    return AppButton(
-      color: _pc,
-      width: _size.width,
-      onTap: () async {
-        await CompaniesProvider.selectDefaultCustomer(fromOrderCreation: true);
-        await CustomerAddressesProvider.selectDefaultAddrs(fromOrderCreation: true);
-        OrderProducts().launch(context);
-      },
-      child: Text(
-        'Añadir productos',
-        style: buttonsTextStyle(context),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        AppButton(
+          color: Colors.white,
+          padding: kButtonPadding,
+          // width: _size.width,
+          onTap: () async {
+            Navigator.pop(context);
+            dataBloc.homeKey.currentState?.changeBottomIndex(1);
+          },
+          child: Row(
+            children: [
+              Icon(Icons.arrow_back_ios_rounded, color: pColor,size: kIconSize,),
+              Text(
+                'Salir',
+                style: buttonsSmallTextStyle(context,color: pColor),
+              ),
+            ],
+          ),
+        ),
+        AppButton(
+          color: Colors.white,
+          // width: _size.width,
+          padding: kButtonPadding,
+          onTap: () async {
+            await CompaniesProvider.selectDefaultCustomer(fromOrderCreation: true);
+            await CustomerAddressesProvider.selectDefaultAddrs(fromOrderCreation: true);
+            OrderProducts().launch(context);
+          },
+          child: Text(
+            'Añadir productos',
+            style: buttonsSmallTextStyle(context, color: pColor),
+          ),
+        ),
+      ],
     );
   }
 }

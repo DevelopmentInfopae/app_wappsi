@@ -33,7 +33,7 @@ void scaffoldAlert(BuildContext context, String message, Duration duration,
             .textTheme
             .headline6!
             .apply(fontSizeFactor: 0.8, color: textColor),
-      ),
+      ).paddingSymmetric(horizontal: 8),
       backGroundColor,
       _size,
       alignment: Alignment.center,

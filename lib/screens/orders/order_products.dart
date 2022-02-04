@@ -1,18 +1,19 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
-import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/components/app_bar_leading.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
+import 'package:pos_wappsi/components/product_list.dart';
+import 'package:pos_wappsi/screens/orders/components/favorites_search_selection.dart';
+import 'package:pos_wappsi/screens/orders/order_other_details.dart';
 // import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
-import 'package:pos_wappsi/screens/sales/components/sale_product_list_widget.dart';
 
 import 'package:pos_wappsi/screens/sales/components/search.dart';
 
@@ -32,15 +33,8 @@ class OrderProducts extends StatefulWidget {
 }
 
 class _OrderProductsState extends State<OrderProducts> {
-  late final _leadingActions = [
-    FloatingSearchBarAction(
-      child: Icon(
-        Icons.search,
-        // color: _pc,
-      ).paddingLeft(7),
-    )
-  ];
-
+  int index = 0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   ScrollController _scrollController = new ScrollController();
   final _searchController = new FloatingSearchBarController();
 
@@ -51,7 +45,7 @@ class _OrderProductsState extends State<OrderProducts> {
   int _productsCount = 0;
   int _itemsCount = 0;
 
-  late TextTheme _textTheme;
+  // late TextTheme _textTheme;
 
   @override
   void initState() {
@@ -67,16 +61,75 @@ class _OrderProductsState extends State<OrderProducts> {
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
-    _textTheme = Theme.of(context).textTheme;
+    // _textTheme = Theme.of(context).textTheme;
 
     // initialize search controller
-    
-    return Scaffold(
-        appBar: appBar(context, 'Agregar pedido',
-            elevation: false,
-            radius: 0,
-            image: 'assets/images/cargo.png'),
-        body: _searchbar());
+
+    return WillPopScope(
+        child: Scaffold(
+          key:_scaffoldKey,
+            appBar: buildAppBar(context),
+            body: IndexedStack(
+              index: index,
+              children: [
+                _searchbar(),
+                Hero(
+                    tag: 'order_favorite_search',
+                    child: buildFloatingSearchBar())
+              ],
+            )),
+        onWillPop: () async {
+          bool pop = false;
+          setState(() {
+            if (index == 1) {
+              index = 0;
+            } else {
+              pop = true;
+            }
+          });
+          return pop;
+        });
+  }
+
+  PreferredSize buildAppBar(BuildContext context) {
+    return appBar(
+      context,
+      'Agregar pedido',
+      elevation: false,
+      radius: 0,
+      image: 'assets/images/cargo.png',
+      onPop: () {
+        setState(() {
+          if (index == 1) {
+            index = 0;
+          } else {
+            Navigator.pop(context);
+          }
+        });
+      },
+      leading: Hero(
+        tag: 'order_favorite_search',
+        child: Tooltip(
+            message: "Favoritos",
+            child: AppBarLeading(
+                widget: Icon(
+                  index==1?Icons.favorite:Icons.favorite_border_outlined,
+                  size: leadingIconSize,
+                  color: pColor,
+                ),
+                onTap: () {
+                  setState(() {
+                    if (index == 0) {
+                      _searchController.close();
+                      index = 1;
+                      
+                    } else {
+                      index = 0;
+                    }
+                  });
+                })),
+      ),
+    );
   }
 
   Widget _searchbar() {
@@ -92,6 +145,13 @@ class _OrderProductsState extends State<OrderProducts> {
         }),
       ],
     );
+  }
+
+  Widget buildFloatingSearchBar() {
+    final isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
+
+    return FavoritesOrderSelection(isPortrait: isPortrait, context: _scaffoldKey.currentContext??context);
   }
 
   Container _searchHeight() {
@@ -113,22 +173,26 @@ class _OrderProductsState extends State<OrderProducts> {
       clearQueryOnClose: true,
       axisAlignment: -1,
       elevation: 0,
-      padding: EdgeInsets.symmetric(horizontal: 5),
+      // padding: EdgeInsets.symmetric(horizontal: 5),
       // border: BorderSide(color: _pc, width: 1),
       borderRadius: BorderRadius.circular(10),
       margins: EdgeInsets.zero,
       hint: 'Buscar producto',
       actions: [
+        FloatingSearchBarAction.searchToClear(
+            // showIfClosed: false,
+          ),
         Container(
           width: _size.width * 0.17,
-        )
+        ),
+        
       ],
       openWidth: _size.width,
 
       height: searchHeight,
-      queryStyle: _textTheme.headline6!,
-      leadingActions: _leadingActions,
-      hintStyle: _textTheme.headline6!,
+      queryStyle: buttonsSmallTextStyle(context),
+
+      hintStyle: buttonsSmallTextStyle(context),
       automaticallyImplyBackButton: false,
       controller: _searchController,
       body: _body(),
@@ -140,10 +204,11 @@ class _OrderProductsState extends State<OrderProducts> {
       transitionCurve: Curves.easeInOutCubic,
       transition: CircularFloatingSearchBarTransition(),
       physics: const BouncingScrollPhysics(),
-      builder: (context, _) => buildBody(),
+      builder: (context, _) => buildBody(
+          stream: orderBloc.productSearchStream, action: 'add_to_order'),
       title: Text(
         'Buscar producto',
-        style: _textTheme.headline6!,
+        style: buttonsSmallTextStyle(context),
       ),
 
       // width: _size.width * 0.84,
@@ -179,6 +244,7 @@ class _OrderProductsState extends State<OrderProducts> {
                   bool productRequestFocus = false;
                   if (_productsCount == snapshot.data!.length ||
                       _itemsCount == orderBloc.getItemsCount()) {
+                    
                     if (_scrollController.hasClients) {
                       _scrollController
                           .jumpTo(_scrollController.position.minScrollExtent);
@@ -194,10 +260,12 @@ class _OrderProductsState extends State<OrderProducts> {
                     _itemsCount = orderBloc.getItemsCount();
                   }
                   Map<String, ProductModel> saleProductsList = snapshot.data!;
-                  return SaleProductsList(
-                      saleProductsList: saleProductsList,
-                      scrollController: _scrollController,
-                      productRequestFocus: productRequestFocus);
+                  return ProductsList(
+                    productList: saleProductsList,
+                    scrollController: _scrollController,
+                    productRequestFocus: productRequestFocus,
+                    fromOrder: true,
+                  );
                 }
               } else {
                 // ignore: unnecessary_null_comparison
@@ -214,7 +282,9 @@ class _OrderProductsState extends State<OrderProducts> {
         if (_searchController.isOpen) {
           _searchController.query = '';
         } else {
-          _searchController.open();
+          if(index==0){
+            _searchController.open();
+          }
         }
       });
       return false;
@@ -239,6 +309,7 @@ class _OrderProductsState extends State<OrderProducts> {
           ),
         ],
       ),
+      padding: kButtonPadding,
       color: pColor,
       onTap: () {
         _searchController.open();
@@ -250,31 +321,41 @@ class _OrderProductsState extends State<OrderProducts> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        subTotal(large: _size.width > 450),
-        _sendOrder().paddingLeft(20),
-        
+        subTotal(
+            large: true,
+            stream: orderBloc.subTotalStream,
+            defaultValue: orderBloc.getSubTotal(),
+            color: Colors.white),
+        _sendOrder(),
       ],
 
       // ),
     );
   }
 
-
-
   Widget _sendOrder() {
     return AppButton(
-      // //padding: kButtonPadding,
+      padding: kButtonPadding,
       color: Colors.white,
       shapeBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: pColor)),
       width: 10,
       onTap: () async {
-        
+        _send();
       },
       // child: Icon(FontAwesomeIcons.pause),
-      child: Text('Enviar pedido',
-          style: buttonsSmallTextStyle(context, color: pColor)),
+      child: Row(
+        children: [
+          Icon(
+            Icons.arrow_forward_ios_rounded,
+            size: kIconSize,
+            color: pColor,
+          ),
+          Text('Siguiente',
+              style: buttonsSmallTextStyle(context, color: pColor)),
+        ],
+      ),
     );
   }
 
@@ -304,7 +385,9 @@ class _OrderProductsState extends State<OrderProducts> {
               await ProductsProvider.getProductRequirements(context, temp);
           if (productReq != {}) {
             final result = await orderBloc.addProduct(productReq);
-            print(result);
+            if(result){
+              scaffoldAlert(context, 'Producto ${temp.name} añadido', Duration(seconds: 1));
+            }
           }
 
           products = [];
@@ -326,10 +409,9 @@ class _OrderProductsState extends State<OrderProducts> {
   void _send() {
     if ((orderBloc.getProducts?.keys.length ?? 0) > 0) {
       // SalePayment().launch(context);
+      OrderOtherDetails().launch(context);
     } else {
-      confirmDialog(
-          context,
-          "Debe seleccionar productos antes de continuar",
+      confirmDialog(context, "Debe seleccionar productos antes de continuar",
           "assets/images/alert.png");
     }
   }

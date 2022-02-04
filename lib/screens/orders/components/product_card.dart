@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 // import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:nb_utils/nb_utils.dart';
-// ignore: implementation_imports
-// import 'package:nb_utils/src/extensions/widget_extensions.dart';
-import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/bloc/orders_bloc.dart';
+
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
@@ -16,8 +15,8 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 // class to show product indormation in form of a card
 
-class ProductCard extends StatefulWidget {
-  ProductCard(
+class OrderProductCard extends StatefulWidget {
+  OrderProductCard(
       {Key? key,
       required this.product,
       required this.formKey,
@@ -28,10 +27,10 @@ class ProductCard extends StatefulWidget {
   final MapEntry<String, ProductModel> product;
 
   @override
-  _ProductCardState createState() => _ProductCardState();
+  _OrderProductCardState createState() => _OrderProductCardState();
 }
 
-class _ProductCardState extends State<ProductCard> {
+class _OrderProductCardState extends State<OrderProductCard> {
   // final FocusNode quantityFocusNode = new FocusNode();
 
   // final widget.formKey = new GlobalKey<FormState>();
@@ -50,8 +49,8 @@ class _ProductCardState extends State<ProductCard> {
   @override
   void initState() {
     // _quantityController.text =
-    //     posBloc.getProductData(widget.product.key)!.quantity.toString();
-    // posBloc.getProductData(widget.product.key)!.quantityController.text = posBloc.getProductData(widget.product.key)!.quantity.toString();
+    //     orderBloc.getProductData(widget.product.key)!.quantity.toString();
+    // orderBloc.getProductData(widget.product.key)!.quantityController.text = orderBloc.getProductData(widget.product.key)!.quantity.toString();
     _updateQuantityValue();
 
     super.initState();
@@ -82,16 +81,14 @@ class _ProductCardState extends State<ProductCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              productPhoto(widget.product.value.image == ''
-                    ? 'no_image.png'
-                    : widget.product.value.image).withSize(
+              productPhoto(widget.product.value.image).withSize(
                   width: _size.width * 0.23,
                   height: _size.height * 0.1 > 70 ? _size.height * 0.1 : 70),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    posBloc.getProductUnits?[widget.product.key]?.name ?? '',
+                    orderBloc.getProductUnits?[widget.product.key]?.name ?? '',
                     textAlign: TextAlign.end,
                     style: normalTextStyle(context),
                   ).paddingRight(8),
@@ -128,7 +125,7 @@ class _ProductCardState extends State<ProductCard> {
       child: TextFormField(
         onEditingComplete: () {
           widget.quantityFocusNode.unfocus();
-          posBloc.getSearchBarController.open();
+          // orderBloc.getSearchBarController.open();
         },
         maxLines: 1,
         // maxLength: 5,
@@ -140,7 +137,7 @@ class _ProductCardState extends State<ProductCard> {
         // focusNode: quantityFocusNode,
         // textFieldType: TextFieldType.PHONE,5
         keyboardType: TextInputType.number,
-        style: Theme.of(context).textTheme.headline6,
+        style: buttonsSmallTextStyle(context),
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           // fillColor: Colors.red,
@@ -156,13 +153,14 @@ class _ProductCardState extends State<ProductCard> {
         textAlign: TextAlign.center,
         onChanged: (String value) async {
           // quantityFocusNode.requestFocus();
+          print(value);
           if (!value.endsWith('.')) {
             if (!value.endsWith('.0')) {
               double productInt = double.tryParse(value) ?? 0.0;
               if (productInt == 0) {
                 if (value == '') {
                   final res =
-                      await posBloc.addProductQuantity(widget.product.key, 1);
+                      await orderBloc.addProductQuantity(widget.product.key, 1);
                   if (!res) {
                     _stockAlert();
 
@@ -178,7 +176,7 @@ class _ProductCardState extends State<ProductCard> {
                   // });
                 }
               } else {
-                final res = await posBloc.addProductQuantity(
+                final res = await orderBloc.addProductQuantity(
                     widget.product.key, productInt);
                 // print(res);
                 if (!res) {
@@ -197,7 +195,7 @@ class _ProductCardState extends State<ProductCard> {
             return isNumeric(value) ? null : 'El valor ingresado no es valido';
           } else {
             // setState(() {
-            //   posBloc.getProductData(widget.product.key)!.quantity = 1;
+            //   orderBloc.getProductData(widget.product.key)!.quantity = 1;
             // });
           }
         },
@@ -217,11 +215,11 @@ class _ProductCardState extends State<ProductCard> {
       onTap: () {
         // quantityFocusNode.requestFocus();
         setState(() {
-          if (posBloc.getProductData(widget.product.key)!.quantity > 1) {
-            posBloc.getProductData(widget.product.key)!.quantity -= 1;
+          if (orderBloc.getProductData(widget.product.key)!.quantity > 1) {
+            orderBloc.getProductData(widget.product.key)!.quantity -= 1;
             _updateQuantityValue();
-            // posBloc.addProductQuantity(widget.product.key,
-            //     posBloc.getProductData(widget.product.key)!.quantity);
+            // orderBloc.addProductQuantity(widget.product.key,
+            //     orderBloc.getProductData(widget.product.key)!.quantity);
           }
         });
       },
@@ -242,9 +240,9 @@ class _ProductCardState extends State<ProductCard> {
         borderRadius: BorderRadius.circular(30),
       ),
       onTap: () async {
-        // posBloc.getProductData(widget.product.key)!.quantity += 1;
-        final res = await posBloc.addProductQuantity(widget.product.key,
-            posBloc.getProductData(widget.product.key)!.quantity += 1);
+        // orderBloc.getProductData(widget.product.key)!.quantity += 1;
+        final res = await orderBloc.addProductQuantity(widget.product.key,
+            orderBloc.getProductData(widget.product.key)!.quantity += 1);
 
         _updateQuantityValue();
 
@@ -274,7 +272,7 @@ class _ProductCardState extends State<ProductCard> {
       width: 30,
       onTap: () {
         // setState(() {
-        posBloc.removeProduct(widget.product.key);
+        orderBloc.removeProduct(widget.product.key);
         // });
       },
       child: Icon(
@@ -303,8 +301,8 @@ class _ProductCardState extends State<ProductCard> {
         context,
         'El producto ${widget.product.value.name} no tiene suficiente stock. Stock actual ${widget.product.value.inventory}',
         'assets/images/out-of-stock.png');
-    posBloc.getProductData(widget.product.key)!.quantity =
-        posBloc.getProductData(widget.product.key)!.quantity;
+    orderBloc.getProductData(widget.product.key)!.quantity =
+        orderBloc.getProductData(widget.product.key)!.quantity;
   }
 
   Widget _productPriceTotal() {
@@ -318,7 +316,7 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   _updateQuantityValue() {
-    final value = posBloc.getProductData(widget.product.key)!.quantity;
+    final value = orderBloc.getProductData(widget.product.key)!.quantity;
 
     // print(_quantityController.text);
     if (value.toString().endsWith('.0')) {
@@ -334,14 +332,16 @@ class _ProductCardState extends State<ProductCard> {
     } else {
       _quantityController.selection = TextSelection.fromPosition(
           TextPosition(offset: _quantityController.text.length));
+      // _quantityController.selection = TextSelection(
+      //     baseOffset: 0, extentOffset: _quantityController.text.length);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     setState(() {
-      posBloc.getProductData(widget.product.key)!.quantity =
-          posBloc.getProductData(widget.product.key)!.quantity;
+      orderBloc.getProductData(widget.product.key)!.quantity =
+          orderBloc.getProductData(widget.product.key)!.quantity;
     });
     _size = MediaQuery.of(context).size;
     return Card(

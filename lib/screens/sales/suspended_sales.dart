@@ -176,7 +176,7 @@ class _SuspendedSalesScreenState extends State<SuspendedSalesScreen> {
   // AppButton _exitButton() {
   //   return AppButton(
   //     color: Colors.white,
-  //     //padding: kButtonPadding,
+  //     padding: kButtonPadding,
   //     // disabledColor: Colors.white,
   //     width: _size.width * 0.1,
   //     onTap: () {

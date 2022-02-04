@@ -75,7 +75,7 @@ class _NewSaleState extends State<NewSale> {
       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _userInfo().expand(),
-        bottom(_button(), _pc, _size),
+        bottom(_button(), _pc, _size,elevation: true),
       ],
     );
   }
@@ -334,18 +334,47 @@ class _NewSaleState extends State<NewSale> {
   }
 
   Widget _button() {
-    return AppButton(
-      color: _pc,
-      width: _size.width,
-      onTap: () async {
-        await CompaniesProvider.selectDefaultCustomer();
-        await CustomerAddressesProvider.selectDefaultAddrs();
-        SaleCart().launch(context);
-      },
-      child: Text(
-        'Añadir productos',
-        style: buttonsTextStyle(context),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        AppButton(
+          color: Colors.white,
+          padding: kButtonPadding,
+          // width: _size.width,
+          onTap: () async {
+            Navigator.pop(context);
+            dataBloc.homeKey.currentState?.changeBottomIndex(1);
+          },
+          child: Row(
+            children: [
+              Icon(Icons.arrow_back_ios_rounded, color: pColor,size: kIconSize,),
+              Text(
+                'Salir',
+                style: buttonsSmallTextStyle(context,color: pColor),
+              ),
+            ],
+          ),
+        ),
+        AppButton(
+          color: Colors.white,
+          padding: kButtonPadding,
+          // width: _size.width,
+          onTap: () async {
+            await CompaniesProvider.selectDefaultCustomer();
+            await CustomerAddressesProvider.selectDefaultAddrs();
+            SaleCart().launch(context);
+          },
+          child: Row(
+            children: [
+              Icon(Icons.add, color: pColor,size: kIconSize),
+              Text(
+                'Añadir productos',
+                style: buttonsSmallTextStyle(context,color: pColor),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

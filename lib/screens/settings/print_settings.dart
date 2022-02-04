@@ -253,7 +253,7 @@ class _PrintSettingsState extends State<PrintSettings> {
           },
           child: Text(
             'Recargar',
-            // style: TextStyle(color: Colors.white),
+            style: TextStyle(color: pColor),
           ),
         ),
         SizedBox(
@@ -266,7 +266,7 @@ class _PrintSettingsState extends State<PrintSettings> {
           onTap: _connected ? _disconnect : _connect,
           child: Text(
             _connected ? 'Desconectar' : 'Conectar',
-            style: TextStyle(color: _connected ? Colors.white : Colors.black),
+            style: TextStyle(color: _connected ? Colors.red : pColor),
           ),
         ),
       ],
@@ -359,16 +359,16 @@ class _PrintSettingsState extends State<PrintSettings> {
 
   AppButton _backButton() {
     return AppButton(
-      //padding: kButtonPadding,
+      padding: kButtonPadding,
       onTap: () {
         Navigator.pop(context);
       },
       child: Row(
         children: [
-          Icon(Icons.arrow_back_ios, size: kIconSize),
+          Icon(Icons.arrow_back_ios, size: kIconSize, color: pColor,),
           Text(
             'Regresar',
-            style: buttonsSmallTextStyle(context),
+            style: buttonsSmallTextStyle(context, color: pColor),
           ),
         ],
       ),
@@ -378,7 +378,7 @@ class _PrintSettingsState extends State<PrintSettings> {
   AppButton _printButton() {
     return AppButton(
       color: Colors.white,
-      //padding: kButtonPadding,
+      padding: kButtonPadding,
       disabledColor: Colors.grey[350],
       width: _size.width * 0.1,
       enabled: !_printing,
@@ -445,11 +445,11 @@ class _PrintSettingsState extends State<PrintSettings> {
       },
       child: Row(
         children: [
+          Icon(Icons.print, size: kIconSize, color: pColor,),
           Text(
-            'Imprimir ',
-            style: buttonsSmallTextStyle(context),
+            ' Imprimir',
+            style: buttonsSmallTextStyle(context, color: pColor),
           ),
-          Icon(Icons.print, size: kIconSize)
         ],
       ),
     );

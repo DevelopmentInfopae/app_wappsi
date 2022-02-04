@@ -101,12 +101,12 @@ class _HomeScreenState extends State<HomeScreen> {
               .flexible(flex: 1),
           AutoSizeText(
             capitalizeText(company.company ??company.name ??  ''),
-            style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w900,),
+            style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w900,color: greyDarkerColor),
             maxLines: 1,
             // overflow: TextOverflow.fade,
           ).flexible(flex: 3),
         ],
-      ).withWidth(_size.width * 0.7),
+      ).withWidth(_size.width * 0.8),
     );
   }
 
@@ -152,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
         style: Theme.of(context)
             .textTheme
             .headline6
-            ?.apply(fontWeightDelta: 5, fontSizeFactor: 1.1),
+            ?.apply(fontWeightDelta: 5, fontSizeFactor: 1.1, color: greyDarkerColor),
       ),
     );
   }

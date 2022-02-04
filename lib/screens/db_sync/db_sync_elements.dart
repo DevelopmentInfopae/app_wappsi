@@ -83,7 +83,7 @@ class _DBSyncElementsState extends State<DBSyncElements> {
   Widget _bottom() {
     return bottom(
         AppButton(
-          //padding: kButtonPadding,
+          padding: kButtonPadding,
           child: Text(
             'Menu principal ',
             style: buttonsTextStyle(context),

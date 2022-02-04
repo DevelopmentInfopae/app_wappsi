@@ -7,6 +7,7 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/components/product_list.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
@@ -14,7 +15,7 @@ import 'package:pos_wappsi/providers/products_provider.dart';
 // import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
-import 'package:pos_wappsi/screens/sales/components/sale_product_list_widget.dart';
+// import 'package:pos_wappsi/screens/sales/components/sale_product_list_widget.dart';
 
 import 'package:pos_wappsi/screens/sales/components/search.dart';
 // import 'package:pos_wappsi/screens/sales/components/select_product_unit_alert.dart';
@@ -36,14 +37,7 @@ class SaleCart extends StatefulWidget {
 }
 
 class _SaleCartState extends State<SaleCart> {
-  late final _leadingActions = [
-    FloatingSearchBarAction(
-      child: Icon(
-        Icons.search,
-        // color: _pc,
-      ).paddingLeft(7),
-    )
-  ];
+
 
   ScrollController _scrollController = new ScrollController();
 
@@ -53,8 +47,6 @@ class _SaleCartState extends State<SaleCart> {
   // TO control changes in products and execute focus task
   int _productsCount = 0;
   int _itemsCount = 0;
-
-  late TextTheme _textTheme;
 
   @override
   void initState() {
@@ -70,7 +62,7 @@ class _SaleCartState extends State<SaleCart> {
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
-    _textTheme = Theme.of(context).textTheme;
+    // _textTheme = Theme.of(context).textTheme;
 
     // initialize search controller
     posBloc.setSearchController(new FloatingSearchBarController());
@@ -116,22 +108,25 @@ class _SaleCartState extends State<SaleCart> {
       clearQueryOnClose: true,
       axisAlignment: -1,
       elevation: 0,
-      padding: EdgeInsets.symmetric(horizontal: 5),
+      // padding: EdgeInsets.symmetric(horizontal: 8),
       // border: BorderSide(color: _pc, width: 1),
       borderRadius: BorderRadius.circular(10),
       margins: EdgeInsets.zero,
       hint: 'Buscar producto',
       actions: [
+        FloatingSearchBarAction.searchToClear(
+          
+        ),
         Container(
-          width: _size.width * 0.17,
+          width: _size.width * 0.15,
         )
       ],
       openWidth: _size.width,
 
       height: searchHeight,
-      queryStyle: _textTheme.headline6!,
-      leadingActions: _leadingActions,
-      hintStyle: _textTheme.headline6!,
+      queryStyle:  buttonsSmallTextStyle(context),
+      // leadingActions: _leadingActions,
+      hintStyle:  buttonsSmallTextStyle(context),
       automaticallyImplyBackButton: false,
       controller: posBloc.getSearchBarController,
       body: _body(),
@@ -146,7 +141,7 @@ class _SaleCartState extends State<SaleCart> {
       builder: (context, _) => buildBody(),
       title: Text(
         'Buscar producto',
-        style: _textTheme.headline6!,
+        style: buttonsSmallTextStyle(context),
       ),
 
       // width: _size.width * 0.84,
@@ -197,8 +192,8 @@ class _SaleCartState extends State<SaleCart> {
                     _itemsCount = posBloc.getItemsCount();
                   }
                   Map<String, ProductModel> saleProductsList = snapshot.data!;
-                  return SaleProductsList(
-                      saleProductsList: saleProductsList,
+                  return ProductsList(
+                      productList: saleProductsList,
                       scrollController: _scrollController,
                       productRequestFocus: productRequestFocus);
                 }
@@ -229,6 +224,7 @@ class _SaleCartState extends State<SaleCart> {
 
   Widget _empty(BuildContext context) {
     return AppButton(
+      padding: kButtonPadding,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -253,45 +249,37 @@ class _SaleCartState extends State<SaleCart> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _suspendSale().paddingLeft(20),
+        _suspendSale(),
         AppButton(
-          color: pColor,
+          color: Colors.white,
           elevation: 0,
-          padding: EdgeInsets.zero,
+          padding: kButtonPadding,
           onTap: _send,
           child: Row(
+            // crossAxisAlignment: CrossAxisAlignment.center,
+
             children: [
-              _pay(),
-              subTotal(large: _size.width > 450),
+              Text(
+                'Pagar',
+                style: buttonsSmallTextStyle(context, color: pColor),
+              ),
+              // Icon(Icons.arrow_forward_ios_sharp),
+
+              subTotal(large: false, color: pColor, defaultValue: posBloc.getSubTotal()),
             ],
           ),
-        ).paddingOnly(left: 16).expand(),
+        ),
       ],
 
       // ),
     );
   }
 
-  Widget _pay() {
-    return Container(
-      //padding: kButtonPadding,
-      decoration: BoxDecoration(
-          color: okColorWappsi, borderRadius: BorderRadius.circular(10)),
-      child: Row(
-        children: [
-          Text(
-            'Pagar',
-            style: buttonsSmallTextStyle(context, color: Colors.white),
-          ),
-          // Icon(Icons.arrow_forward_ios_sharp),
-        ],
-      ),
-    );
-  }
+ 
 
   Widget _suspendSale() {
     return AppButton(
-      //padding: kButtonPadding,
+      padding: kButtonPadding,
       color: Colors.white,
       shapeBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -356,7 +344,9 @@ class _SaleCartState extends State<SaleCart> {
               await ProductsProvider.getProductRequirements(context, temp);
           if (productReq != {}) {
             final result = await posBloc.addProduct(productReq);
-            print(result);
+            if(result){
+              scaffoldAlert(context, 'Producto ${temp.name} añadido', Duration(seconds: 1));
+            }
           }
 
           products = [];

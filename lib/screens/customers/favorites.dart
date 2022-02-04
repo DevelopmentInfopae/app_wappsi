@@ -227,7 +227,7 @@ class _ListFavoritesState extends State<ListFavorites> {
         }
       },
       color: Colors.white,
-      //padding: kButtonPadding,
+      padding: kButtonPadding,
       // disabledColor: Colors.white,
 
       margin: EdgeInsets.zero,
@@ -281,7 +281,7 @@ class _ListFavoritesState extends State<ListFavorites> {
         }
       },
       color: Colors.white,
-      //padding: kButtonPadding,
+      padding: kButtonPadding,
       // disabledColor: Colors.white,
 
       margin: EdgeInsets.zero,
@@ -302,7 +302,7 @@ class _ListFavoritesState extends State<ListFavorites> {
     return AppButton(
       onTap: () async {},
       color: Colors.white,
-      //padding: kButtonPadding,
+      padding: kButtonPadding,
       // disabledColor: Colors.white,
 
       margin: EdgeInsets.zero,

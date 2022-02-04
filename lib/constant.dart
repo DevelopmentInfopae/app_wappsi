@@ -76,11 +76,11 @@ TextStyle buttonsTextStyle(BuildContext context,
 }
 
 TextStyle buttonsSmallTextStyle(BuildContext context,
-    {double fontSizeFactor: 1.05, color: Colors.black}) {
+    {double fontSizeFactor: 0.95, Color? color}) {
   return Theme.of(context)
       .primaryTextTheme
       .headline6!
-      .apply(fontSizeFactor: fontSizeFactor, color: color);
+      .apply(fontSizeFactor: fontSizeFactor, color: color??greyColor);
 }
 
 TextStyle appBarTextStyle({double fontSizeFactor: 1}) {
@@ -88,10 +88,10 @@ TextStyle appBarTextStyle({double fontSizeFactor: 1}) {
 }
 
 TextStyle normalTextStyle(BuildContext context,
-    {fontSizeFactor: 1.0, int fontWeightDelta: 0, color: Colors.black}) {
+    {fontSizeFactor: 1.0, int fontWeightDelta: 0, Color? color}) {
   return Theme.of(context).primaryTextTheme.subtitle1!.apply(
       fontSizeFactor: fontSizeFactor,
-      color: greyDarkerColor,
+      color: color??greyDarkerColor,
       fontWeightDelta: fontWeightDelta);
 }
 // TODO: Save this in secure storage

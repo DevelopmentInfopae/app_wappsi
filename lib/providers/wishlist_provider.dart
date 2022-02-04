@@ -5,7 +5,7 @@ import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/API_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
-import 'package:pos_wappsi/providers/price_policy_provider.dart';
+// import 'package:pos_wappsi/providers/price_policy_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
@@ -16,17 +16,17 @@ class WishlistProvider {
   static Future<List<ProductModel>> loadCustomerFavorites(
       CompanyModel customer) async {
     final products = await getCustomerFavFromDB(customer.id.toString());
-    if (products == []) {
+    if (products?.isEmpty??true) {
       return [];
     } else {
       final temp = ProductModel.fromJsonList(products!);
-      List<ProductModel> pM = [];
-      await Future.forEach(temp, (ProductModel p) async {
-        pM.add(await PricePoliciesProvider.policyCases(
-            p, dataBloc.settings!['prioridad_precios_producto'], customer));
-      });
+      // List<ProductModel> pM = [];
+      // await Future.forEach(temp, (ProductModel p) async {
+      //   // here we can get price policy prices if it's neccesary
+      //   pM.add(p);
+      // });
 
-      return pM;
+      return temp;
     }
   }
 
