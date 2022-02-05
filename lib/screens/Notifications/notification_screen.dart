@@ -19,7 +19,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return WillPopScope(
       onWillPop: () async {
         dataBloc.homeKey.currentState?.changeBottomIndex(1);
-        // print('here i am');
+        // printConsole('here i am');
         return true;
       },
       child: Scaffold(
@@ -31,7 +31,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         body: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
-            children: [
+            children: const[
               NotificationCard(
                 title: 'Purchase Alarm',
                 iconColor: Colors.orange,
@@ -94,7 +94,7 @@ class NotificationCard extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20.0,
               ),
               Column(
@@ -108,7 +108,7 @@ class NotificationCard extends StatelessWidget {
                   ),
                 ],
               ),
-              Spacer(),
+              const Spacer(),
               Text(
                 time,
                 style: GoogleFonts.poppins(
@@ -116,7 +116,7 @@ class NotificationCard extends StatelessWidget {
                   fontSize: 12.0,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20,
               ),
             ],

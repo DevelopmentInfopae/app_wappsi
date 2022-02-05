@@ -22,12 +22,12 @@ class CustomerGroupsProvider {
     List<CustomerGroupsModel> list = [];
     if (data != null) {
       Map<String, dynamic> temp = {};
-      data.forEach((item) {
+      for (var item in data) {
         for (var i = 0; i < item.keys.length; i++) {
           temp[item.keys.toList()[i]] = item.values.toList()[i];
         }
         list.add(CustomerGroupsModel.fromJson(temp));
-      });
+      }
     }
 
     return list;

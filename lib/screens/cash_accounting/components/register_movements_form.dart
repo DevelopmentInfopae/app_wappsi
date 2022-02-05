@@ -19,11 +19,12 @@ import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:provider/provider.dart';
 
 class RegisterMovementsForm extends StatefulWidget {
-  RegisterMovementsForm({Key? key}) : super(key: key);
+  const RegisterMovementsForm({Key? key}) : super(key: key);
 
   @override
   _RegisterMovementsFormType createState() => _RegisterMovementsFormType();
@@ -34,7 +35,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
 
   late FocusNode _valueFocus;
 
-  final _movementController = new TextEditingController();
+  final _movementController = TextEditingController();
 
   // final _paymentOrigin = GlobalKey<DropdownSearchState<PaymentMethods?>>();
   // final _paymentDestiny = GlobalKey<DropdownSearchState<PaymentMethods?>>();
@@ -48,7 +49,8 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
   bool _destinyPaymentStatus = true;
   late RegisterFormProvider registerFormProvider;
 
-  TextEditingController _paymentMethodController = new TextEditingController();
+  // ignore: prefer_final_fields
+  TextEditingController _paymentMethodController = TextEditingController();
 
   @override
   void initState() {
@@ -122,7 +124,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       // selectedItem: _doc,
       dropdownSearchDecoration: InputDecoration(
         labelText: 'Tipo de movimiento :',
-        labelStyle: TextStyle(color: pColor),
+        labelStyle: const TextStyle(color: pColor),
         filled: true,
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
@@ -159,7 +161,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
         }
       },
       // selectedItem: posBloc.getCustomer,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,
@@ -174,10 +176,11 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
         decoration: InputDecoration(
           labelText: 'Forma de pago de origen',
           suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () {
-              if (_paymentMethodController.text.length == 0)
+              if (_paymentMethodController.text.isNotEmpty) {
                 Navigator.pop(context);
+              }
               _paymentMethodController.clear();
             },
           ),
@@ -196,13 +199,13 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       isFilteredOnline: true,
       showClearButton: true,
       showSelectedItems: true,
-      clearButton: Icon(Icons.clear_rounded),
+      clearButton: const Icon(Icons.clear_rounded),
       compareFn: (item, selectedItem) => item?.name == selectedItem?.name,
       showSearchBox: true,
 
       dropdownSearchDecoration: InputDecoration(
         labelText: 'Forma de pago de origen',
-        labelStyle: TextStyle(color: pColor),
+        labelStyle: const TextStyle(color: pColor),
         filled: true,
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
@@ -211,7 +214,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       onFind: (String? filter) =>
           PaymentMethodsProvider.getPaymentMethods(filter),
       onChanged: (data) {
-        print(data);
+        printConsole(data);
 
         setState(() {
           // posBloc.setPaymentMethod(data);
@@ -220,7 +223,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       },
       // selectedItem: ,
       // selectedItem: posBloc.getPaymentMethod,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,
@@ -235,10 +238,11 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
         decoration: InputDecoration(
           labelText: 'Forma de pago de destino',
           suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () {
-              if (_paymentMethodController.text.length == 0)
+              if (_paymentMethodController.text.isNotEmpty) {
                 Navigator.pop(context);
+              }
               _paymentMethodController.clear();
             },
           ),
@@ -257,12 +261,12 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       isFilteredOnline: true,
       showClearButton: true,
       showSelectedItems: true,
-      clearButton: Icon(Icons.clear_rounded),
+      clearButton: const Icon(Icons.clear_rounded),
       compareFn: (item, selectedItem) => item?.name == selectedItem?.name,
       showSearchBox: true,
       dropdownSearchDecoration: InputDecoration(
         labelText: 'Forma de pago de destino',
-        labelStyle: TextStyle(color: pColor),
+        labelStyle: const TextStyle(color: pColor),
         filled: true,
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
@@ -271,7 +275,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       onFind: (String? filter) =>
           PaymentMethodsProvider.getPaymentMethods(filter),
       onChanged: (data) {
-        print(data);
+        printConsole(data);
 
         setState(() {
           registerFormProvider.paymentDestiny = data;
@@ -279,7 +283,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       },
       // selectedItem: ,
       // selectedItem: posBloc.getPaymentMethod,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,
@@ -292,8 +296,8 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       future: DocumentsTypesProvider.loadFromDB(module: registerMovModule),
       builder:
           (BuildContext context, AsyncSnapshot<List<DocumentsTypes>> snapshot) {
-        if (snapshot.hasData && snapshot.data!.length > 0) {
-          documentMov = snapshot.data?.first ?? null;
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          documentMov = snapshot.data?.first;
           registerFormProvider.documentType = documentMov!.idCloud;
           if (snapshot.data!.length > 1) {
             return _documentType(registerFormProvider, items: snapshot.data!);
@@ -321,26 +325,23 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       isFilteredOnline: true,
       showClearButton: true,
       showSelectedItems: true,
-      clearButton: Icon(Icons.clear_rounded),
+      clearButton: const Icon(Icons.clear_rounded),
       compareFn: (item, selectedItem) => item?.nombre == selectedItem?.nombre,
       showSearchBox: false,
 
       dropdownSearchDecoration: InputDecoration(
         labelText: 'Tipo de documento :',
-        labelStyle: TextStyle(color: pColor),
+        labelStyle: const TextStyle(color: pColor),
         filled: true,
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
-      emptyBuilder: (context, searchEntry) => Container(
-        child: Text(
-          'No se encontraron documentos para realizar movimientos de caja',
-          textAlign: TextAlign.center,
-        ),
-        // margin: EdgeInsets.only(left: 30),
+      emptyBuilder: (context, searchEntry) => const Text(
+        'No se encontraron documentos para realizar movimientos de caja',
+        textAlign: TextAlign.center,
       ).center(),
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onChanged: (data) {
-        // print(data);
+        // printConsole(data);
 
         setState(() {
           registerFormProvider.documentType = data!.idCloud;
@@ -348,7 +349,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       },
       // selectedItem: ,
       selectedItem: documentMov,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,
@@ -431,7 +432,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => HomeScreen(),
+                    builder: (BuildContext context) => const HomeScreen(),
                   ),
                   (route) => false,
                 );

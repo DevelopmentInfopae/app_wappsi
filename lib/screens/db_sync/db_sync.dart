@@ -7,7 +7,6 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 // import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
-import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
@@ -26,7 +25,7 @@ class DBSync extends StatefulWidget {
 
 class _DBSyncState extends State<DBSync> {
   late List _options;
-  SyncDBProvider syncDB = new SyncDBProvider();
+  SyncDBProvider syncDB = SyncDBProvider();
   final Map<String, bool> _status = {};
 
   // late Size _size;
@@ -109,7 +108,7 @@ class _DBSyncState extends State<DBSync> {
               return Column(
                 children: [
                   elementSync(option, completed: true),
-                  Divider(
+                  const Divider(
                     color: Colors.black38,
                     height: 2,
                   ),
@@ -120,7 +119,7 @@ class _DBSyncState extends State<DBSync> {
               return Column(
                 children: [
                   ElementSync(context: context,optionInfo: options[option]!,optionName: option,status: false,),
-                  Divider(
+                  const Divider(
                     color: Colors.black38,
                     height: 2,
                   ),
@@ -159,11 +158,11 @@ class _DBSyncState extends State<DBSync> {
       // return ;
       // confirmDialog(context, 'Base de datos sincronizada con exito',
       //     'assets/images/success.png');
-      final homeKey = new GlobalKey<HomeState>();
+      final homeKey = GlobalKey<HomeState>();
       WidgetsBinding.instance!.addPostFrameCallback((_) async {
         confirmDialog(context, 'Base de datos sincronizada con exito',
             'assets/images/success.png');
-        await Future.delayed(Duration(seconds: 2));
+        await Future.delayed(const Duration(seconds: 2));
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (BuildContext context) {

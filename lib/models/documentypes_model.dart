@@ -25,8 +25,8 @@ class DocumentypeModel {
       DocumentypeModel(
         id: json["id"],
         idCloud: json["id_cloud"],
-        nombre: json["nombre"] == null ? null : json["nombre"],
-        abreviacion: json["abreviacion"] == null ? null : json["abreviacion"],
+        nombre: json["nombre"],
+        abreviacion: json["abreviacion"],
         codigoDoc: json["codigo_doc"],
       );
 

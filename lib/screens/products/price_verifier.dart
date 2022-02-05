@@ -26,10 +26,10 @@ class ProductPrice extends StatefulWidget {
 
 class _ProductPriceState extends State<ProductPrice> {
   final _productsStream = StreamController<List<Map>?>.broadcast();
-  // final _searchController = new TextEditingController();
-  // final _searchFocusNode = new FocusNode();
+  // final _searchController = TextEditingController();
+  // final _searchFocusNode = FocusNode();
   late Size _size;
-  final _searchController = new FloatingSearchBarController();
+  final _searchController = FloatingSearchBarController();
   // late Color _pc;
 
   @override
@@ -115,7 +115,7 @@ class _ProductPriceState extends State<ProductPrice> {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
           color: Colors.grey,
           offset: Offset(0.0, 1.0), //(x,y)
@@ -128,10 +128,10 @@ class _ProductPriceState extends State<ProductPrice> {
   Widget _searchField() {
     return Container(
       // alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(horizontal: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
           color: Colors.grey[200],
-          borderRadius: BorderRadius.all(Radius.circular(10))),
+          borderRadius: const BorderRadius.all(Radius.circular(10))),
       child: FloatingSearchAppBar(
           // color: _theme.primar,
           // color: Colors.black12,
@@ -144,10 +144,10 @@ class _ProductPriceState extends State<ProductPrice> {
           hideKeyboardOnDownScroll: true,
           onQueryChanged: _onQueryChanged,
           // height: _size.height * 0.078<55?55:_size.height * 0.078,
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           elevation: 0,
           actions: [Container(width: _size.width * 0.15)],
-          leadingActions: [Icon(Icons.search)],
+          leadingActions: const [Icon(Icons.search)],
           automaticallyImplyBackButton: false,
           color: Colors.grey[100],
           // colorOnScroll: _theme.primaryColor,

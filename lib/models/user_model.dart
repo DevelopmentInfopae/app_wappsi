@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:pos_wappsi/config/host_params.dart';
+import 'package:pos_wappsi/environment/environment.dart';
 
 UserModel userModelFromJson(Map<String, dynamic> str) =>
     UserModel.fromJson(str);
@@ -57,8 +57,8 @@ class UserModel {
       gender: json["gender"] ?? '',
       email: json["email"],
       userName: json["username"],
-      hostUrl:
-          json['host_url'] == 'default_host' ? HOST : json['host_url'] ?? HOST,
+      hostUrl: Environment().env == 'DEV'?Environment().config.apiHost
+          :(json['host_url'] == 'default_host' ? Environment().config.apiHost : json['host_url'] ?? Environment().config.apiHost),
       warehouseId: int.parse(json["warehouse_id"]),
       sellerId: int.parse(json["seller_id"]),
       companyName: json["company_name"],
@@ -66,9 +66,9 @@ class UserModel {
       sellerName: json['seller_name'],
       billerId: int.parse(json['biller_id']),
       billerName: json['biller_name'],
-      companyFolder: json['company_folder'] ?? CFOLDER,
+      companyFolder: json['company_folder'] ?? Environment().config.cFolder,
       documentTypeId:
-          int.tryParse(json['document_type_id'].toString()) ?? null);
+          int.tryParse(json['document_type_id'].toString()));
 
   Map<String, dynamic> toJson() => {
         "token": token,

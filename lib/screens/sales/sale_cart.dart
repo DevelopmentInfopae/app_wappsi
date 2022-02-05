@@ -30,7 +30,7 @@ import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
 class SaleCart extends StatefulWidget {
-  SaleCart({Key? key}) : super(key: key);
+  const SaleCart({Key? key}) : super(key: key);
 
   @override
   _SaleCartState createState() => _SaleCartState();
@@ -39,7 +39,7 @@ class SaleCart extends StatefulWidget {
 class _SaleCartState extends State<SaleCart> {
 
 
-  ScrollController _scrollController = new ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   late Size _size;
   String _query = '';
@@ -65,7 +65,7 @@ class _SaleCartState extends State<SaleCart> {
     // _textTheme = Theme.of(context).textTheme;
 
     // initialize search controller
-    posBloc.setSearchController(new FloatingSearchBarController());
+    posBloc.setSearchController(FloatingSearchBarController());
     return Scaffold(
         appBar: appBar(context, 'Venta POS',
             elevation: false,
@@ -93,7 +93,7 @@ class _SaleCartState extends State<SaleCart> {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
           color: Colors.grey,
           offset: Offset(0.0, 1.0), //(x,y)
@@ -161,7 +161,7 @@ class _SaleCartState extends State<SaleCart> {
         // height:_size.height*0.78,
         // to avoid overlap with floatingSearchBar
         margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
-        padding: EdgeInsets.only(top: 15),
+        padding: const EdgeInsets.only(top: 15),
         child: StreamBuilder<Map<String, ProductModel>>(
             stream: posBloc.productsStream,
             builder: (context, snapshot) {
@@ -182,7 +182,7 @@ class _SaleCartState extends State<SaleCart> {
                           .jumpTo(_scrollController.position.minScrollExtent);
                     }
                     // final xd = posBloc.settings['set_focus'];
-                    // print();
+                    // printConsole();
                     productRequestFocus = _searchBarFocusManagement();
                   } else if (_productsCount - 2 == snapshot.data!.length) {
                     // Nothing to do when items are removed from cart
@@ -227,7 +227,7 @@ class _SaleCartState extends State<SaleCart> {
       padding: kButtonPadding,
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: [
+        children: const [
           Icon(
             Icons.add,
             color: Colors.white,
@@ -283,7 +283,7 @@ class _SaleCartState extends State<SaleCart> {
       color: Colors.white,
       shapeBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
-          side: BorderSide(color: pColor)),
+          side: const BorderSide(color: pColor)),
       width: 10,
       onTap: () async {
         if ((posBloc.getProducts?.length ?? 0) > 0) {
@@ -292,22 +292,21 @@ class _SaleCartState extends State<SaleCart> {
               barrierDismissible: true,
               context: context,
               builder: (context) {
-                return SuspendSaleAlertDialog();
+                return const SuspendSaleAlertDialog();
               });
           // check if empty products then reload view
           if (posBloc.getProducts == {} ||
-              posBloc.getProducts == null ||
-              posBloc.getProducts?.length == 0) {
+              posBloc.getProducts == null) {
             posBloc.getSearchBarController.close();
             WidgetsBinding.instance!.addPostFrameCallback((_) async {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) => HomeScreen(),
+                  builder: (BuildContext context) => const HomeScreen(),
                 ),
                 (route) => false,
               );
-              await NewSale().launch(context);
+              await const NewSale().launch(context);
             });
           }
         }
@@ -327,9 +326,9 @@ class _SaleCartState extends State<SaleCart> {
     } else {
       res = await ProductsProvider.findProducts(query, overselling: false);
     }
-    // print('xd');
+    // printConsole('xd');
     if (res != null) {
-      if (res.length == 0) {
+      if (res.isNotEmpty) {
         if ((query.length - _query.length > 1)) {
           posBloc.getSearchBarController.clear();
           // posBloc.getSearchBarController.query='';
@@ -345,7 +344,7 @@ class _SaleCartState extends State<SaleCart> {
           if (productReq != {}) {
             final result = await posBloc.addProduct(productReq);
             if(result){
-              scaffoldAlert(context, 'Producto ${temp.name} añadido', Duration(seconds: 1));
+              scaffoldAlert(context, 'Producto ${temp.name} añadido', const Duration(seconds: 1));
             }
           }
 
@@ -367,7 +366,7 @@ class _SaleCartState extends State<SaleCart> {
 
   void _send() {
     if ((posBloc.getProducts?.keys.length ?? 0) > 0) {
-      SalePayment().launch(context);
+      const SalePayment().launch(context);
     } else {
       confirmDialog(
           context,

@@ -4,21 +4,21 @@ import 'package:pos_wappsi/constant.dart';
 
 // ignore: must_be_immutable
 class ButtonGlobal extends StatelessWidget {
-  var iconWidget;
+  IconData iconWidget;
   final String buttontext;
   final Decoration buttonDecoration;
-  var onPressed;
+  Function onPressed;
 
   ButtonGlobal(
-      {required this.iconWidget,
+      {Key? key, required this.iconWidget,
       required this.buttontext,
       required this.buttonDecoration,
-      required this.onPressed});
+      required this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: onPressed,
+      onPressed: (){onPressed();},
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -48,18 +48,20 @@ class ButtonGlobal extends StatelessWidget {
 class ButtonGlobalWithoutIcon extends StatelessWidget {
   final String buttontext;
   final Decoration buttonDecoration;
-  var onPressed;
+  Function onPressed;
 
-  ButtonGlobalWithoutIcon({
+  ButtonGlobalWithoutIcon({Key? key, 
     required this.buttontext,
     required this.buttonDecoration,
     required this.onPressed,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: onPressed,
+      onPressed: (){
+        onPressed();
+      },
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),

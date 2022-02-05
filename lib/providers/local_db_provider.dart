@@ -4,6 +4,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/bloc/printer_bloc.dart';
 import 'package:pos_wappsi/config/bd_creation.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -18,9 +19,7 @@ class DBProvider {
 
   Future<Database?> get database async {
     // ignore: unnecessary_null_comparison
-    if (_database == null) {
-      _database = await initDB();
-    }
+    _database ??= await initDB();
     return _database;
   }
 
@@ -34,7 +33,7 @@ class DBProvider {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
 
     final path = join(documentsDirectory.path, 'SmaDB.db');
-    // print(path);
+    // printConsole(path);
 
     // creation of db
     return await openDatabase(path, version: 1, onOpen: (db) {},
@@ -80,26 +79,26 @@ class DBProvider {
       // index creation
       Batch batch = db.batch();
 
-      indexCreation.forEach((element) {
+      for (var element in indexCreation) {
         batch.execute(element);
-      });
+      }
       try {
         batch.commit();
       } catch (e) {
-        print(e);
+        printConsole(e);
       }
 
       // ids sync creation
 
       batch = db.batch();
 
-      syncIds.forEach((element) {
+      for (var element in syncIds) {
         batch.execute(element);
-      });
+      }
       try {
         batch.commit();
       } catch (e) {
-        print(e);
+        printConsole(e);
       }
     });
   }
@@ -114,19 +113,19 @@ class DBProvider {
     final db = await database;
 
     Batch batch = db!.batch();
-    query.forEach((element) {
+    for (var element in query) {
       String values = getStringFromValues(element.values);
       String sql =
           "INSERT OR REPLACE INTO $table ('${element.keys.join("','")}') VALUES ($values);";
       batch.rawQuery(sql);
-      // print(sql);
-    });
+      // printConsole(sql);
+    }
 
     try {
       await batch.commit();
       // disable ientity writing
       // await db.execute('SET IDENTITY_INSERT $table ON');
-      // debugPrint(res.toString());
+      // debugprintConsole(res.toString());
       return true;
     } catch (e) {
       return await insertOrUpdateQuerys2(table, query);
@@ -149,17 +148,17 @@ class DBProvider {
       String sql =
           'INSERT OR REPLACE INTO $table ("${element.keys.join('","')}") VALUES ($values);';
       batch.rawQuery(sql);
-      // print(sql);
+      // printConsole(sql);
     });
 
     try {
       await batch.commit();
       // disable ientity writing
       // await db.execute('SET IDENTITY_INSERT $table ON');
-      // debugPrint(res.toString());
+      // debugprintConsole(res.toString());
       return true;
     } catch (e) {
-      print(e);
+      printConsole(e);
       return false;
     }
   }
@@ -180,7 +179,7 @@ class DBProvider {
       // id of query inserted
       return returnId ? res : true;
     } catch (e) {
-      print(e);
+      printConsole(e);
       return returnId ? 0 : false;
     }
   }
@@ -200,15 +199,15 @@ class DBProvider {
     // to make insert operations in only one petition using a batch
     Batch batch = db!.batch();
 
-    query.forEach((element) {
+    for (var element in query) {
       batch.insert(table, element);
-    });
+    }
     try {
       await batch.commit();
 
       return true;
     } catch (e) {
-      print(e);
+      printConsole(e);
       return false;
     }
   }
@@ -226,7 +225,7 @@ class DBProvider {
       final res = await db!.query(table, where: 'id_cloud = $id');
       return res.first;
     } catch (e) {
-      print(e);
+      printConsole(e);
       return null;
     }
   }
@@ -239,7 +238,7 @@ class DBProvider {
       final res = await db!.query(table, where: where, columns: columns);
       return res.first;
     } catch (e) {
-      print(e);
+      printConsole(e);
       return null;
     }
   }
@@ -252,7 +251,7 @@ class DBProvider {
       final res = await db!.update(table, values, where: where);
       return res;
     } catch (e) {
-      print(e);
+      printConsole(e);
       return null;
     }
   }
@@ -275,7 +274,7 @@ class DBProvider {
           columns: columns);
       return res;
     } catch (e) {
-      print(e);
+      printConsole(e);
       return null;
     }
   }
@@ -288,7 +287,7 @@ class DBProvider {
       final res = await db!.rawQuery(sql);
       return res;
     } catch (e) {
-      print(e);
+      printConsole(e);
       return null;
     }
   }
@@ -301,7 +300,7 @@ class DBProvider {
       await db!.delete(table, where: where);
       return true;
     } catch (e) {
-      print(e);
+      printConsole(e);
       return false;
     }
   }
@@ -314,7 +313,7 @@ class DBProvider {
       final res = await db!.rawQuery(sql);
       return res.first;
     } catch (e) {
-      print(e);
+      printConsole(e);
       return null;
     }
   }
@@ -329,7 +328,7 @@ class DBProvider {
 
       return res;
     } catch (e) {
-      print(e);
+      printConsole(e);
       return null;
     }
   }
@@ -420,17 +419,17 @@ class DBProvider {
     return res.first['last_update'].toString();
   }
 
-  /// Update last_sync date of a given id with a new value
+  /// Update last_sync date of a given id with a value
   Future<bool> setUpdateDate(String lastUpdate, int idSync) async {
     final db = await database;
 
     try {
       await db!
           .update('sync', {'last_update': lastUpdate}, where: 'id = $idSync');
-      // print(res);
+      // printConsole(res);
       return true;
     } catch (e) {
-      print(e);
+      printConsole(e);
       return false;
     }
 

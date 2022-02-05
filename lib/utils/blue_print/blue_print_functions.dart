@@ -5,7 +5,7 @@ import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter/services.dart';
 // import 'package:flutter/services.dart';
 import 'package:image/image.dart';
-import 'package:pos_wappsi/config/regimen_personT_form_params.dart';
+import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/config/thermal_printer_params.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
@@ -17,7 +17,7 @@ List<int> printLabeledValues(Generator generator, List<int> bytes,
     PosAlign col2 = PosAlign.left}) {
   generator.reset();
 
-  final numChr = 32;
+  const numChr = 32;
 
   for (var i = 0; i < labels.length; i++) {
     final value =
@@ -25,9 +25,9 @@ List<int> printLabeledValues(Generator generator, List<int> bytes,
     final label =
         _innerPrinter ? replaceSpecialCharacters(labels[i]) : labels[i];
 
-    final maxCols = 12;
+    const maxCols = 12;
 
-    final magicN = numChr / maxCols;
+    const magicN = numChr / maxCols;
 
     final column1Width = ((maxCols * label.length) / numChr).round();
     final column2Width = maxCols - column1Width;
@@ -88,7 +88,7 @@ List<int> printLabelValues(Generator generator, List<int> bytes,
     List<String> formatedS =
         formatString(value, chrSpaces: (column2Width * spPerCol).round());
 
-    formatedS.forEach((String str) {
+    for (var str in formatedS) {
       // text = '';
       if (str == formatedS.first) {
         bytes += generator.row([
@@ -118,7 +118,7 @@ List<int> printLabelValues(Generator generator, List<int> bytes,
           ),
         ]);
       }
-    });
+    }
   }
 
   return bytes;
@@ -131,7 +131,7 @@ List<int> legalInfo(List<int> bytes, Generator generator, bool _innerPrinter,
       _innerPrinter
           ? replaceSpecialCharacters(settings?['razon_social'])
           : settings?['razon_social'],
-      styles: PosStyles(bold: true, align: PosAlign.center));
+      styles: const PosStyles(bold: true, align: PosAlign.center));
 
   bytes += generator.emptyLines(1);
   bytes += generator.text(
@@ -139,12 +139,12 @@ List<int> legalInfo(List<int> bytes, Generator generator, bool _innerPrinter,
           (_innerPrinter
               ? (replaceSpecialCharacters(settings?['numero_documento']))
               : (((settings?['numero_documento'] ?? '').toString()))),
-      styles: PosStyles(bold: false, align: PosAlign.center));
+      styles: const PosStyles(bold: false, align: PosAlign.center));
   bytes += generator.text(
       _innerPrinter
           ? replaceSpecialCharacters(regimenT[regType.toString()]!.name)
           : (regimenT[regType.toString()]!.name),
-      styles: PosStyles(bold: true, align: PosAlign.center));
+      styles: const PosStyles(bold: true, align: PosAlign.center));
 
   final dir = _innerPrinter
       ? capitalizeText(replaceSpecialCharacters(
@@ -152,22 +152,22 @@ List<int> legalInfo(List<int> bytes, Generator generator, bool _innerPrinter,
       : capitalizeText(
           (companyData!.address ?? '') + '-' + (companyData.city ?? ''));
   bytes += generator.text(dir,
-      styles: PosStyles(bold: false, align: PosAlign.center));
+      styles: const PosStyles(bold: false, align: PosAlign.center));
   bytes += generator.text(
       'Telefono:' +
           (_innerPrinter
               ? replaceSpecialCharacters(companyData.phone ?? '')
               : (companyData.phone ?? '').toString()),
-      styles: PosStyles(bold: false, align: PosAlign.center));
+      styles: const PosStyles(bold: false, align: PosAlign.center));
   return bytes;
 }
 
 // Returns bytes from sale reference
 List<int> invoiceData(List<int> bytes, Generator generator, saleData) {
   bytes += generator.text('Factura POS ',
-      styles: PosStyles(bold: false, align: PosAlign.center));
+      styles: const PosStyles(bold: false, align: PosAlign.center));
   bytes += generator.text(saleData['reference_no'],
-      styles: PosStyles(bold: true, align: PosAlign.center));
+      styles: const PosStyles(bold: true, align: PosAlign.center));
   return bytes;
 }
 
@@ -178,7 +178,7 @@ image(Generator generator, String pathImage, {bool assetImage = false}) async {
     final ByteData imBytes = await rootBundle.load(pathImage);
     imgBytes = imBytes.buffer.asUint8List();
   } else {
-    final file = new File(pathImage);
+    final file = File(pathImage);
     imgBytes = await file.readAsBytes();
   }
   final Image image = decodeImage(imgBytes)!;
@@ -187,7 +187,7 @@ image(Generator generator, String pathImage, {bool assetImage = false}) async {
   // return imgBytes;
 }
 
-List<String> formatString(String v, {int chrSpaces: 18}) {
+List<String> formatString(String v, {int chrSpaces = 18}) {
   int lines = (v.length / chrSpaces).ceil();
   List<String> strList = [];
   if (lines == 0) {
@@ -211,6 +211,6 @@ List<int> wappsiSpam(bool _innerPrinter, List<int> bytes, Generator generator) {
       (_innerPrinter ? 'Movil' : 'Móvil') +
       '\n www.wappsi.com';
   bytes += generator.text(wappsiSpam,
-      styles: PosStyles(bold: false, align: PosAlign.center));
+      styles: const PosStyles(bold: false, align: PosAlign.center));
   return bytes;
 }

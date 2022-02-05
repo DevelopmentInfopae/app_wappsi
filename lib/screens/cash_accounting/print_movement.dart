@@ -18,13 +18,14 @@ import 'package:pos_wappsi/screens/settings/print_settings.dart';
 // import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/blue_print/blue_print.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/local_files.dart';
 
 class PrintMovement extends StatefulWidget {
   final Map<String, String> movementInfo;
-  PrintMovement({Key? key, required this.movementInfo});
+  const PrintMovement({Key? key, required this.movementInfo}) : super(key: key);
   @override
-  _PrintMovementState createState() => new _PrintMovementState();
+  _PrintMovementState createState() => _PrintMovementState();
 }
 
 class _PrintMovementState extends State<PrintMovement> {
@@ -52,7 +53,7 @@ class _PrintMovementState extends State<PrintMovement> {
     return WillPopScope(
       onWillPop: () async {
         dataBloc.homeKey.currentState?.changeBottomIndex(1);
-        // print('here i am');
+        // printConsole('here i am');
         return true;
       },
       child: Scaffold(
@@ -79,7 +80,7 @@ class _PrintMovementState extends State<PrintMovement> {
 
   Widget _preview() {
     final textTheme = Theme.of(context).textTheme;
-    return Container(
+    return SizedBox(
       width: _size.width * 0.9,
       // padding: EdgeInsets.symmetric(horizontal: 10),
       child: SingleChildScrollView(
@@ -131,7 +132,7 @@ class _PrintMovementState extends State<PrintMovement> {
           // final xd = await bluetooth.isOn;
           isConnected = await bluetooth.isConnected ?? false;
         } catch (e) {
-          print(e);
+          printConsole(e);
           isConnected = false;
         }
         // if ((isConnected)) {
@@ -142,7 +143,7 @@ class _PrintMovementState extends State<PrintMovement> {
           });
 
           scaffoldAlert(context, 'Imprimiendo comprobante de movimiento',
-              Duration(seconds: 3));
+              const Duration(seconds: 3));
           String companyLogo = dataBloc.getBillerCompany!.logo!;
           if (companyLogo.substring(companyLogo.length - 4) == '.png') {
             companyLogo =
@@ -151,16 +152,16 @@ class _PrintMovementState extends State<PrintMovement> {
           final result = await printFormat
               .printMovement(dataBloc.dirPath! + billerImgDir + companyLogo);
           if (result ?? false) {
-            await Future.delayed(Duration(seconds: 3));
+            await Future.delayed(const Duration(seconds: 3));
             hideCurrentScaffoldAlert(context);
             setState(() {
               _printing = false;
             });
           } else {
-            scaffoldAlert(context, 'Error al imprimir', Duration(seconds: 3));
+            scaffoldAlert(context, 'Error al imprimir', const Duration(seconds: 3));
           }
         } else {
-          PrintSettings(
+          const PrintSettings(
             print: 'movement',
           ).launch(context);
         }
@@ -171,7 +172,7 @@ class _PrintMovementState extends State<PrintMovement> {
             'Imprimir ',
             style: buttonsSmallTextStyle(context),
           ),
-          Icon(Icons.print)
+          const Icon(Icons.print)
         ],
       ),
     );
@@ -187,7 +188,7 @@ class _PrintMovementState extends State<PrintMovement> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (BuildContext context) => HomeScreen(),
+            builder: (BuildContext context) => const HomeScreen(),
           ),
           (route) => false,
         );
@@ -199,7 +200,7 @@ class _PrintMovementState extends State<PrintMovement> {
             'Salir ',
             style: buttonsSmallTextStyle(context),
           ),
-          Icon(Icons.exit_to_app)
+          const Icon(Icons.exit_to_app)
         ],
       ),
     );

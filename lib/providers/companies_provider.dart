@@ -6,11 +6,12 @@ import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/biller_data_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/providers/API_provider.dart';
+import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/providers/groups_providers.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/wishlist_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/validation_encoding/encode_pass.dart';
 import 'package:pos_wappsi/utils/nav_utils.dart';
 
@@ -78,7 +79,9 @@ class CompaniesProvider {
       // to remove data for user and favorites creation
       body.remove('user_data');
       body.remove('favorites');
-    } catch (e) {}
+    } catch (e) {
+   printConsole(e);
+    }
     body['id_cloud'] = res['body']['company_id'];
     dbUpdated = await DBProvider.db.insertQuery('sma_companies', body);
     if (dbUpdated) {
@@ -194,8 +197,9 @@ class CompaniesProvider {
         where: "biller_id=$billerId",
       );
       int? customerId;
-      if (res != null)
-        customerId = int.tryParse(res['sma_biller_data'].toString()) ?? null;
+      if (res != null) {
+        customerId = int.tryParse(res['sma_biller_data'].toString());
+      }
 
       if (customerId != null) {
         return customerId;
@@ -203,14 +207,15 @@ class CompaniesProvider {
 
       final res2 = await DBProvider.db
           .sqlFirstQuery('sma_pos_settings', columns: ['default_customer_id']);
-      if (res2 != null)
-        customerId = int.tryParse(res2['sma_biller_data'].toString()) ?? null;
+      if (res2 != null) {
+        customerId = int.tryParse(res2['sma_biller_data'].toString());
+      }
 
       if (customerId != null) {
         return customerId;
       }
     } catch (e) {
-      print(e);
+   printConsole(e);
       return null;
     }
   }
@@ -223,7 +228,7 @@ class CompaniesProvider {
 
   static sendCustomerInfo(BuildContext context) async {
     final customerGroup = await GroupsProvider.loadCustomerGroup();
-    final apiProvider = new DataProvider();
+    final apiProvider = DataProvider();
     if (customerGroup == null) {
       return {
         'error': true,
@@ -252,7 +257,7 @@ class CompaniesProvider {
       body['favorites'] = favorites;
     }
 
-    scaffoldAlert(context, 'Registrando cliente', Duration(seconds: 10),
+    scaffoldAlert(context, 'Registrando cliente', const Duration(seconds: 10),
         key: UniqueKey());
 
     final res = await apiProvider.postPetition(
@@ -266,7 +271,7 @@ class CompaniesProvider {
       confirmDialog(
           context, res['body']['message'], 'assets/images/dizzy-robot.png');
     } else {
-      // update local DB with new company info
+      // update local DB with company info
       bool dbUpdated = await CompaniesProvider.writeCustomerInLDB(body, res);
 
       // if fails we force DB sync
@@ -321,9 +326,9 @@ class CompaniesProvider {
     // add customer id
     body['company_id'] = customer.idCloud;
 
-    scaffoldAlert(context, 'Añadiendo favoritos', Duration(seconds: 10),
+    scaffoldAlert(context, 'Añadiendo favoritos', const Duration(seconds: 10),
         key: UniqueKey());
-    final apiProvider = new DataProvider();
+    final apiProvider = DataProvider();
     final res = await apiProvider.postPetition(
         addCompanyFavEndP, body, dataBloc.getHeaders());
 
@@ -335,7 +340,7 @@ class CompaniesProvider {
       confirmDialog(
           context, res['body']['message'], 'assets/images/dizzy-robot.png');
     } else {
-      // update local DB with new company info
+      // update local DB with company info
       bool dbUpdated =
           await WishlistProvider.reloadCustomerFavs(context, customer);
 

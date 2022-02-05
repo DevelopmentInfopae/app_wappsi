@@ -34,10 +34,8 @@ Widget descText(String? desc, BuildContext context,
     Color color = Colors.black,
     TextAlign? textAlign,
     TextStyle? textStyle}) {
-  if (textStyle == null) {
-    textStyle = buttonsTextStyle(context,
+  textStyle ??= buttonsTextStyle(context,
         fontSizeFactor: fontSizeFactor, color: color, fontWeightDelta: fweigth);
-  }
   return Text(
     // ignore: unnecessary_null_comparison
     capitalizeText(desc ?? ''),

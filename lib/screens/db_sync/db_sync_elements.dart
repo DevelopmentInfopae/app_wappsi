@@ -16,7 +16,7 @@ import 'package:pos_wappsi/screens/db_sync/components/sync_element.dart';
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 
 class DBSyncElements extends StatefulWidget {
-  DBSyncElements({Key? key, required this.options}) : super(key: key);
+  const DBSyncElements({Key? key, required this.options}) : super(key: key);
   final Map<String, bool> options;
 
   @override
@@ -27,7 +27,7 @@ class _DBSyncElementsState extends State<DBSyncElements> {
   late Size _size;
   late Color _pc;
 
-  final syncDB = new SyncDBProvider();
+  final syncDB = SyncDBProvider();
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;

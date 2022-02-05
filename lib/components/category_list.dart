@@ -8,7 +8,7 @@ import 'package:pos_wappsi/constant.dart';
 // ignore: must_be_immutable
 class CategoryList extends StatefulWidget {
   CategoryList({Key? key, required this.routeName}) : super(key: key);
-  var routeName;
+  String routeName;
 
   @override
   _CategoryListState createState() => _CategoryListState();
@@ -26,7 +26,7 @@ class _CategoryListState extends State<CategoryList> {
             fontSize: 20.0,
           ),
         ),
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0.0,
@@ -42,7 +42,7 @@ class _CategoryListState extends State<CategoryList> {
                   child: AppTextField(
                     textFieldType: TextFieldType.NAME,
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                       hintText: 'Search',
                       prefixIcon: Icon(
                         Icons.search,
@@ -51,25 +51,25 @@ class _CategoryListState extends State<CategoryList> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10.0,
                 ),
                 Expanded(
                   flex: 1,
                   child: Container(
-                    padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                     height: 60.0,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
                       border: Border.all(color: kGreyTextColor),
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.add,
                       color: kGreyTextColor,
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20.0,
                 ),
               ],
@@ -77,7 +77,7 @@ class _CategoryListState extends State<CategoryList> {
             SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Column(
-                children: [
+                children: const [
                   // ...List.generate(
                   //   demoCategory.length,
                   //   (index) => CategoryCard(

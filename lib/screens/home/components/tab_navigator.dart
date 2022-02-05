@@ -13,27 +13,27 @@ class TabNavigatorRoutes {
 }
 
 class TabNavigator extends StatelessWidget {
-  TabNavigator({required this.navigatorKey, required this.tabItem});
+  const TabNavigator({Key? key, required this.navigatorKey, required this.tabItem}) : super(key: key);
   final GlobalKey<NavigatorState>? navigatorKey;
   final TabItem tabItem;
 
   Map<String, WidgetBuilder> _routeBuilders(BuildContext context) {
-    var routes;
+    Map<String, Widget Function(BuildContext)> routes ={};
     if (tabName[tabItem] == 'Inicio') {
       routes = {
-        TabNavigatorRoutes.root: (context) => HomeScreen(),
+        TabNavigatorRoutes.root: (context) => const HomeScreen(),
       };
     } else if (tabName[tabItem] == 'Precios') {
       routes = {
-        TabNavigatorRoutes.root: (context) => ProductPrice(),
+        TabNavigatorRoutes.root: (context) => const ProductPrice(),
       };
     } else if (tabName[tabItem] == 'Clientes') {
       routes = {
-        TabNavigatorRoutes.root: (context) => Customers(),
+        TabNavigatorRoutes.root: (context) => const Customers(),
       };
     } else if (tabName[tabItem] == 'Ajustes') {
       routes = {
-        TabNavigatorRoutes.root: (context) => SettingsScreen(),
+        TabNavigatorRoutes.root: (context) => const SettingsScreen(),
       };
     }
     return routes;

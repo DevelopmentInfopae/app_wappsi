@@ -5,7 +5,7 @@ import 'package:pos_wappsi/screens/cash_accounting/components/register_movements
 import 'package:provider/provider.dart';
 
 class RegisterMovements extends StatefulWidget {
-  RegisterMovements({Key? key}) : super(key: key);
+  const RegisterMovements({Key? key}) : super(key: key);
 
   @override
   _RegisterMovementsState createState() => _RegisterMovementsState();
@@ -20,7 +20,7 @@ class _RegisterMovementsState extends State<RegisterMovements> {
           image: 'assets/images/cash-register.png'),
       body: ChangeNotifierProvider(
           create: (_) => RegisterFormProvider(),
-          child: RegisterMovementsForm()),
+          child: const RegisterMovementsForm()),
     );
   }
 }

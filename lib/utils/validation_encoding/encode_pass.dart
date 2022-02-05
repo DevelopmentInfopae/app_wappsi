@@ -12,7 +12,7 @@ String encodePass(String password) {
 
   final encrypted = encrypter.encrypt(password, iv: iv);
 
-  // print(encrypted.base64);
+  // printConsole(encrypted.base64);
 
   return encrypted.base64;
   // var digest = sha1.convert(bytes);

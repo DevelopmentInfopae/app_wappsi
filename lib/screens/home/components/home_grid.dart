@@ -27,7 +27,7 @@ class HomeGridCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppButton(
-      padding: EdgeInsets.all(2),
+      padding: const EdgeInsets.all(2),
       // margin: EdgeInsets.zero,
 
       elevation: 5,
@@ -47,7 +47,7 @@ class HomeGridCards extends StatelessWidget {
           child: _text(context).paddingOnly(bottom: 2, left: 2, right: 2),
           decoration: BoxDecoration(
               color: Colors.grey[50],
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(5.0),
                   bottomRight: Radius.circular(5.0))),
         ).flexible(flex: 5),
@@ -57,7 +57,7 @@ class HomeGridCards extends StatelessWidget {
 
   Widget _text(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 1),
+      padding: const EdgeInsets.symmetric(horizontal: 1),
       alignment: Alignment.center,
       child: Text(
         gridItems.title.toString(),
@@ -94,16 +94,16 @@ class HomeGridCards extends StatelessWidget {
         posBloc.reload();
       }
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
-      NewOrder().launch(context);
+      const NewOrder().launch(context);
       await dataBloc.refreshToken(context);
     }else if (gridItems.route == 'products') {
-      Products().launch(context);
+      const Products().launch(context);
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'customers') {
       dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'syncElements') {
-      SyncElementsScreen().launch(context);
+      const SyncElementsScreen().launch(context);
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'logout') {
       await _logout(context);
@@ -112,29 +112,29 @@ class HomeGridCards extends StatelessWidget {
     } else if (gridItems.route == 'addCustomer') {
       // dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
       // await Future.delayed(Duration(seconds: 1));
-      NewCustomer().launch(context);
+      const NewCustomer().launch(context);
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
       await dataBloc.refreshToken(context);
       // dataBloc.homeKey.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'register') {
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
-      RegisterOptions().launch(context);
+      const RegisterOptions().launch(context);
     } else if (gridItems.route == 'list_sales') {
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
-      SalesList().launch(context);
+      const SalesList().launch(context);
     } else if (gridItems.route == 'settings') {
       dataBloc.homeKey.currentState?.selectTab(TabItem.settings);
     }
     if (gridItems.route == 'profile') {
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
-      ProfileScreen().launch(context);
+      const ProfileScreen().launch(context);
     }
   }
 
   Future<void> _newSale(BuildContext context) async {
     if (dataBloc.registerData.status == 'open') {
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
-      NewSale().launch(context);
+      const NewSale().launch(context);
     } else {
       await showCupertinoDialog(
           barrierDismissible: true,
@@ -142,13 +142,13 @@ class HomeGridCards extends StatelessWidget {
           builder: (context) {
             return ChangeNotifierProvider(
                 create: (_) => RegisterFormProvider(),
-                child: RegisterAlertDialog(
+                child: const RegisterAlertDialog(
                   action: 'open',
                 ));
           });
       if (dataBloc.registerData.status == 'open') {
         dataBloc.homeKey.currentState?.changeBottomIndex(0);
-        NewSale().launch(context);
+        const NewSale().launch(context);
       } else {
         confirmDialog(context, 'Error al abrir caja, intente nuevamente',
             'assets/images/warning.png');

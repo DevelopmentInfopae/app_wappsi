@@ -1,10 +1,10 @@
-// import 'package:flutter/cupertino.dart';
+// ignore: file_names
 import 'package:flutter/material.dart';
 
 PreferredSize boxAppBar(Widget child, Size size,
     {bool elevation = true, double radius = 5}) {
   return PreferredSize(
-      preferredSize: new Size(
+      preferredSize: Size(
           size.width,
           size.height * 0.1 > 75
               ? (size.height * 0.11 > 85 ? 85 : size.height * 0.1)
@@ -15,7 +15,7 @@ PreferredSize boxAppBar(Widget child, Size size,
             borderRadius: BorderRadius.circular(radius),
             boxShadow: elevation
                 ? [
-                    BoxShadow(
+                    const BoxShadow(
                       color: Colors.grey,
                       offset: Offset(0.0, 1.0), //(x,y)
                       blurRadius: 6.0,

@@ -16,7 +16,7 @@ class GoBackBottom extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.arrow_back_ios, size: kIconSize),
+          const Icon(Icons.arrow_back_ios, size: kIconSize),
           Text(
             'Regresar',
             style: buttonsSmallTextStyle(context),

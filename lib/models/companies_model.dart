@@ -160,12 +160,12 @@ class CompanyModel {
   static List<CompanyModel> fromJsonList(List<Map> list) {
     List<CompanyModel> customers = [];
     Map<String, dynamic> temp = {};
-    list.forEach((item) {
+    for (var item in list) {
       for (var i = 0; i < item.keys.length; i++) {
         temp[item.keys.toList()[i]] = item.values.toList()[i];
       }
       customers.add(CompanyModel.fromJson(temp));
-    });
+    }
 
     return customers;
 
@@ -346,7 +346,7 @@ class CompanyModel {
         "type_person": typePerson,
         "name": (firstName ?? '') +
             ' ' +
-            ((secondName ?? '' + ' ') +
+            ((secondName ?? '' ' ') +
                 ((firstLastname ?? '') + ' ') +
                 (secondLastname ?? '')),
         "first_name": firstName,
@@ -356,7 +356,7 @@ class CompanyModel {
         "company": company ??
             ((firstName ?? '') +
                 ' ' +
-                ((secondName ?? '' + ' ') +
+                ((secondName ?? '' ' ') +
                     (firstLastname ?? '') +
                     ' ' +
                     (secondLastname ?? ''))),

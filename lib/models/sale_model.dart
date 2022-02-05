@@ -533,7 +533,7 @@ class SaleModel {
         realUnitPrice: productsDetails['real_unit_price'],
         unitProductTax: productsDetails['unit_product_tax'],
         customerBranch: customerAddress.idCloud,
-        documentTypeId: user.documentTypeId ?? null,
+        documentTypeId: user.documentTypeId,
         productTaxRate: productsDetails['product_tax_rate'],
         productDiscount: productsDetails['product_discount'],
         productDiscountVal: productsDetails['product_discount_val'],

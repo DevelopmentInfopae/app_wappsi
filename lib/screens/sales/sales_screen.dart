@@ -28,7 +28,7 @@ class _ProductsState extends State<SalesList> {
   // late Color _pc;
   late TextTheme _theme;
 
-  Map<String, dynamic> _searchParams = {};
+  final Map<String, dynamic> _searchParams = {};
 
   @override
   void dispose() {
@@ -50,7 +50,7 @@ class _ProductsState extends State<SalesList> {
     return WillPopScope(
       onWillPop: () async {
         dataBloc.homeKey.currentState?.changeBottomIndex(1);
-        // print('here i am');
+        // printConsole('here i am');
         return true;
       },
       child: Scaffold(
@@ -86,7 +86,7 @@ class _ProductsState extends State<SalesList> {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
           color: Colors.grey,
           offset: Offset(0.0, 1.0), //(x,y)
@@ -98,15 +98,15 @@ class _ProductsState extends State<SalesList> {
 
   Widget _searchField() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
           color: Colors.grey[200],
-          borderRadius: BorderRadius.all(Radius.circular(10))),
+          borderRadius: const BorderRadius.all(Radius.circular(10))),
       child: FloatingSearchAppBar(
           hint: ' Buscar venta',
           transitionDuration: const Duration(milliseconds: 800),
           clearQueryOnClose: true,
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
           // alwaysOpened: true,
           titleStyle: _theme.headline6!,
           hintStyle: _theme.headline6!,
@@ -115,7 +115,7 @@ class _ProductsState extends State<SalesList> {
           // height: _size.height * 0.078 < 55 ? 55 : _size.height * 0.078,
           elevation: 0,
           actions: [Container()],
-          leadingActions: [Icon(Icons.search)],
+          leadingActions: const [Icon(Icons.search)],
           automaticallyImplyBackButton: false,
           color: Colors.grey[100],
           body: null),
@@ -140,13 +140,13 @@ class _ProductsState extends State<SalesList> {
                     } else {
                       _salesListStream.sink.add(snapshot.data!);
 
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     }
                   });
             } else {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             }

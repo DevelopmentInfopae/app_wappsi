@@ -61,7 +61,7 @@ class CustomerBloc {
 
   CompanyModel get getCustomer {
     if (!_customerController.hasValue) {
-      _customerController.value = new CompanyModel();
+      _customerController.value = CompanyModel() ;
     }
     return _customerController.value!;
   }
@@ -94,7 +94,7 @@ class CustomerBloc {
   }
 
   clear() {
-    _customerController.value = new CompanyModel();
+    _customerController.value = CompanyModel();
     _userNameController.value = null;
     _passwordController.value = null;
     _favoritesController.value = {};

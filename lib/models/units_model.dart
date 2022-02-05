@@ -41,7 +41,7 @@ class UnitsModel {
         name: json["name"],
         baseUnit: (json["base_unit"] == "" || json["base_unit"] == null)
             ? null
-            : json["base_unit"] ?? null,
+            : json["base_unit"],
         operator: json["operator"],
         unitValue: (json['valor_unitario'] ?? json["unit_value"]) + 0.0,
         operationValue:
@@ -72,12 +72,12 @@ class UnitsModel {
   static List<UnitsModel> fromJsonList(List<Map> list) {
     List<UnitsModel> units = [];
     Map<String, dynamic> temp = {};
-    list.forEach((item) {
+    for (var item in list) {
       for (var i = 0; i < item.keys.length; i++) {
         temp[item.keys.toList()[i]] = item.values.toList()[i];
       }
       units.add(UnitsModel.fromJson(temp));
-    });
+    }
 
     return units;
 

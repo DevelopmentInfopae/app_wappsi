@@ -1,6 +1,6 @@
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
-import 'package:pos_wappsi/config/POS_params.dart';
+import 'package:pos_wappsi/config/pos_params.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 
@@ -10,12 +10,12 @@ class PaymentMethodsProvider {
 
     if (data != null) {
       if (fromPOSSale) {
-        if (data.length > 0 && posBloc.getPaymentMethod == null) {
+        if (data.isNotEmpty && posBloc.getPaymentMethod == null) {
           posBloc.setPaymentMethod(PaymentMethods.fromJson(data.first));
           return true;
         }
       }else{
-        if (data.length > 0 && orderBloc.getPaymentMethod == null) {
+        if (data.isNotEmpty && orderBloc.getPaymentMethod == null) {
         orderBloc.setPaymentMethod(PaymentMethods.fromJson(data.first));
         return true;
       }
@@ -60,7 +60,7 @@ class PaymentMethodsProvider {
   /// Return all rows in sma_payment_methods wich fields (name) LIKE given string
   // ignore: avoid_init_to_null
   static Future<List<Map<String, dynamic>>?> findPaymentMethods(
-      {String? search = '', pos: true}) async {
+      {String? search = '', pos = true}) async {
     String where = '';
     if (pos) {
       where =

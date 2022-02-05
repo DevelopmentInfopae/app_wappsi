@@ -16,7 +16,7 @@ class SuspendSaleAlertDialog extends StatefulWidget {
 
   @override
   SuspendSaleAlertDialogState createState() {
-    return new SuspendSaleAlertDialogState();
+    return SuspendSaleAlertDialogState();
   }
 }
 
@@ -39,61 +39,59 @@ class SuspendSaleAlertDialogState extends State<SuspendSaleAlertDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: CupertinoAlertDialog(
-        title: Column(
-          children: [
-            Text(
-              'Suspender venta',
-              style: buttonsSmallTextStyle(context).apply(fontSizeDelta: 1.2),
-            ).paddingBottom(10),
-            Text(
-              'A continuación digite una palabra clave para identificar la venta suspendida:',
-              style:
-                  buttonsSmallTextStyle(context).apply(color: kGreyTextColor),
-            ),
-          ],
-        ).paddingBottom(10),
-        content: new SingleChildScrollView(child: _form(context)),
-        actions: <Widget>[
-          Container(
-            color: Colors.redAccent,
-            child: CupertinoDialogAction(
-              child: Text(
-                'Cancelar',
-                style: TextStyle(color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            ),
-          ),
-          Container(
-            color: pColor.withOpacity(0.8),
-            child: CupertinoDialogAction(
-              child: Text(
-                "Aceptar",
-                style: TextStyle(color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-              onPressed: () async {
-                final res = await posBloc.suspendSale(keyWord: _keyWord);
-
-                // Check if suspendSale fails
-                if (res) {
-                  Navigator.of(context).pop(false);
-                } else {
-                  confirmDialog(
-                      context,
-                      'Hubo un error al suspender la venta, intente nuevamente.',
-                      'assets/images/warning.png');
-                }
-              },
-            ),
+    return CupertinoAlertDialog(
+      title: Column(
+        children: [
+          Text(
+            'Suspender venta',
+            style: buttonsSmallTextStyle(context).apply(fontSizeDelta: 1.2),
+          ).paddingBottom(10),
+          Text(
+            'A continuación digite una palabra clave para identificar la venta suspendida:',
+            style:
+                buttonsSmallTextStyle(context).apply(color: kGreyTextColor),
           ),
         ],
-      ),
+      ).paddingBottom(10),
+      content: SingleChildScrollView(child: _form(context)),
+      actions: <Widget>[
+        Container(
+          color: Colors.redAccent,
+          child: CupertinoDialogAction(
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+        ),
+        Container(
+          color: pColor.withOpacity(0.8),
+          child: CupertinoDialogAction(
+            child: const Text(
+              "Aceptar",
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () async {
+              final res = await posBloc.suspendSale(keyWord: _keyWord);
+
+              // Check if suspendSale fails
+              if (res) {
+                Navigator.of(context).pop(false);
+              } else {
+                confirmDialog(
+                    context,
+                    'Hubo un error al suspender la venta, intente nuevamente.',
+                    'assets/images/warning.png');
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 

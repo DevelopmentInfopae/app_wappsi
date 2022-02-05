@@ -19,7 +19,7 @@ Widget labelContent(String label, String content,
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             // fontSize: 13
           ),
@@ -27,7 +27,7 @@ Widget labelContent(String label, String content,
         Text(
           capitalizeText(content),
           textAlign: TextAlign.start,
-          style: TextStyle(fontSize: 17),
+          style: const TextStyle(fontSize: 17),
         )
       ],
     ),
@@ -84,7 +84,7 @@ class FutureDecoratedLabeledContent extends StatelessWidget {
 }
 
 Widget labelContentH(String label, String content, BuildContext context,
-    {withInnerPading: true,
+    {withInnerPading = true,
     EdgeInsetsGeometry? padding,
     int flexCol1 = 1,
     int flexCol2 = 2}) {
@@ -163,7 +163,7 @@ Widget bottom(Widget child, Color _pc, Size _size,
           color: _pc,
           boxShadow: elevation
               ? [
-                  BoxShadow(
+                  const BoxShadow(
                     color: Colors.grey,
                     offset: Offset(1.0, 0.0), //(x,y)
                     blurRadius: 5.0,
@@ -179,13 +179,13 @@ Positioned loadingIndicator(double width) {
   return Positioned(
       left: 0,
       bottom: 0,
-      child: Container(
+      child: SizedBox(
         width: width,
         child: Loader(),
       ));
 }
 
-Widget customerPhoto(String img, {fit: BoxFit.cover}) {
+Widget customerPhoto(String img, {fit = BoxFit.cover}) {
   String url;
   if (img == '') {
     img = defaultCustomersImage;
@@ -267,8 +267,7 @@ Widget billerImage(String image) {
   String img = image;
   // if img is png convert to png
   if (img.substring(img.length - 4) == '.png') {
-    imgURL = "https://wappsi281.com" +
-        "/wappsi_apis/public/utils/pngToJpg?img=" +
+    imgURL = dataBloc.userData!.hostUrl+"/wappsi_apis/utils/pngToJpg?img=" +
         imgURL;
     img = img.substring(0, img.length - 4) + '.jpg';
   }

@@ -17,6 +17,7 @@ import 'package:pos_wappsi/screens/settings/print_settings.dart';
 // import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/blue_print/blue_print.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/local_files.dart';
 
 class PrintSale extends StatefulWidget {
@@ -29,9 +30,9 @@ class PrintSale extends StatefulWidget {
       required this.printData,
       this.back = false,
       this.exitToNewSale = true,
-      this.image = 'assets/images/printer.png'});
+      this.image = 'assets/images/printer.png'}) : super(key: key);
   @override
-  _PrintSaleState createState() => new _PrintSaleState();
+  _PrintSaleState createState() => _PrintSaleState();
 }
 
 class _PrintSaleState extends State<PrintSale> {
@@ -59,7 +60,7 @@ class _PrintSaleState extends State<PrintSale> {
       onWillPop: () async {
         // To control pop from nav keys on device
 
-        // final syncDB = new SyncDBProvider();
+        // final syncDB = SyncDBProvider();
         // await Future.wait([
         //   syncDB.syncOption(context, 'Precios de Productos'),
         //   syncDB.syncOption(context, 'Productos de Sucursales'),
@@ -92,7 +93,7 @@ class _PrintSaleState extends State<PrintSale> {
     final textTheme = Theme.of(context).textTheme;
     return Container(
       width: _size.width * 0.9,
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: SingleChildScrollView(
         child: Card(
           child: Column(
@@ -158,7 +159,7 @@ class _PrintSaleState extends State<PrintSale> {
           // final xd = await bluetooth.isOn;
           isConnected = await bluetooth.isConnected ?? false;
         } catch (e) {
-          print(e);
+          printConsole(e);
           isConnected = false;
         }
         // if ((isConnected)) {
@@ -169,7 +170,7 @@ class _PrintSaleState extends State<PrintSale> {
           });
 
           scaffoldAlert(
-              context, 'Imprimiendo comprobante', Duration(seconds: 3));
+              context, 'Imprimiendo comprobante', const Duration(seconds: 3));
           String companyLogo = widget.printData['company_data'].logo;
           if (companyLogo.substring(companyLogo.length - 4) == '.png') {
             companyLogo =
@@ -178,13 +179,13 @@ class _PrintSaleState extends State<PrintSale> {
           final result = await printFormat.printPOS(
               dataBloc.dirPath! + billerImgDir + companyLogo, widget.printData);
           if (result ?? false) {
-            await Future.delayed(Duration(seconds: 3));
+            await Future.delayed(const Duration(seconds: 3));
             hideCurrentScaffoldAlert(context);
             setState(() {
               _printing = false;
             });
           } else {
-            scaffoldAlert(context, 'Error al imprimir', Duration(seconds: 3));
+            scaffoldAlert(context, 'Error al imprimir', const Duration(seconds: 3));
           }
         } else {
           PrintSettings(
@@ -199,7 +200,7 @@ class _PrintSaleState extends State<PrintSale> {
             'Imprimir ',
             style: buttonsSmallTextStyle(context),
           ),
-          Icon(Icons.print, size: kIconSize)
+          const Icon(Icons.print, size: kIconSize)
         ],
       ),
     );
@@ -212,23 +213,23 @@ class _PrintSaleState extends State<PrintSale> {
       // disabledColor: Colors.white,
       width: _size.width * 0.1,
       onTap: () async {
-        // final syncDB = new SyncDBProvider();
+        // final syncDB = SyncDBProvider();
         // final res = await Future.wait([
         //   syncDB.syncOption(context, 'Precios de Productos'),
         //   syncDB.syncOption(context, 'Productos de Sucursales'),
         // ]);
 
-        // print(res);
+        // printConsole(res);
 
         if (widget.exitToNewSale) {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => HomeScreen(),
+              builder: (BuildContext context) => const HomeScreen(),
             ),
             (route) => false,
           );
-          NewSale().launch(context);
+          const NewSale().launch(context);
         } else {
           Navigator.pop(context);
         }
@@ -239,7 +240,7 @@ class _PrintSaleState extends State<PrintSale> {
             'Salir ',
             style: buttonsSmallTextStyle(context),
           ),
-          Icon(Icons.exit_to_app, size: kIconSize)
+          const Icon(Icons.exit_to_app, size: kIconSize)
         ],
       ),
     );

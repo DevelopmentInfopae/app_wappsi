@@ -7,11 +7,13 @@ import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
+// import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/products/product_details.dart';
 import 'package:pos_wappsi/screens/products/product_price_verifier.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 // class to show product indormation in form of a card
@@ -22,7 +24,7 @@ class ProductCardWUnit extends StatefulWidget {
   final String action;
   final bool searchPrice;
 
-  ProductCardWUnit(
+  const ProductCardWUnit(
       {Key? key,
       required this.product,
       required this.action,
@@ -49,7 +51,7 @@ class _ProductCardWUnitState extends State<ProductCardWUnit> {
   Widget build(BuildContext context) {
     // _textTheme = Theme.of(context).textTheme;
     return AppButton(
-        margin: EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
         padding: EdgeInsets.zero,
         elevation: 5,
         child: Row(
@@ -67,7 +69,7 @@ class _ProductCardWUnitState extends State<ProductCardWUnit> {
                 context, widget.product);
             if (productReq != {}) {
               final result = await posBloc.addProduct(productReq);
-              print(result);
+              printConsole(result);
             }
 
             // Navigator.pop(context);
@@ -110,7 +112,7 @@ class _ProductCardWUnitState extends State<ProductCardWUnit> {
             style: normalTextStyle(context, fontWeightDelta: 2),
           );
         } else {
-          return Text('\$ ');
+          return const Text('\$ ');
         }
       },
     );

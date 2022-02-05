@@ -39,7 +39,7 @@ class _SalesCardListState extends State<SalesCardList> {
           controller: _controller,
           padding: EdgeInsets.zero,
           itemCount: widget.sales.length + (_allLoaded ? 1 : 0),
-          physics: ClampingScrollPhysics(),
+          physics: const ClampingScrollPhysics(),
           separatorBuilder: (context, index) => const Divider(
             height: 5,
           ),
@@ -52,8 +52,8 @@ class _SalesCardListState extends State<SalesCardList> {
             } else {
               return Container(
                 width: _size.width,
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: Text('Sin elementos que mostrar').center(),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: const Text('Sin elementos que mostrar').center(),
               );
             }
             // return Container();
@@ -65,7 +65,7 @@ class _SalesCardListState extends State<SalesCardList> {
   }
 
   void infinityScrollListener() async {
-    // print(_controller.position.extentAfter);
+    // printConsole(_controller.position.extentAfter);
     if (_controller.position.pixels >= _controller.position.maxScrollExtent &&
         !_loading) {
       setState(() {
@@ -109,7 +109,7 @@ class SalesCard extends StatefulWidget {
   final SalesModel sale;
 
   final String action;
-  SalesCard({Key? key, required this.sale, required this.action})
+  const SalesCard({Key? key, required this.sale, required this.action})
       : super(key: key);
 
   @override
@@ -132,7 +132,7 @@ class _SalesCardState extends State<SalesCard> {
       },
       child: Card(
         // color: Color.fromRGBO(245, 245, 245, 1),
-        margin: EdgeInsets.symmetric(horizontal: 5),
+        margin: const EdgeInsets.symmetric(horizontal: 5),
         elevation: 5,
         child: _description(),
       ),
@@ -152,7 +152,7 @@ class _SalesCardState extends State<SalesCard> {
             decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(10)),
-            padding: EdgeInsets.all(4),
+            padding: const EdgeInsets.all(4),
             child: Column(
               children: [
                 Row(
@@ -183,25 +183,25 @@ class _SalesCardState extends State<SalesCard> {
     return labelContentH(
         'Cliente:', capitalizeText(widget.sale.customer), context,
         withInnerPading: false,
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2));
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 
   Widget _date() {
     return labelContentH('Fecha:', widget.sale.registrationDate ?? '', context,
         withInnerPading: false,
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2));
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 
   Widget _reference() {
     return labelContentH('Numero:', widget.sale.referenceNo ?? '', context,
         withInnerPading: false,
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2));
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 
   Widget _items() {
     return labelContentH('Items:', (widget.sale.totalItems).toString(), context,
         withInnerPading: false,
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2));
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 
   Widget _paymentTerm() {
@@ -211,7 +211,7 @@ class _SalesCardState extends State<SalesCard> {
             .toString(),
         context,
         withInnerPading: false,
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2));
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 
   Widget _total() {
@@ -219,7 +219,7 @@ class _SalesCardState extends State<SalesCard> {
     return labelContentH(
         'Total:', value.substring(0, value.length - 1), context,
         withInnerPading: false,
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2));
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 
   Widget _paid() {
@@ -227,6 +227,6 @@ class _SalesCardState extends State<SalesCard> {
     return labelContentH(
         'Pagado:', value.substring(0, value.length - 1), context,
         withInnerPading: false,
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2));
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 }

@@ -18,7 +18,7 @@ class Logo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         // color: Colors.red,
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         width: width,
         height: height,
         child: Image.asset(

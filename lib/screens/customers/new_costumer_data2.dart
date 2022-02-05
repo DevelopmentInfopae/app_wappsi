@@ -9,7 +9,7 @@ import 'package:pos_wappsi/bloc/customer_bloc.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/config/regimen_personT_form_params.dart';
+import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/cities_model.dart';
@@ -22,10 +22,10 @@ import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/new_customer_data3.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
-import 'package:pos_wappsi/utils/validation_encoding/regExp.dart';
+import 'package:pos_wappsi/utils/validation_encoding/reg_exp.dart';
 
 class NewCustomerData2 extends StatefulWidget {
-  NewCustomerData2({Key? key}) : super(key: key);
+  const NewCustomerData2({Key? key}) : super(key: key);
 
   @override
   _NewCustomerData2State createState() => _NewCustomerData2State();
@@ -35,27 +35,27 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   late Size _size;
   late Color _pc;
 
-  TextEditingController personTypeypeController = new TextEditingController();
+  TextEditingController personTypeypeController = TextEditingController();
   final _statesDropDownKey = GlobalKey<DropdownSearchState<StatesModel?>>();
   final _citiesDropDownKey = GlobalKey<DropdownSearchState<CitiesModel?>>();
 
-  FocusNode _e = new FocusNode();
-  FocusNode _p = new FocusNode();
-  FocusNode _d = new FocusNode();
+  final FocusNode _e = FocusNode();
+  final FocusNode _p = FocusNode();
+  final FocusNode _d = FocusNode();
 
-  TextEditingController _addressController = new TextEditingController();
-  TextEditingController _emailController = new TextEditingController();
-  TextEditingController _phoneController = new TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
 
   CountriesModel? _country;
   StatesModel? _states;
   CitiesModel? _citys;
 
-  TextEditingController _countryController = new TextEditingController();
-  TextEditingController _stateController = new TextEditingController();
-  TextEditingController _cityController = new TextEditingController();
+  final TextEditingController _countryController = TextEditingController();
+  final TextEditingController _stateController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
 
-  bool _loading = false;
+  final bool _loading = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -63,12 +63,8 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
 
   @override
   void initState() {
-    if (customerBloc.getCustomer.tipoRegimen == null) {
-      customerBloc.getCustomer.tipoRegimen = regimenT["1"]!.value.toString();
-    }
-    if (customerBloc.getCustomer.typePerson == null) {
-      customerBloc.getCustomer.typePerson = personT["1"]!.value.toString();
-    }
+    customerBloc.getCustomer.tipoRegimen ??= regimenT["1"]!.value.toString();
+    customerBloc.getCustomer.typePerson ??= personT["1"]!.value.toString();
 
     _addressController.text = customerBloc.getCustomer.address ?? '';
     _emailController.text = customerBloc.getCustomer.email ?? '';
@@ -130,7 +126,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       child: Text('Siguiente', style: buttonsTextStyle(context)),
       onTap: () async {
         if (_formKey.currentState!.validate()) {
-          await NewCustomerData3().launch(context);
+          await const NewCustomerData3().launch(context);
         }
       },
       color: _pc,
@@ -225,7 +221,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
         customerBloc.getCustomer.tipoRegimen = data?.value.toString();
       },
       // selectedItem: posBloc.getCustomer,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,
@@ -241,10 +237,10 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
         decoration: InputDecoration(
           labelText: 'Pais',
           suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () {
               _countryController.clear();
-              if (_countryController.text.length == 0) {}
+              if (_countryController.text.isNotEmpty) {}
               Navigator.pop(context);
             },
           ),
@@ -259,7 +255,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       isFilteredOnline: true,
       showClearButton: true,
       showSelectedItems: true,
-      clearButton: Icon(Icons.clear_rounded),
+      clearButton: const Icon(Icons.clear_rounded),
       compareFn: (item, selectedItem) => item?.nombre == selectedItem?.nombre,
       showSearchBox: true,
       selectedItem: _country,
@@ -276,7 +272,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
           _country = data;
 
           _statesDropDownKey.currentState?.changeSelectedItem(null);
-          await Future.delayed(Duration(milliseconds: 500));
+          await Future.delayed(const Duration(milliseconds: 500));
           _statesDropDownKey.currentState?.openDropDownSearch();
         } else {
           _country = data;
@@ -286,7 +282,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       },
       // selectedItem: posBloc.getCustomer,
       popupItemBuilder: _customPopupCountriesItemBuilder,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,
@@ -297,7 +293,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   Widget _customPopupCountriesItemBuilder(
       BuildContext context, CountriesModel? item, bool isSelected) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
           ? null
           : BoxDecoration(
@@ -324,10 +320,10 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
         decoration: InputDecoration(
           labelText: 'Departamento',
           suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () {
               _stateController.clear();
-              if (_stateController.text.length == 0) {
+              if (_stateController.text.isNotEmpty) {
                 Navigator.pop(context);
               }
             },
@@ -343,7 +339,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       isFilteredOnline: true,
       showClearButton: true,
       showSelectedItems: true,
-      clearButton: Icon(Icons.clear_rounded),
+      clearButton: const Icon(Icons.clear_rounded),
       compareFn: (item, selectedItem) =>
           item?.departamento == selectedItem?.departamento,
       showSearchBox: true,
@@ -362,7 +358,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
           _states = data;
 
           _citiesDropDownKey.currentState?.changeSelectedItem(null);
-          await Future.delayed(Duration(milliseconds: 500));
+          await Future.delayed(const Duration(milliseconds: 500));
           _citiesDropDownKey.currentState?.openDropDownSearch();
         } else {
           _states = data;
@@ -372,7 +368,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       },
       // selectedItem: posBloc.getCustomer,
       popupItemBuilder: _customPopupStatesItemBuilder,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
 
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
@@ -384,7 +380,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   Widget _customPopupStatesItemBuilder(
       BuildContext context, StatesModel item, bool isSelected) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
           ? null
           : BoxDecoration(
@@ -411,10 +407,10 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
         decoration: InputDecoration(
           labelText: 'Ciudad',
           suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () {
               _cityController.clear();
-              if (_cityController.text.length == 0) {
+              if (_cityController.text.isNotEmpty) {
                 Navigator.pop(context);
               }
             },
@@ -430,7 +426,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       isFilteredOnline: true,
       showClearButton: true,
       showSelectedItems: true,
-      clearButton: Icon(Icons.clear_rounded),
+      clearButton: const Icon(Icons.clear_rounded),
       compareFn: (item, selectedItem) =>
           item?.descripcion == selectedItem?.descripcion,
       showSearchBox: true,
@@ -451,7 +447,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       },
       // selectedItem: posBloc.getCustomer,
       popupItemBuilder: _customPopupCitysItemBuilder,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,
@@ -462,7 +458,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   Widget _customPopupCitysItemBuilder(
       BuildContext context, CitiesModel? item, bool isSelected) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
           ? null
           : BoxDecoration(
@@ -500,7 +496,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       }
     }, () async {
       if (_formKey.currentState!.validate()) {
-        await NewCustomerData3().launch(context);
+        await const NewCustomerData3().launch(context);
       }
     }, focus: _p, controller: _phoneController, keyBType: TextInputType.phone)
         .paddingSymmetric(vertical: 5);

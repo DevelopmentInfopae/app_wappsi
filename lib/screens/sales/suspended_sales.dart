@@ -13,7 +13,7 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class SuspendedSalesScreen extends StatefulWidget {
   final List<SuspendedSales>? suspendedSales;
-  SuspendedSalesScreen({Key? key, required this.suspendedSales})
+  const SuspendedSalesScreen({Key? key, required this.suspendedSales})
       : super(key: key);
 
   @override
@@ -70,7 +70,7 @@ class _SuspendedSalesScreenState extends State<SuspendedSalesScreen> {
                     side: BorderSide(
                         color: pColor.withOpacity(0.5),
                         width: 1)),
-          child: Container(
+          child: SizedBox(
             width: 170,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -82,7 +82,7 @@ class _SuspendedSalesScreenState extends State<SuspendedSalesScreen> {
                       overflow: TextOverflow.ellipsis,
                       style: normalTextStyle(context, fontWeightDelta: 5, fontSizeFactor: 1.1),
                     ):Container(),
-                    hDivider(padding: EdgeInsets.symmetric(vertical: 4), height: 0.6),
+                    hDivider(padding: const EdgeInsets.symmetric(vertical: 4), height: 0.6),
                     Text(
                       capitalizeText(e.customerName),
                       maxLines: 2,
@@ -97,7 +97,7 @@ class _SuspendedSalesScreenState extends State<SuspendedSalesScreen> {
                       overflow: TextOverflow.ellipsis,
                       style: normalTextStyle(context),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Text(
                       capitalizeText(e.items.toString()),
                       maxLines: 2,
@@ -114,7 +114,7 @@ class _SuspendedSalesScreenState extends State<SuspendedSalesScreen> {
                       overflow: TextOverflow.ellipsis,
                       style: normalTextStyle(context),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Text(
                      capitalizeText(valueT.substring(0, valueT.length - 3)),
                       maxLines: 2,
@@ -130,7 +130,7 @@ class _SuspendedSalesScreenState extends State<SuspendedSalesScreen> {
                       style: normalTextStyle(context),
                       textAlign: TextAlign.center,
                     ),
-                    hDivider(padding: EdgeInsets.symmetric(vertical: 4), height: 0.4),
+                    hDivider(padding: const EdgeInsets.symmetric(vertical: 4), height: 0.4),
                     Text(
                       capitalizeText(parseDateStrES(e.createdDate)),
                       maxLines: 2,

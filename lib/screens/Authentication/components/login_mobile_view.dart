@@ -36,7 +36,7 @@ class LoginMobileView extends StatelessWidget {
                   create: (_) => LoginFormProvider(),
                 )
               ],
-              child: LoginFormInputs(),
+              child: const LoginFormInputs(),
             ).withHeight(_size.height * 0.4),
             Logo(
               width: 250,

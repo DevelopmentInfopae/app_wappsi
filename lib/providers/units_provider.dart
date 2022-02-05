@@ -3,6 +3,7 @@ import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/screens/sales/components/select_product_unit_alert.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 class UnitsProvider {
   static Future<List<UnitsModel>> getProductUnits(
@@ -19,7 +20,7 @@ class UnitsProvider {
     WHERE p.id_cloud = $productId ORDER BY valor_unitario ASC''';
     final res = await DBProvider.db.sqlRawQuery(sql);
     List<UnitsModel> units = [];
-    if (res != null && res.length > 0) {
+    if (res != null && res.isNotEmpty) {
       units = UnitsModel.fromJsonList(res);
     }
     return units;
@@ -39,7 +40,7 @@ class UnitsProvider {
     WHERE p.id_cloud = $productId ORDER BY valor_unitario ASC''';
     final res = await DBProvider.db.sqlFirstRawQuery(sql);
     UnitsModel? unit;
-    if (res != null && res.length > 0) {
+    if (res != null && res.isNotEmpty) {
       unit = UnitsModel.fromJson(res);
     }
     return unit;
@@ -49,7 +50,7 @@ class UnitsProvider {
       BuildContext context, ProductModel product, String priceGroupId) async {
     final units = await UnitsProvider.getProductUnits(
         product.idCloud.toString(), priceGroupId);
-    print(units.first.name);
+    printConsole(units.first.name);
 
     if (units.length > 1) {
       return await showCupertinoDialog<UnitsModel>(

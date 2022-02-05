@@ -20,7 +20,7 @@ import 'package:pos_wappsi/screens/customers/add_favorites.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 
 class NewCustomerData3 extends StatefulWidget {
-  NewCustomerData3({Key? key}) : super(key: key);
+  const NewCustomerData3({Key? key}) : super(key: key);
 
   @override
   _NewCustomerData3State createState() => _NewCustomerData3State();
@@ -32,12 +32,13 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
   bool _adduUser = false;
   bool _addFavorites = false;
 
-  TextEditingController _customerGroupController = new TextEditingController();
-  TextEditingController _priceGroupController = new TextEditingController();
+  final TextEditingController _customerGroupController = TextEditingController();
+  final TextEditingController _priceGroupController = TextEditingController();
 
   CustomerGroupsModel? _customerGroup;
   PriceGroupsModel? _priceGroup;
 
+  // ignore: prefer_final_fields
   bool _loading = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -83,7 +84,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
             CheckboxListTile(
               value: _adduUser,
               title: Text('Crear usuario', style: normalTextStyle(context)),
-              secondary: Icon(FontAwesomeIcons.userCheck, size: kIconSize),
+              secondary: const Icon(FontAwesomeIcons.userCheck, size: kIconSize),
               onChanged: (value) {
                 setState(() {
                   _adduUser = !_adduUser;
@@ -98,7 +99,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
               value: _addFavorites,
               title: Text('Añadir productos favoritos',
                   style: normalTextStyle(context)),
-              secondary: Icon(FontAwesomeIcons.star, size: kIconSize),
+              secondary: const Icon(FontAwesomeIcons.star, size: kIconSize),
               controlAffinity: ListTileControlAffinity.platform,
               onChanged: (value) {
                 setState(() {
@@ -126,7 +127,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
                   final verifyUserN =
                       await customerBloc.verifyUserName(context);
                   if (!verifyUserN) {
-                    AddFavorites().launch(context);
+                    const AddFavorites().launch(context);
                   }
                 } else {
                   await CompaniesProvider.sendCustomerInfo(context);
@@ -165,10 +166,10 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
         decoration: InputDecoration(
           labelText: 'Grupo de clientes',
           suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () {
               _customerGroupController.clear();
-              if (_customerGroupController.text.length == 0) {}
+              if (_customerGroupController.text.isNotEmpty) {}
               Navigator.pop(context);
             },
           ),
@@ -183,7 +184,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
       isFilteredOnline: true,
       showClearButton: true,
       showSelectedItems: true,
-      clearButton: Icon(Icons.clear_rounded),
+      clearButton: const Icon(Icons.clear_rounded),
       compareFn: (item, selectedItem) => item?.name == selectedItem?.name,
       showSearchBox: true,
       selectedItem: _customerGroup,
@@ -202,7 +203,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
       },
       // selectedItem: posBloc.getCustomer,
       // popupItemBuilder: _customPopupCountriesItemBuilder,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,
@@ -236,10 +237,10 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
         decoration: InputDecoration(
           labelText: 'Grupo de precios',
           suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () {
               _customerGroupController.clear();
-              if (_customerGroupController.text.length == 0) {}
+              if (_customerGroupController.text.isNotEmpty) {}
               Navigator.pop(context);
             },
           ),
@@ -254,7 +255,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
       isFilteredOnline: true,
       showClearButton: true,
       showSelectedItems: true,
-      clearButton: Icon(Icons.clear_rounded),
+      clearButton: const Icon(Icons.clear_rounded),
       compareFn: (item, selectedItem) => item?.name == selectedItem?.name,
       showSearchBox: true,
       selectedItem: _priceGroup,
@@ -273,7 +274,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
       },
       // selectedItem: posBloc.getCustomer,
       // popupItemBuilder: _customPopupCountriesItemBuilder,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,

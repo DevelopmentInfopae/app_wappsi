@@ -36,7 +36,7 @@ class ProductsList extends StatelessWidget {
             final pCard = OrderProductCard(
               key: UniqueKey(),
               quantityFocusNode: FocusNode(),
-              formKey: new GlobalObjectKey<FormState>(k),
+              formKey: GlobalObjectKey<FormState>(k),
               product: productList.entries.elementAt(index),
             );
             if (index == 0 && dataBloc.settings!['set_focus'] == 1) {
@@ -51,7 +51,7 @@ class ProductsList extends StatelessWidget {
             final pCard = ProductCard(
               key: UniqueKey(),
               quantityFocusNode: FocusNode(),
-              formKey: new GlobalObjectKey<FormState>(k),
+              formKey: GlobalObjectKey<FormState>(k),
               product: productList.entries.elementAt(index),
             );
             if (index == 0 && dataBloc.settings!['set_focus'] == 1) {
@@ -65,9 +65,9 @@ class ProductsList extends StatelessWidget {
           }
 
           return Dismissible(
-              key: new Key(k),
+              key: Key(k),
               background: Container(
-                padding: EdgeInsets.symmetric(vertical: 4),
+                padding: const EdgeInsets.symmetric(vertical: 4),
                 decoration: BoxDecoration(
                     color: Colors.red, borderRadius: BorderRadius.circular(5)),
                 child: Row(

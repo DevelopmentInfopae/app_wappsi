@@ -27,7 +27,7 @@ import 'package:pos_wappsi/utils/nav_utils.dart';
 class AddFavorites extends StatefulWidget {
   final String currentAction;
   final CompanyModel? customer;
-  AddFavorites(
+  const AddFavorites(
       {Key? key, this.currentAction = 'creating_customer', this.customer})
       : super(key: key);
 
@@ -38,7 +38,7 @@ class AddFavorites extends StatefulWidget {
 class _AddFavoritesState extends State<AddFavorites> {
   late final _leadingActions = [
     FloatingSearchBarAction(
-      child: Icon(
+      child: const Icon(
         Icons.search,
         // color: _pc,
       ).paddingLeft(7),
@@ -47,13 +47,13 @@ class _AddFavoritesState extends State<AddFavorites> {
 
   late Size _size;
   late Color _pc;
+  // ignore: prefer_final_fields
   bool _loading = false;
   String _query = '';
   final _searchController = FloatingSearchBarController();
-  StreamController<List<ProductModel>> _searchStream =
+  final StreamController<List<ProductModel>> _searchStream =
       StreamController<List<ProductModel>>();
 
-  late TextTheme _textTheme;
 
   @override
   void initState() {
@@ -73,8 +73,6 @@ class _AddFavoritesState extends State<AddFavorites> {
   Widget build(BuildContext context) {
     _pc = pColor;
     _size = MediaQuery.of(context).size;
-    _textTheme = Theme.of(context).textTheme;
-
     // initialize search controller
     return Scaffold(
         appBar: appBar(context, 'Favoritos',
@@ -100,7 +98,7 @@ class _AddFavoritesState extends State<AddFavorites> {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
           color: Colors.grey,
           offset: Offset(0.0, 1.0), //(x,y)
@@ -115,7 +113,7 @@ class _AddFavoritesState extends State<AddFavorites> {
       clearQueryOnClose: true,
       axisAlignment: -1,
       elevation: 0,
-      padding: EdgeInsets.symmetric(horizontal: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 5),
       // border: BorderSide(color: _pc, width: 1),
       borderRadius: BorderRadius.circular(10),
       margins: EdgeInsets.zero,
@@ -166,7 +164,7 @@ class _AddFavoritesState extends State<AddFavorites> {
         // height:_size.height*0.78,
         // to avoid overlap with floatingSearchBar
         margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
-        padding: EdgeInsets.only(top: 15),
+        padding: const EdgeInsets.only(top: 15),
         child: StreamBuilder<Map<String, ProductModel>>(
             stream: customerBloc.favoritesStream,
             builder: (context, snapshot) {
@@ -179,12 +177,12 @@ class _AddFavoritesState extends State<AddFavorites> {
                 return ListView(
                   children: snapshot.data!.keys.map((String k) {
                     return Dismissible(
-                      key: new Key(k),
+                      key: Key(k),
                       onDismissed: (direction) {
                         customerBloc.removeProductFromFav(k);
                       },
                       background: Container(
-                        padding: EdgeInsets.symmetric(vertical: 4),
+                        padding: const EdgeInsets.symmetric(vertical: 4),
                         decoration: BoxDecoration(
                             color: Colors.red,
                             borderRadius: BorderRadius.circular(10)),
@@ -221,7 +219,7 @@ class _AddFavoritesState extends State<AddFavorites> {
     return AppButton(
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: [
+        children: const [
           Icon(
             Icons.add,
             color: Colors.white,
@@ -266,9 +264,9 @@ class _AddFavoritesState extends State<AddFavorites> {
     List<Map>? res;
     res = await ProductsProvider.findProducts(query, limit: true);
 
-    // print('xd');
+    // printConsole('xd');
     if (res != null) {
-      if (res.length == 0) {
+      if (res.isNotEmpty) {
         if ((query.length - _query.length > 1)) {
           _searchController.clear();
           _query = '';

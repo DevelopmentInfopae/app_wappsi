@@ -31,12 +31,12 @@ class SuspendedSalesProvider{
     List<SuspendedSales> list = [];
     if (data != null) {
       Map<String, dynamic> temp = {};
-      data.forEach((item) {
+      for (var item in data) {
         for (var i = 0; i < item.keys.length; i++) {
           temp[item.keys.toList()[i]] = item.values.toList()[i];
         }
         list.add(SuspendedSales.fromJson(temp));
-      });
+      }
     }
 
     return list;
@@ -112,7 +112,7 @@ class SuspendedSalesProvider{
       final index = products.indexOf(p);
       // here we send getQttys = false to not get product inital qttys
       final res = await posBloc.addProduct(
-          {'product': p, 'product_unit': units[index] ?? null},
+          {'product': p, 'product_unit': units[index]},
           getPrices: getPrices, getQttys: false);
       if (!res) {
         errors.add(p.toJson());

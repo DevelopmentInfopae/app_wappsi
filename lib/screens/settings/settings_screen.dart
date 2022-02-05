@@ -39,7 +39,7 @@ class SettingsScreen extends StatelessWidget {
           trailing: Icon(Icons.keyboard_arrow_right_rounded,
               color: context.dividerColor),
           onTap: () {
-            PrintSettings().launch(context);
+            const PrintSettings().launch(context);
           }),
       // SettingItemWidget(
       //   title: 'Close account',

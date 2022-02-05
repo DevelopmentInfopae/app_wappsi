@@ -8,7 +8,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/config/regimen_personT_form_params.dart';
+import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/documentypes_model.dart';
 import 'package:pos_wappsi/providers/documenttypes_provider.dart';
@@ -19,7 +19,7 @@ import 'package:pos_wappsi/screens/customers/new_costumer_data2.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
 class NewCustomer extends StatefulWidget {
-  NewCustomer({Key? key}) : super(key: key);
+  const NewCustomer({Key? key}) : super(key: key);
 
   @override
   _NewCustomerState createState() => _NewCustomerState();
@@ -28,28 +28,28 @@ class NewCustomer extends StatefulWidget {
 class _NewCustomerState extends State<NewCustomer> {
   late Size _size;
   late Color _pc;
-  TextEditingController _documentypeController = new TextEditingController();
-  TextEditingController _verificationCodeController =
-      new TextEditingController();
-  TextEditingController _documentNController = new TextEditingController();
-  TextEditingController _nameController = new TextEditingController();
-  TextEditingController _name2Controller = new TextEditingController();
-  TextEditingController _lastNameController = new TextEditingController();
-  TextEditingController _lastName2Controller = new TextEditingController();
-  TextEditingController _comercialNameController = new TextEditingController();
+  final TextEditingController _documentypeController = TextEditingController();
+  final TextEditingController _verificationCodeController =
+      TextEditingController();
+  final TextEditingController _documentNController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _name2Controller = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _lastName2Controller = TextEditingController();
+  final TextEditingController _comercialNameController = TextEditingController();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  FocusNode _d = new FocusNode();
-  FocusNode _n1 = new FocusNode();
-  FocusNode _n2 = new FocusNode();
-  FocusNode _ln1 = new FocusNode();
-  FocusNode _ln2 = new FocusNode();
-  FocusNode _cN = new FocusNode();
+  final FocusNode _d = FocusNode();
+  final FocusNode _n1 = FocusNode();
+  final FocusNode _n2 = FocusNode();
+  final FocusNode _ln1 = FocusNode();
+  final FocusNode _ln2 = FocusNode();
+  final FocusNode _cN = FocusNode();
 
   DocumentypeModel? _doc;
 
-  bool _loading = false;
+  final bool _loading = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -165,11 +165,11 @@ class _NewCustomerState extends State<NewCustomer> {
       onChanged: (data) async {
         setState(() {
           customerBloc.getCustomer.typePerson = data?.value;
-          // print('here');
+          // printConsole('here');
         });
       },
       // selectedItem: posBloc.getCustomer,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,
@@ -290,7 +290,7 @@ class _NewCustomerState extends State<NewCustomer> {
       // }
     }, () {
       if (_formKey.currentState?.validate() ?? false) {
-        NewCustomerData2().launch(context);
+        const NewCustomerData2().launch(context);
       }
     }, focus: _ln2, controller: _lastName2Controller)
         .paddingSymmetric(vertical: 5);
@@ -304,7 +304,7 @@ class _NewCustomerState extends State<NewCustomer> {
           ? null
           : () {
               if (_formKey.currentState?.validate() ?? false) {
-                NewCustomerData2().launch(context);
+                const NewCustomerData2().launch(context);
               }
             },
       color: _pc,
@@ -341,10 +341,10 @@ class _NewCustomerState extends State<NewCustomer> {
         decoration: InputDecoration(
           labelText: 'Tipo de documento',
           suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () {
               _documentypeController.clear();
-              if (_documentypeController.text.length == 0) {
+              if (_documentypeController.text.isNotEmpty) {
                 Navigator.pop(context);
               }
             },
@@ -360,7 +360,7 @@ class _NewCustomerState extends State<NewCustomer> {
       isFilteredOnline: true,
       showClearButton: true,
       showSelectedItems: true,
-      clearButton: Icon(Icons.clear_rounded),
+      clearButton: const Icon(Icons.clear_rounded),
       compareFn: (item, selectedItem) => item?.nombre == selectedItem?.nombre,
       showSearchBox: true,
       selectedItem: _doc,
@@ -383,7 +383,7 @@ class _NewCustomerState extends State<NewCustomer> {
         }
       },
       popupItemBuilder: _customPopupCustomerItemBuilder,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,
@@ -394,7 +394,7 @@ class _NewCustomerState extends State<NewCustomer> {
   Widget _customPopupCustomerItemBuilder(
       BuildContext context, DocumentypeModel? item, bool isSelected) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
           ? null
           : BoxDecoration(

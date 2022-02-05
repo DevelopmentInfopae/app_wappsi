@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/config/regimen_personT_form_params.dart';
+import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 Widget imageFile(String pathImage, {BoxFit? fit}) {
@@ -11,10 +11,10 @@ Widget imageFile(String pathImage, {BoxFit? fit}) {
   //     '/assets/uploads/logos/' +
   //     posPrintData['company_data'].logo;
   return FadeInImage(
-      placeholder: AssetImage('assets/images/no_image.png'),
+      placeholder: const AssetImage('assets/images/no_image.png'),
       fit: fit,
-      image: FileImage(new File(pathImage)));
-  // return Image.file(new File(pathImage));
+      image: FileImage(File(pathImage)));
+  // return Image.file(File(pathImage));
 }
 
 Widget legalInformation(
@@ -60,7 +60,7 @@ Text socialReason(String? socialReason, TextTheme textTheme) {
 }
 
 Widget emptyLine() {
-  return SizedBox(
+  return const SizedBox(
     height: 10,
   );
 }
@@ -180,19 +180,19 @@ List<DataRow> _products(List<Map<dynamic, dynamic>> products) {
 
 List<DataColumn> _pColumnsNames() {
   return [
-    DataColumn(
+    const DataColumn(
       label: Text(
         'Cant',
         // style: TextStyle(fontStyle: FontStyle.italic),
       ),
     ),
-    DataColumn(
+    const DataColumn(
       label: Text(
         'Producto',
         // style: TextStyle(fontStyle: FontStyle.italic),
       ),
     ),
-    DataColumn(
+    const DataColumn(
       label: Text(
         'Valor',
         // style: TextStyle(fontStyle: FontStyle.italic),
@@ -291,19 +291,19 @@ Widget taxRatesValues(TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
 
 List<DataColumn> _taxValuesColumns() {
   return [
-    DataColumn(
+    const DataColumn(
       label: Text(
         'Tarifa',
         // style: TextStyle(fontStyle: FontStyle.italic),
       ),
     ),
-    DataColumn(
+    const DataColumn(
       label: Text(
         'Base',
         // style: TextStyle(fontStyle: FontStyle.italic),
       ),
     ),
-    DataColumn(
+    const DataColumn(
       label: Text(
         'Impuesto',
         // style: TextStyle(fontStyle: FontStyle.italic),

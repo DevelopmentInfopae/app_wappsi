@@ -5,12 +5,13 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 
-import 'package:pos_wappsi/providers/API_provider.dart';
+import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/providers/cities_provider.dart';
 import 'package:pos_wappsi/providers/countries_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/states_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 import 'biller_data_provider.dart';
 
@@ -21,7 +22,7 @@ class SyncDBProvider {
 
   _getUpdates(Map<String, dynamic> options) async {
     // String updateDate = '';
-    DataProvider api = new DataProvider();
+    DataProvider api = DataProvider();
 
     updateDate = await DBProvider.db.getUpdateDate(options['sync_id']);
     // ignore: unnecessary_null_comparison
@@ -117,7 +118,7 @@ class SyncDBProvider {
   Future<Map> updateBillerTables() async {
     // String updateDate = '';
     Map<String, dynamic> billerSync = options['Datos de Facturación']!;
-    DataProvider api = new DataProvider();
+    DataProvider api = DataProvider();
 
     Map<String, dynamic> body = {'biller_id': dataBloc.userData!.billerId};
 
@@ -185,7 +186,7 @@ class SyncDBProvider {
     try {
       dataBloc.setBillerCompany(companyData!);
     } catch (e) {
-      print(e);
+   printConsole(e);
     }
 
     // update current companyBiller on dataBloc
@@ -193,7 +194,7 @@ class SyncDBProvider {
     try {
       dataBloc.setBillerData(billerData!);
     } catch (e) {
-      print(e);
+   printConsole(e);
     }
   }
 
@@ -243,7 +244,7 @@ class SyncDBProvider {
         // update current companyBiller on dataBloc
         await _updateBillerInDataBLoc();
       }
-      // print('xd');
+      // Environment().env!='DEV'?null:print('xd');
       return res;
     }
   }

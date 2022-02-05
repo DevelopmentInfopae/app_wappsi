@@ -14,7 +14,7 @@ class UnitPricesProvider {
     WHERE p.id_cloud = $productId ORDER BY valor_unitario ASC''';
     final res = await DBProvider.db.sqlRawQuery(sql);
     List<UnitPricesModel> units = [];
-    if (res != null && res.length > 0) {
+    if (res != null && res.isNotEmpty) {
       units = UnitPricesModel.fromJsonList(res);
     }
     return units;

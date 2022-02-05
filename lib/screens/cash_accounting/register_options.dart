@@ -31,7 +31,7 @@ class _RegisterOptionsState extends State<RegisterOptions> {
     return WillPopScope(
       onWillPop: () async {
         dataBloc.homeKey.currentState?.changeBottomIndex(1);
-        // print('here i am');
+        // printConsole('here i am');
         return true;
       },
       child: Scaffold(
@@ -104,7 +104,7 @@ class _RegisterOptionsState extends State<RegisterOptions> {
             color: context.dividerColor),
         onTap: registerStatus
             ? () {
-                RegisterMovements().launch(context);
+                const RegisterMovements().launch(context);
               }
             : null);
   }

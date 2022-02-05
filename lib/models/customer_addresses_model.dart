@@ -61,12 +61,12 @@ class CustomerAddressesModel {
   static List<CustomerAddressesModel> fromJsonList(List<Map> list) {
     List<CustomerAddressesModel> products = [];
     Map temp = {};
-    list.forEach((item) {
+    for (var item in list) {
       for (var i = 0; i < item.keys.length; i++) {
         temp[item.keys.toList()[i]] = item.values.toList()[i];
       }
       products.add(CustomerAddressesModel.fromJson(temp));
-    });
+    }
 
     return products;
 

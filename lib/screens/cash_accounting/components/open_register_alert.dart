@@ -18,7 +18,7 @@ class RegisterAlertDialog extends StatefulWidget {
 
   @override
   RegisterAlertDialogState createState() {
-    return new RegisterAlertDialogState();
+    return RegisterAlertDialogState();
   }
 }
 
@@ -40,54 +40,52 @@ class RegisterAlertDialogState extends State<RegisterAlertDialog> {
   @override
   Widget build(BuildContext context) {
     final registerForm = Provider.of<RegisterFormProvider>(context);
-    return Container(
-      child: CupertinoAlertDialog(
-        title: Column(
-          children: [
-            Text(
-              widget.action == 'open' ? 'Abrir caja' : 'Cerrar caja',
-              style: buttonsSmallTextStyle(context).apply(fontSizeDelta: 1.2),
-            ).paddingBottom(10),
-            Text(
-              widget.action == 'open'
-                  ? "Digite el valor con el que desea abrir la caja (COP)"
-                  : 'Digite el valor total del efectivo en mano (COP)',
-              style:
-                  buttonsSmallTextStyle(context).apply(color: kGreyTextColor),
-            ),
-          ],
-        ),
-        content: new SingleChildScrollView(child: _form(context, registerForm)),
-        actions: <Widget>[
-          Container(
-            color: Colors.redAccent,
-            child: CupertinoDialogAction(
-              child: Text(
-                'Cancelar',
-                style: TextStyle(color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            ),
-          ),
-          Container(
-            color: pColor.withOpacity(0.8),
-            child: CupertinoDialogAction(
-              child: Text(
-                "Aceptar",
-                style: TextStyle(color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-              onPressed: () async {
-                await sendRegisterAction(context, registerForm, _valueFocus,
-                    syncDB: false, action: widget.action);
-              },
-            ),
+    return CupertinoAlertDialog(
+      title: Column(
+        children: [
+          Text(
+            widget.action == 'open' ? 'Abrir caja' : 'Cerrar caja',
+            style: buttonsSmallTextStyle(context).apply(fontSizeDelta: 1.2),
+          ).paddingBottom(10),
+          Text(
+            widget.action == 'open'
+                ? "Digite el valor con el que desea abrir la caja (COP)"
+                : 'Digite el valor total del efectivo en mano (COP)',
+            style:
+                buttonsSmallTextStyle(context).apply(color: kGreyTextColor),
           ),
         ],
       ),
+      content: SingleChildScrollView(child: _form(context, registerForm)),
+      actions: <Widget>[
+        Container(
+          color: Colors.redAccent,
+          child: CupertinoDialogAction(
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+        ),
+        Container(
+          color: pColor.withOpacity(0.8),
+          child: CupertinoDialogAction(
+            child: const Text(
+              "Aceptar",
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () async {
+              await sendRegisterAction(context, registerForm, _valueFocus,
+                  syncDB: false, action: widget.action);
+            },
+          ),
+        ),
+      ],
     );
   }
 

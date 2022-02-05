@@ -11,7 +11,7 @@ import 'package:pos_wappsi/screens/db_sync/db_sync_elements.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 
 class SyncElementsScreen extends StatefulWidget {
-  SyncElementsScreen({Key? key}) : super(key: key);
+  const SyncElementsScreen({Key? key}) : super(key: key);
 
   @override
   _SyncElementsScreenState createState() => _SyncElementsScreenState();
@@ -93,7 +93,7 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
       shapeBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
           side: BorderSide(color: values[key]! ? _pc : Colors.white, width: 2)),
-      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       child:
           _elementParts(key).withSize(width: size.width, height: size.height),
     );
@@ -141,7 +141,7 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
       ),
       onTap: () {
         setState(() {
-          if (values.values.where((element) => element == false).length == 0) {
+          if (values.values.where((element) => element == false).isNotEmpty) {
             values.forEach((key, value) {
               values[key] = false;
             });
@@ -166,14 +166,14 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
             maxLines: 2,
             style: buttonsSmallTextStyle(context),
           ),
-          Icon(Icons.sync, size: kIconSize),
+          const Icon(Icons.sync, size: kIconSize),
         ],
       ),
       onTap: () {
         final Map<String, bool> syncOptions = {};
         syncOptions.addAll(values);
         syncOptions.removeWhere((key, value) => value == false);
-        if (syncOptions.keys.length > 0) {
+        if (syncOptions.keys.isNotEmpty) {
           // dataBloc.setSyncStatus(syncOptions);
           DBSyncElements(
             options: syncOptions,

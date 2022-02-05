@@ -14,7 +14,7 @@ class CustomerCard extends StatefulWidget {
   final CompanyModel customer;
 
   final String action;
-  CustomerCard({Key? key, required this.customer, required this.action})
+  const CustomerCard({Key? key, required this.customer, required this.action})
       : super(key: key);
 
   @override
@@ -33,7 +33,7 @@ class _CustomerCardState extends State<CustomerCard> {
       },
       child: Card(
         // color: Color.fromRGBO(245, 245, 245, 1),
-        margin: EdgeInsets.symmetric(horizontal: 5),
+        margin: const EdgeInsets.symmetric(horizontal: 5),
         elevation: 5,
         child: Row(
           children: [

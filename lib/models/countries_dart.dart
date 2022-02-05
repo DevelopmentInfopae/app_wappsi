@@ -29,11 +29,11 @@ class CountriesModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "CODIGO": codigo == null ? null : codigo,
-        "NOMBRE": nombre == null ? null : nombre,
-        "INDICATIVO": indicativo == null ? null : indicativo,
-        "MONEDA": moneda == null ? null : moneda,
-        "codigo_iso": codigoIso == null ? null : codigoIso,
+        "CODIGO": codigo,
+        "NOMBRE": nombre,
+        "INDICATIVO": indicativo,
+        "MONEDA": moneda,
+        "codigo_iso": codigoIso,
       };
 
   @override

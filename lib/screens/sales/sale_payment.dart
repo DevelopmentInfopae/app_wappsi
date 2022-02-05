@@ -12,13 +12,13 @@ import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/input_decoration.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/config/POS_params.dart';
+import 'package:pos_wappsi/config/pos_params.dart';
 import 'package:pos_wappsi/config/documents_types.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
 // import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
-import 'package:pos_wappsi/providers/POS_sale_provider.dart';
+import 'package:pos_wappsi/providers/pos_sale_provider.dart';
 import 'package:pos_wappsi/providers/document_types_provider.dart';
 import 'package:pos_wappsi/providers/payment_methods_provider.dart';
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
@@ -30,11 +30,12 @@ import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/screens/sales/print_sale.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/currency_formater.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class SalePayment extends StatefulWidget {
-  SalePayment({Key? key}) : super(key: key);
+  const SalePayment({Key? key}) : super(key: key);
 
   @override
   _SalePaymentState createState() => _SalePaymentState();
@@ -43,7 +44,7 @@ class SalePayment extends StatefulWidget {
 class _SalePaymentState extends State<SalePayment> {
   late Color _pc;
   late TextTheme _textTheme;
-  int _paymentM = 1;
+  final int _paymentM = 1;
   int _valueP = 0;
   // PaymentMethods? _payment;
   // DocumentsTypes? _pDoc;
@@ -56,18 +57,18 @@ class _SalePaymentState extends State<SalePayment> {
   // to disable paybutton when awaiting for response
   bool _sending = false;
 
-  TextEditingController _paymentMethodController = new TextEditingController();
+  final TextEditingController _paymentMethodController = TextEditingController();
   // TextEditingController _paymentDocumentController =
-  //     new TextEditingController();
+  //     TextEditingController();
 
   late Size _size;
 
-  GlobalKey<FormState> _inputsKey = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _inputsKey = GlobalKey<FormState>();
 
-  TextEditingController _valuePController = new TextEditingController();
-  TextEditingController _paymentTermController = new TextEditingController();
-  TextEditingController _invoiceNController = new TextEditingController();
-  TextEditingController _dispatchNController = new TextEditingController();
+  final TextEditingController _valuePController = TextEditingController();
+  final TextEditingController _paymentTermController = TextEditingController();
+  final TextEditingController _invoiceNController = TextEditingController();
+  final TextEditingController _dispatchNController = TextEditingController();
   @override
   void initState() {
     //load info if has value
@@ -129,7 +130,7 @@ class _SalePaymentState extends State<SalePayment> {
 
   Widget _form() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: ListView(
         children: [
           _productsInfo().paddingSymmetric(vertical: 6),
@@ -193,10 +194,11 @@ class _SalePaymentState extends State<SalePayment> {
         decoration: InputDecoration(
           labelText: 'Forma de pago',
           suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () {
-              if (_paymentMethodController.text.length == 0)
+              if (_paymentMethodController.text.isNotEmpty) {
                 Navigator.pop(context);
+              }
               _paymentMethodController.clear();
             },
           ),
@@ -213,7 +215,7 @@ class _SalePaymentState extends State<SalePayment> {
       isFilteredOnline: true,
       showClearButton: true,
       showSelectedItems: true,
-      clearButton: Icon(Icons.clear_rounded),
+      clearButton: const Icon(Icons.clear_rounded),
       compareFn: (item, selectedItem) => item?.name == selectedItem?.name,
       showSearchBox: true,
 
@@ -228,7 +230,7 @@ class _SalePaymentState extends State<SalePayment> {
       onFind: (String? filter) =>
           PaymentMethodsProvider.getPaymentMethods(filter),
       onChanged: (data) {
-        print(data);
+        printConsole(data);
 
         setState(() {
           posBloc.setPaymentMethod(data);
@@ -251,7 +253,7 @@ class _SalePaymentState extends State<SalePayment> {
       },
       // selectedItem: ,
       selectedItem: posBloc.getPaymentMethod,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,
@@ -264,8 +266,8 @@ class _SalePaymentState extends State<SalePayment> {
       future: DocumentsTypesProvider.loadFromDB(module: posDocModule),
       builder:
           (BuildContext context, AsyncSnapshot<List<DocumentsTypes>> snapshot) {
-        if (snapshot.hasData && snapshot.data!.length > 0) {
-          posBloc.setPaymentDocument(snapshot.data?.first ?? null);
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          posBloc.setPaymentDocument(snapshot.data?.first);
           if (snapshot.data!.length > 1) {
             return _documentType(items: snapshot.data!);
           } else {
@@ -291,26 +293,23 @@ class _SalePaymentState extends State<SalePayment> {
       isFilteredOnline: true,
       showClearButton: true,
       showSelectedItems: true,
-      clearButton: Icon(Icons.clear_rounded),
+      clearButton: const Icon(Icons.clear_rounded),
       compareFn: (item, selectedItem) => item?.nombre == selectedItem?.nombre,
       showSearchBox: false,
 
       dropdownSearchDecoration: InputDecoration(
         labelText: 'Tipo de documento :',
-        labelStyle: TextStyle(color: pColor),
+        labelStyle: const TextStyle(color: pColor),
         filled: true,
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
-      emptyBuilder: (context, searchEntry) => Container(
-        child: Text(
-          'No se encontraron documentos para realizar ventas POS',
-          textAlign: TextAlign.center,
-        ),
-        // margin: EdgeInsets.only(left: 30),
+      emptyBuilder: (context, searchEntry) => const Text(
+        'No se encontraron documentos para realizar ventas POS',
+        textAlign: TextAlign.center,
       ).center(),
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onChanged: (data) {
-        // print(data);
+        // Environment().env!='DEV'?null:print(data);
 
         setState(() {
           posBloc.setPaymentDocument(data);
@@ -318,7 +317,7 @@ class _SalePaymentState extends State<SalePayment> {
       },
       // selectedItem: ,
       selectedItem: posBloc.getPaymentDocument,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,
@@ -376,7 +375,7 @@ class _SalePaymentState extends State<SalePayment> {
             posBloc.setPaymentTerm(val);
           });
         } catch (e) {
-          print(e);
+          printConsole(e);
         }
       },
     );
@@ -443,7 +442,7 @@ class _SalePaymentState extends State<SalePayment> {
           shapeBorder: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
-          child: Icon(
+          child: const Icon(
             Icons.delete,
             color: Colors.red,
           ),
@@ -479,7 +478,7 @@ class _SalePaymentState extends State<SalePayment> {
     final valueString = getFormatedCurrency(value.toDouble());
     return AppButton(
       color: Colors.white,
-      padding: EdgeInsets.symmetric(vertical: 13),
+      padding: const EdgeInsets.symmetric(vertical: 13),
       onTap: () {
         setState(() {
           if (posBloc.getPaymentMethod?.code != 'Credito' &&
@@ -537,7 +536,7 @@ class _SalePaymentState extends State<SalePayment> {
 
   Widget _moneyBack() {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
         boxShadow: [
           BoxShadow(
@@ -553,9 +552,9 @@ class _SalePaymentState extends State<SalePayment> {
         children: [
           Column(
             children: [
-              Text('Total entregado: '),
+              const Text('Total entregado: '),
               Text(
-                '${getFormatedCurrency(_valueP.toDouble())}',
+                getFormatedCurrency(_valueP.toDouble()),
                 style:  buttonsSmallTextStyle(context).apply(color: _pc),
               ),
             ],
@@ -563,9 +562,9 @@ class _SalePaymentState extends State<SalePayment> {
           vDivider(),
           Column(
             children: [
-              Text('Cambio: '),
+              const Text('Cambio: '),
               Text(
-                '${getFormatedCurrency(_valueP - posBloc.getSubTotal())}',
+                getFormatedCurrency(_valueP - posBloc.getSubTotal()),
                 style:  buttonsSmallTextStyle(context).apply(color: _pc),
               ),
             ],
@@ -609,7 +608,7 @@ class _SalePaymentState extends State<SalePayment> {
                   _sending = true;
                 });
                 scaffoldAlert(
-                    context, 'Registrando venta', Duration(seconds: 5));
+                    context, 'Registrando venta', const Duration(seconds: 5));
                 final result = await POSSaleProvider.sendPosData(context);
                 if (result) {
                   // to let message be readed
@@ -627,7 +626,7 @@ class _SalePaymentState extends State<SalePayment> {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (BuildContext context) => HomeScreen(),
+                        builder: (BuildContext context) => const HomeScreen(),
                       ),
                       (route) => false,
                     );

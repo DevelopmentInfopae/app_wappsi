@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide Key;
 
 // import 'package:pos_wappsi/constant.dart';
-import 'package:pos_wappsi/providers/API_provider.dart';
+import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/utils/validation_encoding/encode_pass.dart';
 
@@ -35,14 +35,14 @@ class LoginFormProvider extends ChangeNotifier {
 
   //   final encrypted = encrypter.encrypt(passsword, iv: iv);
 
-  //   // print(encrypted.base64);
+  //   // printConsole(encrypted.base64);
 
   //   return encrypted.base64;
   //   // var digest = sha1.convert(bytes);
   //   // return digest.toString();
   // }
 
-  GlobalKey<FormState> formKey = new GlobalKey<FormState>();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   bool isValidForm() {
     return formKey.currentState?.validate() ?? false;
@@ -57,7 +57,7 @@ class LoginFormProvider extends ChangeNotifier {
   }
 
   Future<Map<dynamic, dynamic>> login({bool override = false}) async {
-    DataProvider provider = new DataProvider();
+    DataProvider provider = DataProvider();
 
     final resp = await provider.postPetition(loginEndP, _toJson(override), {
       'content-Type': 'application/json',

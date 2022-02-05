@@ -14,7 +14,7 @@ import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/customers_card_list.dart';
 import 'package:pos_wappsi/screens/customers/new_customer.dart';
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
-import 'package:pos_wappsi/components/app_bar_leading.dart';
+import 'package:pos_wappsi/components/appbar_leading.dart';
 
 class Customers extends StatefulWidget {
   const Customers({Key? key}) : super(key: key);
@@ -28,11 +28,9 @@ class _ProductsState extends State<Customers> {
   final _customersStream = StreamController<List<CompanyModel>>.broadcast();
 
   late Size _size;
-  final _searchController = new FloatingSearchBarController();
-  // late Color _pc;
-  late TextTheme _theme;
+  final _searchController = FloatingSearchBarController();
 
-  Map<String, dynamic> _searchParams = {};
+  final Map<String, dynamic> _searchParams = {};
 
   @override
   void dispose() {
@@ -48,7 +46,6 @@ class _ProductsState extends State<Customers> {
 
     // _theme = Theme.of(context);
     _size = MediaQuery.of(context).size;
-    _theme = Theme.of(context).textTheme;
     // _pc = pColor;
 
     return Scaffold(
@@ -68,7 +65,7 @@ class _ProductsState extends State<Customers> {
         leading: AppBarLeading(
             widget: Icon(Icons.add, size: leadingIconSize, color: pColor),
             onTap: () async {
-              NewCustomer().launch(context);
+              const NewCustomer().launch(context);
               await dataBloc.refreshToken(context);
             }));
   }
@@ -92,7 +89,7 @@ class _ProductsState extends State<Customers> {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
           color: Colors.grey,
           offset: Offset(0.0, 1.0), //(x,y)
@@ -104,10 +101,10 @@ class _ProductsState extends State<Customers> {
 
   Widget _searchField() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
           color: Colors.grey[200],
-          borderRadius: BorderRadius.all(Radius.circular(10))),
+          borderRadius: const BorderRadius.all(Radius.circular(10))),
       child: FloatingSearchAppBar(
           hint: 'Buscar cliente',
           controller: _searchController,
@@ -148,13 +145,13 @@ class _ProductsState extends State<Customers> {
                       _customersStream.sink
                           .add(CompanyModel.fromJsonList(snapshot.data!));
 
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     }
                   });
             } else {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             }

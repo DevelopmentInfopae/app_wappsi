@@ -12,6 +12,7 @@ import 'package:pos_wappsi/models/companies_model.dart';
 
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 ProductModel productModelFromJson(Map<String, dynamic> str) =>
     ProductModel.fromJson(str);
@@ -19,7 +20,7 @@ ProductModel productModelFromJson(Map<String, dynamic> str) =>
 String productModelToJson(ProductModel data) => json.encode(data.toJson());
 
 class ProductModel {
-  final formatCurrency = new NumberFormat.simpleCurrency();
+  final formatCurrency = NumberFormat.simpleCurrency();
   ProductModel(
       {required this.name,
       required this.id,
@@ -137,16 +138,16 @@ class ProductModel {
 
     Map temp = {};
 
-    list.forEach((item) {
+    for (var item in list) {
       for (var i = 0; i < item.keys.length; i++) {
-        // print(item.values.toList()[i]);
-        // print(item.keys.toList()[i]);
+        // printConsole(item.values.toList()[i]);
+        // printConsole(item.keys.toList()[i]);
         temp[item.keys.toList()[i]] = item.values.toList()[i];
       }
       try {
         temp['promo_price'] = _promoPrice(temp);
       } catch (e) {
-        print(e);
+        printConsole(e);
 
         temp['promo_price'] = null;
       }
@@ -154,17 +155,17 @@ class ProductModel {
         try {
           temp['price'] = temp[inititalPriceKey];
         } catch (e) {
-          print(e);
+          printConsole(e);
         }
       }
 
       products.add(ProductModel.fromJson(temp,
           loadInitialQtty: loadInitialQtty, qtyKey: qttyKey));
-    });
+    }
 
     return products;
 
-    // print(temp);
+    // printConsole(temp);
   }
 
   static double? _promoPrice(Map<dynamic, dynamic> temp) {
@@ -174,8 +175,8 @@ class ProductModel {
       final start = DateTime.parse(temp['start_date']);
       final end = DateTime.parse(temp['end_date']);
       double? promoPrice;
-      var now = new DateTime.now();
-      // print(temp['name'] + start.toString() +end.toString());
+      var now = DateTime.now();
+      // printConsole(temp['name'] + start.toString() +end.toString());
       if (!(now.isAfter(start) && now.isBefore(end)) ||
           !(start.difference(now).inDays <= 0 ||
               end.difference(now).inDays >= 0)) {
@@ -184,7 +185,7 @@ class ProductModel {
         try {
           promoPrice = double.parse(temp['promo_price'].toString());
         } catch (e) {
-          print(e);
+          printConsole(e);
           promoPrice = null;
         }
       }
@@ -311,7 +312,7 @@ class ProductModel {
     List<Map<String, dynamic>> productsDetails = [];
 
     if (products != null && products != {}) {
-      products.values.forEach((value) {
+      for (var value in products.values) {
         final pIVA = value.getPriceWithIVA();
         final pNoIVA = value.getPriceWithoutIVA();
         final taxValue = pIVA - pNoIVA;
@@ -353,7 +354,7 @@ class ProductModel {
           "price_before_tax": value.getPriceWithoutIVA(),
           "unit_quantity": value.quantity
         });
-      });
+      }
     }
     return {
       'product_id': _ids,

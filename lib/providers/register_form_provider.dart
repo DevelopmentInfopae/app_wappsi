@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
-import 'package:pos_wappsi/providers/API_provider.dart';
+import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 
 class RegisterFormProvider extends ChangeNotifier {
   String value = '';
 
-  GlobalKey<FormState> formKey = new GlobalKey<FormState>();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   // to enable or disable send cashAccOpenForm to backend while waiting for response
 
@@ -38,7 +38,7 @@ class RegisterFormProvider extends ChangeNotifier {
   }
 
   openRegister() async {
-    DataProvider api = new DataProvider();
+    DataProvider api = DataProvider();
 
     // ignore: unnecessary_null_comparison
     if (value == '' || value == null) {
@@ -52,7 +52,7 @@ class RegisterFormProvider extends ChangeNotifier {
   }
 
   movement() async {
-    DataProvider api = new DataProvider();
+    DataProvider api = DataProvider();
 
     // ignore: unnecessary_null_comparison
     if (value == '' || value == null) {
@@ -100,7 +100,7 @@ class RegisterFormProvider extends ChangeNotifier {
     final choice = await choiceAlert(
         context, '¿Esta seguro de cerrar caja?', 'assets/images/alert.png');
     if (choice) {
-      final apiProvider = new DataProvider();
+      final apiProvider = DataProvider();
       final headers = {
         'content-Type': 'application/json',
         'Authorization': dataBloc.getToken()

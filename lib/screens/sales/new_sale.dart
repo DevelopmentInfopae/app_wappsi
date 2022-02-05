@@ -11,7 +11,7 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/components/app_bar_leading.dart';
+import 'package:pos_wappsi/components/appbar_leading.dart';
 import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
 import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
@@ -21,9 +21,10 @@ import 'package:pos_wappsi/screens/sales/sale_cart.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/screens/sales/suspended_sales.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 class NewSale extends StatefulWidget {
-  NewSale({Key? key}) : super(key: key);
+  const NewSale({Key? key}) : super(key: key);
 
   @override
   _NewSaleState createState() => _NewSaleState();
@@ -32,14 +33,14 @@ class NewSale extends StatefulWidget {
 class _NewSaleState extends State<NewSale> {
   late Size _size;
   late Color _pc;
-  TextEditingController _customerController = new TextEditingController();
-  TextEditingController _customerAddrController = new TextEditingController();
+  final TextEditingController _customerController = TextEditingController();
+  final TextEditingController _customerAddrController = TextEditingController();
 
   final _addressesDropDownKey =
       GlobalKey<DropdownSearchState<CustomerAddressesModel?>>();
   // final _customerDropDownKey = GlobalKey<DropdownSearchState<CompanyModel?>>();
 
-  // final _customerFocusNode = new FocusNode();
+  // final _customerFocusNode = FocusNode();
 
   @override
   void dispose() {
@@ -57,7 +58,7 @@ class _NewSaleState extends State<NewSale> {
     return WillPopScope(
         onWillPop: () async {
           dataBloc.homeKey.currentState?.changeBottomIndex(1);
-          // print('here i am');
+          // printConsole('here i am');
           return true;
         },
         child: Scaffold(
@@ -82,7 +83,7 @@ class _NewSaleState extends State<NewSale> {
 
   Widget _userInfo() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: ListView(
         children: [
           _branchOffice(),
@@ -133,7 +134,7 @@ class _NewSaleState extends State<NewSale> {
         try {
           qtty = snapshot.data.length;
         } catch (e) {
-          print(e);
+          printConsole(e);
         }
         return AppBarLeading(
             onTap: () => SuspendedSalesScreen(suspendedSales: snapshot.data)
@@ -145,7 +146,7 @@ class _NewSaleState extends State<NewSale> {
                 position: BadgePosition.topEnd(),
                 badgeContent: Text(
                   qtty.toString(),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
                 child: Icon(
                   FontAwesomeIcons.moon,
@@ -180,10 +181,10 @@ class _NewSaleState extends State<NewSale> {
         decoration: InputDecoration(
           labelText: 'Cliente',
           suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () {
               _customerController.clear();
-              if (_customerController.text.length == 0) {
+              if (_customerController.text.isNotEmpty) {
                 // _addressesDropDownKey.currentWidget.;
                 Navigator.pop(context);
                 // _customerFocusNode.unfocus();
@@ -202,7 +203,7 @@ class _NewSaleState extends State<NewSale> {
 
       showClearButton: true,
       showSelectedItems: true,
-      clearButton: Icon(Icons.clear_rounded),
+      clearButton: const Icon(Icons.clear_rounded),
       compareFn: (item, selectedItem) => item?.name == selectedItem?.name,
       showSearchBox: true,
       dropdownSearchDecoration: InputDecoration(
@@ -216,7 +217,7 @@ class _NewSaleState extends State<NewSale> {
       onChanged: _customerSelection,
       selectedItem: posBloc.getCustomer,
       popupItemBuilder: customPopupCustomerItemBuilder,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,
@@ -225,10 +226,10 @@ class _NewSaleState extends State<NewSale> {
   }
 
   void _customerSelection(data) async {
-    print(data);
+    printConsole(data);
     if (data != null) {
       posBloc.setCustomer(data);
-      if (posBloc.productsAdded.length > 0) {
+      if (posBloc.productsAdded.isNotEmpty) {
         final choice = await choiceAlert(
             context,
             'Se ha encontrado una carrito de compras existente,¿Que desea hacer?',
@@ -248,7 +249,7 @@ class _NewSaleState extends State<NewSale> {
       }
       posBloc.setCustomerAddresses(null);
       _addressesDropDownKey.currentState?.changeSelectedItem(null);
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       _addressesDropDownKey.currentState?.openDropDownSearch();
     } else {
       posBloc.setCustomer(null);
@@ -284,10 +285,10 @@ class _NewSaleState extends State<NewSale> {
           // hintText: 'Sucursal de cliente',
           labelText: 'Sucursal de cliente',
           suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () {
               _customerController.clear();
-              if (_customerController.text.length == 0) {
+              if (_customerController.text.isNotEmpty) {
                 Navigator.pop(context);
               }
             },
@@ -300,7 +301,7 @@ class _NewSaleState extends State<NewSale> {
       isFilteredOnline: true,
       showClearButton: true,
       showSelectedItems: true,
-      clearButton: Icon(Icons.clear_rounded),
+      clearButton: const Icon(Icons.clear_rounded),
       compareFn: (item, selectedItem) =>
           item?.sucursal == selectedItem?.sucursal,
       showSearchBox: true,
@@ -316,7 +317,7 @@ class _NewSaleState extends State<NewSale> {
       onChanged: _customerAddrSelection,
       selectedItem: posBloc.getCustomerAddresses,
       popupItemBuilder: popupCustomerAddressesItemBuilder,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,
@@ -325,7 +326,7 @@ class _NewSaleState extends State<NewSale> {
   }
 
   void _customerAddrSelection(data) {
-    print(data);
+    printConsole(data);
     if (data != null) {
       posBloc.setCustomerAddresses(data);
     } else {
@@ -347,7 +348,7 @@ class _NewSaleState extends State<NewSale> {
           },
           child: Row(
             children: [
-              Icon(Icons.arrow_back_ios_rounded, color: pColor,size: kIconSize,),
+              const Icon(Icons.arrow_back_ios_rounded, color: pColor,size: kIconSize,),
               Text(
                 'Salir',
                 style: buttonsSmallTextStyle(context,color: pColor),
@@ -362,11 +363,11 @@ class _NewSaleState extends State<NewSale> {
           onTap: () async {
             await CompaniesProvider.selectDefaultCustomer();
             await CustomerAddressesProvider.selectDefaultAddrs();
-            SaleCart().launch(context);
+            const SaleCart().launch(context);
           },
           child: Row(
             children: [
-              Icon(Icons.add, color: pColor,size: kIconSize),
+              const Icon(Icons.add, color: pColor,size: kIconSize),
               Text(
                 'Añadir productos',
                 style: buttonsSmallTextStyle(context,color: pColor),

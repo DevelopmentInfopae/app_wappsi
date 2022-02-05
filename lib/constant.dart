@@ -25,9 +25,9 @@ const kIconButtonPadding = EdgeInsets.all(15);
 const kIconPadding = EdgeInsets.all(5);
 
 const kTextFieldPadding =
-    const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15);
+    EdgeInsets.symmetric(vertical: 12.0, horizontal: 15);
 const kTextFieldPaddingSmall =
-    const EdgeInsets.symmetric(vertical: 8, horizontal: 16);
+    EdgeInsets.symmetric(vertical: 8, horizontal: 16);
 
 const kInputDecoration = InputDecoration(
   hintStyle: TextStyle(color: kBorderColorTextField),
@@ -68,7 +68,7 @@ final otpInputDecoration = InputDecoration(
 );
 
 TextStyle buttonsTextStyle(BuildContext context,
-    {fontSizeFactor: 1.2, fontWeightDelta: 1, color: Colors.white}) {
+    {fontSizeFactor = 1.2, fontWeightDelta = 1, color = Colors.white}) {
   return Theme.of(context).primaryTextTheme.headline6!.apply(
       fontSizeFactor: fontSizeFactor,
       color: color,
@@ -76,25 +76,24 @@ TextStyle buttonsTextStyle(BuildContext context,
 }
 
 TextStyle buttonsSmallTextStyle(BuildContext context,
-    {double fontSizeFactor: 0.95, Color? color}) {
+    {double fontSizeFactor = 0.95, Color? color}) {
   return Theme.of(context)
       .primaryTextTheme
       .headline6!
       .apply(fontSizeFactor: fontSizeFactor, color: color??greyColor);
 }
 
-TextStyle appBarTextStyle({double fontSizeFactor: 1}) {
+TextStyle appBarTextStyle({double fontSizeFactor = 1}) {
   return TextStyle(fontWeight: FontWeight.w900, fontSize: 20 * fontSizeFactor);
 }
 
 TextStyle normalTextStyle(BuildContext context,
-    {fontSizeFactor: 1.0, int fontWeightDelta: 0, Color? color}) {
+    {fontSizeFactor = 1.0, int fontWeightDelta = 0, Color? color}) {
   return Theme.of(context).primaryTextTheme.subtitle1!.apply(
       fontSizeFactor: fontSizeFactor,
       color: color??greyDarkerColor,
       fontWeightDelta: fontWeightDelta);
 }
-// TODO: Save this in secure storage
 
 double bottomBarIconSize(BuildContext context) {
   final size = MediaQuery.of(context).size;
@@ -125,7 +124,7 @@ Color greyLight = Colors.grey[100]!;
 Color greyMediumLight = Colors.grey[200]!;
 
 /// Color to subtitles
-Color blueTextColor = Color.fromRGBO(0, 124, 209, 1);
+Color blueTextColor = const Color.fromRGBO(0, 124, 209, 1);
 
 /// Color darker to subtitles
 Color greyDarkerColor = Colors.grey[850]!;
@@ -160,7 +159,7 @@ double getBottomNavBarHeight(BuildContext context) {
               : 75;
 }
 
-Size imageIconSize() => Size(60,60);
+Size imageIconSize() => const Size(60,60);
 
 /// Home grid elements size
 Size gridItemSize(BuildContext context) {

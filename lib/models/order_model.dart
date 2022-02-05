@@ -4,11 +4,12 @@
 
 import 'dart:convert';
 
-import 'package:pos_wappsi/bloc/orders_bloc.dart';
-import 'package:pos_wappsi/models/user_model.dart';
+// import 'package:pos_wappsi/bloc/orders_bloc.dart';
+// import 'package:pos_wappsi/models/user_model.dart';
 
 class OrderModel {
     OrderModel({
+        this.idCloud,
         required this.id,
         required this.date,
         required this.referenceNo,
@@ -30,7 +31,7 @@ class OrderModel {
         required this.totalTax,
         required this.shipping,
         required this.grandTotal,
-        required this.OrderStatus,
+        required this.orderStatus,
         this.paymentStatus,
         this.paymentTerm,
         required this.dueDate,
@@ -44,7 +45,7 @@ class OrderModel {
         required this.surcharge,
         this.attachment,
         this.returnOrderRef,
-        this.OrderId,
+        this.orderId,
         required this.returnOrderTotal,
         this.rounding,
         this.suspendNote,
@@ -84,6 +85,7 @@ class OrderModel {
         this.wmsPackingStatus,
     });
 
+    int? idCloud;
     int id;
     String date;
     String referenceNo;
@@ -105,7 +107,7 @@ class OrderModel {
     int totalTax;
     int shipping;
     int grandTotal;
-    String OrderStatus;
+    String orderStatus;
     dynamic paymentStatus;
     dynamic paymentTerm;
     String dueDate;
@@ -119,7 +121,7 @@ class OrderModel {
     int surcharge;
     dynamic attachment;
     dynamic returnOrderRef;
-    dynamic OrderId;
+    dynamic orderId;
     int returnOrderTotal;
     dynamic rounding;
     dynamic suspendNote;
@@ -163,6 +165,7 @@ class OrderModel {
     String toRawJson() => json.encode(toJson());
 
     factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
+        idCloud: json["id_cloud"],
         id: json["id"],
         date: json["date"],
         referenceNo: json["reference_no"],
@@ -184,7 +187,7 @@ class OrderModel {
         totalTax: json["total_tax"],
         shipping: json["shipping"],
         grandTotal: json["grand_total"],
-        OrderStatus: json["Order_status"],
+        orderStatus: json["Order_status"],
         paymentStatus: json["payment_status"],
         paymentTerm: json["payment_term"],
         dueDate: json["due_date"],
@@ -198,7 +201,7 @@ class OrderModel {
         surcharge: json["surcharge"],
         attachment: json["attachment"],
         returnOrderRef: json["return_Order_ref"],
-        OrderId: json["Order_id"],
+        orderId: json["Order_id"],
         returnOrderTotal: json["return_Order_total"],
         rounding: json["rounding"],
         suspendNote: json["suspend_note"],
@@ -260,7 +263,7 @@ class OrderModel {
         "total_tax": totalTax,
         "shipping": shipping,
         "grand_total": grandTotal,
-        "Order_status": OrderStatus,
+        "Order_status": orderStatus,
         "payment_status": paymentStatus,
         "payment_term": paymentTerm,
         "due_date": dueDate,
@@ -274,7 +277,7 @@ class OrderModel {
         "surcharge": surcharge,
         "attachment": attachment,
         "return_Order_ref": returnOrderRef,
-        "Order_id": OrderId,
+        "Order_id": orderId,
         "return_Order_total": returnOrderTotal,
         "rounding": rounding,
         "suspend_note": suspendNote,
@@ -317,19 +320,19 @@ class OrderModel {
     static List<OrderModel> fromJsonList(List<Map> list) {
     List<OrderModel> orders = [];
     Map<String, dynamic> temp = {};
-    list.forEach((item) {
+    for (var item in list) {
       for (var i = 0; i < item.keys.length; i++) {
         temp[item.keys.toList()[i]] = item.values.toList()[i];
       }
       orders.add(OrderModel.fromJson(temp));
-    });
+    }
 
     return orders;
 
     // prString(temp);
   }
   @override
-  toString()=>this.referenceNo;
+  toString()=>referenceNo;
 
 
   /// Build an instance of OrderModel given productDetails, user, customer and

@@ -7,7 +7,7 @@ import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
-import 'package:pos_wappsi/components/app_bar_leading.dart';
+import 'package:pos_wappsi/components/appbar_leading.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/product_card.dart';
 import 'package:pos_wappsi/components/product_card_w_unit.dart';
@@ -24,7 +24,7 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class SuspendedSaleDetails extends StatefulWidget {
   final Map<String, dynamic>? suspSaleInfo;
-  SuspendedSaleDetails({Key? key, required this.suspSaleInfo})
+  const SuspendedSaleDetails({Key? key, required this.suspSaleInfo})
       : super(key: key);
 
   @override
@@ -72,7 +72,7 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
               '/',
               (route) => false,
             );
-            NewSale().launch(context);
+            const NewSale().launch(context);
           }
         });
   }
@@ -86,7 +86,7 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
           children: [
             customerPhotoAndName(context, widget.suspSaleInfo!['customer']),
             Card(
-              child: Container(
+              child: SizedBox(
                 width: double.infinity,
                 height: 65,
                 child: Row(
@@ -141,12 +141,12 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
   Widget _productList() {
     List<Widget> _pCards = [];
     for (int i = 0; i < _products.length; i++) {
-      if (_units.length > 0) {
+      if (_units.isNotEmpty) {
         _products[i].unit = _units[i]?.idCloud ?? _products[i].unit;
         _pCards.add(ProductCardWUnit(
           product: _products[i],
           action: 'product_details',
-          unit: _units[i] ?? null,
+          unit: _units[i],
           searchPrice: false,
         ));
       } else {
@@ -183,7 +183,7 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
       },
       child: Row(
         children: [
-          Icon(
+          const Icon(
             Icons.arrow_back_ios,
             size: kIconSize,
           ),
@@ -225,8 +225,8 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
               '/',
               (route) => false,
             );
-            NewSale().launch(context);
-            if (res.length > 0) {
+            const NewSale().launch(context);
+            if (res.isNotEmpty) {
               listInfoDialog(
                   context, res, 'name', 'inventory', 'Producto', 'Stock',
                   flexCol1: 3,

@@ -72,7 +72,7 @@ confirmDialog(BuildContext context, String msg, String img) async {
             Container(
               color: pColor.withOpacity(0.7),
               child: CupertinoDialogAction(
-                child: Text(
+                child: const Text(
                   'Aceptar',
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
@@ -109,7 +109,7 @@ reloadDialog(BuildContext context, String msg, String img) async {
             Container(
               color: pColor.withOpacity(0.7),
               child: CupertinoDialogAction(
-                child: Text(
+                child: const Text(
                   'Aceptar',
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
@@ -132,7 +132,7 @@ choiceAlert(BuildContext context, String msj, String img,
     {String cancel = 'Cancelar',
     String confirm = 'Aceptar',
     bool skipeable = true,
-    customWidget: false,
+    customWidget = false,
     Widget? widget}) async {
   final size = MediaQuery.of(context).size;
 
@@ -170,7 +170,7 @@ choiceAlert(BuildContext context, String msj, String img,
               child: CupertinoDialogAction(
                 child: Text(
                   cancel,
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
                 ),
                 onPressed: () {
@@ -183,7 +183,7 @@ choiceAlert(BuildContext context, String msj, String img,
               child: CupertinoDialogAction(
                 child: Text(
                   confirm,
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
                 ),
                 onPressed: () {
@@ -220,7 +220,7 @@ loadCart(BuildContext context, String msj, String img) {
             Container(
               color: Colors.redAccent,
               child: CupertinoDialogAction(
-                child: Text(
+                child: const Text(
                   'No cargar',
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
@@ -234,7 +234,7 @@ loadCart(BuildContext context, String msj, String img) {
             Container(
               color: pColor.withOpacity(0.8),
               child: CupertinoDialogAction(
-                child: Text(
+                child: const Text(
                   'Aceptar',
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
@@ -268,7 +268,7 @@ choiceAlertAndroid(
 }
 
 void loading(BuildContext context,
-    {String img: 'assets/images/loading.gif', String? message}) {
+    {String img = 'assets/images/loading.gif', String? message}) {
   final size = MediaQuery.of(context).size;
   showCupertinoDialog(
       context: context,
@@ -345,7 +345,7 @@ listInfoDialog(BuildContext context, List<Map> info, String column1Key,
             Container(
               color: pColor.withOpacity(0.7),
               child: CupertinoDialogAction(
-                child: Text(
+                child: const Text(
                   'Aceptar',
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
@@ -415,7 +415,7 @@ Future<bool> listInfoDialogChoice(BuildContext context, List<Map> info,
             Container(
               color: Colors.redAccent,
               child: CupertinoDialogAction(
-                child: Text(
+                child: const Text(
                   'Cancelar',
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
@@ -428,7 +428,7 @@ Future<bool> listInfoDialogChoice(BuildContext context, List<Map> info,
             Container(
               color: pColor.withOpacity(0.7),
               child: CupertinoDialogAction(
-                child: Text(
+                child: const Text(
                   'Aceptar',
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,

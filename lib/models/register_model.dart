@@ -32,19 +32,15 @@ class RegisterModel {
 
   factory RegisterModel.fromJson(Map<String, dynamic> json) => RegisterModel(
         status: json["status"] ??'',
-        id: json["id"] == null ? null : json["id"],
+        id: json["id"],
         date: DateTime.parse(json["date"]),
-        userId: json["user_id"] == null ? null : json["user_id"],
-        cashInHand: json["cash_in_hand"] == null ? null : json["cash_in_hand"],
-        movementsIn: json["movements_in"] == null ? null : json["movements_in"],
+        userId: json["user_id"],
+        cashInHand: json["cash_in_hand"],
+        movementsIn: json["movements_in"],
         totalRetention:
-            json["total_retention"] == null ? null : json["total_retention"],
-        totalReturnRetention: json["total_return_retention"] == null
-            ? null
-            : json["total_return_retention"],
-        totalRcRetention: json["total_rc_retention"] == null
-            ? null
-            : json["total_rc_retention"],
+            json["total_retention"],
+        totalReturnRetention: json["total_return_retention"],
+        totalRcRetention: json["total_rc_retention"],
         registrationDate: DateTime.parse(json["registration_date"]),
       );
 

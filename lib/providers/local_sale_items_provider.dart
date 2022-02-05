@@ -15,9 +15,9 @@ class SaleItemsProvider {
   static Future<bool> saveAllIntoDB(
       List<Map<String, dynamic>> productsDetails, int saleId) async {
     List<Map<String, dynamic>> productsD = [];
-    productsDetails.forEach((pD) {
+    for (var pD in productsDetails) {
       productsD.add(LocalSaleItems.fromJson(pD, saleId: saleId).toJson());
-    });
+    }
     return await DBProvider.db.insertQuerys('sma_sale_items', productsD);
   }
 }

@@ -163,7 +163,7 @@ class ProductsProvider {
     bool result = false;
     if (suspSaleId != 0) {
       List<Map<String, dynamic>> productsMap = [];
-      posBloc.getProducts!.keys.forEach((k) {
+      for (var k in posBloc.getProducts!.keys) {
         final product = posBloc.getProducts![k]!;
         productsMap.add({
           'id_suspended_sale': suspSaleId,
@@ -173,9 +173,9 @@ class ProductsProvider {
           'price_policy': product.pricePolicyPrices,
           'price_without_discount': product.priceWithoutDiscount,
           'discount': product.discount,
-          'unit_id': posBloc.getProductUnits?[k]?.idCloud ?? null,
+          'unit_id': posBloc.getProductUnits?[k]?.idCloud,
         });
-      });
+      }
       result = await saveSuspSaleProducts(productsMap);
     }
     return result;
@@ -286,7 +286,7 @@ class ProductsProvider {
     return await DBProvider.db.insertQuerys('suspended_sales_product', query);
   }
 
-  /// Insert sale data into DB and returns id of new Row
+  /// Insert sale data into DB and returns id of Row
   static Future<List<Map<String, dynamic>>?> loadSuspSaleProductsFromDB(
       List<dynamic> idSSale) async {
     return await DBProvider.db.sqlQuery('suspended_sales_product',

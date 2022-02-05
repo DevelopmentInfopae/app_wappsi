@@ -6,7 +6,6 @@ import 'dart:convert';
 
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
-import 'package:pos_wappsi/models/local_sale_items_model.dart';
 
 import 'package:pos_wappsi/models/user_model.dart';
 import 'package:pos_wappsi/providers/biller_data_provider.dart';
@@ -16,6 +15,7 @@ import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/local_sale_items_provider.dart';
 import 'package:pos_wappsi/providers/payment_methods_provider.dart';
 import 'package:pos_wappsi/providers/payment_provider.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class SalesModel {
@@ -418,7 +418,7 @@ class SalesModel {
       int pos = 1,
       String saleStatus = "completed",
       String saleCurrency = 'COP',
-      paymentMeanFe: 'ZZZ'}) {
+      paymentMeanFe = 'ZZZ'}) {
     final UserModel userData = dataBloc.userData!;
     final customer = posBloc.getCustomer!;
     final customerAddress = posBloc.getCustomerAddresses!;
@@ -428,12 +428,12 @@ class SalesModel {
     double pDiscount = 0;
     double orderDiscount = 0;
     double totalTax = 0;
-    if (productsDetails['product_discount'].length > 0) {
+    if (productsDetails['product_discount'].isNotEmpty) {
       productsDetails['product_discount'].forEach((d) {
         pDiscount += d;
       });
     }
-    if (productsDetails['product_tax_val'].length > 0) {
+    if (productsDetails['product_tax_val'].isNotEmpty) {
       productsDetails['product_tax_val'].forEach((d) {
         totalTax += d;
       });
@@ -729,7 +729,7 @@ class SalesModel {
       try {
         sales = fromJsonList(res);
       } catch (e) {
-        print(e);
+        printConsole(e);
       }
       return sales;
     } else {
@@ -740,12 +740,12 @@ class SalesModel {
   static List<SalesModel> fromJsonList(List<Map> list) {
     List<SalesModel> sales = [];
     Map<String, dynamic> temp = {};
-    list.forEach((item) {
+    for (var item in list) {
       for (var i = 0; i < item.keys.length; i++) {
         temp[item.keys.toList()[i]] = item.values.toList()[i];
       }
       sales.add(SalesModel.fromJson(temp));
-    });
+    }
 
     return sales;
 
@@ -799,7 +799,7 @@ class SalesModel {
     List<Map<String, dynamic>> productsMap = [];
     Map<double, dynamic> ivasMap = {};
     try {
-      saleItems.forEach((LocalSaleItems item) {
+      for (var item in saleItems) {
         final tItempMap = {
           'quantity': item.quantity,
           'price': item.unitPrice,
@@ -816,9 +816,9 @@ class SalesModel {
             'name': item.tax
           };
         }
-      });
+      }
     } catch (e) {
-      print(e);
+      printConsole(e);
       return {};
     }
     return {

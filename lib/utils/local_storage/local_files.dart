@@ -25,7 +25,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 
     if (!(await io.File('$dir/$folder').exists())) {
       await io.Directory('$dir/$folder').create(recursive: true);
-      // print(directory.path);
+      // printConsole(directory.path);
     }
     if (!(await io.File('$dir/$folder/$filename').exists())) {
       var bytes = await NetworkAssetBundle(Uri.parse(imgURL)).load("");
@@ -41,6 +41,6 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 
   Future<void> writeToFile(ByteData data, String path) {
     final buffer = data.buffer;
-    return new io.File(path).writeAsBytes(
+    return io.File(path).writeAsBytes(
         buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
   }

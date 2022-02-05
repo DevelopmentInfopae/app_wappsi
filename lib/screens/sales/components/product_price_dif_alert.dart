@@ -48,7 +48,7 @@ priceDiffAlert(
             Container(
               color: Colors.redAccent,
               child: CupertinoDialogAction(
-                child: Text(
+                child: const Text(
                   'No',
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
@@ -58,7 +58,7 @@ priceDiffAlert(
                   Navigator.pop(context);
                   Navigator.pop(context);
                   Navigator.pop(context);
-                  if (errors.length == 0) {
+                  if (errors.isNotEmpty) {
                     //close alert
 
                     confirmDialog(
@@ -79,7 +79,7 @@ priceDiffAlert(
             Container(
               color: pColor.withOpacity(0.8),
               child: CupertinoDialogAction(
-                child: Text(
+                child: const Text(
                   "Si",
                   style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
@@ -92,7 +92,7 @@ priceDiffAlert(
                   Navigator.pop(context);
                   Navigator.pop(context);
                   Navigator.pop(context);
-                  if (errors.length > 0) {
+                  if (errors.isNotEmpty) {
                     listInfoDialog(context, errors, 'name', 'inventory',
                         'Producto', 'Stock',
                         flexCol1: 3,

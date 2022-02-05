@@ -19,10 +19,11 @@ import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 // import 'package:pos_wappsi/screens/db_sync/components/sync_popup.dart';
 // import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 
 class OrderOtherDetails extends StatefulWidget {
-  OrderOtherDetails({Key? key}) : super(key: key);
+  const OrderOtherDetails({Key? key}) : super(key: key);
 
   @override
   _OrderOtherDetailsState createState() => _OrderOtherDetailsState();
@@ -30,15 +31,15 @@ class OrderOtherDetails extends StatefulWidget {
 
 class _OrderOtherDetailsState extends State<OrderOtherDetails> {
   // to disable paybutton when awaiting for response
-  bool _sending = false;
+  final bool _sending = false;
   // TextEditingController _paymentDocumentController =
-  //     new TextEditingController();
+  //     TextEditingController();
 
   late Size _size;
-  TextEditingController _paymentMethodController = new TextEditingController();
+  final TextEditingController _paymentMethodController = TextEditingController();
   
-  TextEditingController _internalNController = new TextEditingController();
-  TextEditingController _orderNController = new TextEditingController();
+  final TextEditingController _internalNController = TextEditingController();
+  final TextEditingController _orderNController = TextEditingController();
   @override
   void initState() {
     if (orderBloc.getInternalNote != null) {
@@ -107,10 +108,11 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
         decoration: InputDecoration(
           labelText: 'Forma de pago',
           suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () {
-              if (_paymentMethodController.text.length == 0)
+              if (_paymentMethodController.text.isNotEmpty) {
                 Navigator.pop(context);
+              }
               _paymentMethodController.clear();
             },
           ),
@@ -127,13 +129,13 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       isFilteredOnline: true,
       showClearButton: true,
       showSelectedItems: true,
-      clearButton: Icon(Icons.clear_rounded),
+      clearButton: const Icon(Icons.clear_rounded),
       compareFn: (item, selectedItem) => item?.name == selectedItem?.name,
       showSearchBox: true,
 
       dropdownSearchDecoration: InputDecoration(
         labelText: 'Forma de pago :',
-        labelStyle: TextStyle(color: pColor),
+        labelStyle: const TextStyle(color: pColor),
         filled: true,
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
@@ -142,7 +144,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       onFind: (String? filter) =>
           PaymentMethodsProvider.getPaymentMethods(filter),
       onChanged: (data) {
-        print(data);
+        printConsole(data);
 
         setState(() {
           orderBloc.setPaymentMethod(data);
@@ -152,7 +154,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       },
       // selectedItem: ,
       selectedItem: orderBloc.getPaymentMethod,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
         thickness: 7,

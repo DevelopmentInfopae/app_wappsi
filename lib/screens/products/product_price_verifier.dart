@@ -177,7 +177,7 @@ class ProductPriceVerifier extends StatelessWidget {
   Widget _productName(BuildContext context) {
     return descText(
         // ignore: unnecessary_null_comparison
-        capitalizeText(product.name != null ? product.name : ''),
+        capitalizeText(product.name),
         context,
         maxLines: 2,
         fweigth: 4,

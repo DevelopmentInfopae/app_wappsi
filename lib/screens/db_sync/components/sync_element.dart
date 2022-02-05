@@ -34,7 +34,7 @@ class ElementSync extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             descText(optionName, context, fontSizeFactor: 0.9, maxLines: 2),
-            Spacer(),
+            const Spacer(),
                 // .withWidth(_size.width * 0.55),
             syncStatus(status),
           ],

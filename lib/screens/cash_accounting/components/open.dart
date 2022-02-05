@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import '../../../constant.dart';
 
 class OpenForm extends StatefulWidget {
+  // ignore: prefer_const_constructors_in_immutables
   OpenForm({Key? key}) : super(key: key);
 
   @override
@@ -47,7 +48,7 @@ class _OpenFormState extends State<OpenForm> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           registerInput(context, cashAccForm, _value,
-              style: TextStyle(fontSize: 20)),
+              style: const TextStyle(fontSize: 20)),
           const SizedBox(height: 15.0),
           _button(context, cashAccForm),
         ],

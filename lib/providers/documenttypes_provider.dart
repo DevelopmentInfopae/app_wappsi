@@ -6,12 +6,12 @@ class DocumenttypesProvider {
   static List<DocumentypeModel> fromJsonList(List<Map> list) {
     List<DocumentypeModel> documentypes = [];
     Map<String, dynamic> temp = {};
-    list.forEach((item) {
+    for (var item in list) {
       for (var i = 0; i < item.keys.length; i++) {
         temp[item.keys.toList()[i]] = item.values.toList()[i];
       }
       documentypes.add(DocumentypeModel.fromJson(temp));
-    });
+    }
 
     return documentypes;
 
@@ -38,12 +38,12 @@ class DocumenttypesProvider {
     List<DocumentypeModel> list = [];
     if (data != null) {
       Map<String, dynamic> temp = {};
-      data.forEach((item) {
+      for (var item in data) {
         for (var i = 0; i < item.keys.length; i++) {
           temp[item.keys.toList()[i]] = item.values.toList()[i];
         }
         list.add(DocumentypeModel.fromJson(temp));
-      });
+      }
     }
 
     return list;

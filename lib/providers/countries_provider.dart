@@ -1,16 +1,18 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+// import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/countries_dart.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 class CountriesProvider {
   static List<CountriesModel> fromJsonFileList(
       List<Map<String, dynamic>> list) {
     List<CountriesModel> _list = [];
-    list.forEach((element) {
+    for (var element in list) {
       _list.add(CountriesModel.fromJson(element));
-    });
+    }
     return _list;
   }
 
@@ -21,7 +23,9 @@ class CountriesProvider {
     List<Map<String, dynamic>> data = [];
     try {
       data = temp.map((e) => CountriesModel.fromJson(e).toJson()).toList();
-    } catch (e) {}
+    } catch (e) {
+      printConsole(e);
+    }
 
     return fromJsonFileList(data);
   }
@@ -39,12 +43,12 @@ class CountriesProvider {
     List<CountriesModel> list = [];
     if (data != null) {
       Map<String, dynamic> temp = {};
-      data.forEach((item) {
+      for (var item in data) {
         for (var i = 0; i < item.keys.length; i++) {
           temp[item.keys.toList()[i]] = item.values.toList()[i];
         }
         list.add(CountriesModel.fromJson(temp));
-      });
+      }
     }
 
     return list;
@@ -82,7 +86,7 @@ class CountriesProvider {
     try {
       data = temp.map((e) => CountriesModel.fromJson(e).toJson()).toList();
     } catch (e) {
-      print(e);
+      printConsole(e);
     }
 
     return await DBProvider.db.insertOrUpdateQuerys('sma_countries', data);

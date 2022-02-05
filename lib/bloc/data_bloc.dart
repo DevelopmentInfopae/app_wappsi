@@ -10,6 +10,7 @@ import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/providers/user_provider.dart';
 import 'package:pos_wappsi/screens/home/home.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:rxdart/rxdart.dart';
 
 class DataBloc {
@@ -122,7 +123,7 @@ class DataBloc {
     try {
       res = await UserProvider.refreshToken();
     } catch (e) {
-      print(e);
+      printConsole(e);
     }
     dataBloc.homeKey.currentState?.syncLoader(false);
     if (res != null) {
@@ -133,7 +134,7 @@ class DataBloc {
 
   Future<List> syncElements(List<String> elements, BuildContext context) async {
     dataBloc.homeKey.currentState?.syncLoader(true);
-    final syncDB = new SyncDBProvider();
+    final syncDB = SyncDBProvider();
     final res = await Future.wait(
       elements.map((element) {
         return syncDB.syncOption(context, element);

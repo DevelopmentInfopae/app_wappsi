@@ -46,7 +46,7 @@ class _ProductCardListState extends State<ProductCardList> {
         controller: _controller,
         padding: EdgeInsets.zero,
         addAutomaticKeepAlives: false,
-        physics: ClampingScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         itemCount: widget.products.length + (_allLoaded ? 1 : 0),
         separatorBuilder: (context, index) => const Divider(
           height: 5,
@@ -60,8 +60,8 @@ class _ProductCardListState extends State<ProductCardList> {
           } else {
             return Container(
               width: _size.width,
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: Text('Sin elementos que mostrar').center(),
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: const Text('Sin elementos que mostrar').center(),
             );
           }
 
@@ -73,7 +73,7 @@ class _ProductCardListState extends State<ProductCardList> {
   }
 
   void infinityScrollListener() async {
-    // print(_controller.position.extentAfter);
+    // printConsole(_controller.position.extentAfter);
     if (_controller.position.pixels >= _controller.position.maxScrollExtent &&
         !_loading) {
       setState(() {

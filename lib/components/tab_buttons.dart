@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 // ignore: must_be_immutable
 class TabButton extends StatelessWidget {
-   TabButton({
+  TabButton({
     required this.title,
     required this.text,
     required this.background,
@@ -13,7 +13,7 @@ class TabButton extends StatelessWidget {
   final Color background;
   final Color text;
   final String title;
-  var press;
+  Function press;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,9 @@ class TabButton extends StatelessWidget {
       ),
       child: Center(
         child: TextButton(
-          onPressed: press,
+          onPressed: () {
+            press();
+          },
           child: Text(
             title,
             style: GoogleFonts.poppins(
@@ -51,7 +53,7 @@ class TabButtonSmall extends StatelessWidget {
   final Color background;
   final Color text;
   final String title;
-  var press;
+  Function press;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +66,9 @@ class TabButtonSmall extends StatelessWidget {
       ),
       child: Center(
         child: TextButton(
-          onPressed: press,
+          onPressed: () {
+            press();
+          },
           child: Text(
             title,
             style: GoogleFonts.poppins(
@@ -89,7 +93,7 @@ class TabButtonBig extends StatelessWidget {
   final Color background;
   final Color text;
   final String title;
-  var press;
+  Function press;
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +105,9 @@ class TabButtonBig extends StatelessWidget {
       ),
       child: Center(
         child: TextButton(
-          onPressed: press,
+          onPressed: () {
+            press();
+          },
           child: Text(
             title,
             style: GoogleFonts.poppins(

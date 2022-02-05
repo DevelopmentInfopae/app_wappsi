@@ -106,13 +106,13 @@ class LocalSaleItems {
 
   factory LocalSaleItems.fromJson(Map<String, dynamic> json, {int? saleId}) =>
       LocalSaleItems(
-        id: json["id"] ?? null,
+        id: json["id"],
         saleId: saleId ?? json["sale_id"],
         productId: json["product_id"],
         productCode: json["product_code"],
         productName: json["product_name"],
         productType: json["product_type"],
-        optionId: json["option_id"] ?? null,
+        optionId: json["option_id"],
         netUnitPrice: json["net_unit_price"].toDouble(),
         unitPrice: json["unit_price"].toDouble(),
         quantity: json["quantity"],
@@ -120,35 +120,35 @@ class LocalSaleItems {
         itemTax: json["item_tax"].toDouble(),
         taxRateId: json["tax_rate_id"],
         tax: json["tax"],
-        itemTax2: json["item_tax_2"] ?? null,
-        taxRate2Id: json["tax_rate_2_id"] ?? null,
-        tax2: json["tax_2"] ?? null,
-        discount: json["discount"] ?? null,
-        itemDiscount: json["item_discount"] ?? null,
-        subtotal: json["subtotal"].toDouble() ?? null,
-        serialNo: json["serial_no"] ?? null,
-        realUnitPrice: json["real_unit_price"] ?? null,
-        saleItemId: json["sale_item_id"] ?? null,
-        productUnitId: json["product_unit_id"] ?? null,
-        productUnitCode: json["product_unit_code"] ?? null,
+        itemTax2: json["item_tax_2"],
+        taxRate2Id: json["tax_rate_2_id"],
+        tax2: json["tax_2"],
+        discount: json["discount"],
+        itemDiscount: json["item_discount"],
+        subtotal: json["subtotal"].toDouble(),
+        serialNo: json["serial_no"],
+        realUnitPrice: json["real_unit_price"],
+        saleItemId: json["sale_item_id"],
+        productUnitId: json["product_unit_id"],
+        productUnitCode: json["product_unit_code"],
         unitQuantity: json["unit_quantity"],
-        comment: json["comment"] ?? null,
-        gst: json["gst"] ?? null,
-        cgst: json["cgst"] ?? null,
-        sgst: json["sgst"] ?? null,
-        igst: json["igst"] ?? null,
-        unitOrderDiscount: json["unit_order_discount"] ?? null,
-        avgNetUnitCost: json["avg_net_unit_cost"] ?? null,
+        comment: json["comment"],
+        gst: json["gst"],
+        cgst: json["cgst"],
+        sgst: json["sgst"],
+        igst: json["igst"],
+        unitOrderDiscount: json["unit_order_discount"],
+        avgNetUnitCost: json["avg_net_unit_cost"],
         stateReadiness: json["state_readiness"] ?? 1,
-        preferences: json["preferences"] ?? null,
+        preferences: json["preferences"],
         priceBeforeTax: json["price_before_tax"].toDouble(),
-        productUnitIdSelected: json["product_unit_id_selected"] ?? null,
-        consumptionSales: json["consumption_sales"] ?? null,
-        consumptionSalesCosting: json["consumption_sales_costing"] ?? null,
-        returnedQuantity: json["returned_quantity"] ?? null,
-        priceBeforePromo: json["price_before_promo"] ?? null,
-        registrationDate: json["registration_date"] ?? null,
-        underCostAuthorized: json["under_cost_authorized"] ?? null,
+        productUnitIdSelected: json["product_unit_id_selected"],
+        consumptionSales: json["consumption_sales"],
+        consumptionSalesCosting: json["consumption_sales_costing"],
+        returnedQuantity: json["returned_quantity"],
+        priceBeforePromo: json["price_before_promo"],
+        registrationDate: json["registration_date"],
+        underCostAuthorized: json["under_cost_authorized"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -200,12 +200,12 @@ class LocalSaleItems {
   static List<LocalSaleItems> fromJsonList(List<Map> list) {
     List<LocalSaleItems> items = [];
     Map<String, dynamic> temp = {};
-    list.forEach((item) {
+    for (var item in list) {
       for (var i = 0; i < item.keys.length; i++) {
         temp[item.keys.toList()[i]] = item.values.toList()[i];
       }
       items.add(LocalSaleItems.fromJson(temp));
-    });
+    }
 
     return items;
 

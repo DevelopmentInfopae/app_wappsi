@@ -24,7 +24,7 @@ class ProductCard extends StatefulWidget {
 
   final bool searchPrice;
 
-  ProductCard(
+  const ProductCard(
       {Key? key,
       required this.product,
       required this.action,
@@ -50,7 +50,7 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     // _textTheme = Theme.of(context).textTheme;
     return AppButton(
-        margin: EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
         padding: EdgeInsets.zero,
         elevation: 5,
         child: Row(
@@ -68,11 +68,11 @@ class _ProductCardState extends State<ProductCard> {
                 context, widget.product);
             if (productReq != {}) {
               final result = await posBloc.addProduct(productReq);
-              // print(result);
+              // printConsole(result);
               if (result) {
                 posBloc.getSearchBarController.clear();
                 posBloc.getSearchBarController.close();
-                scaffoldAlert(context, "Producto ${widget.product.name} añadido", Duration(seconds: 1));
+                scaffoldAlert(context, "Producto ${widget.product.name} añadido", const Duration(seconds: 1));
               }
             }
 
@@ -82,9 +82,9 @@ class _ProductCardState extends State<ProductCard> {
                 context, widget.product);
             if (productReq != {}) {
               final result = await orderBloc.addProduct(productReq);
-              // print(result);
+              // printConsole(result);
               if(result){
-                scaffoldAlert(context, "Producto ${widget.product.name} añadido", Duration(seconds: 1));
+                scaffoldAlert(context, "Producto ${widget.product.name} añadido", const Duration(seconds: 1));
                 // to avoid : 
                 // await Future.delayed(Duration(seconds:1));
               }
@@ -128,11 +128,11 @@ class _ProductCardState extends State<ProductCard> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             return Text(
-              '${getFormatedCurrency(snapshot.data)}',
+              getFormatedCurrency(snapshot.data),
               style: normalTextStyle(context, fontWeightDelta: 2),
             );
           } else {
-            return Text('\$ ');
+            return const Text('\$ ');
           }
         },
       ),

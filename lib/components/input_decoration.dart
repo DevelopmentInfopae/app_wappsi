@@ -11,7 +11,7 @@ class InputDecorations {
         focusedBorder: outlineFocusedInputBorder(),
         hintText: hintText,
         labelText: labelText,
-        labelStyle: TextStyle(color: Colors.grey),
+        labelStyle: const TextStyle(color: Colors.grey),
         filled: true,
         fillColor: Colors.grey[200],
         contentPadding: kTextFieldPadding,
@@ -41,11 +41,11 @@ class InputDecorations {
       required String labelText,
       IconData? prefixIcon}) {
     return InputDecoration(
-        enabledBorder: UnderlineInputBorder(),
-        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2)),
+        enabledBorder: const UnderlineInputBorder(),
+        focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(width: 2)),
         hintText: hintText,
         labelText: labelText,
-        labelStyle: TextStyle(color: Colors.grey),
+        labelStyle: const TextStyle(color: Colors.grey),
         prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null);
   }
 }

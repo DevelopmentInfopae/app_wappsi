@@ -19,7 +19,7 @@ class SelectProductUnitDialog extends StatefulWidget {
   final ProductModel product;
   @override
   SelectProductUnitDialogState createState() {
-    return new SelectProductUnitDialogState();
+    return SelectProductUnitDialogState();
   }
 }
 
@@ -55,12 +55,12 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
           ).paddingTop(8)
         ],
       ).paddingBottom(10),
-      content: new SingleChildScrollView(child: _select(context)),
+      content: SingleChildScrollView(child: _select(context)),
       actions: <Widget>[
         Container(
           color: Colors.red.withOpacity(0.8),
           child: CupertinoDialogAction(
-            child: Text(
+            child: const Text(
               "Cancelar",
               style: TextStyle(color: Colors.white),
               textAlign: TextAlign.center,
@@ -74,7 +74,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
         Container(
           color: pColor.withOpacity(0.8),
           child: CupertinoDialogAction(
-            child: Text(
+            child: const Text(
               "Aceptar",
               style: TextStyle(color: Colors.white),
               textAlign: TextAlign.center,

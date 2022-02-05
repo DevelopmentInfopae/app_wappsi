@@ -30,10 +30,10 @@ class StatesModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "PAIS": pais == null ? null : pais,
-        "CODDEPARTAMENTO": coddepartamento == null ? null : coddepartamento,
-        "DEPARTAMENTO": departamento == null ? null : departamento,
-        "DESADICIONAL": desadicional == null ? null : desadicional,
+        "PAIS": pais,
+        "CODDEPARTAMENTO": coddepartamento,
+        "DEPARTAMENTO": departamento,
+        "DESADICIONAL": desadicional,
       };
 
   @override

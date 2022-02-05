@@ -60,7 +60,7 @@ class PrintFormat {
         bytes += generator.text(
             'Prueba de funcionamiento de \n' +
                 (_innerPrinter ? 'impresion' : 'impresión'),
-            styles: PosStyles(bold: true, align: PosAlign.center));
+            styles: const PosStyles(bold: true, align: PosAlign.center));
         bytes += generator.emptyLines(1);
         bytes = wappsiSpam(_innerPrinter, bytes, generator);
 
@@ -91,7 +91,7 @@ class PrintFormat {
         bytes += generator.text(
             'Prueba de funcionamiento de \n' +
                 (_innerPrinter ? 'impresion' : 'impresión'),
-            styles: PosStyles(bold: true, align: PosAlign.center));
+            styles: const PosStyles(bold: true, align: PosAlign.center));
         bytes += generator.emptyLines(1);
         bytes = wappsiSpam(_innerPrinter, bytes, generator);
 
@@ -141,7 +141,7 @@ class PrintFormat {
                 ? replaceSpecialCharacters(
                     dataBloc.settings?['razon_social'] ?? '')
                 : dataBloc.settings?['razon_social'] ?? '',
-            styles: PosStyles(bold: true, align: PosAlign.center));
+            styles: const PosStyles(bold: true, align: PosAlign.center));
         generator.reset();
         bytes += generator.emptyLines(1);
         bytes = printLabelValues(generator, bytes, keyValues2.keys.toList(),
@@ -151,7 +151,7 @@ class PrintFormat {
         bytes += generator.emptyLines(3);
         bytes += generator.hr(len: 32, ch: '_');
         bytes += generator.text('Firma y sello',
-            styles: PosStyles(align: PosAlign.center));
+            styles: const PosStyles(align: PosAlign.center));
         bytes += generator.emptyLines(1);
         bytes = wappsiSpam(_innerPrinter, bytes, generator);
 
@@ -304,13 +304,13 @@ class PrintFormat {
     generator.setGlobalFont(PosFontType.fontB);
     // bytes += generator.hr(len: 32, ch: '_');
     bytes += generator.text('Cant  Producto             Valor',
-        styles: PosStyles(bold: true, align: PosAlign.left));
+        styles: const PosStyles(bold: true, align: PosAlign.left));
     bytes += generator.hr(len: 32, ch: '-');
 
-    productsList!.forEach((Map element) {
+    for (var element in productsList!) {
       List<String> formatedS = formatString(element['name'].toString());
       String text = '';
-      formatedS.forEach((String str) {
+      for (var str in formatedS) {
         // text = '';
         if (str == formatedS.first) {
           String value =
@@ -333,10 +333,10 @@ class PrintFormat {
               namePart +
               getEmptySpaces(32 - 4 - namePart.length);
         }
-      });
+      }
       bytes += generator.text(text,
-          styles: PosStyles(bold: false, align: PosAlign.left));
-    });
+          styles: const PosStyles(bold: false, align: PosAlign.left));
+    }
     // bluetooth.printNewLine();
     bytes += generator.hr(len: 32, ch: '-');
     return bytes;
@@ -354,9 +354,9 @@ class PrintFormat {
     generator.setGlobalFont(PosFontType.fontB);
     bytes += generator.emptyLines(1);
     bytes += generator.text('Resumen de impuestos',
-        styles: PosStyles(bold: true, align: PosAlign.center));
+        styles: const PosStyles(bold: true, align: PosAlign.center));
     bytes += generator.text('Tarifa      Base     Impuesto',
-        styles: PosStyles(bold: true, align: PosAlign.center));
+        styles: const PosStyles(bold: true, align: PosAlign.center));
     bytes += generator.hr(len: 30, ch: '-');
 
     printData?['iva'].keys.toList().forEach((element) async {
@@ -372,7 +372,7 @@ class PrintFormat {
               temp +
               getEmptySpaces(11 - temp2.length) +
               temp2),
-          styles: PosStyles(bold: false, align: PosAlign.left));
+          styles: const PosStyles(bold: false, align: PosAlign.left));
     });
     return bytes;
   }
@@ -384,7 +384,7 @@ class PrintFormat {
         ? replaceSpecialCharacters(printData?['sale_data']['resolucion'])
         : printData?['sale_data']['resolucion'];
     bytes += generator.text(resolution,
-        styles: PosStyles(bold: true, align: PosAlign.center));
+        styles: const PosStyles(bold: true, align: PosAlign.center));
     if (printData?['pos_note'] != '') {
       final pNote = 'Nota: ' +
           (_innerPrinter
@@ -392,16 +392,16 @@ class PrintFormat {
               : printData?['pos_note']);
       bytes += generator.emptyLines(1);
       bytes += generator.text(pNote,
-          styles: PosStyles(bold: false, align: PosAlign.center));
+          styles: const PosStyles(bold: false, align: PosAlign.center));
     }
     final List<String> footer = printData?['footer'];
     String _companyFooter = '';
-    footer.forEach((element) {
+    for (var element in footer) {
       _companyFooter +=
           (_innerPrinter ? replaceSpecialCharacters(element) : element) + '\n';
-    });
+    }
     bytes += generator.text(_companyFooter,
-        styles: PosStyles(bold: false, align: PosAlign.center));
+        styles: const PosStyles(bold: false, align: PosAlign.center));
     bytes = wappsiSpam(_innerPrinter, bytes, generator);
     return bytes;
   }

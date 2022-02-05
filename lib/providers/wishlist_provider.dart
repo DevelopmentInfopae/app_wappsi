@@ -3,11 +3,12 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
-import 'package:pos_wappsi/providers/API_provider.dart';
+import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 // import 'package:pos_wappsi/providers/price_policy_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:pos_wappsi/utils/manage_server_resp.dart';
 
@@ -61,7 +62,7 @@ class WishlistProvider {
     // get favorites from Cloud(
     final fav = await getCustomerFav(customer, context);
     bool result = false;
-    if (fav.length > 0) {
+    if (fav.isNotEmpty) {
       result = await saveCustomerFav(customer, fav);
     } else {
       result = true;
@@ -79,7 +80,7 @@ class WishlistProvider {
     manageResponseAlerts(res, context);
     try {
       final List<Map> fav = List<Map>.from(res['body']['data']);
-      if (fav.length > 0) {
+      if (fav.isNotEmpty) {
         return fav;
       } else {
         confirmDialog(
@@ -87,7 +88,7 @@ class WishlistProvider {
         return [{}];
       }
     } catch (e) {
-      print(e);
+      printConsole(e);
       confirmDialog(context, res['body']['message'], 'assets/images/alert.png');
       return [];
     }
@@ -95,19 +96,19 @@ class WishlistProvider {
 
   static Future<bool> saveCustomerFav(
       CompanyModel customer, List<Map> favorites) async {
-    if (favorites.length > 0) {
+    if (favorites.isNotEmpty) {
       await deleteLocalCustomerFavs(customer);
 
-      if (favorites.length > 0) {
+      if (favorites.isNotEmpty) {
         final query = [];
-        favorites.forEach((Map e) {
+        for (var e in favorites) {
           query.add({
             'user_id': e['user_id'],
             'id_cloud': e['id_cloud'],
             'product_id': e['product_id'],
             'customer_id': customer.id,
           });
-        });
+        }
         return await DBProvider.db.insertOrUpdateQuerys('sma_wishlist', query);
       } else {
         return true;
@@ -122,16 +123,16 @@ class WishlistProvider {
 
   static Future<bool> saveCustomerFavFromLocal(
       CompanyModel customer, List<ProductModel> favorites) async {
-    if (favorites.length > 0) {
+    if (favorites.isNotEmpty) {
       final query = [];
-      favorites.forEach((ProductModel p) {
+      for (var p in favorites) {
         query.add({
           'user_id': null,
           'id_cloud': null,
           'product_id': p.idCloud,
           'customer_id': customer.id,
         });
-      });
+      }
       return await DBProvider.db.insertQuerys('sma_wishlist', query);
     } else {
       // whithout favorites to save
@@ -143,16 +144,16 @@ class WishlistProvider {
 
   static Future<List<Map>> getFavoritesId(
       CompanyModel customer, List<ProductModel> products) async {
-    if (products.length > 0) {
+    if (products.isNotEmpty) {
       String pIds = '(';
-      products.forEach((ProductModel p) {
+      for (var p in products) {
         pIds += p.idCloud.toString();
         if (p != products.last) {
           pIds += ',';
         } else {
           pIds += ')';
         }
-      });
+      }
 
       final res = await DBProvider.db.sqlQuery('sma_wishlist',
           where: 'customer_id=${customer.id} AND product_id IN $pIds',
@@ -167,12 +168,12 @@ class WishlistProvider {
   /// who are also stored in cloud db
   static Future<List> deleteLocalFav(
       CompanyModel customer, List<Map> favorites) async {
-    if (favorites.length > 0) {
+    if (favorites.isNotEmpty) {
       // delete all selected favorites from local db
       final temp1 = getKeyValuesOfListMap(favorites, 'id');
       final res = await deleteLocalSelectedCustomerFavs(customer, temp1);
       if (res) {
-        print('Favorites deleted sucessfully');
+        printConsole('Favorites deleted sucessfully');
       }
 
       return getKeyValuesOfListMap(favorites, 'id_cloud');

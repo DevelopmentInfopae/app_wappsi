@@ -5,6 +5,7 @@ import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/companies_provider.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 class PricePoliciesProvider {
   /// Checks what else is required to add product price correctly
@@ -42,7 +43,7 @@ class PricePoliciesProvider {
           } else {
             price = await product.billerPrice(product.getPrice());
           }
-          // print(price);
+          // printConsole(price);
           final values = await priceWDiscount(price, customer);
           product.price = values[0];
           product.priceWithoutDiscount = price;
@@ -111,7 +112,7 @@ class PricePoliciesProvider {
               price = await product
                   .billerPrice(product.getPrice());
             }
-            // print(price);
+            // printConsole(price);
             final values = await priceWDiscount(price, customer);
             product.price = values[0];
             product.priceWithoutDiscount = price;
@@ -152,7 +153,7 @@ class PricePoliciesProvider {
         }
       return true;
     } catch (e) {
-      print(e);
+      printConsole(e);
       return false;
     }
   }
@@ -185,7 +186,7 @@ class PricePoliciesProvider {
               price = await orderBloc.getProducts![productKey]!
                   .billerPrice(orderBloc.getProducts![productKey]!.getPrice());
             }
-            // print(price);
+            // printConsole(price);
             final values = await priceWDiscount(price, customer);
             orderBloc.getProducts![productKey]!.price = values[0];
             orderBloc.getProducts![productKey]!.priceWithoutDiscount = price;
@@ -215,7 +216,7 @@ class PricePoliciesProvider {
       }
       return true;
     } catch (e) {
-      print(e);
+      printConsole(e);
       return false;
     }
   }
@@ -231,7 +232,7 @@ class PricePoliciesProvider {
           customer.customerGroupId!);
 
       // ignore: unnecessary_null_comparison
-      discount = discountData!['percent'] ?? null;
+      discount = discountData!['percent'];
       if (discount != null) {
         if (discount < 0) {
           discountVal = price * discount / 100;

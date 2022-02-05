@@ -49,7 +49,7 @@ class _CustomerDetailsState extends State<CustomerDetails> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                GoBackBottom(),
+                const GoBackBottom(),
                 _favorites(context),
               ],
             ),
@@ -77,7 +77,7 @@ class _CustomerDetailsState extends State<CustomerDetails> {
             'Favoritos ',
             style: buttonsSmallTextStyle(context),
           ),
-          Icon(FontAwesomeIcons.star, size: kIconSize),
+          const Icon(FontAwesomeIcons.star, size: kIconSize),
         ],
       ),
     );
@@ -89,7 +89,7 @@ class _CustomerDetailsState extends State<CustomerDetails> {
         child: ListView(
           padding: const EdgeInsets.all(5),
           children: [
-            labelContent('Drección ', '${widget.customer.address ?? ''}'),
+            labelContent('Drección ', widget.customer.address ?? ''),
             hDivider(),
             labelContent('Ubicación ',
                 '${widget.customer.city ?? ''} ${widget.customer.state ?? ''}-${widget.customer.country ?? ''}'),

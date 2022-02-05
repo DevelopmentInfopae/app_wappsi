@@ -16,14 +16,14 @@ class CreateUserAlertDialog extends StatefulWidget {
   final CompanyModel customer;
   @override
   CreateUserAlertDialogState createState() {
-    return new CreateUserAlertDialogState();
+    return CreateUserAlertDialogState();
   }
 }
 
 class CreateUserAlertDialogState extends State<CreateUserAlertDialog> {
   late FocusNode _valueFocus;
 
-  final formKey = new GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -52,12 +52,12 @@ class CreateUserAlertDialogState extends State<CreateUserAlertDialog> {
           ),
         ],
       ),
-      content: new SingleChildScrollView(child: _form(context)),
+      content: SingleChildScrollView(child: _form(context)),
       actions: <Widget>[
         Container(
           color: Colors.redAccent,
           child: CupertinoDialogAction(
-            child: Text(
+            child: const Text(
               'Cancelar',
               style: TextStyle(color: Colors.white),
               textAlign: TextAlign.center,
@@ -72,7 +72,7 @@ class CreateUserAlertDialogState extends State<CreateUserAlertDialog> {
         Container(
           color: pColor.withOpacity(0.8),
           child: CupertinoDialogAction(
-            child: Text(
+            child: const Text(
               "Aceptar",
               style: TextStyle(color: Colors.white),
               textAlign: TextAlign.center,

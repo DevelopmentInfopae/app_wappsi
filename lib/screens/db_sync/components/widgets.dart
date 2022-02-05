@@ -58,11 +58,11 @@ import 'package:nb_utils/nb_utils.dart';
 //   ));
 // }
 
-Container image(Size _size) {
-  return Container(
+Widget image(Size _size) {
+  return SizedBox(
     width: _size.width,
     height: _size.height * 0.4,
-    child: Image(
+    child: const Image(
       image: AssetImage('assets/images/sync.gif'),
     ),
   );
@@ -70,7 +70,7 @@ Container image(Size _size) {
 
 Widget syncStatus(bool completed) {
     if (completed) {
-      return CircleAvatar(
+      return const CircleAvatar(
         backgroundColor: Colors.white,
         
         child: Icon(Icons.check_rounded,color: Colors.greenAccent,),

@@ -42,10 +42,10 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
 
   Container _searchBar(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(
           color: Colors.grey[200],
-          borderRadius: BorderRadius.all(Radius.circular(10))),
+          borderRadius: const BorderRadius.all(Radius.circular(10))),
       child: FloatingSearchAppBar(
         hint: 'Buscar favorito',
         clearQueryOnClose: true,
@@ -79,8 +79,8 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
     );
   }
 
-  Container _reloadFavoritesIcon(BuildContext context){
-    return Container(
+  Widget _reloadFavoritesIcon(BuildContext context){
+    return SizedBox(
           width: 40,
           child: FloatingSearchBarAction(
             showIfOpened: false,
@@ -88,7 +88,7 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
               icon: _reloadFavsingFavs
                   ? FittedBox(
                       child: Loader(
-                        decoration: BoxDecoration(),
+                        decoration: const BoxDecoration(),
                       ),
                     )
                   : Icon(
@@ -107,8 +107,8 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
   Container _searchBarBackground(Widget child) {
     return Container(
       height: searchHeight + 8,
-      padding: EdgeInsets.only(left: 5, right: 5, top: 1, bottom: 6),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+      padding: const EdgeInsets.only(left: 5, right: 5, top: 1, bottom: 6),
+      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
           color: Colors.grey,
           offset: Offset(0.0, 1.0), //(x,y)
@@ -135,7 +135,7 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
 
   Widget _products() {
     return Container(
-        padding: EdgeInsets.only(top: 4),
+        padding: const EdgeInsets.only(top: 4),
         // margin: EdgeInsets.o,
         child: FutureBuilder<List<ProductModel>?>(
             future:
@@ -145,7 +145,7 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
                 // setState(() {
                 //   _favorites = snapshot.data!;
                 // });
-                if (snapshot.data!.length > 0) {
+                if (snapshot.data!.isNotEmpty) {
                   _favorites = snapshot.data!;
                   return _favoritesList(context);
                 } else {
@@ -190,7 +190,7 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
     return AppButton(
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: [
+        children: const [
           Text(
             'Recargar ',
             style: TextStyle(color: Colors.white),

@@ -11,7 +11,7 @@ Widget buttonTextIcon(Function onTap,
     width: 70,
     shapeBorder: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
-        side: BorderSide(color: pColor)),
+        side: const BorderSide(color: pColor)),
     child: Row(
       children: [
         Icon(
@@ -28,13 +28,13 @@ Widget buttonTextIcon(Function onTap,
 
 Container barCode(BuildContext context, Function onTap) {
   final size = MediaQuery.of(context).size;
-  final _pc = pColor;
+  const _pc = pColor;
   return Container(
     // width: 70,
     color: Colors.white,
     height: searchHeight,
     alignment: Alignment.center,
-    padding: EdgeInsets.symmetric(horizontal: 8),
+    padding: const EdgeInsets.symmetric(horizontal: 8),
     margin: EdgeInsets.only(left: size.width - (searchHeight + 16)),
     child: _cameraBarCodeButton(size, onTap, _pc),
   );
@@ -48,7 +48,7 @@ AppButton _cameraBarCodeButton(Size size, Function onTap, Color color) {
       onTap: onTap,
       width: searchHeight - 1,
       height: searchHeight - 1,
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: Icon(
         Icons.camera_alt_outlined,
         color: color,

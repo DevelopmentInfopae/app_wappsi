@@ -55,7 +55,7 @@ Widget _totalLarge(BuildContext context, String value, {Color? color}) {
 Widget totalValue(BuildContext context, String value, {Color? color}) {
   return FittedBox(
     fit: BoxFit.fitHeight,
-    child: Text("${value.substring(0, value.length - 3)}",
+    child: Text(value.substring(0, value.length - 3),
         style: numbersTextStyle(
             color: color ?? Colors.white,
             fontSizeFactor: 1.0,
@@ -66,7 +66,7 @@ Widget totalValue(BuildContext context, String value, {Color? color}) {
 Widget popupCustomerAddressesItemBuilder(
     BuildContext context, CustomerAddressesModel? item, bool isSelected) {
   return Container(
-    margin: EdgeInsets.symmetric(horizontal: 8),
+    margin: const EdgeInsets.symmetric(horizontal: 8),
     decoration: !isSelected
         ? null
         : BoxDecoration(
@@ -89,7 +89,7 @@ Widget popupCustomerAddressesItemBuilder(
 Widget customPopupCustomerItemBuilder(
     BuildContext context, CompanyModel? item, bool isSelected) {
   return Container(
-    margin: EdgeInsets.symmetric(horizontal: 8),
+    margin: const EdgeInsets.symmetric(horizontal: 8),
     decoration: !isSelected
         ? null
         : BoxDecoration(

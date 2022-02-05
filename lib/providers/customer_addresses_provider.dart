@@ -1,7 +1,9 @@
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+// import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 class CustomerAddressesProvider {
   static List<String> get _addressesColumns => [
@@ -128,7 +130,7 @@ class CustomerAddressesProvider {
           limit: 20);
       return res ?? [];
     } catch (e) {
-      print(e);
+      printConsole(e);
       return [];
     }
   }

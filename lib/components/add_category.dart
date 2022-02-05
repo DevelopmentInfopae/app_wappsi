@@ -21,7 +21,7 @@ class _AddCategoryState extends State<AddCategory> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Image(
+            icon: const Image(
               image: AssetImage('assets/images/x.png'),
             )),
         title: Text(
@@ -31,7 +31,7 @@ class _AddCategoryState extends State<AddCategory> {
             fontSize: 20.0,
           ),
         ),
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0.0,
@@ -42,7 +42,7 @@ class _AddCategoryState extends State<AddCategory> {
           children: [
             AppTextField(
               textFieldType: TextFieldType.NAME,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Fashion',
                 floatingLabelBehavior: FloatingLabelBehavior.always,

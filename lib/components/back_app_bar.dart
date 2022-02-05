@@ -2,14 +2,14 @@ import 'package:auto_size_text_pk/auto_size_text_pk.dart';
 import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
-import 'package:pos_wappsi/components/appBar.dart';
+import 'package:pos_wappsi/components/appbar.dart';
 import 'package:pos_wappsi/components/basic_widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 
 Widget _back(BuildContext context, {Function? onPop}) {
   final _size = MediaQuery.of(context).size;
   return Container(
-    padding: EdgeInsets.only(left: 10),
+    padding: const EdgeInsets.only(left: 10),
     // color:Colors.red,
     child: IconButton(
         // color: Colors.red,
@@ -83,7 +83,7 @@ Widget _text(
       AutoSizeText(
         title,
         maxLines: 1,
-        style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w900),
+        style: const TextStyle(fontSize: 30.0, fontWeight: FontWeight.w900),
       ),
       subtitle == null
           ? Container()

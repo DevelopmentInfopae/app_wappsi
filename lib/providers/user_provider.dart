@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
-import 'package:pos_wappsi/providers/API_provider.dart';
+import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/utils/manage_server_resp.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 class UserProvider {
   static Future<Map<String, dynamic>> logout() async {
-    DataProvider api = new DataProvider();
+    DataProvider api = DataProvider();
 
     Map<String, String> headers = {'Authorization': dataBloc.getToken()};
 
@@ -18,11 +19,11 @@ class UserProvider {
       return {'status': false, 'body': res['body']};
     }
 
-    // print(res);
+    // printConsole(res);
   }
 
   static Future refreshToken() async {
-    DataProvider api = new DataProvider();
+    DataProvider api = DataProvider();
 
     Map<String, String> headers = {'Authorization': dataBloc.getToken()};
 
@@ -37,12 +38,12 @@ class UserProvider {
       return res;
     }
 
-    print(res);
+    printConsole(res);
   }
 
   static Future<bool> verifyIfUserNameExist(
       BuildContext context, String userName) async {
-    final apiProvider = new DataProvider();
+    final apiProvider = DataProvider();
 
     final response = await apiProvider.postPetition(
         verifyUserNameEndP, {'username': userName}, dataBloc.getHeaders());
@@ -54,7 +55,7 @@ class UserProvider {
 
   static Future<bool> verifyIfCompanyHaveUser(
       BuildContext context, String companyId) async {
-    final apiProvider = new DataProvider();
+    final apiProvider = DataProvider();
 
     final response = await apiProvider.postPetition(
         verifyUserExistEndP, {'company_id': companyId}, dataBloc.getHeaders());

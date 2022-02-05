@@ -17,7 +17,7 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 // class to show product indormation in form of a card
 
 class ProductCard extends StatefulWidget {
-  ProductCard(
+  const ProductCard(
       {Key? key,
       required this.product,
       required this.formKey,
@@ -32,11 +32,11 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  // final FocusNode quantityFocusNode = new FocusNode();
+  // final FocusNode quantityFocusNode = FocusNode();
 
-  // final widget.formKey = new GlobalKey<FormState>();
+  // final widget.formKey = GlobalKey<FormState>();
 
-  final _quantityController = new TextEditingController();
+  final _quantityController = TextEditingController();
 
   late Size _size;
 
@@ -73,7 +73,7 @@ class _ProductCardState extends State<ProductCard> {
             _delete().paddingOnly(right: 5)
           ],
         ),
-        Divider(
+        const Divider(
           height: 1,
           color: Colors.black12,
           thickness: 1,
@@ -123,7 +123,7 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _textQty() {
-    return Container(
+    return SizedBox(
       width: 55,
       child: TextFormField(
         onEditingComplete: () {
@@ -180,7 +180,7 @@ class _ProductCardState extends State<ProductCard> {
               } else {
                 final res = await posBloc.addProductQuantity(
                     widget.product.key, productInt);
-                // print(res);
+                // printConsole(res);
                 if (!res) {
                   _stockAlert();
 
@@ -193,7 +193,7 @@ class _ProductCardState extends State<ProductCard> {
           }
         },
         validator: (value) {
-          if (value!.length > 0) {
+          if (value!.isNotEmpty) {
             return isNumeric(value) ? null : 'El valor ingresado no es valido';
           } else {
             // setState(() {
@@ -207,7 +207,7 @@ class _ProductCardState extends State<ProductCard> {
 
   Widget _rmQty() {
     return AppButton(
-      padding: EdgeInsets.symmetric(horizontal: 7, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
       margin: EdgeInsets.zero,
       color: Colors.grey[100],
       width: 10,
@@ -225,7 +225,7 @@ class _ProductCardState extends State<ProductCard> {
           }
         });
       },
-      child: Icon(
+      child: const Icon(
         Icons.remove,
         color: Colors.black,
       ),
@@ -234,7 +234,7 @@ class _ProductCardState extends State<ProductCard> {
 
   Widget _addQty() {
     return AppButton(
-      padding: EdgeInsets.symmetric(horizontal: 7, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
       color: Colors.grey[100],
       margin: EdgeInsets.zero,
       width: 10,
@@ -255,7 +255,7 @@ class _ProductCardState extends State<ProductCard> {
               'assets/images/out-of-stock.png');
         }
       },
-      child: Icon(
+      child: const Icon(
         Icons.add,
         color: Colors.red,
       ),
@@ -265,19 +265,19 @@ class _ProductCardState extends State<ProductCard> {
   Widget _delete() {
     // Delete a prodcut from sales's cart (bloc_sale)
     return AppButton(
-      padding: EdgeInsets.symmetric(horizontal: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 5),
       margin: EdgeInsets.zero,
       elevation: 0,
       shapeBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
-          side: BorderSide(color: Colors.black26)),
+          side: const BorderSide(color: Colors.black26)),
       width: 30,
       onTap: () {
         // setState(() {
         posBloc.removeProduct(widget.product.key);
         // });
       },
-      child: Icon(
+      child: const Icon(
         Icons.delete,
         size: 30,
         color: Colors.redAccent,
@@ -320,12 +320,12 @@ class _ProductCardState extends State<ProductCard> {
   _updateQuantityValue() {
     final value = posBloc.getProductData(widget.product.key)!.quantity;
 
-    // print(_quantityController.text);
+    // printConsole(_quantityController.text);
     if (value.toString().endsWith('.0')) {
       _quantityController.text = value.toInt().toString();
     } else {
       _quantityController.text = value.toString();
-      // print(_quantityController.text);
+      // printConsole(_quantityController.text);
     }
 
     if (value == 1.0) {

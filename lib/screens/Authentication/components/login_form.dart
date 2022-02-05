@@ -87,7 +87,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
       // nextFocus: passwordFocusNode,
 
       validator: (value) {
-        if (value!.length == 0) {
+        if (value!.isEmpty) {
           return "Debe suministrar un nombre de usuario";
         }
       },
@@ -109,12 +109,12 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
     return ButtonGlobalWithoutIcon(
         buttontext: 'Iniciar sesión',
         buttonDecoration: BoxDecoration(
-            borderRadius: BorderRadius.all(
+            borderRadius: const BorderRadius.all(
               Radius.circular(5),
             ),
             // to change color based on _isloading property
             color: loginForm.loading ? Colors.grey : pColor),
-        onPressed: loginForm.loading ? null : () => _login(loginForm, context));
+        onPressed: loginForm.loading ? (){} : ()async=>await _login(loginForm, context));
   }
 
   _login(LoginFormProvider loginForm, BuildContext context,

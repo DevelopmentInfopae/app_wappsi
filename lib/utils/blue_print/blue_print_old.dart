@@ -7,7 +7,7 @@ import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 // import 'package:pos_wappsi/bloc/printer_bloc.dart';
-import 'package:pos_wappsi/config/regimen_personT_form_params.dart';
+import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 import 'blue_print_functions.dart';
@@ -221,9 +221,9 @@ class PrintFormat {
 
   _footer() async {
     final List<String> footer = posBloc.getPrintData!['footer'];
-    footer.forEach((element) {
+    for (var element in footer) {
       bluetooth.printCustom(element, 1, 1);
-    });
+    }
   }
 
   String _getEmptySpaces(int n) {
@@ -272,9 +272,9 @@ class PrintFormat {
       {'from': '<p>', 'replace': ''},
       {'from': '</p>', 'replace': ''},
     ];
-    chr.forEach((element) {
+    for (var element in chr) {
       character = character.replaceAll(element['from']!, element['replace']!);
-    });
+    }
     return character;
   }
 }

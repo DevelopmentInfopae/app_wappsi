@@ -6,8 +6,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:google_fonts/google_fonts.dart';
 // import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/components/appBar.dart';
-import 'package:pos_wappsi/components/app_bar_leading.dart';
+import 'package:pos_wappsi/components/appbar.dart';
+import 'package:pos_wappsi/components/appbar_leading.dart';
 // import 'package:pos_wappsi/screens/Notifications/notification_screen.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/components/widgets.dart';
@@ -160,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // aplciation functions
   Widget _options() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Wrap(
         // physics: NeverScrollableScrollPhysics(),
         // shrinkWrap: true,

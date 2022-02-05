@@ -11,8 +11,8 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 Widget registerInput(BuildContext context, RegisterFormProvider cashAccForm,
     FocusNode valueFocus,
     {String action = 'open',
-    label: '',
-    textAlign: TextAlign.center,
+    label = '',
+    textAlign = TextAlign.center,
     TextStyle? style = const TextStyle(fontSize: 18),
     bool autoFocus = true}) {
   return Padding(
@@ -37,7 +37,7 @@ Widget registerInput(BuildContext context, RegisterFormProvider cashAccForm,
       onFieldSubmitted: (_) =>
           sendRegisterAction(context, cashAccForm, valueFocus, action: action),
       validator: (value) {
-        if (value!.length > 0) {
+        if (value!.isNotEmpty) {
           return cashAccForm
                   .isNumeric(value.replaceAll(',', '').replaceAll("\$", ''))
               ? null

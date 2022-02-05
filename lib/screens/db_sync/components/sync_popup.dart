@@ -16,7 +16,7 @@ class SyncAlertDialog extends StatefulWidget {
 
   @override
   SyncAlertDialogState createState() {
-    return new SyncAlertDialogState();
+    return SyncAlertDialogState();
   }
 }
 
@@ -35,33 +35,31 @@ class SyncAlertDialogState extends State<SyncAlertDialog> {
   // late Color _pc;
   // late TextTheme _textTheme;
 
-  final syncDB = new SyncDBProvider();
+  final syncDB = SyncDBProvider();
 
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
     // _pc = pColor;
     // _textTheme = Theme.of(context).textTheme;
-    return Container(
-      child: CupertinoAlertDialog(
-        title: Text('Sincronizando Base de Datos'),
-        content: _elementsLoading(),
-        actions: [
-          Container(
-            color: pColor.withOpacity(0.7),
-            child: CupertinoDialogAction(
-              child: Text(
-                'Aceptar',
-                style: TextStyle(color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
+    return CupertinoAlertDialog(
+      title: const Text('Sincronizando Base de Datos'),
+      content: _elementsLoading(),
+      actions: [
+        Container(
+          color: pColor.withOpacity(0.7),
+          child: CupertinoDialogAction(
+            child: const Text(
+              'Aceptar',
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
             ),
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

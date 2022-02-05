@@ -408,12 +408,12 @@ class PaymentsModel {
   static List<PaymentsModel> fromJsonList(List<Map> list) {
     List<PaymentsModel> payments = [];
     Map<String, dynamic> temp = {};
-    list.forEach((item) {
+    for (var item in list) {
       for (var i = 0; i < item.keys.length; i++) {
         temp[item.keys.toList()[i]] = item.values.toList()[i];
       }
       payments.add(PaymentsModel.fromJson(temp));
-    });
+    }
 
     return payments;
 

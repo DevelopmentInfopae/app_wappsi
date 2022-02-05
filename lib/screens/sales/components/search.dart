@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/product_card.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 Widget buildBody(
     {String action = 'add_to_cart', Stream<List<ProductModel>>? stream}) {
   final time = DateTime.now();
-  print('BuildBody at ${time.second}:${time.millisecond}');
+  printConsole('BuildBody at ${time.second}:${time.millisecond}');
   return _productos(action, stream);
 }
 

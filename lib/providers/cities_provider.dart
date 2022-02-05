@@ -1,16 +1,18 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+// import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/cities_model.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 import 'local_db_provider.dart';
 
 class CitiesProvider {
   static List<CitiesModel> fromJsonFileList(List<Map<String, dynamic>> list) {
     List<CitiesModel> _list = [];
-    list.forEach((element) {
+    for (var element in list) {
       _list.add(CitiesModel.fromJson(element));
-    });
+    }
     return _list;
   }
 
@@ -22,7 +24,7 @@ class CitiesProvider {
       final List temp = await json.decode(response);
       data = temp.map((e) => CitiesModel.fromJson(e).toJson()).toList();
     } catch (e) {
-      print(e);
+      printConsole(e);
     }
 
     return fromJsonFileList(data);
@@ -37,7 +39,7 @@ class CitiesProvider {
       // data = queryResultToMapList(temp);
       data = temp.map((e) => e as Map<String, dynamic>).toList();
     } catch (e) {
-      print(e);
+      printConsole(e);
     }
 
     return await DBProvider.db.insertOrUpdateQuerys('sma_cities', data);
@@ -54,12 +56,12 @@ class CitiesProvider {
     List<CitiesModel> list = [];
     if (data != null) {
       Map<String, dynamic> temp = {};
-      data.forEach((item) {
+      for (var item in data) {
         for (var i = 0; i < item.keys.length; i++) {
           temp[item.keys.toList()[i]] = item.values.toList()[i];
         }
         list.add(CitiesModel.fromJson(temp));
-      });
+      }
     }
 
     return list;

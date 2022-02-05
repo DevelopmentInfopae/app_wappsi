@@ -16,7 +16,7 @@ class ProfileScreen extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         dataBloc.homeKey.currentState?.changeBottomIndex(1);
-        // print('here i am');
+        // printConsole('here i am');
         return true;
       },
       child: Scaffold(

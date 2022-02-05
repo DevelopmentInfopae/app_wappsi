@@ -8,9 +8,9 @@ import 'local_db_provider.dart';
 class StatesProvider {
   static List<StatesModel> fromJsonFileList(List<Map<String, dynamic>> list) {
     List<StatesModel> _list = [];
-    list.forEach((element) {
+    for (var element in list) {
       _list.add(StatesModel.fromJson(element));
-    });
+    }
     return _list;
   }
 
@@ -30,7 +30,7 @@ class StatesProvider {
       final List temp = await json.decode(response);
       data = temp.map((e) => StatesModel.fromJson(e).toJson()).toList();
     } catch (e) {
-      // print(e);
+      // printConsole(e);
     }
 
     return await DBProvider.db.insertOrUpdateQuerys('sma_states', data);
@@ -50,12 +50,12 @@ class StatesProvider {
     List<StatesModel> list = [];
     if (data != null) {
       Map<String, dynamic> temp = {};
-      data.forEach((item) {
+      for (var item in data) {
         for (var i = 0; i < item.keys.length; i++) {
           temp[item.keys.toList()[i]] = item.values.toList()[i];
         }
         list.add(StatesModel.fromJson(temp));
-      });
+      }
     }
 
     return list;

@@ -4,11 +4,12 @@ import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/local_sales_model.dart';
 import 'package:pos_wappsi/models/sale_model.dart';
-import 'package:pos_wappsi/providers/API_provider.dart';
+import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/local_sale_items_provider.dart';
 import 'package:pos_wappsi/providers/payment_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class POSSaleProvider{
@@ -22,7 +23,7 @@ class POSSaleProvider{
     final sale =
         SaleModel.buildSale(dataBloc.userData!, productsDetails).toJson();
     // final debug = sale.toString();
-    final api = new DataProvider();
+    final api = DataProvider();
 
     try {
       final res =
@@ -41,7 +42,7 @@ class POSSaleProvider{
             scaffoldAlert(
                 context,
                 res['body']['error_message'] ?? res['body']['message'],
-                Duration(seconds: 2));
+                const Duration(seconds: 2));
             final Map<String, dynamic> changes = res['body']['data'];
             // to show changes in costumer or products
             // String chText = _getChangesString(changes);
@@ -90,7 +91,7 @@ class POSSaleProvider{
               // Verify if sale items were saved successfully
               if (saleItemsStatus && paymentsStatus) {
                 posBloc.setPrintData(printData);
-                scaffoldAlert(context, 'Venta creada', Duration(seconds: 1));
+                scaffoldAlert(context, 'Venta creada', const Duration(seconds: 1));
                 result = true;
               }
             }
@@ -102,7 +103,7 @@ class POSSaleProvider{
         }
       }
     } catch (e) {
-      print(e);
+      printConsole(e);
       hideCurrentScaffoldAlert(context);
       confirmDialog(context, e.toString(), 'assets/images/browser.png');
     }

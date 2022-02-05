@@ -22,14 +22,14 @@ class Products extends StatefulWidget {
 
 class _ProductsState extends State<Products> {
   List<ProductModel> products = [];
-  // final _searchFocusNode = new FocusNode();
+  // final _searchFocusNode = FocusNode();
   final _productsStream = StreamController<List<ProductModel>>.broadcast();
-  final _searchController = new FloatingSearchBarController();
+  final _searchController = FloatingSearchBarController();
 
   late Size _size;
 
-  // FloatingSearchBarController _controller = new FloatingSearchBarController();
-  Map<String, dynamic> _searchParams = {};
+  // FloatingSearchBarController _controller = FloatingSearchBarController();
+  final Map<String, dynamic> _searchParams = {};
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class _ProductsState extends State<Products> {
     return WillPopScope(
       onWillPop: () async {
         dataBloc.homeKey.currentState?.changeBottomIndex(1);
-        // print('here i am');
+        // printConsole('here i am');
         return true;
       },
       child: Scaffold(
@@ -97,7 +97,7 @@ class _ProductsState extends State<Products> {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
           color: Colors.grey,
           offset: Offset(0.0, 1.0), //(x,y)
@@ -109,17 +109,17 @@ class _ProductsState extends State<Products> {
 
   Widget _searchField() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
           color: Colors.grey[200],
-          borderRadius: BorderRadius.all(Radius.circular(10))),
+          borderRadius: const BorderRadius.all(Radius.circular(10))),
       child: FloatingSearchAppBar(
           controller: _searchController,
           hint: ' Buscar producto',
           titleStyle: buttonsSmallTextStyle(context),
           transitionDuration: const Duration(milliseconds: 800),
           clearQueryOnClose: true,
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
           // alwaysOpened: true,
 
           hintStyle: buttonsSmallTextStyle(context),
@@ -158,13 +158,13 @@ class _ProductsState extends State<Products> {
                         loadInitialQtty: true,
                         qttyKey: 'quantity'));
 
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(),
                     );
                   }
                 });
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }

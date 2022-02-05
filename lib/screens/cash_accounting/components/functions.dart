@@ -42,7 +42,7 @@ _executeAction(String action, BuildContext context,
 _movement(BuildContext context, RegisterFormProvider registerProvider,
     bool syncDB) async {
   // loading(context);
-  scaffoldAlert(context, 'Realizando movimiento...', Duration(seconds: 10));
+  scaffoldAlert(context, 'Realizando movimiento...', const Duration(seconds: 10));
 
   // diable login button
   registerProvider.isLoading = true;
@@ -110,7 +110,7 @@ _open(BuildContext context, RegisterFormProvider registerProvider,
           RegisterModel.fromJson(res['body']['register_data']));
     }
 
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     if (res['status'] == 1) {
       syncDB
           ? WidgetsBinding.instance!.addPostFrameCallback((_) {
@@ -133,7 +133,7 @@ _open(BuildContext context, RegisterFormProvider registerProvider,
       String strMessage = '';
       try {
         final m = res['body']['message'] as Map;
-        m.values.forEach((e) {
+        for (var e in m.values) {
           // if (e = m.values.first) {
           // strMessage += e;
           // } else {
@@ -143,7 +143,7 @@ _open(BuildContext context, RegisterFormProvider registerProvider,
             strMessage += e;
           }
           // }
-        });
+        }
       } catch (e) {
         strMessage = res['body']['message'].toString();
       }

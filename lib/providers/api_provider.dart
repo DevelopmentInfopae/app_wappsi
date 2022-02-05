@@ -5,42 +5,39 @@ import 'package:dio/dio.dart';
 // import 'package:nb_utils/src/extensions/string_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/config/environment.dart';
-import 'package:pos_wappsi/config/host_params.dart';
+// import 'package:pos_wappsi/config/host_params.dart';
+import 'package:pos_wappsi/environment/environment.dart';
 
 import 'dart:async';
 // import 'dart:convert';
 import 'dart:io';
 
-// import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
-// import 'package:pos_wappsi/constant.dart';
+
 
 class DataProvider {
   // POST petitons
   Future<Map<String, dynamic>> postPetition(
       String endpoint, Map<String, dynamic> data, Map<String, String> headers,
       {int awaitTime = 30}) async {
+    // ignore: prefer_typing_uninitialized_variables
     var resp;
     // add Access-Control-Allow-Origin header
     // headers['Access-Control-Allow-Origin'] = '*';
     var dio = Dio();
     // dio.options.
     dio.options.baseUrl = ((dataBloc.userData == null
-            ? HOST
+            ? Environment().config.apiHost
             : dataBloc.userData?.hostUrl ?? '')) +
-        '/wappsi_apis/';
+        Environment().config.hostFolder;
     // dio.options.baseUrl = LHOST;
     dio.options.headers = headers;
     // to seconds to milliseconds, seconds * 1000
     dio.options.receiveTimeout = awaitTime * 1000;
     dio.options.method = 'POST';
 
-    // String body = jsonEncode(data);
 
-    // String url =
-    //     (dataBloc.userData == null ? HOST : dataBloc.userData?.hostUrl ?? '') +
-    //         '/wappsi_apis/$endpoint';
-    // print(data);
     try {
       resp = await dio
           .post(endpoint, data: data)
@@ -52,7 +49,7 @@ class DataProvider {
       if (resp.data is Map) {
         decodedRespBody = resp.data;
       } else {
-        // print(resp.body.toString());
+        // printConsole(resp.body.toString());
         return {
           'status': 2,
           'error': true,
@@ -65,7 +62,7 @@ class DataProvider {
         final messages = decodedRespBody['message'] as Map;
         message = messages.values.toList().join(' ');
       } catch (e) {
-        print(e);
+        printConsole(e);
         message = decodedRespBody['message'].toString();
       }
       decodedRespBody['message'] = message;
@@ -85,7 +82,7 @@ class DataProvider {
             'body': decodedRespBody
           };
         } else {
-          // print(resp['status']);
+          // printConsole(resp['status']);
           return {
             'status': 2,
             'error': decodedRespBody['error'],
@@ -111,7 +108,7 @@ class DataProvider {
         }
       };
     } catch (e) {
-      print(e);
+      printConsole(e);
       return {
         'status': 0,
         'error': true,
@@ -125,15 +122,16 @@ class DataProvider {
   // GET
   Future<Map<String, dynamic>> getPetition(
       String endpoint, Map<String, String> headers) async {
+    // ignore: prefer_typing_uninitialized_variables
     var resp;
 
     var dio = Dio();
     // headers['Access-Control-Allow-Origin'] = '*';
 
     dio.options.baseUrl = ((dataBloc.userData == null
-            ? HOST
+            ? Environment().config.apiHost
             : dataBloc.userData?.hostUrl ?? '')) +
-        '/wappsi_apis/';
+        Environment().config.hostFolder;
     dio.options.headers = headers;
     dio.options.method = 'GET';
     // String url =
@@ -158,7 +156,7 @@ class DataProvider {
         final messages = decodedRespBody['message'] as Map;
         message = messages.values.toList().join(' ');
       } catch (e) {
-        print(e);
+        printConsole(e);
         message = decodedRespBody['message'].toString();
       }
       decodedRespBody['message'] = message;
@@ -179,7 +177,7 @@ class DataProvider {
             'body': decodedRespBody
           };
         } else {
-          // print(resp['status']);
+          // printConsole(resp['status']);
           return {
             'status': 2,
             'error': decodedRespBody['error'],
@@ -245,7 +243,7 @@ class DataProvider {
   //         'message': decodedRespBody['message']
   //       };
   //     }else {
-  //       // print(resp['status']);
+  //       // printConsole(resp['status']);
   //       return {'status': 3, 'message': 'Something went wrong, try again!', 'body': null};
   //     }
   //   }
@@ -254,7 +252,7 @@ class DataProvider {
   //     return {'status': 1, 'message': 'Verify your internet connection', 'body': null};
   //       // controlador = 'sinConexion';
   //   } on http.ClientException {
-  //     // print('ClientException');
+  //     // printConsole('ClientException');
   //     return {'status': 2, 'message': 'Something went wrong, try again', 'body': null};
   //   } on TimeoutException {
   //     return {'status': 3, 'message': 'No answer, try again', 'body': null};

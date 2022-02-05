@@ -39,7 +39,7 @@ class _CustomerCardListState extends State<CustomerCardList> {
           controller: _controller,
           padding: EdgeInsets.zero,
           itemCount: widget.customer.length + (_allLoaded ? 1 : 0),
-          physics: ClampingScrollPhysics(),
+          physics: const ClampingScrollPhysics(),
           separatorBuilder: (context, index) => const Divider(
             height: 5,
           ),
@@ -52,8 +52,8 @@ class _CustomerCardListState extends State<CustomerCardList> {
             } else {
               return Container(
                 width: _size.width,
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: Text('Sin elementos que mostrar').center(),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: const Text('Sin elementos que mostrar').center(),
               );
             }
             // return Container();
@@ -65,7 +65,7 @@ class _CustomerCardListState extends State<CustomerCardList> {
   }
 
   void infinityScrollListener() async {
-    // print(_controller.position.extentAfter);
+    // printConsole(_controller.position.extentAfter);
     if (_controller.position.pixels >= _controller.position.maxScrollExtent &&
         !_loading) {
       setState(() {

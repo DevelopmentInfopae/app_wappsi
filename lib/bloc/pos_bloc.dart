@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+// import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
@@ -16,6 +17,7 @@ import 'package:pos_wappsi/providers/local_db_provider.dart';
 
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 // import 'package:pos_wappsi/utils/local_storage/local_db.dart';
 
@@ -146,7 +148,7 @@ class POSBloc {
         res = await addProductQuantity(key, p.quantity + product.quantity);
       }
     } else if (dataBloc.settings!['item_addition'] == 0) {
-      Random random = new Random();
+      Random random = Random();
       int randomNumber = random.nextInt(300);
       final key = product.id.toString() + '-' + randomNumber.toString();
 
@@ -191,7 +193,7 @@ class POSBloc {
   Future<bool> addProductQuantity(String key, double value) async {
     bool res = false;
     if (dataBloc.settings?.isNotEmpty ?? false) {
-      // print(dataBloc.settings?['overselling']??);
+      // printConsole(dataBloc.settings?['overselling']??);
       // verify overselling setting to avoid overselling or not
       if (dataBloc.settings!['overselling'] == 0) {
         if (_productsController.value[key]!.inventory < value) {
@@ -251,7 +253,7 @@ class POSBloc {
   /// When parameters of product price calculation change, it's
   /// neccesary to recalculate product prices, this function make
   /// current product list empty and then introduce all products
-  /// again recalculating prices for new parameters.
+  /// again recalculating prices for parameters.
   Future<bool> reloadProducts() async {
     if (_productsController.hasValue) {
       try {
@@ -273,13 +275,13 @@ class POSBloc {
             // final product = ProductModel.fromJson(pData,
             //     loadInitialQtty: true, qtyKey: keyInitialQtty);
             await addProduct(
-                {'product': temp[key], 'product_unit': pUnits[key] ?? null},getQttys: false);
+                {'product': temp[key], 'product_unit': pUnits[key]},getQttys: false);
           // }
         });
 
         return true;
       } catch (e) {
-        print(e);
+        printConsole(e);
         return false;
       }
     } else {
@@ -305,7 +307,9 @@ class POSBloc {
     if (_productUnitController.hasValue) {
       try {
         _productUnitController.value.remove(key);
-      } catch (e) {}
+      } catch (e) {
+        printConsole(e);
+      }
     }
   }
 
@@ -318,9 +322,9 @@ class POSBloc {
   /// Returns product information in [Map] format
   List<Map>? getProductsListMap() {
     List<Map> productsMap = [];
-    _productsController.value.values.forEach((element) {
+    for (var element in _productsController.value.values) {
       productsMap.add(element.toJson());
-    });
+    }
 
     return productsMap;
   }
@@ -330,10 +334,10 @@ class POSBloc {
     double subTotal = 0;
     // ignore: unnecessary_null_comparison
     if (_productsController.hasValue) {
-      _productsController.value.values.forEach((element) {
+      for (var element in _productsController.value.values) {
         double temp = element.getPriceWithIVA() * element.quantity;
         subTotal = subTotal + temp;
-      });
+      }
     }
 
     return subTotal;
@@ -344,10 +348,10 @@ class POSBloc {
     double total = 0;
     // ignore: unnecessary_null_comparison
     if (_productsController.hasValue) {
-      _productsController.value.values.forEach((element) {
+      for (var element in _productsController.value.values) {
         double temp = element.priceWithoutDiscount! * element.quantity;
         total = total + temp;
-      });
+      }
     }
 
     return total;
@@ -357,12 +361,12 @@ class POSBloc {
   double getTotalIVA() {
     double total = 0.0;
     if (_productsController.hasValue) {
-      _productsController.value.values.forEach((element) {
+      for (var element in _productsController.value.values) {
         double temp =
             (element.getPriceWithIVA() - element.getPriceWithoutIVA()) *
                 element.quantity;
         total = total + temp;
-      });
+      }
     }
     return total;
   }
@@ -372,10 +376,10 @@ class POSBloc {
     int count = 0;
     // ignore: unnecessary_null_comparison
     if (_productsController.hasValue) {
-      _productsController.value.values.forEach((element) {
+      for (var element in _productsController.value.values) {
         double temp = element.quantity;
         count = (count + temp).toInt();
-      });
+      }
     }
 
     return count;
@@ -389,15 +393,15 @@ class POSBloc {
   Map getIVAs() {
     Map ivasMap = {};
     Map temp = {};
-    _productsController.value.values.forEach((element) {
+    for (var element in _productsController.value.values) {
       temp[element.taxRate] = (temp[element.taxRate] ?? 0.0) +
           element.getPriceWithoutIVA() * element.quantity;
       ivasMap[element.taxRate] = {
         'value': temp[element.taxRate],
         'name': element.taxRateName
       };
-      // print('xd');
-    });
+      // printConsole('xd');
+    }
 
     return ivasMap;
   }

@@ -76,12 +76,12 @@ class UnitPricesModel {
   static List<UnitPricesModel> fromJsonList(List<Map> list) {
     List<UnitPricesModel> unitPrices = [];
     Map<String, dynamic> temp = {};
-    list.forEach((item) {
+    for (var item in list) {
       for (var i = 0; i < item.keys.length; i++) {
         temp[item.keys.toList()[i]] = item.values.toList()[i];
       }
       unitPrices.add(UnitPricesModel.fromJson(temp));
-    });
+    }
 
     return unitPrices;
 

@@ -17,19 +17,21 @@ import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/blue_print/blue_print.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 class PrintSettings extends StatefulWidget {
   final String print;
   final Map<String, String>? movementInfo;
   final Map<dynamic, dynamic>? posPrintData;
 
+  // ignore: use_key_in_widget_constructors
   /// Receive an string `print` wich could be ['settings','movement','pos'], with that, print
   /// diferent things depending on the `print`, also receive `movementInfo` wich is required when tryint
   /// to print movement receipt
-  PrintSettings(
-      {this.print = 'settings', this.movementInfo, this.posPrintData});
+  const PrintSettings(
+      {Key? key, this.print = 'settings', this.movementInfo, this.posPrintData}) : super(key: key);
   @override
-  _PrintSettingsState createState() => new _PrintSettingsState();
+  _PrintSettingsState createState() => _PrintSettingsState();
 }
 
 class _PrintSettingsState extends State<PrintSettings> {
@@ -78,7 +80,7 @@ class _PrintSettingsState extends State<PrintSettings> {
     final img = image;
     //if img is png convert to png
     if (img.substring(img.length - 4) == '.png') {
-      imgURL = "https://wappsi281.com" +
+      imgURL = dataBloc.userData!.hostUrl+
           "/wappsi_apis/public/utils/pngToJpg?img=" +
           imgURL;
     }
@@ -102,14 +104,14 @@ class _PrintSettingsState extends State<PrintSettings> {
     try {
       isConnected = await bluetooth.isConnected;
     } catch (e) {
-      print(e);
+      printConsole(e);
       isConnected = false;
     }
     List<BluetoothDevice> devices = [];
     try {
       devices = await bluetooth.getBondedDevices();
     } on PlatformException {
-      print('Error on getting bluetooth devices');
+      printConsole('Error on getting bluetooth devices');
     }
 
     try {
@@ -127,12 +129,12 @@ class _PrintSettingsState extends State<PrintSettings> {
             });
             break;
           default:
-            print(state);
+            printConsole(state);
             break;
         }
       });
     } catch (e) {
-      print(e);
+      printConsole(e);
     }
 
     if (!mounted) return;
@@ -221,23 +223,23 @@ class _PrintSettingsState extends State<PrintSettings> {
   void _disconnect() async {
     try {
       final res = await bluetooth.disconnect();
-      print(res);
+      printConsole(res);
       setState(() => _connected = false);
     } catch (e) {
-      print(e);
+      printConsole(e);
     }
   }
 
   //write to app path
   Future<void> writeToFile(ByteData data, String path) {
     final buffer = data.buffer;
-    return new io.File(path).writeAsBytes(
+    return io.File(path).writeAsBytes(
         buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
   }
 
   _noDeviceSelected(String message) {
     confirmDialog(context, message, 'assets/images/warning.png');
-    // await new Future.delayed(new Duration())
+    // await Future.delayed(Duration())
   }
 
   Widget _options() {
@@ -246,21 +248,21 @@ class _PrintSettingsState extends State<PrintSettings> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         AppButton(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           // color: _pc,
           onTap: () {
             initPlatformState();
           },
-          child: Text(
+          child: const Text(
             'Recargar',
             style: TextStyle(color: pColor),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 20,
         ),
         AppButton(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           color: _connected ? Colors.red : Colors.white,
           enabled: !_conecting,
           onTap: _connected ? _disconnect : _connect,
@@ -298,7 +300,7 @@ class _PrintSettingsState extends State<PrintSettings> {
       items: _devices,
       selectedItem: printerBloc.getPrinterDevice,
       emptyBuilder: (context, searchEntry) =>
-          Text('No se encontraron dispositivos').center(),
+          const Text('No se encontraron dispositivos').center(),
       dropdownSearchDecoration: InputDecoration(
         // errorText: 'Seleccione un dispositivo',
         helperText: 'Impresora POS Bluetooth ',
@@ -315,7 +317,7 @@ class _PrintSettingsState extends State<PrintSettings> {
         setState(() => _device = value);
       },
       // selectedItem: posBloc.getCustomer,
-      popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
 
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
@@ -327,7 +329,7 @@ class _PrintSettingsState extends State<PrintSettings> {
   Widget popupCustomItemBuilder(
       BuildContext context, BluetoothDevice? item, bool isSelected) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
           ? null
           : BoxDecoration(
@@ -365,7 +367,7 @@ class _PrintSettingsState extends State<PrintSettings> {
       },
       child: Row(
         children: [
-          Icon(Icons.arrow_back_ios, size: kIconSize, color: pColor,),
+          const Icon(Icons.arrow_back_ios, size: kIconSize, color: pColor,),
           Text(
             'Regresar',
             style: buttonsSmallTextStyle(context, color: pColor),
@@ -388,7 +390,7 @@ class _PrintSettingsState extends State<PrintSettings> {
           _connected = await bluetooth.isConnected ?? false;
           // });
         } catch (e) {
-          print(e);
+          printConsole(e);
         }
         if ((_connected)) {
           setState(() {
@@ -396,10 +398,10 @@ class _PrintSettingsState extends State<PrintSettings> {
             _printing = true;
           });
           if (widget.print == 'settings') {
-            printFormat = new PrintFormat(productsList: []);
-            scaffoldAlert(context, 'Impresión de prueba', Duration(seconds: 2));
+            printFormat = PrintFormat(productsList: []);
+            scaffoldAlert(context, 'Impresión de prueba', const Duration(seconds: 2));
             printFormat!.printTest();
-            await Future.delayed(Duration(seconds: 3));
+            await Future.delayed(const Duration(seconds: 3));
             hideCurrentScaffoldAlert(context);
             setState(() {
               _printing = false;
@@ -408,32 +410,32 @@ class _PrintSettingsState extends State<PrintSettings> {
           } else if (widget.print == 'movement' &&
               widget.movementInfo != null) {
             scaffoldAlert(context, 'Imprimiendo comprobante de movimiento',
-                Duration(seconds: 10));
+                const Duration(seconds: 10));
 
             final result = await printFormat!.printMovement(pathImage);
             if (result ?? false) {
-              await Future.delayed(Duration(seconds: 3));
+              await Future.delayed(const Duration(seconds: 3));
               hideCurrentScaffoldAlert(context);
               setState(() {
                 _printing = false;
               });
             } else {
-              scaffoldAlert(context, 'Error al imprimir', Duration(seconds: 3));
+              scaffoldAlert(context, 'Error al imprimir', const Duration(seconds: 3));
             }
           } else if (widget.print == 'pos') {
             scaffoldAlert(
-                context, 'Imprimiendo comprobante', Duration(seconds: 2));
+                context, 'Imprimiendo comprobante', const Duration(seconds: 2));
 
             final result =
                 await printFormat!.printPOS(pathImage, widget.posPrintData);
             if (result ?? false) {
-              await Future.delayed(Duration(seconds: 3));
+              await Future.delayed(const Duration(seconds: 3));
               hideCurrentScaffoldAlert(context);
               setState(() {
                 _printing = false;
               });
             } else {
-              scaffoldAlert(context, 'Error al imprimir', Duration(seconds: 3));
+              scaffoldAlert(context, 'Error al imprimir', const Duration(seconds: 3));
             }
           }
         } else {
@@ -445,7 +447,7 @@ class _PrintSettingsState extends State<PrintSettings> {
       },
       child: Row(
         children: [
-          Icon(Icons.print, size: kIconSize, color: pColor,),
+          const Icon(Icons.print, size: kIconSize, color: pColor,),
           Text(
             ' Imprimir',
             style: buttonsSmallTextStyle(context, color: pColor),

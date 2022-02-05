@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:intl/intl.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 // import 'dart:math';
 
@@ -22,14 +23,14 @@ bool isNumeric(String s) {
 }
 
 List getKeyValuesOfListMap(List<Map> map, String key) {
-  if (map.length > 0) {
+  if (map.isNotEmpty) {
     final List temp = [];
     try {
-      map.forEach((Map m) {
+      for (var m in map) {
         temp.add(m[key]);
-      });
+      }
     } catch (e) {
-      print(e);
+      printConsole(e);
     }
     return temp;
   } else {
@@ -42,7 +43,7 @@ List getKeyValuesOfListMap(List<Map> map, String key) {
 
 String getFormatedCurrency(double value, {int decimals = 2}) {
   final _formatCurrency =
-      new NumberFormat.simpleCurrency(decimalDigits: decimals);
+      NumberFormat.simpleCurrency(decimalDigits: decimals);
   return _formatCurrency.format(value);
 }
 
@@ -51,11 +52,11 @@ List<String> removeRareSpaceChr(String input) {
   input = input.trimLeft();
   final l = input.split('<p>');
   List<String> output = [];
-  l.forEach((element) {
+  for (var element in l) {
     String temp = replaceSpecialCharacters(element);
     temp = temp.trim();
     output.add(temp);
-  });
+  }
   return output;
 }
 
@@ -76,9 +77,9 @@ String replaceSpecialCharacters(String character) {
     {'from': '<p>', 'replace': ''},
     {'from': '</p>', 'replace': ''},
   ];
-  chr.forEach((element) {
+  for (var element in chr) {
     character = character.replaceAll(element['from']!, element['replace']!);
-  });
+  }
   return character;
 }
 
@@ -96,23 +97,21 @@ String capitalizeText(String value) {
   ];
   final specialLowerCases = ['de', 'la', 'el', 'los', 'las', 'y', 'o', 'con'];
 
-  if (value.length > 0) {
+  if (value.isNotEmpty) {
     final words = value.split(' ');
     String output = '';
-    if (words.length > 0) {
-      words.forEach((element) {
+    if (words.isNotEmpty) {
+      for (var element in words) {
         final temp = element.toLowerCase();
-        if (element == words.first && element.length > 0) {
+        if (element == words.first && element.isNotEmpty) {
           output =
               output + temp.substring(0, 1).toUpperCase() + temp.substring(1);
-        } else if (element.length > 0) {
-          if (specialUpperCases.where((element) => element == temp).length >
-              0) {
+        } else if (element.isNotEmpty) {
+          if (specialUpperCases.where((element) => element == temp).isNotEmpty) {
             output = output + ' ' + temp.toUpperCase();
           } else if (specialLowerCases
                   .where((element) => element == temp)
-                  .length >
-              0) {
+                  .isNotEmpty) {
             output = output + ' ' + temp;
           } else {
             output = output +
@@ -121,7 +120,7 @@ String capitalizeText(String value) {
                 temp.substring(1);
           }
         }
-      });
+      }
     } else {
       final temp = value.toLowerCase();
       output = temp.substring(0, 1).toUpperCase() + temp.substring(1);

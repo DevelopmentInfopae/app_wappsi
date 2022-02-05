@@ -2,6 +2,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/models/payment_model.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 import 'local_db_provider.dart';
 
@@ -17,7 +18,7 @@ class PaymentProvider {
         await element.savePayments();
       });
     } catch (e) {
-      print(e);
+      printConsole(e);
     }
     // Payment(
     //     saleId: saleId,
@@ -68,9 +69,9 @@ class PaymentProvider {
 
   static List<PaymentsModel> fromMapList(List<Map<String, dynamic>> list) {
     List<PaymentsModel> payments = [];
-    list.forEach((item) {
+    for (var item in list) {
       payments.add(PaymentsModel.fromJson(item));
-    });
+    }
 
     return payments;
 

@@ -1,21 +1,16 @@
 // import 'package:auto_size_text_pk/auto_size_text_pk.dart';
-import 'package:auto_size_text_pk/auto_size_text_pk.dart';
+
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/components/appBar.dart';
-import 'package:pos_wappsi/components/app_bar_leading.dart';
-import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
-// import 'package:pos_wappsi/constant.dart';
-import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/screens/home/components/bottom_navigation.dart';
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 import 'package:pos_wappsi/screens/home/components/tab_navigator.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/text_formating/functions.dart';
+
 import 'package:restart_app/restart_app.dart';
 
 class Home extends StatefulWidget {
@@ -90,7 +85,7 @@ class HomeState extends State<Home> {
     return Container(
         // color: Colors.white,
         // padding: EdgeInsets.symmetric(horizontal: 10),
-        decoration: BoxDecoration(color: Colors.white, boxShadow: [
+        decoration: const BoxDecoration(color: Colors.white, boxShadow: [
           BoxShadow(
             color: Colors.grey,
             offset: Offset(1.0, 0.0), //(x,y)
@@ -103,7 +98,7 @@ class HomeState extends State<Home> {
         child: Stack(
           children: [
             _bottomNavBar(_bottomIndex).paddingTop(2),
-            syncing ? LinearProgressIndicator() : Container()
+            syncing ? const LinearProgressIndicator() : Container()
           ],
         ));
   }
@@ -176,7 +171,7 @@ class HomeState extends State<Home> {
   }
 
   void selectTab(TabItem tabItem) {
-    // print(tabItem);
+    // printConsole(tabItem);
 
     if (tabItem == _currentTab) {
       // pop to first route
@@ -204,7 +199,7 @@ class HomeState extends State<Home> {
   }
 
   Widget _buildOffstageNavigator(TabItem tabItem) {
-    // print(tabItem);
+    // printConsole(tabItem);
     return Offstage(
       offstage: _currentTab != tabItem,
       child: TabNavigator(
