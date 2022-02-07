@@ -76,6 +76,10 @@ class DBProvider {
       await db.execute(saleItems);
       await db.execute(payment);
 
+      // orders tables
+      await db.execute(orderSaleItems);
+      await db.execute(orderSales);
+
       // index creation
       Batch batch = db.batch();
 

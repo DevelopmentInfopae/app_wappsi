@@ -57,7 +57,8 @@ class _SalePaymentState extends State<SalePayment> {
   // to disable paybutton when awaiting for response
   bool _sending = false;
 
-  final TextEditingController _paymentMethodController = TextEditingController();
+  final TextEditingController _paymentMethodController =
+      TextEditingController();
   // TextEditingController _paymentDocumentController =
   //     TextEditingController();
 
@@ -151,7 +152,7 @@ class _SalePaymentState extends State<SalePayment> {
         RichText(
           text: TextSpan(
               text: 'Numero de productos: ',
-              style:  buttonsSmallTextStyle(context).apply(color: _pc),
+              style: buttonsSmallTextStyle(context).apply(color: _pc),
               children: [
                 TextSpan(
                     text: '${posBloc.getProductsCount()}',
@@ -162,7 +163,7 @@ class _SalePaymentState extends State<SalePayment> {
         RichText(
           text: TextSpan(
               text: 'Numero de items: ',
-              style:  buttonsSmallTextStyle(context).apply(color: _pc),
+              style: buttonsSmallTextStyle(context).apply(color: _pc),
               children: [
                 TextSpan(
                     text: '${posBloc.getItemsCount()}',
@@ -555,7 +556,7 @@ class _SalePaymentState extends State<SalePayment> {
               const Text('Total entregado: '),
               Text(
                 getFormatedCurrency(_valueP.toDouble()),
-                style:  buttonsSmallTextStyle(context).apply(color: _pc),
+                style: buttonsSmallTextStyle(context).apply(color: _pc),
               ),
             ],
           ).withWidth(_size.width * 0.45),
@@ -565,7 +566,7 @@ class _SalePaymentState extends State<SalePayment> {
               const Text('Cambio: '),
               Text(
                 getFormatedCurrency(_valueP - posBloc.getSubTotal()),
-                style:  buttonsSmallTextStyle(context).apply(color: _pc),
+                style: buttonsSmallTextStyle(context).apply(color: _pc),
               ),
             ],
           ).withWidth(_size.width * 0.45)
@@ -578,7 +579,12 @@ class _SalePaymentState extends State<SalePayment> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        subTotal(large: true,color: Colors.white, defaultValue: posBloc.getSubTotal()).paddingLeft(8).expand(),
+        subTotal(
+                large: true,
+                color: Colors.white,
+                defaultValue: posBloc.getSubTotal())
+            .paddingLeft(8)
+            .expand(),
         sendButton().flexible(),
       ],
     );
@@ -648,7 +654,7 @@ class _SalePaymentState extends State<SalePayment> {
             },
       child: Text('Finalizar venta',
           style: buttonsSmallTextStyle(context,
-              color: enabled ? pColor:greyColor)),
+              color: enabled ? pColor : greyColor)),
     );
   }
 }

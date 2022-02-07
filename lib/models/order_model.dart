@@ -4,167 +4,172 @@
 
 import 'dart:convert';
 
+import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/bloc/orders_bloc.dart';
+import 'package:pos_wappsi/models/user_model.dart';
+
 // import 'package:pos_wappsi/bloc/orders_bloc.dart';
 // import 'package:pos_wappsi/models/user_model.dart';
 
 class OrderModel {
-    OrderModel({
-        this.idCloud,
-        required this.id,
-        required this.date,
-        required this.referenceNo,
-        required this.customerId,
-        required this.customer,
-        required this.billerId,
-        required this.biller,
-        required this.warehouseId,
-        this.note,
-        this.staffNote,
-        required this.total,
-        required this.productDiscount,
-        this.orderDiscountId,
-        required this.totalDiscount,
-        required this.orderDiscount,
-        required this.productTax,
-        this.orderTaxId,
-        required this.orderTax,
-        required this.totalTax,
-        required this.shipping,
-        required this.grandTotal,
-        required this.orderStatus,
-        this.paymentStatus,
-        this.paymentTerm,
-        required this.dueDate,
-        required this.createdBy,
-        this.updatedBy,
-        this.updatedAt,
-        required this.totalItems,
-        required this.pos,
-        required this.paid,
-        this.returnId,
-        required this.surcharge,
-        this.attachment,
-        this.returnOrderRef,
-        this.orderId,
-        required this.returnOrderTotal,
-        this.rounding,
-        this.suspendNote,
-        required this.api,
-        required this.shop,
-        required this.sellerId,
-        required this.addressId,
-        this.reserveId,
-        required this.hash,
-        this.manualPayment,
-        this.cgst,
-        this.sgst,
-        this.igst,
-        required this.paymentMethod,
-        required this.payPartner,
-        required this.reteFuentePercentage,
-        required this.reteFuenteTotal,
-        required this.reteFuenteAccount,
-        this.reteFuenteBase,
-        required this.reteIvaPercentage,
-        required this.reteIvaTotal,
-        required this.reteIvaAccount,
-        this.reteIvaBase,
-        required this.reteIcaPercentage,
-        required this.reteIcaTotal,
-        required this.reteIcaAccount,
-        this.reteIcaBase,
-        required this.reteOtherPercentage,
-        required this.reteOtherTotal,
-        required this.reteOtherAccount,
-        this.reteOtherBase,
-        this.resolucion,
-        required this.documentTypeId,
-        this.destinationReferenceNo,
-        required this.registrationDate,
-        this.wmsPickingStatus,
-        this.wmsPackingStatus,
-    });
+  OrderModel({
+    this.idCloud,
+    this.id,
+    this.date,
+    required this.referenceNo,
+    required this.customerId,
+    required this.customer,
+    required this.billerId,
+    required this.biller,
+    required this.warehouseId,
+    this.note,
+    this.staffNote,
+    required this.total,
+    required this.productDiscount,
+    this.orderDiscountId,
+    required this.totalDiscount,
+    required this.orderDiscount,
+    required this.productTax,
+    this.orderTaxId,
+    required this.orderTax,
+    required this.totalTax,
+    this.shipping,
+    required this.grandTotal,
+    required this.orderStatus,
+    this.paymentStatus,
+    this.paymentTerm,
+    required this.dueDate,
+    required this.createdBy,
+    this.updatedBy,
+    this.updatedAt,
+    required this.totalItems,
+    this.pos,
+    this.paid = 0,
+    this.returnId,
+    this.surcharge,
+    this.attachment,
+    this.returnOrderRef,
+    this.orderId,
+    this.returnOrderTotal,
+    this.rounding,
+    this.suspendNote,
+    this.api,
+    required this.shop,
+    required this.sellerId,
+    required this.addressId,
+    this.reserveId,
+    this.hash,
+    this.manualPayment,
+    this.cgst,
+    this.sgst,
+    this.igst,
+    required this.paymentMethod,
+    required this.payPartner,
+    this.reteFuentePercentage,
+    this.reteFuenteTotal,
+    this.reteFuenteAccount,
+    this.reteFuenteBase,
+    this.reteIvaPercentage,
+    this.reteIvaTotal,
+    this.reteIvaAccount,
+    this.reteIvaBase,
+    this.reteIcaPercentage,
+    this.reteIcaTotal,
+    this.reteIcaAccount,
+    this.reteIcaBase,
+    this.reteOtherPercentage,
+    this.reteOtherTotal,
+    this.reteOtherAccount,
+    this.reteOtherBase,
+    this.resolucion,
+    required this.documentTypeId,
+    this.destinationReferenceNo,
+    this.registrationDate,
+    this.wmsPickingStatus,
+    this.wmsPackingStatus,
+  });
 
-    int? idCloud;
-    int id;
-    String date;
-    String referenceNo;
-    int customerId;
-    String customer;
-    int billerId;
-    String biller;
-    int warehouseId;
-    dynamic note;
-    dynamic staffNote;
-    int total;
-    int productDiscount;
-    dynamic orderDiscountId;
-    int totalDiscount;
-    int orderDiscount;
-    int productTax;
-    dynamic orderTaxId;
-    int orderTax;
-    int totalTax;
-    int shipping;
-    int grandTotal;
-    String orderStatus;
-    dynamic paymentStatus;
-    dynamic paymentTerm;
-    String dueDate;
-    int createdBy;
-    dynamic updatedBy;
-    dynamic updatedAt;
-    int totalItems;
-    int pos;
-    int paid;
-    dynamic returnId;
-    int surcharge;
-    dynamic attachment;
-    dynamic returnOrderRef;
-    dynamic orderId;
-    int returnOrderTotal;
-    dynamic rounding;
-    dynamic suspendNote;
-    int api;
-    int shop;
-    int sellerId;
-    int addressId;
-    dynamic reserveId;
-    String hash;
-    dynamic manualPayment;
-    dynamic cgst;
-    dynamic sgst;
-    dynamic igst;
-    String paymentMethod;
-    int payPartner;
-    int reteFuentePercentage;
-    int reteFuenteTotal;
-    int reteFuenteAccount;
-    dynamic reteFuenteBase;
-    int reteIvaPercentage;
-    int reteIvaTotal;
-    int reteIvaAccount;
-    dynamic reteIvaBase;
-    int reteIcaPercentage;
-    int reteIcaTotal;
-    int reteIcaAccount;
-    dynamic reteIcaBase;
-    int reteOtherPercentage;
-    int reteOtherTotal;
-    int reteOtherAccount;
-    dynamic reteOtherBase;
-    dynamic resolucion;
-    int documentTypeId;
-    dynamic destinationReferenceNo;
-    String registrationDate;
-    dynamic wmsPickingStatus;
-    dynamic wmsPackingStatus;
+  int? idCloud;
+  int? id;
+  String? date;
+  String? referenceNo;
+  int customerId;
+  String customer;
+  int billerId;
+  String biller;
+  int warehouseId;
+  dynamic note;
+  dynamic staffNote;
+  double? total;
+  double productDiscount;
+  dynamic orderDiscountId;
+  double totalDiscount;
+  double orderDiscount;
+  double productTax;
+  dynamic orderTaxId;
+  int orderTax;
+  double totalTax;
+  double? shipping;
+  double grandTotal;
+  String orderStatus;
+  dynamic paymentStatus;
+  dynamic paymentTerm;
+  String? dueDate;
+  int createdBy;
+  dynamic updatedBy;
+  dynamic updatedAt;
+  int totalItems;
+  int? pos;
+  int paid;
+  dynamic returnId;
+  int? surcharge;
+  dynamic attachment;
+  dynamic returnOrderRef;
+  dynamic orderId;
+  int? returnOrderTotal;
+  dynamic rounding;
+  dynamic suspendNote;
+  int? api;
+  int shop;
+  int sellerId;
+  int addressId;
+  dynamic reserveId;
+  String? hash;
+  dynamic manualPayment;
+  dynamic cgst;
+  dynamic sgst;
+  dynamic igst;
+  String paymentMethod;
+  int? payPartner;
+  int? reteFuentePercentage;
+  int? reteFuenteTotal;
+  int? reteFuenteAccount;
+  dynamic reteFuenteBase;
+  int? reteIvaPercentage;
+  int? reteIvaTotal;
+  int? reteIvaAccount;
+  dynamic reteIvaBase;
+  int? reteIcaPercentage;
+  int? reteIcaTotal;
+  int? reteIcaAccount;
+  dynamic reteIcaBase;
+  int? reteOtherPercentage;
+  int? reteOtherTotal;
+  int? reteOtherAccount;
+  dynamic reteOtherBase;
+  dynamic resolucion;
+  String documentTypeId;
+  dynamic destinationReferenceNo;
+  String? registrationDate;
+  dynamic wmsPickingStatus;
+  dynamic wmsPackingStatus;
 
-    factory OrderModel.fromRawJson(String str) => OrderModel.fromJson(json.decode(str));
+  factory OrderModel.fromRawJson(String str) =>
+      OrderModel.fromJson(json.decode(str));
 
-    String toRawJson() => json.encode(toJson());
+  String toRawJson() => json.encode(toJson());
 
-    factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
+  factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
         idCloud: json["id_cloud"],
         id: json["id"],
         date: json["date"],
@@ -239,9 +244,9 @@ class OrderModel {
         registrationDate: json["registration_date"],
         wmsPickingStatus: json["wms_picking_status"],
         wmsPackingStatus: json["wms_packing_status"],
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "date": date,
         "reference_no": referenceNo,
@@ -315,9 +320,9 @@ class OrderModel {
         "registration_date": registrationDate,
         "wms_picking_status": wmsPickingStatus,
         "wms_packing_status": wmsPackingStatus,
-    };
+      };
 
-    static List<OrderModel> fromJsonList(List<Map> list) {
+  static List<OrderModel> fromJsonList(List<Map> list) {
     List<OrderModel> orders = [];
     Map<String, dynamic> temp = {};
     for (var item in list) {
@@ -331,60 +336,44 @@ class OrderModel {
 
     // prString(temp);
   }
-  @override
-  toString()=>referenceNo;
 
+  @override
+  toString() => referenceNo ?? '';
 
   /// Build an instance of OrderModel given productDetails, user, customer and
   /// customerAddress
-  // static OrderModel buildOrder(
-  //     UserModel user, Map<String, dynamic> productsDetails) {
-  //   final customer = orderBloc.getCustomer!;
-  //   final customerAddress = orderBloc.getCustomerAddresses!;
-
-  //   final today = DateTime.now();
-  //   DateTime? dueDate;
-  //   return OrderModel(
-  //       total: orderBloc.getSubTotal().toInt(),
-  //       grandTotal: orderBloc.getSubTotal().toInt(),
-  //       customer: orderBloc.getCustomer!.name??orderBloc.getCustomer!.company??'',
-  //       customerId: int.parse(orderBloc.getCustomer!.idCloud??'0'),
-  //       biller: user.billerName,
-  //       billerId: user.billerId,
-  //       posNote: orderBloc.getInvoiceNote ?? '',
-  //       verifyPrices: orderBloc.getVerifyPrices ?? 1,
-  //       sellerId: user.sellerId,
-  //       netPrice: productsDetails['net_price'],
-  //       quantity: productsDetails['quantity'],
-  //       unitPrice: productsDetails['unit_price'],
-  //       meanPaymentCodeFe: orderBloc.getPaymentMethod?.codeFe.toString(),
-  //       posbiller: user.billerId,
-  //       docTypeId: user.documentTypeId ?? 0,
-  //       warehouse: user.warehouseId,
-  //       seller: user.sellerId,
-  //       customer: customer.idCloud!,
-  //       productId: productsDetails['product_id'],
-  //       staffNote: orderBloc.getDispatchNote ?? '',
-  //       addressId: customerAddress.idCloud,
-  //       totalItems: orderBloc.getItemsCount(),
-  //       productTax: productsDetails['product_tax'],
-  //       paymentTerm: null,
-  //       duePayment: dueDate == null ? [] : [dueDate.toIso8601String()],
-  //       productUnit: productsDetails['product_unit'],
-  //       productType: productsDetails['product_type'],
-  //       productCode: productsDetails['product_code'],
-  //       productName: productsDetails['product_name'],
-  //       costCenterId: null,
-  //       productTaxVal: productsDetails['product_tax_val'],
-  //       realUnitPrice: productsDetails['real_unit_price'],
-  //       unitProductTax: productsDetails['unit_product_tax'],
-  //       customerBranch: customerAddress.idCloud,
-  //       documentTypeId: user.documentTypeId ?? null,
-  //       productTaxRate: productsDetails['product_tax_rate'],
-  //       productDiscount: productsDetails['product_discount'],
-  //       productDiscountVal: productsDetails['product_discount_val'],
-  //       productBaseQuantity: productsDetails['product_base_quantity'],
-  //       productUnitIdSelected: productsDetails['product_unit_id_selected'],
-  //       paymentDocumentTypeId: orderBloc.getPaymentDocument!.idCloud.toString());
-  // }
+  static OrderModel buildOrder(
+      UserModel user, Map<String, dynamic> productsDetails) {
+    return OrderModel(
+        // here we add order tax if needed
+        totalTax: productsDetails['product_total_tax'],
+        orderStatus: 'pending',
+        referenceNo: null,
+        orderTax: 0,
+        total: orderBloc.getSubTotalWithoutDiscount(),
+        grandTotal: orderBloc.getSubTotal(),
+        orderDiscount: orderBloc.getOrderDiscount,
+        customer:
+            orderBloc.getCustomer!.name ?? orderBloc.getCustomer!.company ?? '',
+        customerId: int.parse(orderBloc.getCustomer!.idCloud ?? '0'),
+        biller: user.billerName,
+        billerId: user.billerId,
+        note: orderBloc.getOrderNote ?? '',
+        sellerId: user.sellerId,
+        warehouseId: user.warehouseId,
+        createdBy: int.parse(dataBloc.userData!.id),
+        paymentMethod: orderBloc.getPaymentMethod!.idCloud,
+        dueDate: null,
+        staffNote: orderBloc.getInternalNote ?? '',
+        addressId: orderBloc.getCustomerAddresses!.idCloud,
+        totalItems: orderBloc.getItemsCount(),
+        productTax: productsDetails['product_total_tax'],
+        paymentTerm: null,
+        documentTypeId: orderBloc.getOrderDocumentType?.idCloud ?? '',
+        productDiscount: productsDetails['product_total_discount'],
+        totalDiscount: productsDetails['product_total_discount'] +
+            orderBloc.getOrderDiscount,
+        shop: 0,
+        payPartner: null);
+  }
 }

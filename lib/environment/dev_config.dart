@@ -1,10 +1,8 @@
-
-
 import 'base_config_class.dart';
 
 class DevConfig implements BaseConfig {
   @override
-  String get apiHost => 'http://localhost';
+  String get apiHost => 'http://lapappaya.com';
 
   @override
   String get hostFolder => '/wappsi_apis/';

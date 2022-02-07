@@ -24,8 +24,7 @@ const kIconButtonPadding = EdgeInsets.all(15);
 
 const kIconPadding = EdgeInsets.all(5);
 
-const kTextFieldPadding =
-    EdgeInsets.symmetric(vertical: 12.0, horizontal: 15);
+const kTextFieldPadding = EdgeInsets.symmetric(vertical: 12.0, horizontal: 15);
 const kTextFieldPaddingSmall =
     EdgeInsets.symmetric(vertical: 8, horizontal: 16);
 
@@ -80,7 +79,7 @@ TextStyle buttonsSmallTextStyle(BuildContext context,
   return Theme.of(context)
       .primaryTextTheme
       .headline6!
-      .apply(fontSizeFactor: fontSizeFactor, color: color??greyColor);
+      .apply(fontSizeFactor: fontSizeFactor, color: color ?? greyColor);
 }
 
 TextStyle appBarTextStyle({double fontSizeFactor = 1}) {
@@ -91,15 +90,15 @@ TextStyle normalTextStyle(BuildContext context,
     {fontSizeFactor = 1.0, int fontWeightDelta = 0, Color? color}) {
   return Theme.of(context).primaryTextTheme.subtitle1!.apply(
       fontSizeFactor: fontSizeFactor,
-      color: color??greyDarkerColor,
+      color: color ?? greyDarkerColor,
       fontWeightDelta: fontWeightDelta);
 }
 
 double bottomBarIconSize(BuildContext context) {
   final size = MediaQuery.of(context).size;
-  return size.height * 0.04 > 37
-              ? (size.height * 0.07 > 40 ? 40 : size.height * 0.07)
-              : 37;
+  return size.height * 0.1 > 38
+      ? (size.height * 0.11 > 43 ? 43 : size.height * 0.1)
+      : 38;
 }
 
 double iconSize(BuildContext context) {
@@ -155,11 +154,11 @@ double loginLogoWidth(BuildContext context) {
 double getBottomNavBarHeight(BuildContext context) {
   Size size = MediaQuery.of(context).size;
   return size.height * 0.1 > 75
-              ? (size.height * 0.11 > 85 ? 85 : size.height * 0.1)
-              : 75;
+      ? (size.height * 0.11 > 80 ? 80 : size.height * 0.1)
+      : 75;
 }
 
-Size imageIconSize() => const Size(60,60);
+Size imageIconSize() => const Size(60, 60);
 
 /// Home grid elements size
 Size gridItemSize(BuildContext context) {
@@ -171,12 +170,10 @@ Size gridItemSize(BuildContext context) {
 
 /// Big numbers text theme
 TextStyle numbersTextStyle(
-    {double fontSizeFactor = 1,
-    fontWeight = FontWeight.w900,
-    Color color = Colors.black}) {
+    {double fontSizeFactor = 1, fontWeight = FontWeight.w900, Color? color}) {
   return TextStyle(
       fontFamily: 'Arial',
       fontSize: 20 * fontSizeFactor,
       fontWeight: fontWeight,
-      color: color);
+      color: color ?? greyColor);
 }

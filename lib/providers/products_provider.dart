@@ -35,11 +35,13 @@ class ProductsProvider {
   /// Check if suspendedSaleProducts's prices are different of current
   /// product's prices and return the price diff betwen them
   static Future<Map<String, dynamic>> checkSuspPriceDif(
-      Map res, CompanyModel customer,{UnitsModel? unit}) async {
+      Map res, CompanyModel customer,
+      {UnitsModel? unit}) async {
     Map<String, dynamic> dif = {};
 
     final temp = ProductModel.fromJsonList([res]);
-    final prodP = await getProductPrices(temp.first, customer: customer,unit: unit);
+    final prodP =
+        await getProductPrices(temp.first, customer: customer, unit: unit);
     if (prodP.price != res['sp_price']) {
       dif = {
         'product_name': res['name'],
@@ -133,7 +135,6 @@ class ProductsProvider {
     List<UnitsModel> units = [];
     if (res != null) {
       await Future.forEach(res, (Map p) async {
-        
         products.add(ProductModel.fromJsonList([p],
                 loadInitialQtty: true,
                 qttyKey: 'initial_qtty',
@@ -142,16 +143,14 @@ class ProductsProvider {
             .first);
         UnitsModel? unit;
         if (p['unit_id'] != null && p['unit_id'] != '') {
-          unit = await UnitsProvider.getPUnitSuspended(
-              p['id_cloud'].toString(),
-              customer.priceGroupId!,
-              p['unit_id'].toString());
+          unit = await UnitsProvider.getPUnitSuspended(p['id_cloud'].toString(),
+              customer.priceGroupId!, p['unit_id'].toString());
           if (unit != null) {
             units.add(unit);
           }
         }
-        final tdif = await checkSuspPriceDif(p, customer,unit: unit);
-        if(tdif.isNotEmpty){
+        final tdif = await checkSuspPriceDif(p, customer, unit: unit);
+        if (tdif.isNotEmpty) {
           dif.add(tdif);
         }
       });
@@ -298,13 +297,15 @@ class ProductsProvider {
       BuildContext context, ProductModel product) async {
     final policyReq = PricePoliciesProvider.checkProductSelectionRequirements();
     Map<String, dynamic> req = {"product": product, "product_unit": null};
-    UnitsModel? unit;
+    Map<String, dynamic>? unitInfo;
     if (policyReq['product_unit']) {
-      unit = await UnitsProvider.getProductUnit(
+      unitInfo = await UnitsProvider.getProductUnit(
           context, product, posBloc.getCustomer!.priceGroupId!);
-      if (unit != null) {
-        req['product_unit'] = unit;
-        req['product'].quantity = unit.operationValue??1;
+      if (unitInfo != null) {
+        final unit = unitInfo['unit'];
+        req['product_unit'] = unitInfo['unit'];
+        req['product'].quantity =
+            (unit.operationValue ?? 1) * (unitInfo['quantity'] ?? 1);
       } else {
         req = {};
       }
@@ -335,7 +336,9 @@ class ProductsProvider {
 
   /// Return ProductModel product with all it's prices in it
   static Future<bool> getPOSProductPrices(String productKey,
-      {String? customerId, bool defaultPrice = false, bool toOrder=false}) async {
+      {String? customerId,
+      bool defaultPrice = false,
+      bool toOrder = false}) async {
     if (dataBloc.settings != null) {
       final result = await PricePoliciesProvider.policyCasesFromPos(productKey,
           dataBloc.settings!['prioridad_precios_producto'], posBloc.getCustomer,
@@ -349,12 +352,15 @@ class ProductsProvider {
       return getPOSProductPrices(productKey);
     }
   }
+
   /// Return ProductModel product with all it's prices in it
   static Future<bool> getPOSOrderProductPrices(String productKey,
       {String? customerId, bool defaultPrice = false}) async {
     if (dataBloc.settings != null) {
-      final result = await PricePoliciesProvider.policyCasesFromPosOrder(productKey,
-          dataBloc.settings!['prioridad_precios_producto'], posBloc.getCustomer,
+      final result = await PricePoliciesProvider.policyCasesFromPosOrder(
+          productKey,
+          dataBloc.settings!['prioridad_precios_producto'],
+          posBloc.getCustomer,
           defaultPrice: defaultPrice);
 
       return result;

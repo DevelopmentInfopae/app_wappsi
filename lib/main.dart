@@ -12,7 +12,7 @@ void main() async {
 
   const String environment = String.fromEnvironment(
     'ENVIRONMENT',
-    defaultValue: Environment.DEV,
+    defaultValue: Environment.PROD,
   );
 
   Environment().initConfig(environment);

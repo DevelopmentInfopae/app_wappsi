@@ -7,6 +7,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
 // import 'package:pos_wappsi/models/documents_types_model.dart';
 
@@ -39,6 +40,7 @@ class OrderBloc {
 
   BehaviorSubject<CompanyModel?> _customerController =
       BehaviorSubject<CompanyModel?>();
+  BehaviorSubject<double?> _discountController = BehaviorSubject<double?>();
 
   BehaviorSubject<CustomerAddressesModel?> _customerAddressesController =
       BehaviorSubject<CustomerAddressesModel?>();
@@ -56,6 +58,9 @@ class OrderBloc {
 
   BehaviorSubject<String> _internalNoteController = BehaviorSubject<String>();
 
+  BehaviorSubject<DocumentsTypes?> _orderDocumentController =
+      BehaviorSubject<DocumentsTypes?>();
+
   //-----------------------------------------------------------------------------
   //                                STREAMS
   //
@@ -63,6 +68,9 @@ class OrderBloc {
 
   Stream<Map<String, ProductModel>> get productsStream =>
       _productsController.stream.asBroadcastStream();
+
+  Stream<double?> get orderDiscountStream =>
+      _discountController.stream.asBroadcastStream();
 
   Stream<List<ProductModel>> get productSearchStream =>
       _productSearchController.stream;
@@ -97,7 +105,7 @@ class OrderBloc {
           productReq['product'], getPrices, getQttys,
           unit: productReq['product_unit']);
     }
-    _subtotalController.sink.add(getSubTotal());
+    getSubTotal();
     return res;
   }
 
@@ -122,8 +130,9 @@ class OrderBloc {
         temp.addAll(_productsController.value);
         _productsController.value = temp;
         // if get prices = true, then we calculate prices based on price policy
-        res =
-            getPrices ? await ProductsProvider.getPOSProductPrices(key,toOrder: true) : false;
+        res = getPrices
+            ? await ProductsProvider.getPOSProductPrices(key, toOrder: true)
+            : false;
 
         if (res) {
           if (getQttys) {
@@ -152,8 +161,9 @@ class OrderBloc {
         final temp = {key: product};
         temp.addAll(_productsController.value);
         _productsController.value = temp;
-        res =
-            getPrices ? await ProductsProvider.getPOSProductPrices(key,toOrder: true) : false;
+        res = getPrices
+            ? await ProductsProvider.getPOSProductPrices(key, toOrder: true)
+            : false;
         if (res) {
           if (getQttys) {
             res = await addProductQuantity(key, product.quantity);
@@ -263,8 +273,7 @@ class OrderBloc {
           // pData[keyInitialQtty] = temp[key]!.quantity;
           // final product = ProductModel.fromJson(pData,
           //     loadInitialQtty: true, qtyKey: keyInitialQtty);
-          await addProduct(
-              {'product': temp[key], 'product_unit': pUnits[key]},
+          await addProduct({'product': temp[key], 'product_unit': pUnits[key]},
               getQttys: false);
           // }
         });
@@ -322,6 +331,19 @@ class OrderBloc {
 
   /// Returns sum of products.getPriceWithIVA() * products.quantity
   double getSubTotal() {
+    double subTotal = getSubTotalWithoutDiscount();
+
+    double total = subTotal - getOrderDiscount;
+    if (total < 0) {
+      total = 0;
+    }
+    _subtotalController.sink.add(total);
+
+    return total;
+  }
+
+  /// Returns sum of products.getPriceWithIVA() * products.quantity
+  double getSubTotalWithoutDiscount() {
     double subTotal = 0;
     // ignore: unnecessary_null_comparison
     if (_productsController.hasValue) {
@@ -356,6 +378,18 @@ class OrderBloc {
         double temp =
             (element.getPriceWithIVA() - element.getPriceWithoutIVA()) *
                 element.quantity;
+        total = total + temp;
+      }
+    }
+    return total;
+  }
+
+  /// Returns sum of IVA value from all products in products Map.
+  double getTotalWithNoIVA() {
+    double total = 0.0;
+    if (_productsController.hasValue) {
+      for (var element in _productsController.value.values) {
+        double temp = (element.getPriceWithoutIVA()) * element.quantity;
         total = total + temp;
       }
     }
@@ -432,6 +466,9 @@ class OrderBloc {
   Map<String, UnitsModel>? get getProductUnits =>
       _productUnitController.valueOrNull;
 
+  DocumentsTypes? get getOrderDocumentType =>
+      _orderDocumentController.valueOrNull;
+
   // Map<String, dynamic> get settings => _settingsController.value;
 
   // bool get getPrintState => _printStateController.valueOrNull??false;
@@ -439,6 +476,8 @@ class OrderBloc {
   Map<String, ProductModel>? get getProducts => _productsController.valueOrNull;
 
   Map? get getPrintData => _printDataController.valueOrNull;
+
+  double get getOrderDiscount => _discountController.valueOrNull ?? 0;
 
   String? get getInternalNote => _internalNoteController.valueOrNull;
   String? get getOrderNote => _orderNoteController.valueOrNull;
@@ -468,6 +507,7 @@ class OrderBloc {
       _paymentMthdController.sink.add;
   Function(String) get setInternalNote => _internalNoteController.sink.add;
   Function(String) get setOrderNote => _orderNoteController.sink.add;
+  Function(double) get setOrderDiscount => _discountController.sink.add;
 
   // Function(bool) get setPrintState => _printStateController.sink.add;
 
@@ -478,6 +518,9 @@ class OrderBloc {
 
   Function(CustomerAddressesModel?) get setCustomerAddresses =>
       _customerAddressesController.sink.add;
+
+  Function(DocumentsTypes?) get setOrderDocumentType =>
+      _orderDocumentController.sink.add;
 
   Function(List<ProductModel>) get setProductSearchData =>
       _productSearchController.sink.add;
@@ -495,9 +538,10 @@ class OrderBloc {
     _customerAddressesController.close();
     _paymentMthdController.close();
     _internalNoteController.close();
+    _orderDocumentController.close();
     _orderNoteController.close();
     _productUnitController.close();
-
+    _discountController.close();
     _printDataController.close();
 
     // _printStateController.close();
@@ -516,12 +560,14 @@ class OrderBloc {
     _internalNoteController = BehaviorSubject<String>();
     _orderNoteController = BehaviorSubject<String>();
     _customerController = BehaviorSubject<CompanyModel?>();
+    _orderDocumentController = BehaviorSubject<DocumentsTypes?>();
 
     _customerAddressesController = BehaviorSubject<CustomerAddressesModel?>();
 
     _subtotalController = StreamController<double>.broadcast();
 
     _productSearchController = StreamController<List<ProductModel>>.broadcast();
+    _discountController = BehaviorSubject<double?>();
   }
 }
 

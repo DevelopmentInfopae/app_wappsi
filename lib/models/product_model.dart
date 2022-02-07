@@ -308,6 +308,11 @@ class ProductModel {
     List<double> _realPrices = [];
     List<int> _taxRateIds = [];
 
+    // to order
+
+    double totalDiscount = 0.0;
+    double totalTax = 0.0;
+
     /// To save product details to save into local db
     List<Map<String, dynamic>> productsDetails = [];
 
@@ -323,8 +328,10 @@ class ProductModel {
         _units.add(value.unit);
         _types.add(value.type);
         _names.add(value.name);
+        totalDiscount += value.discount;
         _discounts.add(value.discount.toInt());
         _discountValues.add(discountVal < 0 ? 0 : discountVal);
+        totalTax += value.taxRate ?? 0;
         _taxRates.add(value.taxRate!.toInt());
         _taxValues.add(taxValue);
         _prices.add(pNoIVA);
@@ -358,6 +365,8 @@ class ProductModel {
     }
     return {
       'product_id': _ids,
+      'product_total_discount': totalDiscount,
+      'product_total_tax': totalTax,
       'product_type': _types,
       'product_code': _codes,
       'product_name': _names,

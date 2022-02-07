@@ -46,14 +46,14 @@ class UnitsProvider {
     return unit;
   }
 
-  static Future<UnitsModel?> getProductUnit(
+  static Future<Map<String, dynamic>?> getProductUnit(
       BuildContext context, ProductModel product, String priceGroupId) async {
     final units = await UnitsProvider.getProductUnits(
         product.idCloud.toString(), priceGroupId);
     printConsole(units.first.name);
 
     if (units.length > 1) {
-      return await showCupertinoDialog<UnitsModel>(
+      return await showCupertinoDialog<Map<String, dynamic>?>(
           // to make selection of product unit required
           barrierDismissible: false,
           useRootNavigator: false,
@@ -65,7 +65,7 @@ class UnitsProvider {
             );
           });
     } else {
-      return units.first;
+      return {"unit": units.first, "quantity": 1};
     }
   }
 }

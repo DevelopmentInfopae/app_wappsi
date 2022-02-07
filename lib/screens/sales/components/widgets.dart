@@ -10,9 +10,13 @@ import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-Widget subTotal({bool large = false, Color? color, Stream<double>? stream, double? defaultValue}) {
+Widget subTotal(
+    {bool large = false,
+    Color? color,
+    Stream<double>? stream,
+    double? defaultValue}) {
   return StreamBuilder<double>(
-      stream: stream??posBloc.subTotalStream,
+      stream: stream ?? posBloc.subTotalStream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final value = getFormatedCurrency(snapshot.data!);
@@ -22,7 +26,7 @@ Widget subTotal({bool large = false, Color? color, Stream<double>? stream, doubl
                   .paddingSymmetric(horizontal: 8);
         } else {
           // posBloc.setSubTotal(posBloc.getSubTotal());
-          final value = getFormatedCurrency(defaultValue??0.0);
+          final value = getFormatedCurrency(defaultValue ?? 0.0);
           return large
               ? _totalLarge(context, value, color: color)
               : totalValue(context, value, color: color)
@@ -57,9 +61,7 @@ Widget totalValue(BuildContext context, String value, {Color? color}) {
     fit: BoxFit.fitHeight,
     child: Text(value.substring(0, value.length - 3),
         style: numbersTextStyle(
-            color: color ?? Colors.white,
-            fontSizeFactor: 1.0,
-            fontWeight: FontWeight.w800)),
+            color: color ?? Colors.white, fontWeight: FontWeight.w800)),
   );
 }
 

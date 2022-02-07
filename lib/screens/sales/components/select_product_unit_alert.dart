@@ -28,6 +28,8 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
 
   int _selection = 0;
 
+  int qtty = 1;
+
   @override
   void initState() {
     super.initState();
@@ -55,7 +57,12 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
           ).paddingTop(8)
         ],
       ).paddingBottom(10),
-      content: SingleChildScrollView(child: _select(context)),
+      content: Column(
+        children: [
+          SingleChildScrollView(child: _select(context)),
+          qttyControl(context).paddingTop(4),
+        ],
+      ),
       actions: <Widget>[
         Container(
           color: Colors.red.withOpacity(0.8),
@@ -81,12 +88,42 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
             ),
             onPressed: () async {
               if (_selection != 0) {
-                Navigator.of(context).pop(
-                    widget.units.where((u) => u.idCloud == _selection).first);
+                Navigator.of(context).pop({
+                  "unit":
+                      widget.units.where((u) => u.idCloud == _selection).first,
+                  "quantity": qtty
+                });
               }
               // return widget.product;
             },
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget qttyControl(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          'Unidad U.M seleccionada:',
+          style: buttonsSmallTextStyle(context),
+        ).paddingSymmetric(vertical: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _rmQty(),
+            Container(
+              padding: kButtonPadding,
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
+              child: Text(
+                qtty.toString(),
+                style: buttonsSmallTextStyle(context),
+              ),
+            ),
+            _addQty()
+          ],
         ),
       ],
     );
@@ -114,13 +151,13 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
               padding: EdgeInsets.zero,
               child: ListTile(
                 title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       u.name,
                       maxLines: 2,
-                    ).flexible(flex: 7),
-                    unitValue(u).flexible(flex: 5),
+                    ).expand(),
+                    unitValue(u),
+
                     // Checkbox(
                     //   checkColor: Colors.white,
                     //   activeColor: pColor,
@@ -148,6 +185,52 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
       value.substring(0, value.length - 3),
       maxLines: 2,
       style: normalTextStyle(context, fontWeightDelta: 2),
+    );
+  }
+
+  Widget _rmQty() {
+    return AppButton(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
+      margin: EdgeInsets.zero,
+      color: Colors.grey[100],
+      width: 10,
+      enabled: _selection != 0,
+      shapeBorder: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+      ),
+      onTap: () {
+        if (qtty > 1) {
+          setState(() {
+            qtty = qtty - 1;
+          });
+        }
+      },
+      child: const Icon(
+        Icons.remove,
+        color: Colors.black,
+      ),
+    );
+  }
+
+  Widget _addQty() {
+    return AppButton(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
+      color: Colors.grey[100],
+      margin: EdgeInsets.zero,
+      width: 10,
+      enabled: _selection != 0,
+      shapeBorder: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+      ),
+      onTap: () async {
+        setState(() {
+          qtty = qtty + 1;
+        });
+      },
+      child: const Icon(
+        Icons.add,
+        color: Colors.red,
+      ),
     );
   }
 }

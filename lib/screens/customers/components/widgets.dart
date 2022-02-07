@@ -35,7 +35,7 @@ Widget descText(String? desc, BuildContext context,
     TextAlign? textAlign,
     TextStyle? textStyle}) {
   textStyle ??= buttonsTextStyle(context,
-        fontSizeFactor: fontSizeFactor, color: color, fontWeightDelta: fweigth);
+      fontSizeFactor: fontSizeFactor, color: color, fontWeightDelta: fweigth);
   return Text(
     // ignore: unnecessary_null_comparison
     capitalizeText(desc ?? ''),
@@ -60,14 +60,12 @@ Widget textFormField(BuildContext context, String label, Function function,
     focusNode: focus,
     readOnly: readOnly,
     keyboardType: keyBType,
-    
     autovalidateMode: autovalidateMode,
     controller: controller,
     style: style ?? normalTextStyle(context),
     maxLines: maxLines,
     decoration:
         InputDecorations.outlineInputDecoration(hintText: '', labelText: label),
-        
     validator: (String? value) {
       return validation(value);
     },

@@ -37,8 +37,6 @@ class SaleCart extends StatefulWidget {
 }
 
 class _SaleCartState extends State<SaleCart> {
-
-
   final ScrollController _scrollController = ScrollController();
 
   late Size _size;
@@ -114,9 +112,7 @@ class _SaleCartState extends State<SaleCart> {
       margins: EdgeInsets.zero,
       hint: 'Buscar producto',
       actions: [
-        FloatingSearchBarAction.searchToClear(
-          
-        ),
+        FloatingSearchBarAction.searchToClear(),
         Container(
           width: _size.width * 0.15,
         )
@@ -124,9 +120,9 @@ class _SaleCartState extends State<SaleCart> {
       openWidth: _size.width,
 
       height: searchHeight,
-      queryStyle:  buttonsSmallTextStyle(context),
+      queryStyle: buttonsSmallTextStyle(context),
       // leadingActions: _leadingActions,
-      hintStyle:  buttonsSmallTextStyle(context),
+      hintStyle: buttonsSmallTextStyle(context),
       automaticallyImplyBackButton: false,
       controller: posBloc.getSearchBarController,
       body: _body(),
@@ -138,7 +134,7 @@ class _SaleCartState extends State<SaleCart> {
       transitionCurve: Curves.easeInOutCubic,
       transition: CircularFloatingSearchBarTransition(),
       physics: const BouncingScrollPhysics(),
-      builder: (context, _) => buildBody(),
+      builder: (context, _) => buildBody(stream: posBloc.productSearchStream),
       title: Text(
         'Buscar producto',
         style: buttonsSmallTextStyle(context),
@@ -265,7 +261,10 @@ class _SaleCartState extends State<SaleCart> {
               ),
               // Icon(Icons.arrow_forward_ios_sharp),
 
-              subTotal(large: false, color: pColor, defaultValue: posBloc.getSubTotal()),
+              subTotal(
+                  large: false,
+                  color: pColor,
+                  defaultValue: posBloc.getSubTotal()),
             ],
           ),
         ),
@@ -274,8 +273,6 @@ class _SaleCartState extends State<SaleCart> {
       // ),
     );
   }
-
- 
 
   Widget _suspendSale() {
     return AppButton(
@@ -295,8 +292,7 @@ class _SaleCartState extends State<SaleCart> {
                 return const SuspendSaleAlertDialog();
               });
           // check if empty products then reload view
-          if (posBloc.getProducts == {} ||
-              posBloc.getProducts == null) {
+          if (posBloc.getProducts == {} || posBloc.getProducts == null) {
             posBloc.getSearchBarController.close();
             WidgetsBinding.instance!.addPostFrameCallback((_) async {
               Navigator.pushAndRemoveUntil(
@@ -328,7 +324,7 @@ class _SaleCartState extends State<SaleCart> {
     }
     // printConsole('xd');
     if (res != null) {
-      if (res.isNotEmpty) {
+      if (res.isEmpty) {
         if ((query.length - _query.length > 1)) {
           posBloc.getSearchBarController.clear();
           // posBloc.getSearchBarController.query='';
@@ -343,8 +339,9 @@ class _SaleCartState extends State<SaleCart> {
               await ProductsProvider.getProductRequirements(context, temp);
           if (productReq != {}) {
             final result = await posBloc.addProduct(productReq);
-            if(result){
-              scaffoldAlert(context, 'Producto ${temp.name} añadido', const Duration(seconds: 1));
+            if (result) {
+              scaffoldAlert(context, 'Producto ${temp.name} añadido',
+                  const Duration(seconds: 1));
             }
           }
 
