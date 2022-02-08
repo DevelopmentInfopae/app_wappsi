@@ -45,7 +45,8 @@ class ProductDetails extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            productPhoto(product.image).withWidth(_size.width * 0.3),
+            productPhoto(product.image == '' ? 'no_image.png' : product.image)
+                .withWidth(_size.width * 0.3),
             productInfo(context).expand()
           ]),
     );

@@ -18,7 +18,7 @@ class UnitsModel {
     this.baseUnit,
     this.operator,
     required this.unitValue,
-    this.operationValue,
+    this.operationValue = 1,
     this.priceGroupId,
     required this.lastUpdate,
   });
@@ -30,7 +30,7 @@ class UnitsModel {
   int? baseUnit;
   String? operator;
   double unitValue;
-  double? operationValue;
+  double operationValue;
   int? priceGroupId;
   String lastUpdate;
 
@@ -43,10 +43,18 @@ class UnitsModel {
             ? null
             : json["base_unit"],
         operator: json["operator"],
-        unitValue: (json['valor_unitario'] ?? json["unit_value"]) + 0.0,
+        unitValue: (json.containsKey('valor_unitario')
+                    ? (json['valor_unitario'])
+                    : (json["unit_value"])) ==
+                ''
+            ? 1.0
+            : (json.containsKey('valor_unitario')
+                    ? (json['valor_unitario'])
+                    : (json["unit_value"])) +
+                0.0,
         operationValue:
             (json["operation_value"] == '' || json["operation_value"] == null)
-                ? null
+                ? 1
                 : (json["operation_value"] + 0.0),
         priceGroupId:
             json["price_group_id"] == '' ? null : json["price_group_id"],

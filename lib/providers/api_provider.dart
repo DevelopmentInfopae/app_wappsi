@@ -1,5 +1,7 @@
 // ignore_for_file: implementation_imports
 
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 
 // import 'package:nb_utils/src/extensions/string_extensions.dart';
@@ -13,8 +15,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:pos_wappsi/utils/print_errors.dart';
-
-
 
 class DataProvider {
   // POST petitons
@@ -36,7 +36,7 @@ class DataProvider {
     // to seconds to milliseconds, seconds * 1000
     dio.options.receiveTimeout = awaitTime * 1000;
     dio.options.method = 'POST';
-
+    final data2 = jsonEncode(data);
 
     try {
       resp = await dio

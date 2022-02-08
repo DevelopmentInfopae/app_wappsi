@@ -13,6 +13,7 @@ import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 ProductModel productModelFromJson(Map<String, dynamic> str) =>
     ProductModel.fromJson(str);
@@ -20,7 +21,6 @@ ProductModel productModelFromJson(Map<String, dynamic> str) =>
 String productModelToJson(ProductModel data) => json.encode(data.toJson());
 
 class ProductModel {
-  final formatCurrency = NumberFormat.simpleCurrency();
   ProductModel(
       {required this.name,
       required this.id,
@@ -206,11 +206,11 @@ class ProductModel {
   }
 
   String getFormatedPriceIVA() {
-    return formatCurrency.format(getPriceWithIVA());
+    return getFormatedCurrency(getPriceWithIVA(), decimals: 1);
   }
 
   String getFormatedPriceNoIva() {
-    return formatCurrency.format(getPriceWithoutIVA());
+    return getFormatedCurrency(getPriceWithoutIVA(), decimals: 1);
   }
 
   double getPriceWithIVA() {

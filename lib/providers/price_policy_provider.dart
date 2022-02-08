@@ -62,9 +62,9 @@ class PricePoliciesProvider {
       }
     } else if (policy == 10) {
       // product.price= posBloc.getProductUnits[]
-      if(unit!=null){
-        product.price = unit.unitValue/(unit.operationValue??1);
-        product.pricePolicyPrices = unit.unitValue/(unit.operationValue??1);
+      if (unit != null) {
+        product.price = unit.unitValue / (unit.operationValue);
+        product.pricePolicyPrices = unit.unitValue / (unit.operationValue);
       }
       return product;
     } else {
@@ -86,9 +86,9 @@ class PricePoliciesProvider {
 
     ProductModel product;
 
-    if(toOrder){
+    if (toOrder) {
       product = orderBloc.getProducts![productKey]!;
-    }else{
+    } else {
       product = posBloc.getProducts![productKey]!;
     }
 
@@ -96,21 +96,16 @@ class PricePoliciesProvider {
       /// For price_plicy with id 6
       if (policy == 6) {
         if (posBloc.getProducts![productKey]!.promoPrice != null) {
-          product.price =
-              product.promoPrice!;
+          product.price = product.promoPrice!;
           product.discount = 0;
-          product.priceWithoutDiscount =
-              product.promoPrice!;
+          product.priceWithoutDiscount = product.promoPrice!;
         } else {
           if (customer != null) {
             if (customer.priceGroupId != null) {
               price = await product.customerPrice(
-                  customer,
-                  product.billerPrice(
-                      product.getPrice()));
+                  customer, product.billerPrice(product.getPrice()));
             } else {
-              price = await product
-                  .billerPrice(product.getPrice());
+              price = await product.billerPrice(product.getPrice());
             }
             // printConsole(price);
             final values = await priceWDiscount(price, customer);
@@ -130,27 +125,23 @@ class PricePoliciesProvider {
         // posBloc.getProducts![productKey]!.price= posBloc.getProductUnits[]
         UnitsModel unit;
 
-        if(toOrder){
+        if (toOrder) {
           unit = orderBloc.getProductUnits![productKey]!;
-        }else{
+        } else {
           unit = posBloc.getProductUnits![productKey]!;
         }
-        product.pricePolicyPrices =
-            unit.unitValue /
-                (unit.operationValue ?? 1);
-        product.price =
-            unit.unitValue /
-                product.quantity;
+        product.pricePolicyPrices = unit.unitValue / (unit.operationValue);
+        product.price = unit.unitValue / (unit.operationValue);
       } else {
         product.priceWithoutDiscount = price;
         product.price = price;
         product.discount = 0;
       }
-        if(toOrder){
-          orderBloc.getProducts![productKey!] = product;
-        }else{
-          posBloc.getProducts![productKey!] = product;
-        }
+      if (toOrder) {
+        orderBloc.getProducts![productKey!] = product;
+      } else {
+        posBloc.getProducts![productKey!] = product;
+      }
       return true;
     } catch (e) {
       printConsole(e);
@@ -202,10 +193,10 @@ class PricePoliciesProvider {
         }
       } else if (policy == 10) {
         // orderBloc.getProducts![productKey]!.price= orderBloc.getProductUnits[]
-        
+
         orderBloc.getProducts![productKey]!.pricePolicyPrices =
             orderBloc.getProductUnits![productKey]!.unitValue /
-                (orderBloc.getProductUnits![productKey]!.operationValue ?? 1);
+                (orderBloc.getProductUnits![productKey]!.operationValue);
         orderBloc.getProducts![productKey]!.price =
             orderBloc.getProductUnits![productKey]!.unitValue /
                 orderBloc.getProducts![productKey]!.quantity;

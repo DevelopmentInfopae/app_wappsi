@@ -67,7 +67,7 @@ class _OrderProductsState extends State<OrderProducts> {
 
     return WillPopScope(
         child: Scaffold(
-          key:_scaffoldKey,
+            key: _scaffoldKey,
             appBar: buildAppBar(context),
             body: IndexedStack(
               index: index,
@@ -113,7 +113,7 @@ class _OrderProductsState extends State<OrderProducts> {
             message: "Favoritos",
             child: AppBarLeading(
                 widget: Icon(
-                  index==1?Icons.favorite:Icons.favorite_border_outlined,
+                  index == 1 ? Icons.favorite : Icons.favorite_border_outlined,
                   size: leadingIconSize,
                   color: pColor,
                 ),
@@ -122,7 +122,6 @@ class _OrderProductsState extends State<OrderProducts> {
                     if (index == 0) {
                       _searchController.close();
                       index = 1;
-                      
                     } else {
                       index = 0;
                     }
@@ -151,7 +150,9 @@ class _OrderProductsState extends State<OrderProducts> {
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
-    return FavoritesOrderSelection(isPortrait: isPortrait, context: _scaffoldKey.currentContext??context);
+    return FavoritesOrderSelection(
+        isPortrait: isPortrait,
+        context: _scaffoldKey.currentContext ?? context);
   }
 
   Container _searchHeight() {
@@ -181,11 +182,10 @@ class _OrderProductsState extends State<OrderProducts> {
       actions: [
         FloatingSearchBarAction.searchToClear(
             // showIfClosed: false,
-          ),
+            ),
         Container(
           width: _size.width * 0.17,
         ),
-        
       ],
       openWidth: _size.width,
 
@@ -244,7 +244,6 @@ class _OrderProductsState extends State<OrderProducts> {
                   bool productRequestFocus = false;
                   if (_productsCount == snapshot.data!.length ||
                       _itemsCount == orderBloc.getItemsCount()) {
-                    
                     if (_scrollController.hasClients) {
                       _scrollController
                           .jumpTo(_scrollController.position.minScrollExtent);
@@ -282,7 +281,7 @@ class _OrderProductsState extends State<OrderProducts> {
         if (_searchController.isOpen) {
           _searchController.query = '';
         } else {
-          if(index==0){
+          if (index == 0) {
             _searchController.open();
           }
         }
@@ -370,7 +369,7 @@ class _OrderProductsState extends State<OrderProducts> {
     }
     // printConsole('xd');
     if (res != null) {
-      if (res.isNotEmpty) {
+      if (res.isEmpty) {
         if ((query.length - _query.length > 1)) {
           _searchController.clear();
           // _searchController.query='';
@@ -385,8 +384,9 @@ class _OrderProductsState extends State<OrderProducts> {
               await ProductsProvider.getProductRequirements(context, temp);
           if (productReq != {}) {
             final result = await orderBloc.addProduct(productReq);
-            if(result){
-              scaffoldAlert(context, 'Producto ${temp.name} añadido', const Duration(seconds: 1));
+            if (result) {
+              scaffoldAlert(context, 'Producto ${temp.name} añadido',
+                  const Duration(seconds: 1));
             }
           }
 

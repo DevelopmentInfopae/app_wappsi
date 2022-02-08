@@ -35,7 +35,7 @@ class OrderModel {
     required this.totalTax,
     this.shipping,
     required this.grandTotal,
-    required this.orderStatus,
+    required this.saleStatus,
     this.paymentStatus,
     this.paymentTerm,
     required this.dueDate,
@@ -50,7 +50,7 @@ class OrderModel {
     this.attachment,
     this.returnOrderRef,
     this.orderId,
-    this.returnOrderTotal,
+    this.returnOrderTotal = 0,
     this.rounding,
     this.suspendNote,
     this.api,
@@ -111,7 +111,7 @@ class OrderModel {
   double totalTax;
   double? shipping;
   double grandTotal;
-  String orderStatus;
+  String saleStatus;
   dynamic paymentStatus;
   dynamic paymentTerm;
   String? dueDate;
@@ -192,7 +192,7 @@ class OrderModel {
         totalTax: json["total_tax"],
         shipping: json["shipping"],
         grandTotal: json["grand_total"],
-        orderStatus: json["Order_status"],
+        saleStatus: json["sale_status"],
         paymentStatus: json["payment_status"],
         paymentTerm: json["payment_term"],
         dueDate: json["due_date"],
@@ -205,9 +205,9 @@ class OrderModel {
         returnId: json["return_id"],
         surcharge: json["surcharge"],
         attachment: json["attachment"],
-        returnOrderRef: json["return_Order_ref"],
-        orderId: json["Order_id"],
-        returnOrderTotal: json["return_Order_total"],
+        returnOrderRef: json["return_order_ref"],
+        orderId: json["order_id"],
+        returnOrderTotal: json["return_order_total"],
         rounding: json["rounding"],
         suspendNote: json["suspend_note"],
         api: json["api"],
@@ -246,8 +246,84 @@ class OrderModel {
         wmsPackingStatus: json["wms_packing_status"],
       );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson({bool toCreateOrder = true}) {
+    if (toCreateOrder) {
+      return {
+        "reference_no": referenceNo,
+        "customer_id": customerId,
+        "customer": customer,
+        "biller_id": billerId,
+        "biller": biller,
+        "warehouse_id": warehouseId,
+        "note": note,
+        "staff_note": staffNote,
+        "total": total,
+        "product_discount": productDiscount,
+        "order_discount_id": orderDiscountId,
+        "total_discount": totalDiscount,
+        "order_discount": orderDiscount,
+        "product_tax": productTax,
+        "order_tax_id": orderTaxId,
+        "order_tax": orderTax,
+        "total_tax": totalTax,
+        "shipping": shipping,
+        "grand_total": grandTotal,
+        "sale_status": saleStatus,
+        "payment_status": paymentStatus,
+        "payment_term": paymentTerm,
+        "due_date": dueDate,
+        "created_by": createdBy,
+        "updated_by": updatedBy,
+        "updated_at": updatedAt,
+        "total_items": totalItems,
+        "pos": pos,
+        "paid": paid,
+        "return_id": returnId,
+        "surcharge": surcharge,
+        "attachment": attachment,
+        "return_order_ref": returnOrderRef,
+        "order_id": orderId,
+        "return_order_total": returnOrderTotal,
+        "rounding": rounding,
+        "suspend_note": suspendNote,
+        "api": api,
+        "shop": shop,
+        "seller_id": sellerId,
+        "address_id": addressId,
+        "reserve_id": reserveId,
+        "hash": hash,
+        "manual_payment": manualPayment,
+        "cgst": cgst,
+        "sgst": sgst,
+        "igst": igst,
+        "payment_method": paymentMethod,
+        "pay_partner": payPartner,
+        "rete_fuente_percentage": reteFuentePercentage,
+        "rete_fuente_total": reteFuenteTotal,
+        "rete_fuente_account": reteFuenteAccount,
+        "rete_fuente_base": reteFuenteBase,
+        "rete_iva_percentage": reteIvaPercentage,
+        "rete_iva_total": reteIvaTotal,
+        "rete_iva_account": reteIvaAccount,
+        "rete_iva_base": reteIvaBase,
+        "rete_ica_percentage": reteIcaPercentage,
+        "rete_ica_total": reteIcaTotal,
+        "rete_ica_account": reteIcaAccount,
+        "rete_ica_base": reteIcaBase,
+        "rete_other_percentage": reteOtherPercentage,
+        "rete_other_total": reteOtherTotal,
+        "rete_other_account": reteOtherAccount,
+        "rete_other_base": reteOtherBase,
+        "resolucion": resolucion,
+        "document_type_id": documentTypeId,
+        "destination_reference_no": destinationReferenceNo,
+        "wms_picking_status": wmsPickingStatus,
+        "wms_packing_status": wmsPackingStatus,
+      };
+    } else {
+      return {
         "id": id,
+        "id_cloud": idCloud,
         "date": date,
         "reference_no": referenceNo,
         "customer_id": customerId,
@@ -268,7 +344,7 @@ class OrderModel {
         "total_tax": totalTax,
         "shipping": shipping,
         "grand_total": grandTotal,
-        "Order_status": orderStatus,
+        "sale_status": saleStatus,
         "payment_status": paymentStatus,
         "payment_term": paymentTerm,
         "due_date": dueDate,
@@ -281,9 +357,9 @@ class OrderModel {
         "return_id": returnId,
         "surcharge": surcharge,
         "attachment": attachment,
-        "return_Order_ref": returnOrderRef,
-        "Order_id": orderId,
-        "return_Order_total": returnOrderTotal,
+        "return_sale_ref": returnOrderRef,
+        "sale_id": orderId,
+        "return_sale_total": returnOrderTotal,
         "rounding": rounding,
         "suspend_note": suspendNote,
         "api": api,
@@ -321,6 +397,8 @@ class OrderModel {
         "wms_picking_status": wmsPickingStatus,
         "wms_packing_status": wmsPackingStatus,
       };
+    }
+  }
 
   static List<OrderModel> fromJsonList(List<Map> list) {
     List<OrderModel> orders = [];
@@ -347,8 +425,10 @@ class OrderModel {
     return OrderModel(
         // here we add order tax if needed
         totalTax: productsDetails['product_total_tax'],
-        orderStatus: 'pending',
+        saleStatus: 'pending',
         referenceNo: null,
+        pos: 1,
+        surcharge: 0,
         orderTax: 0,
         total: orderBloc.getSubTotalWithoutDiscount(),
         grandTotal: orderBloc.getSubTotal(),
@@ -374,6 +454,6 @@ class OrderModel {
         totalDiscount: productsDetails['product_total_discount'] +
             orderBloc.getOrderDiscount,
         shop: 0,
-        payPartner: null);
+        payPartner: 0);
   }
 }

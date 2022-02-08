@@ -3,6 +3,8 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 
 import 'package:pos_wappsi/config/endpoints.dart';
+import 'package:pos_wappsi/models/order_model.dart';
+import 'package:pos_wappsi/models/order_sale_items.dart';
 
 import 'package:pos_wappsi/models/sale_model.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
@@ -19,14 +21,19 @@ class OrdersProvider {
   static Future<bool> sendOrderData(BuildContext context) async {
     bool result = false;
     final productsDetails = orderBloc.getProductDetailMapLists();
-    final sale =
-        SaleModel.buildSale(dataBloc.userData!, productsDetails).toJson();
+    final order = OrderModel.buildOrder(dataBloc.userData!, productsDetails)
+        .toJson(toCreateOrder: true);
+
+    final orderItems = OrderSaleItemsModel.buildOderSaleItems(
+        orderBloc.getProducts!.keys.toList());
     // final debug = sale.toString();
+
+    final data = {'order_sales': order, 'order_sale_items': orderItems};
     final api = DataProvider();
 
     try {
       final res =
-          await api.postPetition(newSaleEndP, sale, dataBloc.getHeaders());
+          await api.postPetition(newSaleEndP, data, dataBloc.getHeaders());
       if (res['status'] == -1) {
         reloadDialog(
             context,
@@ -45,55 +52,28 @@ class OrdersProvider {
             final Map<String, dynamic> changes = res['body']['data'];
             // to show changes in costumer or products
             // String chText = _getChangesString(changes);
-            await Future.forEach(changes.keys.toList(), (String key) async {
-              // ignore: unnecessary_null_comparison
-              if (key != null) {
-                await DBProvider.db
-                    .insertOrUpdateQuerys(key.toString(), changes[key] ?? []);
-              }
-            });
-            final reload = await orderBloc.reloadPOSData();
 
-            if (!reload) {
-              confirmDialog(context, 'Error al recargar datos de venta POS',
-                  'assets/images/browser.png');
-            } else {
-              hideCurrentScaffoldAlert(context);
+            // final reload = await orderBloc.reloadPOSData();
 
-              Navigator.pop(context);
-              confirmDialog(context, 'Datos de venta POS recargados',
-                  'assets/images/success.png');
-            }
+            // if (!reload) {
+            //   confirmDialog(context, 'Error al recargar datos de venta POS',
+            //       'assets/images/browser.png');
+            // } else {
+            //   hideCurrentScaffoldAlert(context);
+
+            //   Navigator.pop(context);
+            //   confirmDialog(context, 'Datos de venta POS recargados',
+            //       'assets/images/success.png');
+            // }
           } else {
             confirmDialog(context, res['body']['message'] ?? res['message'],
                 'assets/images/browser.png');
           }
         } else {
           try {
-            //Load data into SalesModel instance to work with it
-            // final printData = await _buildPrintDataMap(res['body']);
-            // final salesModel = SalesModel.fromorderBloc(
-            //   productsDetails,
-            //   salePrintData: res['body'],
-            // );
-            // Save sale data into local DB
-            // final saleId = await salesModel.saveSaleData();
-
-            // // Verify if sale was saved successfully
-            // if (saleId != null) {
-            // Save sale items into dbUpdated
-            // final saleItemsStatus = await SaleItemsProvider.saveAllIntoDB(
-            //     productsDetails['product_detail_list'], saleId);
-
-            // final paymentsStatus =
-            //     await PaymentProvider.saveAllIntoDB(saleId);
-            // // Verify if sale items were saved successfully
-            // if (saleItemsStatus && paymentsStatus) {
-            //   orderBloc.setPrintData(printData);
-            scaffoldAlert(context, 'Venta creada', const Duration(seconds: 1));
+            //TODO: Save order data locally
+            scaffoldAlert(context, 'Pedido creado', const Duration(seconds: 1));
             result = true;
-            // }
-            // }
           } catch (e) {
             hideCurrentScaffoldAlert(context);
             confirmDialog(context, e.toString(), 'assets/images/browser.png');

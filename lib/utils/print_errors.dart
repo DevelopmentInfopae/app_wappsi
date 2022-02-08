@@ -2,6 +2,6 @@
 
 import 'package:pos_wappsi/environment/environment.dart';
 
-printConsole(var error){
-  Environment().config.printErrors?null:print(error);
+printConsole(var error) {
+  Environment().config.printErrors ? print(error) : null;
 }

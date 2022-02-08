@@ -62,7 +62,7 @@ Widget _content(BuildContext context, String title, String? subtitle, bool back,
                   : 38)
           .paddingOnly(right: 8, left: back ? 10 : 20, bottom: 0),
       _text(title, context, subtitle: subtitle)
-          .paddingRight(leading == null ? _size.width * 0.1 : 0)
+          .paddingRight(leading == null ? _size.width * 0.1 : 10)
           .expand(),
       (leading ?? Container())
           .withSize(height: 55, width: leading != null ? 55 : 0)

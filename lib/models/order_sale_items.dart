@@ -135,7 +135,48 @@ class OrderSaleItemsModel {
         registrationDate: json["registration_date"],
       );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson({bool withoutIds = true}) {
+    if (withoutIds) {
+      return {
+        "sale_id": saleId,
+        "product_id": productId,
+        "product_code": productCode,
+        "product_name": productName,
+        "product_type": productType,
+        "option_id": optionId,
+        "net_unit_price": netUnitPrice,
+        "unit_price": unitPrice,
+        "quantity": quantity,
+        "quantity_to_bill": quantityToBill,
+        "quantity_delivered": quantityDelivered,
+        "warehouse_id": warehouseId,
+        "item_tax": itemTax,
+        "tax_rate_id": taxRateId,
+        "tax": tax,
+        "item_tax_2": itemTax2,
+        "tax_rate_2_id": taxRate2Id,
+        "tax_2": tax2,
+        "discount": discount,
+        "item_discount": itemDiscount,
+        "subtotal": subtotal,
+        "serial_no": serialNo,
+        "real_unit_price": realUnitPrice,
+        "sale_item_id": saleItemId,
+        "product_unit_id": productUnitId,
+        "product_unit_code": productUnitCode,
+        "unit_quantity": unitQuantity,
+        "comment": comment,
+        "gst": gst,
+        "cgst": cgst,
+        "sgst": sgst,
+        "igst": igst,
+        "unit_order_discount": unitOrderDiscount,
+        "price_before_tax": priceBeforeTax,
+        "preferences": preferences,
+        "registration_date": registrationDate,
+      };
+    } else {
+      return {
         "id": id,
         "id_cloud": idCloud,
         "sale_id": saleId,
@@ -175,6 +216,8 @@ class OrderSaleItemsModel {
         "preferences": preferences,
         "registration_date": registrationDate,
       };
+    }
+  }
 
   /// Build an instance of  OrderSaleItemsModel given a keys set to get products and units from
   /// order bloc
@@ -205,7 +248,7 @@ class OrderSaleItemsModel {
           productUnitId: product.unit,
           tax: product.taxRateName,
           subtotal: pIVA * product.quantity);
-      orderSaleItems.add(orderSaleItem.toJson());
+      orderSaleItems.add(orderSaleItem.toJson(withoutIds: true));
     }
     return orderSaleItems;
   }

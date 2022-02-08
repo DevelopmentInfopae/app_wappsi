@@ -6,8 +6,7 @@ import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
-import 'package:pos_wappsi/screens/orders/components/product_card.dart';
-import 'package:pos_wappsi/screens/sales/components/product_card.dart';
+import 'package:pos_wappsi/components/product_card_sales_orders.dart';
 // import 'package:pos_wappsi/screens/sales/components/product_card.dart';
 
 class ProductsList extends StatelessWidget {
@@ -33,11 +32,12 @@ class ProductsList extends StatelessWidget {
           final k = productList.entries.elementAt(index).key;
           dynamic productCard;
           if (fromOrder) {
-            final pCard = OrderProductCard(
+            final pCard = ProductCard(
               key: UniqueKey(),
               quantityFocusNode: FocusNode(),
               formKey: GlobalObjectKey<FormState>(k),
               product: productList.entries.elementAt(index),
+              fromOder: true,
             );
             if (index == 0 && dataBloc.settings!['set_focus'] == 1) {
               if (productRequestFocus) {
@@ -47,7 +47,7 @@ class ProductsList extends StatelessWidget {
               pCard.quantityFocusNode.unfocus();
             }
             productCard = pCard;
-          }else{
+          } else {
             final pCard = ProductCard(
               key: UniqueKey(),
               quantityFocusNode: FocusNode(),

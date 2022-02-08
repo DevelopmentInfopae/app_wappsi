@@ -26,6 +26,16 @@ class UnitsProvider {
     return units;
   }
 
+  static Future<UnitsModel?> getUnitInfo(int unitId) async {
+    final res = await DBProvider.db
+        .sqlFirstQuery('sma_units', where: "id_cloud=$unitId");
+    if (res != null) {
+      return UnitsModel.fromJson(res);
+    } else {
+      return null;
+    }
+  }
+
   static Future<UnitsModel?> getPUnitSuspended(
       String productId, String priceGroupId, String unitId) async {
     String sql = '''SELECT u.id as id,u.id_cloud as id_cloud,u.name as name,

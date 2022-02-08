@@ -17,6 +17,7 @@ import 'package:pos_wappsi/global_form_const.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/providers/document_types_provider.dart';
+import 'package:pos_wappsi/providers/orders_provider.dart';
 import 'package:pos_wappsi/providers/payment_methods_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 
@@ -122,7 +123,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       children: [
         Row(children: [
           Text(
-            'Numero de items: ',
+            'Cantidad de items: ',
             style: buttonsTextStyle(context, color: pColor),
           ),
           const Spacer(),
@@ -157,6 +158,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
             }),
         StreamBuilder<double?>(
             stream: orderBloc.subTotalStream,
+            initialData: orderBloc.getSubTotalWithoutDiscount(),
             builder: (context, snapshot) {
               return Row(
                 children: [
@@ -491,7 +493,9 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       onTap: _sending
           ? null
           : () async {
-              if (_inputsKey.currentState?.validate() ?? false) {}
+              if (_inputsKey.currentState?.validate() ?? false) {
+                await OrdersProvider.sendOrderData(context);
+              }
             },
       child: Text('Finalizar pedido',
           style: buttonsSmallTextStyle(context,
