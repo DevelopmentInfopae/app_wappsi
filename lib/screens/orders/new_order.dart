@@ -19,7 +19,6 @@ import 'package:pos_wappsi/screens/orders/order_products.dart';
 // import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 
-
 import 'package:nb_utils/nb_utils.dart';
 // import 'package:pos_wappsi/screens/sales/suspended_sales.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
@@ -298,11 +297,8 @@ class _NewOrderState extends State<NewOrder> {
 
   void _customerAddrSelection(data) {
     printConsole(data);
-    if (data != null) {
-      orderBloc.setCustomerAddresses(data);
-    } else {
-      orderBloc.setCustomerAddresses(null);
-    }
+
+    orderBloc.setCustomerAddresses(data);
   }
 
   Widget _button() {
@@ -319,10 +315,14 @@ class _NewOrderState extends State<NewOrder> {
           },
           child: Row(
             children: [
-              const Icon(Icons.arrow_back_ios_rounded, color: pColor,size: kIconSize,),
+              const Icon(
+                Icons.arrow_back_ios_rounded,
+                color: pColor,
+                size: kIconSize,
+              ),
               Text(
                 'Salir',
-                style: buttonsSmallTextStyle(context,color: pColor),
+                style: buttonsSmallTextStyle(context, color: pColor),
               ),
             ],
           ),
@@ -332,9 +332,14 @@ class _NewOrderState extends State<NewOrder> {
           // width: _size.width,
           padding: kButtonPadding,
           onTap: () async {
-            await CompaniesProvider.selectDefaultCustomer(fromOrderCreation: true);
-            await CustomerAddressesProvider.selectDefaultAddrs(fromOrderCreation: true);
-            const OrderProducts().launch(context);
+            // await CompaniesProvider.selectDefaultCustomer(
+            //     fromOrderCreation: true);
+            // await CustomerAddressesProvider.selectDefaultAddrs(
+            //     fromOrderCreation: true);
+            if (orderBloc.getCustomer != null &&
+                orderBloc.getCustomerAddresses != null) {
+              const OrderProducts().launch(context);
+            }
           },
           child: Text(
             'Añadir productos',

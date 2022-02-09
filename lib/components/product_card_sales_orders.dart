@@ -130,8 +130,8 @@ class _ProductCardState extends State<ProductCard> {
                 // textAlign: TextAlign.,
                 style: normalTextStyle(context,
                     fontWeightDelta: 2, fontSizeFactor: 1.2),
-              ),
-              _productPriceTotal()
+              ).flexible(flex: 3),
+              _productPriceTotal().flexible(flex: 3)
             ],
           ).paddingOnly(right: 8, top: 4)
         : Container();
@@ -152,7 +152,7 @@ class _ProductCardState extends State<ProductCard> {
 
   Widget _textQty() {
     return SizedBox(
-      width: 50,
+      width: 40,
       height: 40,
       child: TextFormField(
         onEditingComplete: () {
@@ -394,7 +394,7 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _productPrice() {
-    return Text('c/u ${widget.product.value.getFormatedPriceIVA()}',
+    return Text('${widget.product.value.getFormatedPriceIVA()}',
         style: numbersTextStyle(fontWeight: FontWeight.normal));
   }
 

@@ -18,7 +18,7 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
 // import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
-import 'package:pos_wappsi/providers/pos_sale_provider.dart';
+import 'package:pos_wappsi/providers/sale_provider.dart';
 import 'package:pos_wappsi/providers/document_types_provider.dart';
 import 'package:pos_wappsi/providers/payment_methods_provider.dart';
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
@@ -615,7 +615,7 @@ class _SalePaymentState extends State<SalePayment> {
                 });
                 scaffoldAlert(
                     context, 'Registrando venta', const Duration(seconds: 5));
-                final result = await POSSaleProvider.sendPosData(context);
+                final result = await SalesProvider.sendPosData(context);
                 if (result) {
                   // to let message be readed
                   // await Future.delayed(Duration(seconds: 1));

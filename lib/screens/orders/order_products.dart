@@ -242,8 +242,7 @@ class _OrderProductsState extends State<OrderProducts> {
                   _productsCount += 1;
                   _itemsCount += 1;
                   bool productRequestFocus = false;
-                  if (_productsCount == snapshot.data!.length ||
-                      _itemsCount == orderBloc.getItemsCount()) {
+                  if (_productsCount == snapshot.data!.length) {
                     if (_scrollController.hasClients) {
                       _scrollController
                           .jumpTo(_scrollController.position.minScrollExtent);

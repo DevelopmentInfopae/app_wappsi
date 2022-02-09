@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/components/image_file.dart';
 import 'package:pos_wappsi/config/host_params.dart';
 import 'package:pos_wappsi/constant.dart';
-import 'package:pos_wappsi/screens/sales/components/preview_widgets.dart';
 import 'package:pos_wappsi/utils/local_storage/local_files.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
@@ -125,7 +125,8 @@ Widget futureLabelContent(Future<Map?> function, String key, String label) {
 }
 
 Widget hDivider(
-    {EdgeInsetsGeometry padding = const EdgeInsets.symmetric(horizontal: 20), double height = 0.5}) {
+    {EdgeInsetsGeometry padding = const EdgeInsets.symmetric(horizontal: 20),
+    double height = 0.5}) {
   return Padding(
     padding: padding,
     child: Container(
@@ -267,7 +268,8 @@ Widget billerImage(String image) {
   String img = image;
   // if img is png convert to png
   if (img.substring(img.length - 4) == '.png') {
-    imgURL = dataBloc.userData!.hostUrl+"/wappsi_apis/utils/pngToJpg?img=" +
+    imgURL = dataBloc.userData!.hostUrl +
+        "/wappsi_apis/utils/pngToJpg?img=" +
         imgURL;
     img = img.substring(0, img.length - 4) + '.jpg';
   }

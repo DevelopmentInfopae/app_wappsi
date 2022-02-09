@@ -12,7 +12,7 @@ import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-class POSSaleProvider{
+class SalesProvider {
   /// Send current pos data to server, if there is any changes between local db and server,
   /// server response will contain those changes and they'll be writen into local db, then
   /// reload POS data
@@ -48,10 +48,6 @@ class POSSaleProvider{
             // String chText = _getChangesString(changes);
             await Future.forEach(changes.keys.toList(), (String key) async {
               // ignore: unnecessary_null_comparison
-              if (key != null) {
-                await DBProvider.db
-                    .insertOrUpdateQuerys(key.toString(), changes[key] ?? []);
-              }
             });
             final reload = await posBloc.reloadPOSData();
 
@@ -91,7 +87,8 @@ class POSSaleProvider{
               // Verify if sale items were saved successfully
               if (saleItemsStatus && paymentsStatus) {
                 posBloc.setPrintData(printData);
-                scaffoldAlert(context, 'Venta creada', const Duration(seconds: 1));
+                scaffoldAlert(
+                    context, 'Venta creada', const Duration(seconds: 1));
                 result = true;
               }
             }

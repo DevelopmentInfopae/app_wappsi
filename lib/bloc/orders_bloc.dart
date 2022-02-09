@@ -530,9 +530,9 @@ class OrderBloc {
 
   dispose() {
     isDisposed = true;
+    // _productsViewController.close();
     _productsController.close();
     _productSearchController.close();
-    // _productsViewController.close();
     _subtotalController.close();
     _customerController.close();
     _customerAddressesController.close();
@@ -565,7 +565,6 @@ class OrderBloc {
     _customerAddressesController = BehaviorSubject<CustomerAddressesModel?>();
 
     _subtotalController = StreamController<double>.broadcast();
-
     _productSearchController = StreamController<List<ProductModel>>.broadcast();
     _discountController = BehaviorSubject<double?>();
   }

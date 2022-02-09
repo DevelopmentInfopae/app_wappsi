@@ -6,12 +6,12 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/bloc/data_bloc.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/components/preview_print/preview_widgets.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/img_dir.dart';
 import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';
-import 'package:pos_wappsi/screens/sales/components/preview_widgets.dart';
 import 'package:pos_wappsi/screens/sales/new_sale.dart';
 import 'package:pos_wappsi/screens/settings/print_settings.dart';
 // import 'package:pos_wappsi/screens/sales/components/widgets.dart';
@@ -30,7 +30,8 @@ class PrintSale extends StatefulWidget {
       required this.printData,
       this.back = false,
       this.exitToNewSale = true,
-      this.image = 'assets/images/printer.png'}) : super(key: key);
+      this.image = 'assets/images/printer.png'})
+      : super(key: key);
   @override
   _PrintSaleState createState() => _PrintSaleState();
 }
@@ -185,7 +186,8 @@ class _PrintSaleState extends State<PrintSale> {
               _printing = false;
             });
           } else {
-            scaffoldAlert(context, 'Error al imprimir', const Duration(seconds: 3));
+            scaffoldAlert(
+                context, 'Error al imprimir', const Duration(seconds: 3));
           }
         } else {
           PrintSettings(

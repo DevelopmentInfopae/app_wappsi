@@ -7,6 +7,13 @@ import 'dart:convert';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/models/user_model.dart';
+import 'package:pos_wappsi/providers/biller_data_provider.dart';
+import 'package:pos_wappsi/providers/companies_provider.dart';
+import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
+import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/providers/order_sale_items_provider.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
+import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 // import 'package:pos_wappsi/bloc/orders_bloc.dart';
 // import 'package:pos_wappsi/models/user_model.dart';
@@ -48,9 +55,9 @@ class OrderModel {
     this.returnId,
     this.surcharge,
     this.attachment,
-    this.returnOrderRef,
-    this.orderId,
-    this.returnOrderTotal = 0,
+    this.returnSaleRef,
+    this.saleId,
+    this.returnSaleTotal = 0,
     this.rounding,
     this.suspendNote,
     this.api,
@@ -63,7 +70,7 @@ class OrderModel {
     this.cgst,
     this.sgst,
     this.igst,
-    required this.paymentMethod,
+    this.paymentMethod,
     required this.payPartner,
     this.reteFuentePercentage,
     this.reteFuenteTotal,
@@ -124,9 +131,9 @@ class OrderModel {
   dynamic returnId;
   int? surcharge;
   dynamic attachment;
-  dynamic returnOrderRef;
-  dynamic orderId;
-  int? returnOrderTotal;
+  dynamic returnSaleRef;
+  dynamic saleId;
+  int? returnSaleTotal;
   dynamic rounding;
   dynamic suspendNote;
   int? api;
@@ -139,7 +146,7 @@ class OrderModel {
   dynamic cgst;
   dynamic sgst;
   dynamic igst;
-  String paymentMethod;
+  String? paymentMethod;
   int? payPartner;
   int? reteFuentePercentage;
   int? reteFuenteTotal;
@@ -181,17 +188,17 @@ class OrderModel {
         warehouseId: json["warehouse_id"],
         note: json["note"],
         staffNote: json["staff_note"],
-        total: json["total"],
-        productDiscount: json["product_discount"],
+        total: json["total"] + 0.0,
+        productDiscount: json["product_discount"] + 0.0,
         orderDiscountId: json["order_discount_id"],
-        totalDiscount: json["total_discount"],
-        orderDiscount: json["order_discount"],
-        productTax: json["product_tax"],
+        totalDiscount: json["total_discount"] + 0.0,
+        orderDiscount: json["order_discount"] + 0.0,
+        productTax: json["product_tax"] + 0.0,
         orderTaxId: json["order_tax_id"],
         orderTax: json["order_tax"],
-        totalTax: json["total_tax"],
+        totalTax: json["total_tax"] + 0.0,
         shipping: json["shipping"],
-        grandTotal: json["grand_total"],
+        grandTotal: json["grand_total"] + 0.0,
         saleStatus: json["sale_status"],
         paymentStatus: json["payment_status"],
         paymentTerm: json["payment_term"],
@@ -205,9 +212,9 @@ class OrderModel {
         returnId: json["return_id"],
         surcharge: json["surcharge"],
         attachment: json["attachment"],
-        returnOrderRef: json["return_order_ref"],
-        orderId: json["order_id"],
-        returnOrderTotal: json["return_order_total"],
+        returnSaleRef: json["return_sale_ref"],
+        saleId: json["sale_id"],
+        returnSaleTotal: json["return_order_total"],
         rounding: json["rounding"],
         suspendNote: json["suspend_note"],
         api: json["api"],
@@ -239,7 +246,7 @@ class OrderModel {
         reteOtherAccount: json["rete_other_account"],
         reteOtherBase: json["rete_other_base"],
         resolucion: json["resolucion"],
-        documentTypeId: json["document_type_id"],
+        documentTypeId: json["document_type_id"].toString(),
         destinationReferenceNo: json["destination_reference_no"],
         registrationDate: json["registration_date"],
         wmsPickingStatus: json["wms_picking_status"],
@@ -281,9 +288,9 @@ class OrderModel {
         "return_id": returnId,
         "surcharge": surcharge,
         "attachment": attachment,
-        "return_order_ref": returnOrderRef,
-        "order_id": orderId,
-        "return_order_total": returnOrderTotal,
+        "return_sale_ref": returnSaleRef,
+        "sale_id": saleId,
+        "return_sale_total": returnSaleTotal,
         "rounding": rounding,
         "suspend_note": suspendNote,
         "api": api,
@@ -357,9 +364,9 @@ class OrderModel {
         "return_id": returnId,
         "surcharge": surcharge,
         "attachment": attachment,
-        "return_sale_ref": returnOrderRef,
-        "sale_id": orderId,
-        "return_sale_total": returnOrderTotal,
+        "return_sale_ref": returnSaleRef,
+        "sale_id": saleId,
+        "return_sale_total": returnSaleTotal,
         "rounding": rounding,
         "suspend_note": suspendNote,
         "api": api,
@@ -442,7 +449,7 @@ class OrderModel {
         sellerId: user.sellerId,
         warehouseId: user.warehouseId,
         createdBy: int.parse(dataBloc.userData!.id),
-        paymentMethod: orderBloc.getPaymentMethod!.idCloud,
+        // paymentMethod: orderBloc.getPaymentMethod!.idCloud,
         dueDate: null,
         staffNote: orderBloc.getInternalNote ?? '',
         addressId: orderBloc.getCustomerAddresses!.idCloud,
@@ -455,5 +462,79 @@ class OrderModel {
             orderBloc.getOrderDiscount,
         shop: 0,
         payPartner: 0);
+  }
+
+  Future<Map> buildPrintDataMap() async {
+    final customer =
+        await CompaniesProvider.getCompanyById(customerId.toString());
+    final biller = await CompaniesProvider.getCompanyById(billerId.toString());
+    final billerData =
+        await BillerDataProvider.loadBillerDataId(billerId.toString());
+    final customerAddress = await CustomerAddressesProvider.loadCustomerAddress(
+        addressId.toString());
+    // Load only first sale payment
+
+    final settings = dataBloc.settings;
+    final docDetails =
+        await DBProvider.db.getDocumentDetails(documentTypeId.toString());
+    final temp = removeRareSpaceChr(docDetails?['invoice_footer'] ?? '');
+
+    final productsInfo = await _productsMap(idCloud!);
+
+    return {
+      "products": productsInfo['products'],
+      "customer": customer?.toJson() ?? {},
+      "customer_address": customerAddress?.toJson() ?? {},
+      "order_data": {
+        'reference_no': referenceNo,
+        'resolucion': resolucion,
+        'date': registrationDate
+      },
+      "pos_note": note ?? '',
+      "total": total,
+      "grand_total": grandTotal,
+      "products_discount": productDiscount,
+      "order_discount": orderDiscount,
+      "total_discount": totalDiscount,
+      "iva": productsInfo['iva'],
+      "company_data": biller,
+      "biller_data": billerData,
+      "settings": settings,
+      "footer": temp
+    };
+  }
+
+  static Future<Map<String, dynamic>> _productsMap(int saleId) async {
+    final saleItems = await OrderSaleItemsProvider.loadFromDB(saleId);
+
+    List<Map<String, dynamic>> productsMap = [];
+    Map<double, dynamic> ivasMap = {};
+    try {
+      for (var item in saleItems) {
+        final tItempMap = {
+          'quantity': item.quantity,
+          'price': item.unitPrice,
+          'name': item.productName,
+        };
+        productsMap.add(tItempMap);
+        final taxRate = (item.unitPrice / item.netUnitPrice) - 1;
+        if (ivasMap.containsKey(taxRate)) {
+          ivasMap[taxRate]['value'] =
+              ivasMap[taxRate]['value'] + (item.priceBeforeTax * item.quantity);
+        } else {
+          ivasMap[taxRate] = {
+            'value': (item.priceBeforeTax * item.quantity),
+            'name': item.tax
+          };
+        }
+      }
+    } catch (e) {
+      printConsole(e);
+      return {};
+    }
+    return {
+      'iva': ivasMap,
+      'products': productsMap,
+    };
   }
 }

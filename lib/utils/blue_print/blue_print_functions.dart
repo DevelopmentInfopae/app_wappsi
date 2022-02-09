@@ -11,13 +11,11 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 // return bytes of two columns labes : values
 List<int> printLabeledValues(Generator generator, List<int> bytes,
-    List<String> labels, List<String> values, bool _innerPrinter,
+    List<String> labels, List<String> values, bool _innerPrinter, int chrLen,
     {bool boldLabels = true,
     PosAlign col1 = PosAlign.left,
     PosAlign col2 = PosAlign.left}) {
   generator.reset();
-
-  const numChr = 32;
 
   for (var i = 0; i < labels.length; i++) {
     final value =
@@ -27,13 +25,13 @@ List<int> printLabeledValues(Generator generator, List<int> bytes,
 
     const maxCols = 12;
 
-    const magicN = numChr / maxCols;
+    final magicN = chrLen / maxCols;
 
-    final column1Width = ((maxCols * label.length) / numChr).round();
+    final column1Width = ((maxCols * label.length) / chrLen).round();
     final column2Width = maxCols - column1Width;
 
     // Idk why -1 works
-    final emptySpacesCol2Total = (32 - ((column1Width) * magicN).round());
+    final emptySpacesCol2Total = (chrLen - ((column1Width) * magicN).round());
 
     final valueCol2Len =
         value.length < emptySpacesCol2Total ? (value.length + 1) : value.length;
@@ -81,7 +79,7 @@ List<int> printLabelValues(Generator generator, List<int> bytes,
         innerPrinter ? replaceSpecialCharacters(labels[i]) : labels[i];
     final value =
         innerPrinter ? replaceSpecialCharacters(values[i]) : values[i];
-    // bytes += generator.text(label+getEmptySpaces(32-label.length-value.length)+value);
+    // bytes += generator.text(label+getEmptySpaces(chrLen-label.length-value.length)+value);
     int column1Width = (label.length / spPerCol).round();
     int column2Width = 12 - column1Width;
 
@@ -163,10 +161,10 @@ List<int> legalInfo(List<int> bytes, Generator generator, bool _innerPrinter,
 }
 
 // Returns bytes from sale reference
-List<int> invoiceData(List<int> bytes, Generator generator, saleData) {
+List<int> invoiceData(List<int> bytes, Generator generator, data) {
   bytes += generator.text('Factura POS ',
       styles: const PosStyles(bold: false, align: PosAlign.center));
-  bytes += generator.text(saleData['reference_no'],
+  bytes += generator.text(data['reference_no'],
       styles: const PosStyles(bold: true, align: PosAlign.center));
   return bytes;
 }
@@ -187,7 +185,7 @@ image(Generator generator, String pathImage, {bool assetImage = false}) async {
   // return imgBytes;
 }
 
-List<String> formatString(String v, {int chrSpaces = 18}) {
+List<String> formatString(String v, {int chrSpaces = 16}) {
   int lines = (v.length / chrSpaces).ceil();
   List<String> strList = [];
   if (lines == 0) {

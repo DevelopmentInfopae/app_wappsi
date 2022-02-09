@@ -29,7 +29,8 @@ class PrintSettings extends StatefulWidget {
   /// diferent things depending on the `print`, also receive `movementInfo` wich is required when tryint
   /// to print movement receipt
   const PrintSettings(
-      {Key? key, this.print = 'settings', this.movementInfo, this.posPrintData}) : super(key: key);
+      {Key? key, this.print = 'settings', this.movementInfo, this.posPrintData})
+      : super(key: key);
   @override
   _PrintSettingsState createState() => _PrintSettingsState();
 }
@@ -57,6 +58,11 @@ class _PrintSettingsState extends State<PrintSettings> {
           productsList: widget.posPrintData?['products'] ?? [],
           movementInfo: widget.movementInfo);
       initSavetoPath(widget.posPrintData?['company_data'].logo);
+    } else if (widget.print == 'order') {
+      printFormat = PrintFormat(
+          productsList: widget.posPrintData?['products'] ?? [],
+          movementInfo: widget.movementInfo);
+      initSavetoPath(widget.posPrintData?['company_data'].logo);
     } else if (widget.print == 'movement') {
       String companyLogo = dataBloc.getBillerCompany!.logo!;
       if (companyLogo.substring(companyLogo.length - 4) == '.png') {
@@ -80,7 +86,7 @@ class _PrintSettingsState extends State<PrintSettings> {
     final img = image;
     //if img is png convert to png
     if (img.substring(img.length - 4) == '.png') {
-      imgURL = dataBloc.userData!.hostUrl+
+      imgURL = dataBloc.userData!.hostUrl +
           "/wappsi_apis/public/utils/pngToJpg?img=" +
           imgURL;
     }
@@ -263,7 +269,7 @@ class _PrintSettingsState extends State<PrintSettings> {
         ),
         AppButton(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          color: _connected ? Colors.red : Colors.white,
+          color: Colors.white,
           enabled: !_conecting,
           onTap: _connected ? _disconnect : _connect,
           child: Text(
@@ -367,7 +373,11 @@ class _PrintSettingsState extends State<PrintSettings> {
       },
       child: Row(
         children: [
-          const Icon(Icons.arrow_back_ios, size: kIconSize, color: pColor,),
+          const Icon(
+            Icons.arrow_back_ios,
+            size: kIconSize,
+            color: pColor,
+          ),
           Text(
             'Regresar',
             style: buttonsSmallTextStyle(context, color: pColor),
@@ -399,7 +409,8 @@ class _PrintSettingsState extends State<PrintSettings> {
           });
           if (widget.print == 'settings') {
             printFormat = PrintFormat(productsList: []);
-            scaffoldAlert(context, 'Impresión de prueba', const Duration(seconds: 2));
+            scaffoldAlert(
+                context, 'Impresión de prueba', const Duration(seconds: 2));
             printFormat!.printTest();
             await Future.delayed(const Duration(seconds: 3));
             hideCurrentScaffoldAlert(context);
@@ -420,7 +431,8 @@ class _PrintSettingsState extends State<PrintSettings> {
                 _printing = false;
               });
             } else {
-              scaffoldAlert(context, 'Error al imprimir', const Duration(seconds: 3));
+              scaffoldAlert(
+                  context, 'Error al imprimir', const Duration(seconds: 3));
             }
           } else if (widget.print == 'pos') {
             scaffoldAlert(
@@ -435,7 +447,24 @@ class _PrintSettingsState extends State<PrintSettings> {
                 _printing = false;
               });
             } else {
-              scaffoldAlert(context, 'Error al imprimir', const Duration(seconds: 3));
+              scaffoldAlert(
+                  context, 'Error al imprimir', const Duration(seconds: 3));
+            }
+          } else if (widget.print == 'order') {
+            scaffoldAlert(
+                context, 'Imprimiendo comprobante', const Duration(seconds: 2));
+
+            final result =
+                await printFormat!.printOrder(pathImage, widget.posPrintData);
+            if (result ?? false) {
+              await Future.delayed(const Duration(seconds: 3));
+              hideCurrentScaffoldAlert(context);
+              setState(() {
+                _printing = false;
+              });
+            } else {
+              scaffoldAlert(
+                  context, 'Error al imprimir', const Duration(seconds: 3));
             }
           }
         } else {
@@ -447,7 +476,11 @@ class _PrintSettingsState extends State<PrintSettings> {
       },
       child: Row(
         children: [
-          const Icon(Icons.print, size: kIconSize, color: pColor,),
+          const Icon(
+            Icons.print,
+            size: kIconSize,
+            color: pColor,
+          ),
           Text(
             ' Imprimir',
             style: buttonsSmallTextStyle(context, color: pColor),

@@ -102,35 +102,37 @@ class OrderSaleItemsModel {
         productCode: json["product_code"],
         productName: json["product_name"],
         productType: json["product_type"],
-        optionId: json["option_id"],
-        netUnitPrice: json["net_unit_price"],
-        unitPrice: json["unit_price"],
-        quantity: json["quantity"],
-        quantityToBill: json["quantity_to_bill"],
-        quantityDelivered: json["quantity_delivered"],
+        optionId: int.tryParse(json["option_id"].toString()),
+        netUnitPrice: json["net_unit_price"] + 0.0,
+        unitPrice: json["unit_price"] + 0.0,
+        quantity: json["quantity"] + 0.0,
+        quantityToBill: json["quantity_to_bill"] + 0.0,
+        quantityDelivered: json["quantity_delivered"] + 0.0,
         warehouseId: json["warehouse_id"],
-        itemTax: json["item_tax"],
+        itemTax: json["item_tax"] + 0.0,
         taxRateId: json["tax_rate_id"],
         tax: json["tax"],
-        itemTax2: json["item_tax_2"],
-        taxRate2Id: json["tax_rate_2_id"],
+        itemTax2: double.tryParse(json["item_tax_2"].toString()),
+        taxRate2Id: int.tryParse(json["tax_rate_2_id"].toString()),
         tax2: json["tax_2"],
         discount: json["discount"],
-        itemDiscount: json["item_discount"],
-        subtotal: json["subtotal"],
+        itemDiscount: double.tryParse(json["item_discount"].toString()),
+        subtotal: json["subtotal"] + 0.0,
         serialNo: json["serial_no"],
-        realUnitPrice: json["real_unit_price"],
-        saleItemId: json["sale_item_id"],
+        realUnitPrice: double.tryParse(json["real_unit_price"].toString()),
+        saleItemId: int.tryParse(json["sale_item_id"].toString()),
         productUnitId: json["product_unit_id"],
         productUnitCode: json["product_unit_code"],
-        unitQuantity: json["unit_quantity"],
+        unitQuantity: json["unit_quantity"] + 0.0,
         comment: json["comment"],
         gst: json["gst"],
-        cgst: json["cgst"],
-        sgst: json["sgst"],
-        igst: json["igst"],
-        unitOrderDiscount: json["unit_order_discount"],
-        priceBeforeTax: json["price_before_tax"],
+        cgst: double.tryParse(json["cgst"].toString()),
+        sgst: double.tryParse(json["sgst"].toString()),
+        igst: double.tryParse(json["igst"]),
+        unitOrderDiscount:
+            double.tryParse(json["unit_order_discount"].toString()),
+        priceBeforeTax:
+            double.tryParse(json["price_before_tax"].toString()) ?? 0.0,
         preferences: json["preferences"],
         registrationDate: json["registration_date"],
       );
@@ -217,6 +219,21 @@ class OrderSaleItemsModel {
         "registration_date": registrationDate,
       };
     }
+  }
+
+  static List<OrderSaleItemsModel> fromJsonList(List<Map> list) {
+    List<OrderSaleItemsModel> orders = [];
+    Map<String, dynamic> temp = {};
+    for (var item in list) {
+      for (var i = 0; i < item.keys.length; i++) {
+        temp[item.keys.toList()[i]] = item.values.toList()[i];
+      }
+      orders.add(OrderSaleItemsModel.fromJson(temp));
+    }
+
+    return orders;
+
+    // prString(temp);
   }
 
   /// Build an instance of  OrderSaleItemsModel given a keys set to get products and units from

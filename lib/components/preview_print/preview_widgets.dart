@@ -1,26 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-Widget imageFile(String pathImage, {BoxFit? fit}) {
-  // final imgURL = dataBloc.userData!.hostUrl +
-  //     dataBloc.userData!.companyFolder +
-  //     '/assets/uploads/logos/' +
-  //     posPrintData['company_data'].logo;
-  return FadeInImage(
-      placeholder: const AssetImage('assets/images/no_image.png'),
-      fit: fit,
-      image: FileImage(File(pathImage)));
-  // return Image.file(File(pathImage));
-}
-
-Widget legalInformation(
-    TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
-  final companyData = posPrintData['company_data'];
-  final settings = posPrintData['settings'];
+Widget legalInformation(TextTheme textTheme, Map<dynamic, dynamic> printData) {
+  final companyData = printData['company_data'];
+  final settings = printData['settings'];
   return Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
@@ -38,9 +23,15 @@ Widget legalInformation(
         regimenT[settings['tipo_regimen'].toString()]?.name ?? '',
         style: textTheme.bodyText1!.apply(fontWeightDelta: 2),
       ),
-      Text(capitalizeText((companyData!.address ?? '') +
-          ' - ' +
-          (posPrintData['company_data'].city ?? ''))),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Text(
+          capitalizeText((companyData!.address ?? '') +
+              ' - ' +
+              (printData['company_data'].city ?? '')),
+          textAlign: TextAlign.center,
+        ),
+      ),
       RichText(
           text: TextSpan(
               text: 'Telefono: ',
@@ -65,8 +56,8 @@ Widget emptyLine() {
   );
 }
 
-Widget invoiceRef(TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
-  final saleData = posPrintData['sale_data'];
+Widget invoiceRef(TextTheme textTheme, Map<dynamic, dynamic> printData) {
+  final data = printData['sale_data'];
   return Column(
     children: [
       Text(
@@ -74,7 +65,7 @@ Widget invoiceRef(TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
         style: textTheme.bodyText1,
       ),
       Text(
-        saleData['reference_no'] ?? '',
+        data['reference_no'] ?? '',
         style:
             textTheme.bodyText1!.apply(fontWeightDelta: 5, fontSizeFactor: 1.2),
       ),
@@ -82,9 +73,26 @@ Widget invoiceRef(TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
   );
 }
 
-Widget billerData(TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
-  final customer = posPrintData['customer'];
-  final saleData = posPrintData['sale_data'];
+Widget orderRef(TextTheme textTheme, Map<dynamic, dynamic> printData) {
+  final data = printData['order_data'];
+  return Column(
+    children: [
+      Text(
+        'Orden de Pedido',
+        style: textTheme.bodyText1,
+      ),
+      Text(
+        data['reference_no'] ?? '',
+        style:
+            textTheme.bodyText1!.apply(fontWeightDelta: 5, fontSizeFactor: 1.2),
+      ),
+    ],
+  );
+}
+
+Widget billerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
+  final customer = printData['customer'];
+  final data = printData['sale_data'] ?? printData['order_data'];
   final sellerName = dataBloc.userData!.sellerName;
   return Column(
     // mainAxisAlignment: MainAxisAlignment.start,
@@ -95,7 +103,7 @@ Widget billerData(TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
               text: 'Fecha/hora: ',
               style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
               children: [
-            TextSpan(text: saleData['date'] ?? '', style: textTheme.bodyText1)
+            TextSpan(text: data['date'] ?? '', style: textTheme.bodyText1)
           ])),
       RichText(
           text: TextSpan(
@@ -146,16 +154,16 @@ Widget billerData(TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
   );
 }
 
-Widget products(Map<dynamic, dynamic> posPrintData) {
+Widget products(Map<dynamic, dynamic> printData) {
   // final size = MediaQuery.of(context).size;
-  final List<Map> products = posPrintData['products'];
+  final List<Map> products = printData['products'];
   return DataTable(
     columns: _pColumnsNames(),
     rows: _products(products),
     dataRowHeight: 50,
     showBottomBorder: true,
     columnSpacing: 5,
-    horizontalMargin: 5,
+    horizontalMargin: 10,
     dividerThickness: 2,
     headingRowHeight: 30,
   );
@@ -163,16 +171,20 @@ Widget products(Map<dynamic, dynamic> posPrintData) {
 
 List<DataRow> _products(List<Map<dynamic, dynamic>> products) {
   return products.map((p) {
-    String value =
-        getFormatedCurrency(p['quantity'] * p['price']).toString().substring(1);
+    String value = getFormatedCurrency(p['quantity'] * p['price'], decimals: 1);
     return DataRow(
       cells: <DataCell>[
-        DataCell(Text(p['quantity'].toString())),
+        DataCell(Text(getIntDouble(p['quantity']))),
         DataCell(Text(
-          capitalizeText(value),
+          capitalizeText(p['name']),
           maxLines: 3,
         )),
-        DataCell(Text(value)),
+        DataCell(
+          Text(
+            value,
+            textAlign: TextAlign.right,
+          ),
+        ),
       ],
     );
   }).toList();
@@ -201,11 +213,11 @@ List<DataColumn> _pColumnsNames() {
   ];
 }
 
-Widget paymentDetails(TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
-  final total = getFormatedCurrency(posPrintData['total']);
-  final payment = getFormatedCurrency(posPrintData['payment'] + 0.0);
-  final cambio = posPrintData['payment'] - posPrintData['total'];
-  final payMethod = posPrintData['payment_method']['name'].toString();
+Widget paymentDetails(TextTheme textTheme, Map<dynamic, dynamic> printData) {
+  final total = getFormatedCurrency(printData['total']);
+  final payment = getFormatedCurrency(printData['payment'] + 0.0);
+  final cambio = printData['payment'] - printData['total'];
+  final payMethod = printData['payment_method']['name'].toString();
 
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,8 +278,63 @@ Widget paymentDetails(TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
   );
 }
 
-Widget taxRatesValues(TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
-  final taxValues = posPrintData['iva'] as Map;
+Widget orderValueDetails(TextTheme textTheme, Map<dynamic, dynamic> printData) {
+  final total = getFormatedCurrency(printData['total'], decimals: 1);
+  final discount =
+      getFormatedCurrency(printData['total_discount'], decimals: 1);
+  final grandTotal = getFormatedCurrency(printData['grand_total'], decimals: 1);
+
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Subtotal: ',
+              style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+            ),
+            Text(
+              total,
+              style: textTheme.bodyText1,
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Descuento: ',
+              style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+            ),
+            Text(
+              discount,
+              style: textTheme.bodyText1,
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Total a pagar: ',
+              style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+            ),
+            Text(
+              grandTotal,
+              style: textTheme.bodyText1,
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+Widget taxRatesValues(TextTheme textTheme, Map<dynamic, dynamic> printData) {
+  final taxValues = printData['iva'] as Map;
 
   return Column(
     children: [
@@ -332,8 +399,8 @@ List<DataRow> _taxValuesRows(Map taxValues) {
   }).toList();
 }
 
-Widget posNote(TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
-  final posNote = posPrintData['pos_note'];
+Widget posNote(TextTheme textTheme, Map<dynamic, dynamic> printData) {
+  final posNote = printData['pos_note'];
   return posNote == ''
       ? Container()
       : Column(
@@ -347,8 +414,8 @@ Widget posNote(TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
         );
 }
 
-Widget resolution(TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
-  final resolution = posPrintData['sale_data']['resolucion'];
+Widget resolution(TextTheme textTheme, Map<dynamic, dynamic> printData) {
+  final resolution = printData['sale_data']['resolucion'];
   return Text(
     resolution,
     style: textTheme.bodyText1,
@@ -356,8 +423,8 @@ Widget resolution(TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
   );
 }
 
-Widget wappsiSpam(TextTheme textTheme, Map<dynamic, dynamic> posPrintData) {
-  final List<String> footer = posPrintData['footer'];
+Widget wappsiSpam(TextTheme textTheme, Map<dynamic, dynamic> printData) {
+  final List<String> footer = printData['footer'];
   return Column(
     children: footer.map((element) {
       return Text(

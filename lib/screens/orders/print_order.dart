@@ -4,16 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/bloc/data_bloc.dart';
-// import 'package:pos_wappsi/bloc/pos_bloc.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/preview_print/preview_widgets.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/img_dir.dart';
 import 'package:pos_wappsi/constant.dart';
-import 'package:pos_wappsi/screens/cash_accounting/components/widgets.dart';
+// import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';
-// import 'package:pos_wappsi/screens/sales/new_sale.dart';
+import 'package:pos_wappsi/screens/orders/new_order.dart';
 import 'package:pos_wappsi/screens/settings/print_settings.dart';
 // import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
@@ -21,17 +20,25 @@ import 'package:pos_wappsi/utils/blue_print/blue_print.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/local_files.dart';
 
-class PrintMovement extends StatefulWidget {
-  final Map<String, String> movementInfo;
-  const PrintMovement({Key? key, required this.movementInfo}) : super(key: key);
+class PrintOrder extends StatefulWidget {
+  final bool back;
+  final String image;
+  final bool exitToNewOrder;
+  final Map<dynamic, dynamic> printData;
+  const PrintOrder(
+      {Key? key,
+      required this.printData,
+      this.back = false,
+      this.exitToNewOrder = true,
+      this.image = 'assets/images/printer.png'})
+      : super(key: key);
   @override
-  _PrintMovementState createState() => _PrintMovementState();
+  _PrintOrderState createState() => _PrintOrderState();
 }
 
-class _PrintMovementState extends State<PrintMovement> {
+class _PrintOrderState extends State<PrintOrder> {
   late Color _pc;
   late Size _size;
-  // String pathImage = '';
   bool _printing = false;
 
   //bluetooth setup
@@ -40,7 +47,7 @@ class _PrintMovementState extends State<PrintMovement> {
 
   @override
   void initState() {
-    printFormat = PrintFormat(movementInfo: widget.movementInfo);
+    printFormat = PrintFormat(productsList: widget.printData['products']);
     // initSavetoPath();
     // initPlatformState();
     super.initState();
@@ -52,16 +59,22 @@ class _PrintMovementState extends State<PrintMovement> {
     _pc = pColor;
     return WillPopScope(
       onWillPop: () async {
-        dataBloc.homeKey.currentState?.changeBottomIndex(1);
-        // printConsole('here i am');
+        // To control pop from nav keys on device
+
+        // final syncDB = SyncDBProvider();
+        // await Future.wait([
+        //   syncDB.syncOption(context, 'Precios de Productos'),
+        //   syncDB.syncOption(context, 'Productos de Sucursales'),
+        // ]);
         return true;
       },
       child: Scaffold(
-        appBar: appBar(context, 'Movimientos',
-            back: true, image: 'assets/images/cash-register.png', onPop: () {
-          dataBloc.homeKey.currentState?.changeBottomIndex(1);
-          Navigator.pop(context);
-        }),
+        appBar: appBar(
+          context,
+          'Imprimir pedido',
+          back: widget.back,
+          image: widget.image,
+        ),
         body: _body(),
       ),
     );
@@ -72,7 +85,6 @@ class _PrintMovementState extends State<PrintMovement> {
       // mainAxisAlignment: ,
       children: <Widget>[
         _preview().expand(),
-        // movementDetails(context, widget.movementInfo),
         bottom(_buttons(), _pc, _size),
       ],
     );
@@ -80,30 +92,43 @@ class _PrintMovementState extends State<PrintMovement> {
 
   Widget _preview() {
     final textTheme = Theme.of(context).textTheme;
-    return SizedBox(
+    return Container(
       width: _size.width * 0.9,
-      // padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: SingleChildScrollView(
         child: Card(
           child: Column(
             children: [
-              billerImage(dataBloc.getBillerCompany!.logo!)
+              billerImage(widget.printData['company_data'].logo)
                   .paddingSymmetric(horizontal: 40)
                   .withHeight(
-                      _size.height * 0.08 > 60 ? _size.height * 0.08 : 60),
-              socialReason(dataBloc.settings?['razon_social'], textTheme),
+                      _size.height * 0.09 > 60 ? _size.height * 0.09 : 60),
+              legalInformation(textTheme, widget.printData),
               emptyLine(),
-              movementDetails(context, widget.movementInfo),
+              orderRef(textTheme, widget.printData),
+              emptyLine(),
+              billerData(textTheme, widget.printData)
+                  .withWidth(_size.width * 0.75)
+                  .paddingSymmetric(horizontal: 10),
+              emptyLine(),
+              products(widget.printData).withWidth(_size.width * 0.75),
               emptyLine(),
               emptyLine(),
+              taxRatesValues(textTheme, widget.printData)
+                  .withWidth(_size.width * 0.75),
               emptyLine(),
-              emptyLine(),
-              emptyLine(),
-              emptyLine(),
-              _signatureStamp(),
+              // hDivider(),
+              posNote(textTheme, widget.printData)
+                  .paddingSymmetric(vertical: 8),
+              // hDivider(),
+              orderValueDetails(textTheme, widget.printData)
+                  .paddingSymmetric(horizontal: 6, vertical: 8),
+              wappsiSpam(textTheme, widget.printData)
+                  .paddingSymmetric(horizontal: 10),
+              // emptyLine(),
               emptyLine(),
             ],
-          ).paddingSymmetric(horizontal: 20),
+          ),
         ),
       ),
     );
@@ -113,8 +138,8 @@ class _PrintMovementState extends State<PrintMovement> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _printButton(),
         _exitButton(),
+        _printButton(),
       ],
     );
   }
@@ -128,6 +153,7 @@ class _PrintMovementState extends State<PrintMovement> {
       enabled: !_printing,
       onTap: () async {
         bool isConnected;
+
         try {
           // final xd = await bluetooth.isOn;
           isConnected = await bluetooth.isConnected ?? false;
@@ -142,17 +168,17 @@ class _PrintMovementState extends State<PrintMovement> {
             _printing = true;
           });
 
-          scaffoldAlert(context, 'Imprimiendo comprobante de movimiento',
-              const Duration(seconds: 3));
-          String companyLogo = dataBloc.getBillerCompany!.logo!;
+          scaffoldAlert(
+              context, 'Imprimiendo comprobante', const Duration(seconds: 3));
+          String companyLogo = widget.printData['company_data'].logo;
           if (companyLogo.substring(companyLogo.length - 4) == '.png') {
             companyLogo =
                 companyLogo.substring(0, companyLogo.length - 4) + '.jpg';
           }
-          final result = await printFormat
-              .printMovement(dataBloc.dirPath! + billerImgDir + companyLogo);
+          final result = await printFormat.printOrder(
+              dataBloc.dirPath! + billerImgDir + companyLogo, widget.printData);
           if (result ?? false) {
-            await Future.delayed(const Duration(seconds: 3));
+            await Future.delayed(const Duration(seconds: 1));
             hideCurrentScaffoldAlert(context);
             setState(() {
               _printing = false;
@@ -162,8 +188,9 @@ class _PrintMovementState extends State<PrintMovement> {
                 context, 'Error al imprimir', const Duration(seconds: 3));
           }
         } else {
-          const PrintSettings(
-            print: 'movement',
+          PrintSettings(
+            print: 'order',
+            posPrintData: widget.printData,
           ).launch(context);
         }
       },
@@ -173,7 +200,7 @@ class _PrintMovementState extends State<PrintMovement> {
             'Imprimir ',
             style: buttonsSmallTextStyle(context),
           ),
-          const Icon(Icons.print)
+          const Icon(Icons.print, size: kIconSize)
         ],
       ),
     );
@@ -185,15 +212,27 @@ class _PrintMovementState extends State<PrintMovement> {
       padding: kButtonPadding,
       // disabledColor: Colors.white,
       width: _size.width * 0.1,
-      onTap: () {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => const HomeScreen(),
-          ),
-          (route) => false,
-        );
-        dataBloc.homeKey.currentState?.changeBottomIndex(1);
+      onTap: () async {
+        // final syncDB = SyncDBProvider();
+        // final res = await Future.wait([
+        //   syncDB.syncOption(context, 'Precios de Productos'),
+        //   syncDB.syncOption(context, 'Productos de Sucursales'),
+        // ]);
+
+        // printConsole(res);
+
+        if (widget.exitToNewOrder) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => const HomeScreen(),
+            ),
+            (route) => false,
+          );
+          const NewOrder().launch(context);
+        } else {
+          Navigator.pop(context);
+        }
       },
       child: Row(
         children: [
@@ -201,19 +240,9 @@ class _PrintMovementState extends State<PrintMovement> {
             'Salir ',
             style: buttonsSmallTextStyle(context),
           ),
-          const Icon(Icons.exit_to_app)
+          const Icon(Icons.exit_to_app, size: kIconSize)
         ],
       ),
-    );
-  }
-
-  Widget _signatureStamp() {
-    return Column(
-      children: [
-        Text('____________________________________',
-            style: normalTextStyle(context)),
-        Text('Firma y sello', style: normalTextStyle(context))
-      ],
     );
   }
 }

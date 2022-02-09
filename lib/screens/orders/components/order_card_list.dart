@@ -2,24 +2,26 @@ import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/models/local_sales_model.dart';
-import 'package:pos_wappsi/providers/local_sales_provider.dart';
-import 'package:pos_wappsi/screens/sales/print_sale.dart';
+import 'package:pos_wappsi/models/order_model.dart';
+import 'package:pos_wappsi/providers/local_orders_provider.dart';
+import 'package:pos_wappsi/screens/orders/print_order.dart';
+
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/order_status_mapping.dart';
 
-class SalesCardList extends StatefulWidget {
-  const SalesCardList(
-      {Key? key, required this.sales, required this.searchParams})
+class OrdersCardList extends StatefulWidget {
+  const OrdersCardList(
+      {Key? key, required this.orders, required this.searchParams})
       : super(key: key);
-  final List<SalesModel> sales;
+  final List<OrderModel> orders;
   final Map searchParams;
 
   @override
-  State<SalesCardList> createState() => _SalesCardListState();
+  State<OrdersCardList> createState() => _OrdersCardListState();
 }
 
-class _SalesCardListState extends State<SalesCardList> {
+class _OrdersCardListState extends State<OrdersCardList> {
   late ScrollController _controller;
   late Size _size;
   bool _loading = false;
@@ -39,15 +41,15 @@ class _SalesCardListState extends State<SalesCardList> {
         ListView.separated(
           controller: _controller,
           padding: EdgeInsets.zero,
-          itemCount: widget.sales.length + (_allLoaded ? 1 : 0),
+          itemCount: widget.orders.length + (_allLoaded ? 1 : 0),
           physics: const ClampingScrollPhysics(),
           separatorBuilder: (context, index) => const Divider(
             height: 5,
           ),
           itemBuilder: (context, index) {
-            if (index < widget.sales.length) {
-              return SalesCard(
-                sale: widget.sales[index],
+            if (index < widget.orders.length) {
+              return OrdersCard(
+                order: widget.orders[index],
                 action: 'customer_details',
               );
             } else {
@@ -74,7 +76,7 @@ class _SalesCardListState extends State<SalesCardList> {
       });
 
       _loading = true;
-      final res = await LocalSalesProvider.listLocalSales(
+      final res = await LocalOrdersProvider.listLocalOrders(
           search: widget.searchParams['search'] ?? '',
           offset: true,
           limit: 30,
@@ -83,7 +85,7 @@ class _SalesCardListState extends State<SalesCardList> {
         if (res.isNotEmpty) {
           setState(() {
             // widget.products.clear();
-            widget.sales.addAll(res);
+            widget.orders.addAll(res);
             _page += 1;
             _loading = false;
           });
@@ -106,18 +108,18 @@ class _SalesCardListState extends State<SalesCardList> {
 
 // class to show customer indormation in form of a card
 
-class SalesCard extends StatefulWidget {
-  final SalesModel sale;
+class OrdersCard extends StatefulWidget {
+  final OrderModel order;
 
   final String action;
-  const SalesCard({Key? key, required this.sale, required this.action})
+  const OrdersCard({Key? key, required this.order, required this.action})
       : super(key: key);
 
   @override
-  _SalesCardState createState() => _SalesCardState();
+  _OrdersCardState createState() => _OrdersCardState();
 }
 
-class _SalesCardState extends State<SalesCard> {
+class _OrdersCardState extends State<OrdersCard> {
   // late Size _size;
 
   @override
@@ -125,10 +127,10 @@ class _SalesCardState extends State<SalesCard> {
     // _size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () async {
-        PrintSale(
-          printData: await widget.sale.buildPrintDataMap(),
+        PrintOrder(
+          printData: await widget.order.buildPrintDataMap(),
           back: true,
-          exitToNewSale: false,
+          exitToNewOrder: false,
         ).launch(context);
       },
       child: Card(
@@ -146,6 +148,7 @@ class _SalesCardState extends State<SalesCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _status(),
           _customer(),
           _date(),
           _reference(),
@@ -156,18 +159,16 @@ class _SalesCardState extends State<SalesCard> {
             padding: const EdgeInsets.all(4),
             child: Column(
               children: [
-                Row(
-                  children: [
-                    _paymentTerm().flexible(flex: 2),
-                    _items().flexible(flex: 2),
-                  ],
-                ),
-                Row(
-                  children: [
-                    _total().flexible(flex: 2),
-                    _paid().flexible(flex: 2),
-                  ],
-                ),
+                // Row(
+                //   children: [
+                //     _status().flexible(flex: 2),
+                //     _items().flexible(flex: 2),
+                //   ],
+                // ),
+                // _total(),
+                // _discount(),
+                _items(),
+                _grandTotal()
               ],
             ),
           ),
@@ -182,51 +183,60 @@ class _SalesCardState extends State<SalesCard> {
 
   Widget _customer() {
     return labelContentH(
-        'Cliente:', capitalizeText(widget.sale.customer), context,
+        'Cliente:', capitalizeText(widget.order.customer), context,
         withInnerPading: false,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 
   Widget _date() {
-    return labelContentH('Fecha:', widget.sale.registrationDate ?? '', context,
+    return labelContentH('Fecha:', widget.order.registrationDate ?? '', context,
         withInnerPading: false,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 
   Widget _reference() {
-    return labelContentH('Numero:', widget.sale.referenceNo ?? '', context,
+    return labelContentH(
+        'Referencia No:', widget.order.referenceNo ?? '', context,
         withInnerPading: false,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 
   Widget _items() {
-    return labelContentH('Items:', (widget.sale.totalItems).toString(), context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
-
-  Widget _paymentTerm() {
     return labelContentH(
-        'Plazo de pagos:',
-        (widget.sale.paymentTerm == 0 ? '--' : widget.sale.paymentTerm)
-            .toString(),
-        context,
+        'Items:', (widget.order.totalItems).toString(), context,
         withInnerPading: false,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 
-  Widget _total() {
-    final value = getFormatedCurrency(widget.sale.grandTotal);
+  Widget _status() {
+    return labelContentH(
+        'Estado:', mapOrderStatus(widget.order.saleStatus).toString(), context,
+        withInnerPading: false,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
+  }
+
+  // Widget _total() {
+  //   final value = getFormatedCurrency(
+  //       widget.order.total ?? widget.order.grandTotal,
+  //       decimals: 1);
+  //   return labelContentH(
+  //       'Subtotal:', value.substring(0, value.length - 1), context,
+  //       withInnerPading: false,
+  //       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
+  // }
+
+  // Widget _discount() {
+  //   final value = getFormatedCurrency(widget.order.orderDiscount, decimals: 1);
+  //   return labelContentH(
+  //       'Descuento:', value.substring(0, value.length - 1), context,
+  //       withInnerPading: false,
+  //       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
+  // }
+
+  Widget _grandTotal() {
+    final value = getFormatedCurrency(widget.order.grandTotal, decimals: 1);
     return labelContentH(
         'Total:', value.substring(0, value.length - 1), context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
-
-  Widget _paid() {
-    final value = getFormatedCurrency(widget.sale.paid);
-    return labelContentH(
-        'Pagado:', value.substring(0, value.length - 1), context,
         withInnerPading: false,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }

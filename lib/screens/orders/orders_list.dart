@@ -10,29 +10,28 @@ import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/models/local_sales_model.dart';
-import 'package:pos_wappsi/providers/local_sales_provider.dart';
-import 'package:pos_wappsi/screens/sales/components/sales_card_list.dart';
+import 'package:pos_wappsi/models/order_model.dart';
+import 'package:pos_wappsi/providers/local_orders_provider.dart';
+import 'package:pos_wappsi/screens/orders/components/order_card_list.dart';
 
-class SalesList extends StatefulWidget {
-  const SalesList({Key? key}) : super(key: key);
+class OrdersList extends StatefulWidget {
+  const OrdersList({Key? key}) : super(key: key);
 
   @override
   _ProductsState createState() => _ProductsState();
 }
 
-class _ProductsState extends State<SalesList> {
+class _ProductsState extends State<OrdersList> {
   List<CompanyModel> products = [];
-  final _salesListStream = StreamController<List<SalesModel>>.broadcast();
+  final _ordersListStream = StreamController<List<OrderModel>>.broadcast();
 
   late Size _size;
   // late Color _pc;
-
   final Map<String, dynamic> _searchParams = {};
 
   @override
   void dispose() {
-    _salesListStream.close();
+    _ordersListStream.close();
     super.dispose();
   }
 
@@ -54,10 +53,10 @@ class _ProductsState extends State<SalesList> {
       },
       child: Scaffold(
         key: _scaffoldKey,
-        appBar: appBar(context, 'Lista de Ventas',
+        appBar: appBar(context, 'Listado de pedidos',
             elevation: false,
             radius: 0,
-            image: 'assets/images/shopping-list.png', onPop: () {
+            image: 'assets/images/order-list.png', onPop: () {
           dataBloc.homeKey.currentState?.changeBottomIndex(1);
           Navigator.pop(context);
         }),
@@ -68,7 +67,7 @@ class _ProductsState extends State<SalesList> {
 
   Widget _body() {
     return Column(
-      children: [_searchBar().paddingBottom(5), _salesList().expand()],
+      children: [_searchBar().paddingBottom(5), _ordersList().expand()],
     );
   }
 
@@ -102,7 +101,7 @@ class _ProductsState extends State<SalesList> {
           color: Colors.grey[200],
           borderRadius: const BorderRadius.all(Radius.circular(10))),
       child: FloatingSearchAppBar(
-          hint: ' Buscar venta',
+          hint: ' Buscar pedido',
           transitionDuration: const Duration(milliseconds: 800),
           clearQueryOnClose: true,
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
@@ -124,23 +123,23 @@ class _ProductsState extends State<SalesList> {
     );
   }
 
-  Widget _salesList() {
+  Widget _ordersList() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 7),
-      child: FutureBuilder<List<SalesModel>?>(
-          future: LocalSalesProvider.listLocalSales(),
+      child: FutureBuilder<List<OrderModel>?>(
+          future: LocalOrdersProvider.listLocalOrders(),
           builder: (BuildContext context,
-              AsyncSnapshot<List<SalesModel>?> snapshot) {
+              AsyncSnapshot<List<OrderModel>?> snapshot) {
             if (snapshot.hasData) {
-              return StreamBuilder<List<SalesModel>>(
-                  stream: _salesListStream.stream,
+              return StreamBuilder<List<OrderModel>>(
+                  stream: _ordersListStream.stream,
                   builder:
-                      (context, AsyncSnapshot<List<SalesModel>> snapshot2) {
+                      (context, AsyncSnapshot<List<OrderModel>> snapshot2) {
                     if (snapshot2.hasData) {
-                      return SalesCardList(
-                          sales: snapshot2.data!, searchParams: _searchParams);
+                      return OrdersCardList(
+                          orders: snapshot2.data!, searchParams: _searchParams);
                     } else {
-                      _salesListStream.sink.add(snapshot.data!);
+                      _ordersListStream.sink.add(snapshot.data!);
 
                       return const Center(
                         child: CircularProgressIndicator(),
@@ -159,15 +158,15 @@ class _ProductsState extends State<SalesList> {
   _onQueryChanged(String? query) async {
     _searchParams['search'] = query;
     if (query == '' || query == null) {
-      final res = await LocalSalesProvider.listLocalSales();
+      final res = await LocalOrdersProvider.listLocalOrders();
       // ignore: unnecessary_null_comparison
       if (res != null) {
-        _salesListStream.sink.add(res);
+        _ordersListStream.sink.add(res);
       }
     } else {
-      final res = await LocalSalesProvider.listLocalSales(search: query);
+      final res = await LocalOrdersProvider.listLocalOrders(search: query);
       if (res != null) {
-        _salesListStream.sink.add(res);
+        _ordersListStream.sink.add(res);
       }
     }
   }

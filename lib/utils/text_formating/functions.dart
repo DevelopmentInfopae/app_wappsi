@@ -42,9 +42,18 @@ List getKeyValuesOfListMap(List<Map> map, String key) {
 // }
 
 String getFormatedCurrency(double value, {int decimals = 2}) {
-  final _formatCurrency =
-      NumberFormat.simpleCurrency(decimalDigits: decimals);
+  final _formatCurrency = NumberFormat.simpleCurrency(decimalDigits: decimals);
   return _formatCurrency.format(value);
+}
+
+String getIntDouble(double double) {
+  String value = '';
+  if (double.toString().endsWith('.0')) {
+    value = double.toInt().toString();
+  } else {
+    value = double.toString();
+  }
+  return value;
 }
 
 List<String> removeRareSpaceChr(String input) {
@@ -107,11 +116,13 @@ String capitalizeText(String value) {
           output =
               output + temp.substring(0, 1).toUpperCase() + temp.substring(1);
         } else if (element.isNotEmpty) {
-          if (specialUpperCases.where((element) => element == temp).isNotEmpty) {
+          if (specialUpperCases
+              .where((element) => element == temp)
+              .isNotEmpty) {
             output = output + ' ' + temp.toUpperCase();
           } else if (specialLowerCases
-                  .where((element) => element == temp)
-                  .isNotEmpty) {
+              .where((element) => element == temp)
+              .isNotEmpty) {
             output = output + ' ' + temp;
           } else {
             output = output +

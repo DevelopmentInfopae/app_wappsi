@@ -12,6 +12,7 @@ import 'package:pos_wappsi/screens/home/components/grid_items.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 import 'package:pos_wappsi/screens/orders/new_order.dart';
+import 'package:pos_wappsi/screens/orders/orders_list.dart';
 import 'package:pos_wappsi/screens/products/products.dart';
 import 'package:pos_wappsi/screens/sales/new_sale.dart';
 import 'package:pos_wappsi/screens/sales/sales_screen.dart';
@@ -83,20 +84,20 @@ class HomeGridCards extends StatelessWidget {
   Future<void> _navigation(BuildContext context) async {
     if (gridItems.route == 'sales') {
       // to show or hide home bottombar
-      if(posBloc.isDisposed){
+      if (posBloc.isDisposed) {
         posBloc.reload();
       }
       await _newSale(context);
       await dataBloc.refreshToken(context);
     } else if (gridItems.route == 'orders') {
       // to show or hide home bottombar
-      if(posBloc.isDisposed){
+      if (posBloc.isDisposed) {
         posBloc.reload();
       }
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
       const NewOrder().launch(context);
       await dataBloc.refreshToken(context);
-    }else if (gridItems.route == 'products') {
+    } else if (gridItems.route == 'products') {
       const Products().launch(context);
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'customers') {
@@ -124,8 +125,10 @@ class HomeGridCards extends StatelessWidget {
       const SalesList().launch(context);
     } else if (gridItems.route == 'settings') {
       dataBloc.homeKey.currentState?.selectTab(TabItem.settings);
-    }
-    if (gridItems.route == 'profile') {
+    } else if (gridItems.route == 'list_orders') {
+      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      const OrdersList().launch(context);
+    } else if (gridItems.route == 'profile') {
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
       const ProfileScreen().launch(context);
     }

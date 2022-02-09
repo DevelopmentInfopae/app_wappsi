@@ -13,6 +13,9 @@ class PrintFormat {
   PrintFormat({this.productsList, this.movementInfo});
   List<Map>? productsList;
   Map<String, String>? movementInfo;
+  int chrLen = 48;
+
+  int valueMaxCharLen = 12;
 
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
 
@@ -24,15 +27,44 @@ class PrintFormat {
             (printerBloc.getPrinterDevice?.name == 'InnerPrinter');
         final profile = await CapabilityProfile.load();
         final generator =
-            Generator(PaperSize.mm58, profile, spaceBetweenRows: 1);
+            Generator(PaperSize.mm80, profile, spaceBetweenRows: 1);
         // delete print buffer
 
         await bluetooth.writeBytes(Uint8List.fromList(await ticketHeader(
-            generator, _innerPrinter, pathImage, printData)));
+            generator, _innerPrinter, pathImage, printData, chrLen)));
         await bluetooth.writeBytes(
             Uint8List.fromList(await ticketProducts(generator, _innerPrinter)));
         await bluetooth.writeBytes(Uint8List.fromList(
             await ticketPayDetails(generator, _innerPrinter, printData)));
+        await bluetooth.writeBytes(Uint8List.fromList(
+            await ticketTax(generator, _innerPrinter, printData)));
+
+        await bluetooth.writeBytes(Uint8List.fromList(
+            await ticketFooter(generator, _innerPrinter, printData)));
+      }
+    });
+
+    return true;
+  }
+
+  Future<bool?> printOrder(
+      String pathImage, Map<dynamic, dynamic>? printData) async {
+    await bluetooth.isConnected.then((isConnected) async {
+      if (isConnected!) {
+        final _innerPrinter =
+            (printerBloc.getPrinterDevice?.name == 'InnerPrinter');
+        final profile = await CapabilityProfile.load();
+        final generator = Generator(
+            chrLen == 32 ? PaperSize.mm58 : PaperSize.mm80, profile,
+            spaceBetweenRows: 1);
+        // delete print buffer
+
+        await bluetooth.writeBytes(Uint8List.fromList(await ticketHeader(
+            generator, _innerPrinter, pathImage, printData, chrLen)));
+        await bluetooth.writeBytes(
+            Uint8List.fromList(await ticketProducts(generator, _innerPrinter)));
+        await bluetooth.writeBytes(Uint8List.fromList(
+            await ticketOrderValue(generator, _innerPrinter, printData)));
         await bluetooth.writeBytes(Uint8List.fromList(
             await ticketTax(generator, _innerPrinter, printData)));
 
@@ -51,8 +83,9 @@ class PrintFormat {
         final _innerPrinter =
             (printerBloc.getPrinterDevice?.name == 'InnerPrinter');
         final profile = await CapabilityProfile.load();
-        final generator =
-            Generator(PaperSize.mm58, profile, spaceBetweenRows: 1);
+        final generator = Generator(
+            chrLen == 32 ? PaperSize.mm58 : PaperSize.mm80, profile,
+            spaceBetweenRows: 1);
         List<int> bytes = [];
         // delete print buffer
         bytes = await image(generator, 'assets/images/wappsi.png',
@@ -82,8 +115,9 @@ class PrintFormat {
         final _innerPrinter =
             (printerBloc.getPrinterDevice?.name == 'InnerPrinter');
         final profile = await CapabilityProfile.load();
-        final generator =
-            Generator(PaperSize.mm58, profile, spaceBetweenRows: 1);
+        final generator = Generator(
+            chrLen == 32 ? PaperSize.mm58 : PaperSize.mm80, profile,
+            spaceBetweenRows: 1);
         List<int> bytes = [];
         // delete print buffer
         bytes = await image(generator, 'assets/images/wappsi.png',
@@ -112,8 +146,9 @@ class PrintFormat {
         final _innerPrinter =
             (printerBloc.getPrinterDevice?.name == 'InnerPrinter');
         final profile = await CapabilityProfile.load();
-        final generator =
-            Generator(PaperSize.mm58, profile, spaceBetweenRows: 1);
+        final generator = Generator(
+            chrLen == 32 ? PaperSize.mm58 : PaperSize.mm80, profile,
+            spaceBetweenRows: 1);
         generator.spaceBetweenRows = 1;
         // generator.
         generator.setGlobalCodeTable('CP1252');
@@ -149,7 +184,7 @@ class PrintFormat {
             col1: PosAlign.left, col2: PosAlign.left);
 
         bytes += generator.emptyLines(3);
-        bytes += generator.hr(len: 32, ch: '_');
+        bytes += generator.hr(len: chrLen, ch: '_');
         bytes += generator.text('Firma y sello',
             styles: const PosStyles(align: PosAlign.center));
         bytes += generator.emptyLines(1);
@@ -167,7 +202,7 @@ class PrintFormat {
   }
 
   Future<List<int>> ticketHeader(Generator generator, bool innerPrinter,
-      String pathImage, Map<dynamic, dynamic>? printData) async {
+      String pathImage, Map<dynamic, dynamic>? printData, int chrLen) async {
     //init print format values
     List<int> bytes = [];
     // delete print buffer
@@ -179,7 +214,7 @@ class PrintFormat {
 
     ///data to print
     final settings = printData?['settings'];
-    final saleData = printData?['sale_data'];
+    final data = printData?['sale_data'] ?? printData?['order_data'];
     final customer = printData?['customer'];
     final companyData = printData?['company_data'];
     final regType = settings?['tipo_regimen'];
@@ -218,17 +253,24 @@ class PrintFormat {
         bytes, generator, innerPrinter, settings, regType, companyData);
     bytes += generator.emptyLines(1);
     //invoice data
-    bytes = invoiceData(bytes, generator, saleData);
+    bytes = invoiceData(bytes, generator, data);
     bytes += generator.emptyLines(1);
     //customer data
     generator.reset();
     bytes = printLabeledValues(
-        generator, bytes, labelsCustomer, valuesCustomer, innerPrinter,
-        col2: PosAlign.right, col1: PosAlign.left);
+      generator,
+      bytes,
+      labelsCustomer,
+      valuesCustomer,
+      innerPrinter,
+      chrLen,
+      col2: PosAlign.right,
+      col1: PosAlign.left,
+    );
     //seller data
     generator.reset();
     bytes = printLabeledValues(
-        generator, bytes, labelsSeller, valuesSeller, innerPrinter,
+        generator, bytes, labelsSeller, valuesSeller, innerPrinter, chrLen,
         col2: PosAlign.right, col1: PosAlign.left);
 
     // bytes = _seller(bytes, generator, _innerPrinter);
@@ -265,8 +307,36 @@ class PrintFormat {
       printData['payment_method']['name'].toString()
     ];
     generator.reset();
-    bytes = printLabeledValues(
-        generator, bytes, labelsPayDetails, valuesPayDetails, innerPrinter,
+    bytes = printLabeledValues(generator, bytes, labelsPayDetails,
+        valuesPayDetails, innerPrinter, chrLen,
+        col2: PosAlign.left, col1: PosAlign.left);
+
+    return bytes;
+  }
+
+  Future<List<int>> ticketOrderValue(Generator generator, bool innerPrinter,
+      Map<dynamic, dynamic>? printData) async {
+    List<int> bytes = [];
+    // delete print buffer
+    generator.reset();
+    generator.spaceBetweenRows = 1;
+    // generator.
+    generator.setGlobalCodeTable('CP1252');
+    generator.setGlobalFont(PosFontType.fontB);
+
+    final labelsPayDetails = [
+      'Subtotal    ',
+      'Descuento ',
+      'Total   ',
+    ];
+    final valuesPayDetails = [
+      getFormatedCurrency((printData?['total']! ?? ''), decimals: 1),
+      getFormatedCurrency((printData?['total_discount']! ?? ''), decimals: 1),
+      getFormatedCurrency((printData?['grand_total']! ?? ''), decimals: 1)
+    ];
+    generator.reset();
+    bytes = printLabeledValues(generator, bytes, labelsPayDetails,
+        valuesPayDetails, innerPrinter, chrLen,
         col2: PosAlign.left, col1: PosAlign.left);
 
     return bytes;
@@ -302,43 +372,61 @@ class PrintFormat {
     // generator.
     generator.setGlobalCodeTable('CP1252');
     generator.setGlobalFont(PosFontType.fontB);
-    // bytes += generator.hr(len: 32, ch: '_');
-    bytes += generator.text('Cant  Producto             Valor',
+    // bytes += generator.hr(len: chrLen, ch: '_');
+    bytes += generator.text(
+        'Cant  Producto' + getEmptySpaces(chrLen - 19) + 'Valor',
         styles: const PosStyles(bold: true, align: PosAlign.left));
-    bytes += generator.hr(len: 32, ch: '-');
+    bytes += generator.hr(len: chrLen, ch: '-');
 
+    int qttyLenght = 0;
+    int valueLenght = 0;
+    // to get value and qtty max values
     for (var element in productsList!) {
-      List<String> formatedS = formatString(element['name'].toString());
+      if (getIntDouble(element['quantity']).length > qttyLenght) {
+        qttyLenght = getIntDouble(element['quantity']).length;
+      }
+      String vTemp = getFormatedCurrency(element['quantity'] * element['price'],
+              decimals: 1)
+          .substring(1);
+      vTemp = vTemp.substring(
+          0, vTemp.length > valueMaxCharLen ? vTemp.length - 2 : vTemp.length);
+      if (vTemp.length > valueLenght && vTemp.length < valueMaxCharLen) {
+        valueLenght = vTemp.length;
+      }
+    }
+    for (var element in productsList!) {
+      List<String> formatedS = formatString(element['name'].toString(),
+          chrSpaces: (chrLen - (qttyLenght + valueLenght + 2)));
       String text = '';
+      // text = '';
+      String value = getFormatedCurrency(element['quantity'] * element['price'],
+              decimals: 1)
+          .substring(1);
+      value = value.substring(
+          0, value.length > valueMaxCharLen ? value.length - 2 : value.length);
+      final qtty = getIntDouble(element['quantity']);
       for (var str in formatedS) {
-        // text = '';
         if (str == formatedS.first) {
-          String value =
-              getFormatedCurrency(element['quantity'] * element['price'])
-                  .toString()
-                  .substring(1);
-          value = value.substring(0, value.length - 1);
           final namePart = innerPrinter ? replaceSpecialCharacters(str) : str;
-
-          text = element['quantity'].toString() +
-              getEmptySpaces(4 - element['quantity'].toString().length) +
+          text = qtty +
+              getEmptySpaces((qttyLenght + 1) - qtty.length) +
               namePart +
-              getEmptySpaces(17 - namePart.length) +
-              getEmptySpaces(10 - value.length) +
+              getEmptySpaces(
+                  (chrLen - (qttyLenght + valueLenght + 2)) - namePart.length) +
+              getEmptySpaces((valueLenght + 1) - value.length) +
               value;
         } else {
           final namePart = innerPrinter ? replaceSpecialCharacters(str) : str;
-          text += '\n' +
-              getEmptySpaces(4) +
+          text += getEmptySpaces(qttyLenght + 1) +
               namePart +
-              getEmptySpaces(32 - 4 - namePart.length);
+              getEmptySpaces(chrLen - (namePart.length + valueLenght + 1));
         }
       }
       bytes += generator.text(text,
           styles: const PosStyles(bold: false, align: PosAlign.left));
     }
     // bluetooth.printNewLine();
-    bytes += generator.hr(len: 32, ch: '-');
+    bytes += generator.hr(len: chrLen, ch: '-');
     return bytes;
   }
 
@@ -357,21 +445,22 @@ class PrintFormat {
         styles: const PosStyles(bold: true, align: PosAlign.center));
     bytes += generator.text('Tarifa      Base     Impuesto',
         styles: const PosStyles(bold: true, align: PosAlign.center));
-    bytes += generator.hr(len: 30, ch: '-');
+    bytes += generator.hr(len: chrLen, ch: '-');
 
     printData?['iva'].keys.toList().forEach((element) async {
       final itemp = printData['iva']![element]!;
       double iva = element > 1 ? element / 100 : element;
-      String temp = getFormatedCurrency(itemp['value']).toString().substring(1);
-      String temp2 =
-          getFormatedCurrency(itemp['value'] * iva).toString().substring(1);
-
+      String name = itemp['name'];
+      String temp =
+          getFormatedCurrency(itemp['value'], decimals: 1).substring(1);
+      String temp2 = getFormatedCurrency(itemp['value'] * iva).substring(1);
+      String textToPrint = (name +
+          getEmptySpaces(11 - temp.length) +
+          temp +
+          getEmptySpaces(11 - temp2.length) +
+          temp2);
       bytes += generator.text(
-          (itemp['name'] +
-              getEmptySpaces(11 - temp.length) +
-              temp +
-              getEmptySpaces(11 - temp2.length) +
-              temp2),
+          (chrLen == 32 ? '' : getEmptySpaces(9)) + (textToPrint),
           styles: const PosStyles(bold: false, align: PosAlign.left));
     });
     return bytes;
@@ -379,12 +468,15 @@ class PrintFormat {
 
   List<int> _footer(Generator generator, List<int> bytes, bool _innerPrinter,
       Map<dynamic, dynamic>? printData) {
+    final data = printData?['sale_data'] ?? printData?['order_data'];
     bytes += generator.emptyLines(1);
-    final resolution = _innerPrinter
-        ? replaceSpecialCharacters(printData?['sale_data']['resolucion'])
-        : printData?['sale_data']['resolucion'];
-    bytes += generator.text(resolution,
-        styles: const PosStyles(bold: true, align: PosAlign.center));
+    if (data['resolucion'] != null) {
+      final resolution = _innerPrinter
+          ? replaceSpecialCharacters(printData?['sale_data']['resolucion'])
+          : printData?['sale_data']['resolucion'];
+      bytes += generator.text(resolution,
+          styles: const PosStyles(bold: true, align: PosAlign.center));
+    }
     if (printData?['pos_note'] != '') {
       final pNote = 'Nota: ' +
           (_innerPrinter

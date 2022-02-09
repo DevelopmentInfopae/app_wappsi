@@ -5,6 +5,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 // import 'package:pos_wappsi/bloc/sync_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
@@ -15,14 +16,14 @@ import 'package:pos_wappsi/config/documents_types.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/global_form_const.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
-import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/providers/document_types_provider.dart';
 import 'package:pos_wappsi/providers/orders_provider.dart';
-import 'package:pos_wappsi/providers/payment_methods_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
+import 'package:pos_wappsi/screens/home/home_screen.dart';
+import 'package:pos_wappsi/screens/orders/print_order.dart';
 // import 'package:pos_wappsi/screens/db_sync/components/sync_popup.dart';
 // import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
@@ -40,7 +41,7 @@ class OrderOtherDetails extends StatefulWidget {
 
 class _OrderOtherDetailsState extends State<OrderOtherDetails> {
   // to disable paybutton when awaiting for response
-  final bool _sending = false;
+  bool _sending = false;
   // TextEditingController _paymentDocumentController =
   //     TextEditingController();
 
@@ -48,8 +49,8 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
   final GlobalKey<FormState> _inputsKey = GlobalKey<FormState>();
 
   late Size _size;
-  final TextEditingController _paymentMethodController =
-      TextEditingController();
+  // final TextEditingController _paymentMethodController =
+  //     TextEditingController();
 
   String _discountTSelected = '';
 
@@ -104,7 +105,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       child: ListView(
         children: [
           _productsInfo().paddingSymmetric(vertical: 6),
-          _paymentMethod().paddingSymmetric(vertical: 6),
+          // _paymentMethod().paddingSymmetric(vertical: 6),
           _orderDocumentType().paddingSymmetric(vertical: 6),
           _orderDiscount().paddingSymmetric(vertical: 6),
           _invoiceNote().paddingSymmetric(vertical: 6),
@@ -187,79 +188,6 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
         //   // style: textTheme,
         // ),
       ],
-    );
-  }
-
-  Widget _paymentMethod() {
-    return FutureBuilder(
-      future:
-          PaymentMethodsProvider.loadDefaultPaymentMethod(fromPOSSale: false),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          return _paymentMethodDropDown();
-        } else {
-          return _paymentMethodDropDown();
-        }
-      },
-    );
-  }
-
-  Widget _paymentMethodDropDown() {
-    return DropdownSearch<PaymentMethods>(
-      searchFieldProps: TextFieldProps(
-        controller: _paymentMethodController,
-        decoration: InputDecoration(
-          labelText: 'Forma de pago',
-          suffixIcon: IconButton(
-            icon: const Icon(Icons.clear),
-            onPressed: () {
-              if (_paymentMethodController.text.isNotEmpty) {
-                Navigator.pop(context);
-              }
-              _paymentMethodController.clear();
-            },
-          ),
-        ),
-      ),
-      mode: Mode.BOTTOM_SHEET,
-      validator: (item) {
-        if (item == null) return "Campo requerido";
-      },
-
-      maxHeight: _size.width * 0.9,
-      dialogMaxWidth: _size.width * 0.8,
-
-      isFilteredOnline: true,
-      showClearButton: true,
-      showSelectedItems: true,
-      clearButton: const Icon(Icons.clear_rounded),
-      compareFn: (item, selectedItem) => item?.name == selectedItem?.name,
-      showSearchBox: true,
-
-      dropdownSearchDecoration: InputDecoration(
-        labelText: 'Forma de pago :',
-        labelStyle: const TextStyle(color: pColor),
-        filled: true,
-        fillColor: Theme.of(context).inputDecorationTheme.fillColor,
-      ),
-      autoValidateMode: AutovalidateMode.onUserInteraction,
-
-      onFind: (String? filter) =>
-          PaymentMethodsProvider.getPaymentMethods(filter),
-      onChanged: (data) {
-        printConsole(data);
-
-        setState(() {
-          orderBloc.setPaymentMethod(data);
-        });
-      },
-      // selectedItem: ,
-      selectedItem: orderBloc.getPaymentMethod,
-      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
-      scrollbarProps: ScrollbarProps(
-        isAlwaysShown: true,
-        thickness: 7,
-      ),
     );
   }
 
@@ -416,9 +344,9 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
   DropdownSearch<DropdDownSItem> _discountTSelector() {
     return DropdownSearch<DropdDownSItem>(
       mode: Mode.MENU,
-      validator: (item) {
-        if (item == null) return "Campo requerido";
-      },
+      // validator: (item) {
+      //   if (item == null) return "Campo requerido";
+      // },
 
       // popupShape: RoundedRectangleBorder(
       //     // borderRadius: BorderRadius.circular(10),
@@ -494,7 +422,32 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
           ? null
           : () async {
               if (_inputsKey.currentState?.validate() ?? false) {
-                await OrdersProvider.sendOrderData(context);
+                final res = await OrdersProvider.sendOrderData(context);
+
+                if (res) {
+                  /// update JWT token
+                  await dataBloc.refreshToken(context);
+                  WidgetsBinding.instance!.addPostFrameCallback((_) async {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const HomeScreen(),
+                      ),
+                      (route) => false,
+                    );
+                    await PrintOrder(
+                      printData: orderBloc.getPrintData!,
+                    ).launch(context);
+                    orderBloc.reload();
+                  });
+                  setState(() {
+                    _sending = false;
+                  });
+                } else {
+                  setState(() {
+                    _sending = false;
+                  });
+                }
               }
             },
       child: Text('Finalizar pedido',

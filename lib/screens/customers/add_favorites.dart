@@ -54,7 +54,6 @@ class _AddFavoritesState extends State<AddFavorites> {
   final StreamController<List<ProductModel>> _searchStream =
       StreamController<List<ProductModel>>();
 
-
   @override
   void initState() {
     super.initState();
@@ -126,9 +125,9 @@ class _AddFavoritesState extends State<AddFavorites> {
       openWidth: _size.width,
 
       height: searchHeight,
-      queryStyle:  buttonsSmallTextStyle(context),
+      queryStyle: buttonsSmallTextStyle(context),
       leadingActions: _leadingActions,
-      hintStyle:  buttonsSmallTextStyle(context),
+      hintStyle: buttonsSmallTextStyle(context),
       automaticallyImplyBackButton: false,
       controller: _searchController,
       body: _body(),
@@ -144,7 +143,7 @@ class _AddFavoritesState extends State<AddFavorites> {
           buildBody(action: 'add_to_favorites', stream: _searchStream.stream),
       title: Text(
         'Buscar producto',
-        style:  buttonsSmallTextStyle(context),
+        style: buttonsSmallTextStyle(context),
       ),
 
       // width: _size.width * 0.84,
@@ -266,7 +265,7 @@ class _AddFavoritesState extends State<AddFavorites> {
 
     // printConsole('xd');
     if (res != null) {
-      if (res.isNotEmpty) {
+      if (res.isEmpty) {
         if ((query.length - _query.length > 1)) {
           _searchController.clear();
           _query = '';
