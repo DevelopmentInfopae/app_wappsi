@@ -434,7 +434,7 @@ class OrderModel {
         totalTax: productsDetails['product_total_tax'],
         saleStatus: 'pending',
         referenceNo: null,
-        pos: 1,
+        pos: 0,
         surcharge: 0,
         orderTax: 0,
         total: orderBloc.getSubTotalWithoutDiscount(),
