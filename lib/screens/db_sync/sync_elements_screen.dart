@@ -146,7 +146,7 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
       ),
       onTap: () {
         setState(() {
-          if (values.values.where((element) => element == false).isNotEmpty) {
+          if (values.values.where((element) => element == false).isEmpty) {
             values.forEach((key, value) {
               values[key] = false;
             });
