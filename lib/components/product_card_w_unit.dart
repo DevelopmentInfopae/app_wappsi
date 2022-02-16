@@ -108,7 +108,7 @@ class _ProductCardWUnitState extends State<ProductCardWUnit> {
           uValue = snapshot.data;
           final value = getFormatedCurrency(uValue);
           return Text(
-            'c/u ' + value.substring(0, value.length - 1),
+            'c/u ' + value.substring(0, value.length),
             style: normalTextStyle(context, fontWeightDelta: 2),
           );
         } else {
@@ -138,7 +138,7 @@ class _ProductCardWUnitState extends State<ProductCardWUnit> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            tValue.substring(0, tValue.length - 1),
+            tValue.substring(0, tValue.length),
             style: normalTextStyle(context),
           ),
           uValueWidget

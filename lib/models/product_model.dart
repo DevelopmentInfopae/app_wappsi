@@ -9,6 +9,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 
 import 'package:pos_wappsi/models/biller_data_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/models/units_model.dart';
 
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
@@ -206,11 +207,11 @@ class ProductModel {
   }
 
   String getFormatedPriceIVA() {
-    return getFormatedCurrency(getPriceWithIVA(), decimals: 1);
+    return getFormatedCurrency(getPriceWithIVA());
   }
 
   String getFormatedPriceNoIva() {
-    return getFormatedCurrency(getPriceWithoutIVA(), decimals: 1);
+    return getFormatedCurrency(getPriceWithoutIVA());
   }
 
   double getPriceWithIVA() {
@@ -291,9 +292,12 @@ class ProductModel {
   ///SaleModel to send to an endpoint of API's service. It also returns
   ///key product_detail_list wich contains a list of product details
   static Map<String, dynamic> getProductDetailMapLists(
-      Map<String, ProductModel>? products, int warehouseId) {
+      Map<String, ProductModel>? products,
+      int warehouseId,
+      Map<String, UnitsModel>? units) {
     List<double> _quantitys = [];
     List<int> _units = [];
+    List<int?> _unitsSelected = [];
     List<int> _ids = [];
     List<String> _types = [];
     List<String> _codes = [];
@@ -317,49 +321,56 @@ class ProductModel {
     List<Map<String, dynamic>> productsDetails = [];
 
     if (products != null && products != {}) {
-      for (var value in products.values) {
-        final pIVA = value.getPriceWithIVA();
-        final pNoIVA = value.getPriceWithoutIVA();
+      for (var key in products.keys) {
+        final pIVA = products[key]!.getPriceWithIVA();
+        final pNoIVA = products[key]!.getPriceWithoutIVA();
         final taxValue = pIVA - pNoIVA;
-        final discountVal = (value.priceWithoutDiscount! - value.price);
-        _ids.add(value.idCloud);
-        _codes.add(value.code);
-        _quantitys.add(value.quantity);
-        _units.add(value.unit);
-        _types.add(value.type);
-        _names.add(value.name);
-        totalDiscount += value.discount;
-        _discounts.add(value.discount.toInt());
+        final discountVal =
+            (products[key]!.priceWithoutDiscount! - products[key]!.price);
+        _ids.add(products[key]!.idCloud);
+        _codes.add(products[key]!.code);
+        _quantitys.add(products[key]!.quantity);
+        _units.add(products[key]!.unit);
+        _unitsSelected.add(units?[key]?.idCloud);
+        _types.add(products[key]!.type);
+        _names.add(products[key]!.name);
+        totalDiscount += products[key]!.discount;
+        _discounts.add(products[key]!.discount.toInt());
         _discountValues.add(discountVal < 0 ? 0 : discountVal);
-        totalTax += value.taxRate ?? 0;
-        _taxRates.add(value.taxRate!.toInt());
+        totalTax += products[key]!.taxRate ?? 0;
+        _taxRates.add(products[key]!.taxRate!.toInt());
         _taxValues.add(taxValue);
         _prices.add(pNoIVA);
-        _pricePPolicy.add(value.pricePolicyPrices);
+        _pricePPolicy.add(products[key]!.pricePolicyPrices);
         _pricesIVA.add(pIVA);
-        _realPrices.add(value.priceWithoutDiscount!);
-        _taxRateIds.add(value.taxRateId);
+        _realPrices.add(products[key]!.priceWithoutDiscount!);
+        _taxRateIds.add(products[key]!.taxRateId);
 
-        double discountPercent =
-            1 - (value.price / (value.priceWithoutDiscount ?? value.price));
+        double discountPercent = 1 -
+            (products[key]!.price /
+                (products[key]!.priceWithoutDiscount ?? products[key]!.price));
         discountPercent = discountPercent * 100;
 
         productsDetails.add({
-          "product_id": value.idCloud,
-          "product_type": value.type,
-          "product_code": value.code,
-          "product_name": value.name,
-          "quantity": value.quantity,
+          "product_id": products[key]!.idCloud,
+          "product_type": products[key]!.type,
+          "product_code": products[key]!.code,
+          "product_name": products[key]!.name,
+          "quantity": products[key]!.quantity,
           "warehouse_id": warehouseId,
-          "tax_rate_id": value.taxRateId,
-          "tax": value.taxRateName,
+          "tax_rate_id": products[key]!.taxRateId,
+          "unit_": products[key]!.taxRateId,
+          "product_unit_id": products[key]!.unit,
+          "product_unit_id_selected": units?[key]?.idCloud,
+          "tax": products[key]!.taxRateName,
           "unit_price": pIVA,
           "net_unit_price": pNoIVA,
           "discount": discountPercent.toString() + '%',
           "item_tax": taxValue,
-          "subtotal": value.getPriceWithIVA() * value.quantity,
-          "price_before_tax": value.getPriceWithoutIVA(),
-          "unit_quantity": value.quantity
+          "subtotal":
+              products[key]!.getPriceWithIVA() * products[key]!.quantity,
+          "price_before_tax": products[key]!.getPriceWithoutIVA(),
+          "unit_quantity": products[key]!.quantity
         });
       }
     }
@@ -381,7 +392,7 @@ class ProductModel {
       'real_unit_price': _pricePPolicy,
       'quantity': _quantitys,
       'product_unit': _units,
-      'product_unit_id_selected': _units,
+      'product_unit_id_selected': _unitsSelected,
       'product_base_quantity': _quantitys,
       "product_detail_list": productsDetails
     };

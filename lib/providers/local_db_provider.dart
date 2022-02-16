@@ -113,15 +113,34 @@ class DBProvider {
   ///                        fields in db with "" inside
   ///
   ///-----------------------------------------------------------------------------
-  Future<bool> insertOrUpdateQuerys(String table, List query) async {
+  Future<bool> insertOrUpdateQuerys(String table, List query,
+      {bool printSql = false}) async {
     final db = await database;
-
+    bool result = true;
     Batch batch = db!.batch();
     for (var element in query) {
-      String values = getStringFromValues(element.values);
-      String sql =
-          "INSERT OR REPLACE INTO $table ('${element.keys.join("','")}') VALUES ($values);";
-      batch.rawQuery(sql);
+      String values = '';
+      try {
+        final val = element.values;
+        values = getStringFromValues(val);
+        // if (table == 'sma_payments') {
+        //   printConsole('xd');
+        // }
+        String sql =
+            "INSERT OR REPLACE INTO $table ('${element.keys.join("','")}') VALUES ($values);";
+        if (printSql) printConsole(sql);
+        batch.rawQuery(sql);
+      } catch (e) {
+        printConsole(e);
+        if (element is List) {
+          if (element.isNotEmpty) {
+            result =
+                await insertOrUpdateQuerys(table, element, printSql: false);
+          }
+          // values = getStringFromValues(element);
+        }
+      }
+
       // printConsole(sql);
     }
 
@@ -130,7 +149,7 @@ class DBProvider {
       // disable ientity writing
       // await db.execute('SET IDENTITY_INSERT $table ON');
       // debugprintConsole(res.toString());
-      return true;
+      return result;
     } catch (e) {
       return await insertOrUpdateQuerys2(table, query);
     }

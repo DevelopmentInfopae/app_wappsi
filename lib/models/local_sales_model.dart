@@ -6,6 +6,8 @@ import 'dart:convert';
 
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/models/payment_model.dart';
+import 'package:pos_wappsi/models/units_model.dart';
 
 import 'package:pos_wappsi/models/user_model.dart';
 import 'package:pos_wappsi/providers/biller_data_provider.dart';
@@ -15,6 +17,7 @@ import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/local_sale_items_provider.dart';
 import 'package:pos_wappsi/providers/payment_methods_provider.dart';
 import 'package:pos_wappsi/providers/payment_provider.dart';
+import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
@@ -289,33 +292,35 @@ class SalesModel {
         warehouseId: json["warehouse_id"],
         note: json["note"],
         staffNote: json["staff_note"],
-        total: json["total"].toDouble(),
-        productDiscount: json["product_discount"].toDouble(),
+        total: double.tryParse(json["total"].toString()) ?? 0,
+        productDiscount:
+            double.tryParse(json["product_discount"].toString()) ?? 0,
         orderDiscountId: json["order_discount_id"],
-        totalDiscount: json["total_discount"].toDouble(),
-        orderDiscount: json["order_discount"].toDouble(),
-        productTax: json["product_tax"].toDouble(),
+        totalDiscount: double.tryParse(json["total_discount"].toString()) ?? 0,
+        orderDiscount: double.tryParse(json["order_discount"].toString()) ?? 0,
+        productTax: double.tryParse(json["product_tax"].toString()) ?? 0,
         orderTaxId: json["order_tax_id"],
-        orderTax: json["order_tax"].toDouble(),
-        totalTax: json["total_tax"].toDouble(),
-        shipping: (json["shipping"] ?? 0).toDouble(),
-        grandTotal: json["grand_total"].toDouble(),
+        orderTax: double.tryParse(json["order_tax"].toString()) ?? 0,
+        totalTax: double.tryParse(json["total_tax"].toString()) ?? 0,
+        shipping: (double.tryParse(json["shipping"].toString()) ?? 0),
+        grandTotal: double.tryParse(json["grand_total"].toString()) ?? 0,
         saleStatus: json["sale_status"],
         paymentStatus: json["payment_status"],
-        paymentTerm: json["payment_term"] ?? 0,
-        dueDate: DateTime.parse(json["due_date"]),
+        paymentTerm: int.tryParse(json["payment_term"].toString()) ?? 0,
+        dueDate: DateTime.tryParse(json["due_date"]),
         createdBy: json["created_by"],
         updatedBy: json["updated_by"],
         updatedAt: json["updated_at"],
-        totalItems: json["total_items"],
+        totalItems: int.tryParse(json["total_items"].toString()) ?? 0,
         pos: json["pos"],
-        paid: json["paid"].toDouble(),
+        paid: double.tryParse(json["paid"].toString()) ?? 0,
         returnId: json["return_id"],
         surcharge: json["surcharge"],
         attachment: json["attachment"],
         returnSaleRef: json["return_sale_ref"],
         saleId: json["sale_id"],
-        returnSaleTotal: (json["return_sale_total"] ?? 0).toDouble(),
+        returnSaleTotal:
+            (double.tryParse(json["return_sale_total"].toString()) ?? 0),
         rounding: json["rounding"],
         suspendNote: json["suspend_note"],
         api: json["api"],
@@ -330,26 +335,33 @@ class SalesModel {
         igst: json["igst"],
         paymentMethod: json["payment_method"],
         payPartner: json["pay_partner"],
-        reteFuentePercentage: (json["rete_fuente_percentage"] ?? 0).toDouble(),
-        reteFuenteTotal: (json["rete_fuente_total"] ?? 0).toDouble(),
+        reteFuentePercentage:
+            (double.tryParse(json["rete_fuente_percentage"].toString()) ?? 0),
+        reteFuenteTotal:
+            (double.tryParse(json["rete_fuente_total"].toString()) ?? 0),
         reteFuenteAccount: json["rete_fuente_account"],
-        reteFuenteBase: (json["rete_fuente_base"] ?? 0).toDouble(),
-        reteIvaPercentage: (json["rete_iva_percentage"] ?? 0).toDouble(),
-        reteIvaTotal: (json["rete_iva_total"] ?? 0).toDouble(),
+        reteFuenteBase: double.tryParse(json["rete_fuente_base"].toString()),
+        reteIvaPercentage:
+            (double.tryParse(json["rete_iva_percentage"].toString()) ?? 0),
+        reteIvaTotal: (double.tryParse(json["rete_iva_total"].toString()) ?? 0),
         reteIvaAccount: json["rete_iva_account"],
-        reteIvaBase: (json["rete_iva_base"] ?? 0).toDouble(),
-        reteIcaPercentage: (json["rete_ica_percentage"] ?? 0).toDouble(),
-        reteIcaTotal: (json["rete_ica_total"] ?? 0).toDouble(),
+        reteIvaBase: (double.tryParse(json["rete_iva_base"].toString()) ?? 0),
+        reteIcaPercentage:
+            (double.tryParse(json["rete_ica_percentage"].toString()) ?? 0),
+        reteIcaTotal: (double.tryParse(json["rete_ica_total"].toString()) ?? 0),
         reteIcaAccount: json["rete_ica_account"],
-        reteIcaBase: (json["rete_ica_base"] ?? 0).toDouble(),
-        reteOtherPercentage: (json["rete_other_percentage"] ?? 0).toDouble(),
-        reteOtherTotal: (json["rete_other_total"] ?? 0).toDouble(),
+        reteIcaBase: (double.tryParse(json["rete_ica_base"].toString()) ?? 0),
+        reteOtherPercentage:
+            (double.tryParse(json["rete_other_percentage"].toString()) ?? 0),
+        reteOtherTotal:
+            (double.tryParse(json["rete_other_total"].toString()) ?? 0),
         reteOtherAccount: json["rete_other_account"],
-        reteOtherBase: (json["rete_other_base"] ?? 0).toDouble(),
+        reteOtherBase:
+            (double.tryParse(json["rete_other_base"].toString()) ?? 0),
         resolucion: json["resolucion"],
         feCorreoEnviado: json["fe_correo_enviado"],
         feAceptado: json["fe_aceptado"],
-        feRecibido: json["fe_recibido"],
+        feRecibido: int.tryParse(json["fe_recibido"].toString()),
         cufe: json["cufe"],
         codigoQr: json["codigo_qr"],
         feIdTransaccion: json["fe_id_transaccion"],
@@ -365,7 +377,7 @@ class SalesModel {
         paymentMethodFe: json["payment_method_fe"],
         paymentMeanFe: json["payment_mean_fe"],
         tipAmount: json["tip_amount"],
-        shippingInGrandTotal: json["shipping_in_grand_total"],
+        shippingInGrandTotal: json["shipping_in_grand_total"].toString(),
         saleOrigin: json["sale_origin"],
         saleOriginReferenceNo: json["sale_origin_reference_no"],
         reteFuenteId: json["rete_fuente_id"],
@@ -388,18 +400,25 @@ class SalesModel {
         registrationDate: json["registration_date"],
         returnOtherConcepts: json["return_other_concepts"],
         reteBomberilPercentage:
-            (json["rete_bomberil_percentage"] ?? 0).toDouble(),
-        reteBomberilTotal: (json["rete_bomberil_total"] ?? 0).toDouble(),
-        reteBomberilAccount: json["rete_bomberil_account"],
-        reteBomberilBase: (json["rete_bomberil_base"] ?? 0).toDouble(),
+            (double.tryParse(json["rete_bomberil_percentage"].toString()) ?? 0),
+        reteBomberilTotal:
+            (double.tryParse(json["rete_bomberil_total"].toString()) ?? 0),
+        reteBomberilAccount:
+            double.tryParse(json["rete_bomberil_account"].toString()),
+        reteBomberilBase:
+            (double.tryParse(json["rete_bomberil_base"].toString()) ?? 0),
         reteAutoavisoPercentage:
-            (json["rete_autoaviso_percentage"] ?? 0).toDouble(),
-        reteAutoavisoTotal: (json["rete_autoaviso_total"] ?? 0).toDouble(),
+            (double.tryParse(json["rete_autoaviso_percentage"].toString()) ??
+                0),
+        reteAutoavisoTotal:
+            (double.tryParse(json["rete_autoaviso_total"].toString()) ?? 0),
         reteAutoavisoAccount: json["rete_autoaviso_account"],
-        reteAutoavisoBase: (json["rete_autoaviso_base"] ?? 0).toDouble(),
+        reteAutoavisoBase:
+            (double.tryParse(json["rete_autoaviso_base"].toString()) ?? 0),
         reteAutoicaPercentage:
-            (json["rete_autoica_percentage"] ?? 0).toDouble(),
-        reteAutoicaTotal: (json["rete_autoica_total"] ?? 0).toDouble(),
+            (double.tryParse(json["rete_autoica_percentage"].toString()) ?? 0),
+        reteAutoicaTotal:
+            (double.tryParse(json["rete_autoica_total"].toString()) ?? 0),
         reteAutoicaAccount: json["rete_autoica_account"],
         reteAutoicaBase: json["rete_autoica_base"],
         reteAutoicaAccountCounterpart: json["rete_autoica_account_counterpart"],
@@ -424,6 +443,7 @@ class SalesModel {
     final customerAddress = posBloc.getCustomerAddresses!;
     final payment = posBloc.getPaymentMethod!;
     final total = posBloc.getSubTotal();
+    final pData = salePrintData?['data'];
     String paymentStatus = '';
     double pDiscount = 0;
     double orderDiscount = 0;
@@ -449,8 +469,10 @@ class SalesModel {
     }
 
     return SalesModel(
-      idCloud: salePrintData?["id"] ?? idCld,
-      referenceNo: salePrintData?['reference_no'] ?? '',
+      idCloud: pData?["id"] ?? pData['sale_id'] ?? idCld,
+      referenceNo: pData?['reference_no'] != null
+          ? (pData?['reference_no'] is bool ? '' : pData?['reference_no'])
+          : '',
       customerId: int.tryParse(customer.idCloud ?? '0') ?? 0,
       customer: customer.name ?? customer.company ?? '',
       billerId: userData.billerId,
@@ -458,15 +480,15 @@ class SalesModel {
       warehouseId: userData.warehouseId,
       note: posBloc.getInvoiceNote,
       staffNote: posBloc.getDispatchNote,
-      total: total - totalTax,
+      total: double.tryParse((total - totalTax).toString()) ?? 0.0,
       productDiscount: pDiscount,
       orderDiscountId: null,
       totalDiscount: pDiscount + orderDiscount,
       orderDiscount: orderDiscount,
-      productTax: totalTax,
+      productTax: double.tryParse(totalTax.toString()) ?? 0.0,
       orderTaxId: null,
-      orderTax: orderTax,
-      totalTax: totalTax + orderTax,
+      orderTax: double.tryParse(orderTax.toString()) ?? 0.0,
+      totalTax: double.tryParse((totalTax + orderTax).toString()) ?? 0.0,
       saleCurrency: saleCurrency,
       // shipping: json["shipping"],
       grandTotal: total,
@@ -498,7 +520,7 @@ class SalesModel {
       // igst: json["igst"],
       paymentMethod: '',
       // payPartner: json["pay_partner"],
-      // reteFuentePercentage: json["rete_fuente_percentage"].toDouble(),
+      // reteFuentePercentage: double.tryParse(json["rete_fuente_percentage"].toString())??0,
       // reteFuenteTotal: json["rete_fuente_total"],
       // reteFuenteAccount: json["rete_fuente_account"],
       // reteFuenteBase: json["rete_fuente_base"],
@@ -514,7 +536,7 @@ class SalesModel {
       // reteOtherTotal: json["rete_other_total"],
       // reteOtherAccount: json["rete_other_account"],
       // reteOtherBase: json["rete_other_base"],
-      resolucion: salePrintData?["resolucion"] ?? '',
+      resolucion: pData?["resolucion"] ?? '',
       // feCorreoEnviado: json["fe_correo_enviado"],
       // feAceptado: json["fe_aceptado"],
       // feRecibido: json["fe_recibido"],
@@ -553,7 +575,7 @@ class SalesModel {
       // selfWithholdingPercentage: json["self_withholding_percentage"],
       // printed: json["printed"],
       // duePaymentMethodId: json["due_payment_method_id"],
-      registrationDate: salePrintData?["date"] ?? '',
+      registrationDate: pData?["date"] ?? '',
       // returnOtherConcepts: json["return_other_concepts"],
       // reteBomberilPercentage: json["rete_bomberil_percentage"],
       // reteBomberilTotal: json["rete_bomberil_total"],
@@ -734,7 +756,8 @@ class SalesModel {
     final customerAddress = await CustomerAddressesProvider.loadCustomerAddress(
         addressId.toString());
     // Load only first sale payment
-    final payment = await PaymentProvider.loadPayment(id!);
+    PaymentsModel? payment = await PaymentProvider.loadPayment(id!);
+    payment ??= await PaymentProvider.loadPayment(idCloud!);
     final paymentMethod =
         await PaymentMethodsProvider.loadPayMByCode(payment!.paidBy);
 
@@ -743,7 +766,11 @@ class SalesModel {
         await DBProvider.db.getDocumentDetails(documentTypeId.toString());
     final temp = removeRareSpaceChr(docDetails?['invoice_footer'] ?? '');
 
-    final productsInfo = await _productsMap(id!);
+    Map<String, dynamic>? productsInfo = await _productsMap(id!);
+
+    if (productsInfo['products'].isEmpty) {
+      productsInfo = await _productsMap(idCloud!);
+    }
 
     return {
       "products": productsInfo['products'],
@@ -773,10 +800,19 @@ class SalesModel {
     Map<double, dynamic> ivasMap = {};
     try {
       for (var item in saleItems) {
+        UnitsModel? baseUnit;
+        final pUnit = item.productUnitIdSelected != null
+            ? await UnitsProvider.getUnitInfo(item.productUnitIdSelected!)
+            : null;
+        if (pUnit != null) {
+          baseUnit = await UnitsProvider.getUnitInfo(pUnit.baseUnit);
+        }
         final tItempMap = {
           'quantity': item.quantity,
           'price': item.unitPrice,
           'name': item.productName,
+          'unit': pUnit?.toJson(),
+          'base_unit': baseUnit?.toJson()
         };
         productsMap.add(tItempMap);
         final taxRate = (item.unitPrice / item.netUnitPrice) - 1;

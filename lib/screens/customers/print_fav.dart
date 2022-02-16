@@ -1,4 +1,5 @@
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nb_utils/nb_utils.dart';
@@ -6,13 +7,16 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/bloc/data_bloc.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/components/go_back_bottom.dart';
 import 'package:pos_wappsi/components/preview_print/preview_widgets.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/img_dir.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
+import 'package:pos_wappsi/screens/customers/components/select_customer_add_alert.dart';
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
-import 'package:pos_wappsi/screens/home/home_screen.dart';
-import 'package:pos_wappsi/screens/orders/new_order.dart';
+
 import 'package:pos_wappsi/screens/settings/print_settings.dart';
 // import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
@@ -20,12 +24,12 @@ import 'package:pos_wappsi/utils/blue_print/blue_print.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/local_files.dart';
 
-class PrintOrder extends StatefulWidget {
+class PrintFav extends StatefulWidget {
   final bool back;
   final String image;
   final bool exitToNewOrder;
   final Map<dynamic, dynamic> printData;
-  const PrintOrder(
+  const PrintFav(
       {Key? key,
       required this.printData,
       this.back = false,
@@ -33,10 +37,10 @@ class PrintOrder extends StatefulWidget {
       this.image = 'assets/images/printer.png'})
       : super(key: key);
   @override
-  _PrintOrderState createState() => _PrintOrderState();
+  _PrintFavState createState() => _PrintFavState();
 }
 
-class _PrintOrderState extends State<PrintOrder> {
+class _PrintFavState extends State<PrintFav> {
   late Color _pc;
   late Size _size;
   bool _printing = false;
@@ -71,7 +75,7 @@ class _PrintOrderState extends State<PrintOrder> {
       child: Scaffold(
         appBar: appBar(
           context,
-          'Imprimir pedido',
+          'Imprimir favoritos',
           back: widget.back,
           image: widget.image,
         ),
@@ -105,24 +109,18 @@ class _PrintOrderState extends State<PrintOrder> {
                       _size.height * 0.09 > 60 ? _size.height * 0.09 : 60),
               legalInformation(textTheme, widget.printData),
               emptyLine(),
-              orderRef(textTheme, widget.printData),
               emptyLine(),
               billerData(textTheme, widget.printData)
                   .withWidth(_size.width * 0.75)
                   .paddingSymmetric(horizontal: 10),
               emptyLine(),
-              products(widget.printData).withWidth(_size.width * 0.75),
+
+              productsFavs(widget.printData).withWidth(_size.width * 0.75),
               emptyLine(),
               emptyLine(),
-              taxRatesValues(textTheme, widget.printData)
-                  .withWidth(_size.width * 0.75),
+
               emptyLine(),
-              // hDivider(),
-              posNote(textTheme, widget.printData)
-                  .paddingSymmetric(vertical: 8),
-              // hDivider(),
-              orderValueDetails(textTheme, widget.printData)
-                  .paddingSymmetric(horizontal: 6, vertical: 8),
+
               wappsiSpam(textTheme, widget.printData)
                   .paddingSymmetric(horizontal: 10),
               // emptyLine(),
@@ -138,7 +136,7 @@ class _PrintOrderState extends State<PrintOrder> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _exitButton(),
+        const GoBackBottom(),
         _printButton(),
       ],
     );
@@ -152,6 +150,22 @@ class _PrintOrderState extends State<PrintOrder> {
       width: _size.width * 0.1,
       enabled: !_printing,
       onTap: () async {
+        final addresses = await CustomerAddressesProvider.loadCustomerAddresses(
+            widget.printData['customer']['id_cloud'].toString());
+        // printConsole(addresses);
+        if (addresses.length > 1) {
+          final address = await showCupertinoDialog(
+              barrierDismissible: true,
+              context: context,
+              useRootNavigator: false,
+              builder: (context) {
+                return SelectCustomerAddressAlert(
+                    customer:
+                        CompanyModel.fromJson(widget.printData['customer']),
+                    adresses: addresses);
+              });
+          widget.printData['customer_address'] = address;
+        }
         bool isConnected;
 
         try {
@@ -169,13 +183,13 @@ class _PrintOrderState extends State<PrintOrder> {
           });
 
           scaffoldAlert(
-              context, 'Imprimiendo comprobante', const Duration(seconds: 3));
+              context, 'Imprimiendo favoritos', const Duration(seconds: 3));
           String companyLogo = widget.printData['company_data'].logo;
           if (companyLogo.substring(companyLogo.length - 4) == '.png') {
             companyLogo =
                 companyLogo.substring(0, companyLogo.length - 4) + '.jpg';
           }
-          final result = await printFormat.printOrder(
+          final result = await printFormat.printFavOrder(
               dataBloc.dirPath! + billerImgDir + companyLogo, widget.printData);
           if (result ?? false) {
             await Future.delayed(const Duration(seconds: 1));
@@ -189,7 +203,7 @@ class _PrintOrderState extends State<PrintOrder> {
           }
         } else {
           PrintSettings(
-            print: 'order',
+            print: 'favorites',
             posPrintData: widget.printData,
           ).launch(context);
         }
@@ -201,48 +215,6 @@ class _PrintOrderState extends State<PrintOrder> {
             'Imprimir ',
             style: buttonsSmallTextStyle(context, color: pColor),
           ),
-        ],
-      ),
-    );
-  }
-
-  AppButton _exitButton() {
-    return AppButton(
-      color: Colors.white,
-      padding: kButtonPadding,
-      // disabledColor: Colors.white,
-      width: _size.width * 0.1,
-      onTap: () async {
-        // final syncDB = SyncDBProvider();
-        // final res = await Future.wait([
-        //   syncDB.syncOption(context, 'Precios de Productos'),
-        //   syncDB.syncOption(context, 'Productos de Sucursales'),
-        // ]);
-
-        // printConsole(res);
-
-        if (widget.exitToNewOrder) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => const HomeScreen(),
-            ),
-            (route) => false,
-          );
-          const NewOrder().launch(context);
-        } else {
-          Navigator.pop(context);
-        }
-      },
-      child: Row(
-        children: [
-          const Icon(Icons.arrow_back_ios_rounded,
-              size: kIconSize, color: pColor),
-          Text(' Salir',
-              style: buttonsSmallTextStyle(
-                context,
-                color: pColor,
-              )),
         ],
       ),
     );

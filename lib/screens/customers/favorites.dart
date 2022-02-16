@@ -18,7 +18,9 @@ import 'package:pos_wappsi/screens/customers/add_favorites.dart';
 
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/screens/customers/components/create_user_alert.dart';
+import 'package:pos_wappsi/screens/customers/print_fav.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+
 import 'package:pos_wappsi/utils/manage_server_resp.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
@@ -111,7 +113,7 @@ class _ListFavoritesState extends State<ListFavorites> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 // setState(() {
-                if (favoritesToDelete.isNotEmpty) {
+                if (favoritesToDelete.isEmpty) {
                   favorites = snapshot.data!;
                 }
                 // });
@@ -127,42 +129,48 @@ class _ListFavoritesState extends State<ListFavorites> {
             }));
   }
 
-  ListView _favoritesList(BuildContext context) {
-    return ListView.builder(
-        itemCount: favorites.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Dismissible(
-            key: UniqueKey(),
-            onDismissed: (direction) {
-              favoritesToDelete.add(favorites[index]);
-              setState(() {
-                favorites.removeWhere((element) => element == favorites[index]);
-              });
-            },
-            background: Container(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              decoration: BoxDecoration(
-                  color: Colors.red, borderRadius: BorderRadius.circular(10)),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.delete,
-                    size: iconSize(context),
-                    color: Colors.white,
-                  ).paddingOnly(left: 16, right: 8),
-                  Text(
-                    'Remover favorito',
-                    style: buttonsTextStyle(context, fontSizeFactor: 1.05),
-                  )
-                ],
-              ),
-            ).paddingSymmetric(vertical: 8),
-            child: ProductCard(
-              action: 'details',
-              product: favorites[index],
-            ),
-          );
-        });
+  Widget _favoritesList(BuildContext context) {
+    return RefreshIndicator(
+        onRefresh: () async {
+          await _reload(context);
+        },
+        child: ListView.builder(
+            itemCount: favorites.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Dismissible(
+                key: UniqueKey(),
+                onDismissed: (direction) {
+                  favoritesToDelete.add(favorites[index]);
+                  setState(() {
+                    favorites
+                        .removeWhere((element) => element == favorites[index]);
+                  });
+                },
+                background: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.delete,
+                        size: iconSize(context),
+                        color: Colors.white,
+                      ).paddingOnly(left: 16, right: 8),
+                      Text(
+                        'Remover favorito',
+                        style: buttonsTextStyle(context, fontSizeFactor: 1.05),
+                      )
+                    ],
+                  ),
+                ).paddingSymmetric(vertical: 8),
+                child: ProductCard(
+                  action: 'details',
+                  product: favorites[index],
+                ),
+              );
+            }));
   }
 
   Widget _empty(BuildContext context) {
@@ -190,8 +198,8 @@ class _ListFavoritesState extends State<ListFavorites> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _printFavorites(context),
             _saveChanges(context),
+            _printFavorites(context),
             _addFavorites(context),
           ],
         ),
@@ -234,11 +242,18 @@ class _ListFavoritesState extends State<ListFavorites> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'Agregar',
-            style: buttonsSmallTextStyle(context),
+          const Icon(
+            Icons.add,
+            size: kIconSize,
+            color: pColor,
           ),
-          const Icon(Icons.add, size: kIconSize),
+          Text(
+            ' Agregar',
+            style: buttonsSmallTextStyle(
+              context,
+              color: pColor,
+            ),
+          ),
         ],
       ),
     );
@@ -288,11 +303,18 @@ class _ListFavoritesState extends State<ListFavorites> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'Guardar',
-            style: buttonsSmallTextStyle(context),
+          const Icon(
+            Icons.save_outlined,
+            size: kIconSize,
+            color: pColor,
           ),
-          const Icon(Icons.save_outlined, size: kIconSize),
+          Text(
+            ' Guardar',
+            style: buttonsSmallTextStyle(
+              context,
+              color: pColor,
+            ),
+          ),
         ],
       ),
     );
@@ -300,7 +322,11 @@ class _ListFavoritesState extends State<ListFavorites> {
 
   AppButton _printFavorites(BuildContext context) {
     return AppButton(
-      onTap: () async {},
+      onTap: () async {
+        final printData = await WishlistProvider.buildPrintDataMap(
+            widget.customer, favorites);
+        PrintFav(printData: printData).launch(context);
+      },
       color: Colors.white,
       padding: kButtonPadding,
       // disabledColor: Colors.white,
@@ -309,11 +335,18 @@ class _ListFavoritesState extends State<ListFavorites> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'Imprimir',
-            style: buttonsSmallTextStyle(context),
+          const Icon(
+            Icons.print_outlined,
+            size: kIconSize,
+            color: pColor,
           ),
-          const Icon(Icons.print_outlined, size: kIconSize),
+          Text(
+            ' Imprimir',
+            style: buttonsSmallTextStyle(
+              context,
+              color: pColor,
+            ),
+          ),
         ],
       ),
     );

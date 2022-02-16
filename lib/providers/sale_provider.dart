@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/local_sales_model.dart';
 import 'package:pos_wappsi/models/sale_model.dart';
@@ -8,6 +9,7 @@ import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/local_sale_items_provider.dart';
 import 'package:pos_wappsi/providers/payment_provider.dart';
+import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
@@ -47,7 +49,11 @@ class SalesProvider {
             // to show changes in costumer or products
             // String chText = _getChangesString(changes);
             await Future.forEach(changes.keys.toList(), (String key) async {
-              // ignore: unnecessary_null_comparison
+              // here update tables who are suposed to be not updated
+              if (changes[key]) {
+                final syncDB = SyncDBProvider();
+                await syncDB.syncOption(context, tableNamesToSyncOpt[key]!);
+              }
             });
             final reload = await posBloc.reloadPOSData();
 
@@ -113,7 +119,7 @@ class SalesProvider {
         .getDocumentDetails(dataBloc.userData!.documentTypeId.toString());
     final temp = removeRareSpaceChr(docDetails?['invoice_footer'] ?? '');
     return {
-      "products": posBloc.getProductsListMap(),
+      "products": await posBloc.getProductsListMap(),
       "customer": posBloc.getCustomer!.toJson(),
       "customer_address": posBloc.getCustomerAddresses!.toJson(),
       "payment_method": posBloc.getPaymentMethod!.toJson(),

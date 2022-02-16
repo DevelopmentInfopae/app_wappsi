@@ -2,19 +2,25 @@ import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/components/widgets.dart';
+import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/order_model.dart';
 import 'package:pos_wappsi/providers/local_orders_provider.dart';
 import 'package:pos_wappsi/screens/orders/print_order.dart';
 
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/text_formating/date_to_text.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:pos_wappsi/utils/text_formating/order_status_mapping.dart';
 
 class OrdersCardList extends StatefulWidget {
   const OrdersCardList(
-      {Key? key, required this.orders, required this.searchParams})
+      {Key? key,
+      required this.orders,
+      required this.searchParams,
+      this.filters = const []})
       : super(key: key);
   final List<OrderModel> orders;
+  final List<String> filters;
   final Map searchParams;
 
   @override
@@ -42,7 +48,7 @@ class _OrdersCardListState extends State<OrdersCardList> {
           controller: _controller,
           padding: EdgeInsets.zero,
           itemCount: widget.orders.length + (_allLoaded ? 1 : 0),
-          physics: const ClampingScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           separatorBuilder: (context, index) => const Divider(
             height: 5,
           ),
@@ -78,6 +84,7 @@ class _OrdersCardListState extends State<OrdersCardList> {
       _loading = true;
       final res = await LocalOrdersProvider.listLocalOrders(
           search: widget.searchParams['search'] ?? '',
+          filters: widget.filters,
           offset: true,
           limit: 30,
           offsetValue: _page * 30);
@@ -121,9 +128,10 @@ class OrdersCard extends StatefulWidget {
 
 class _OrdersCardState extends State<OrdersCard> {
   // late Size _size;
-
+  Map<String, Color> cardColors = {};
   @override
   Widget build(BuildContext context) {
+    cardColors = mapOrderStatusColor(widget.order.saleStatus);
     // _size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () async {
@@ -135,7 +143,8 @@ class _OrdersCardState extends State<OrdersCard> {
       },
       child: Card(
         // color: Color.fromRGBO(245, 245, 245, 1),
-        margin: const EdgeInsets.symmetric(horizontal: 5),
+        shadowColor: cardColors['background'],
+        margin: const EdgeInsets.symmetric(horizontal: 4),
         elevation: 5,
         child: _description(),
       ),
@@ -148,7 +157,7 @@ class _OrdersCardState extends State<OrdersCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _status(),
+          _status().paddingSymmetric(horizontal: 8),
           _customer(),
           _date(),
           _reference(),
@@ -189,7 +198,12 @@ class _OrdersCardState extends State<OrdersCard> {
   }
 
   Widget _date() {
-    return labelContentH('Fecha:', widget.order.registrationDate ?? '', context,
+    return labelContentH(
+        'Fecha:',
+        capitalizeText(parseDateStrES(widget.order.registrationDate ?? '') +
+            ' ' +
+            parseTimeStrES(widget.order.registrationDate ?? '')),
+        context,
         withInnerPading: false,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
@@ -209,10 +223,29 @@ class _OrdersCardState extends State<OrdersCard> {
   }
 
   Widget _status() {
-    return labelContentH(
-        'Estado:', mapOrderStatus(widget.order.saleStatus).toString(), context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
+    return Row(
+      children: [
+        Text(
+          'Estado:',
+          style: normalTextStyle(context, fontWeightDelta: 2),
+        ),
+        const Spacer(),
+        Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          width: 110,
+          decoration: BoxDecoration(
+              color: cardColors['background'],
+              borderRadius: BorderRadius.circular(10)),
+          child: Text(
+            mapOrderStatus(widget.order.saleStatus),
+            textAlign: TextAlign.center,
+            style: normalTextStyle(context,
+                fontWeightDelta: 2, color: cardColors['text']),
+          ),
+        ),
+      ],
+    );
   }
 
   // Widget _total() {
@@ -226,7 +259,7 @@ class _OrdersCardState extends State<OrdersCard> {
   // }
 
   // Widget _discount() {
-  //   final value = getFormatedCurrency(widget.order.orderDiscount, decimals: 1);
+  //   final value = getFormatedCurrency(widget.order.orderDiscount);
   //   return labelContentH(
   //       'Descuento:', value.substring(0, value.length - 1), context,
   //       withInnerPading: false,
@@ -234,7 +267,7 @@ class _OrdersCardState extends State<OrdersCard> {
   // }
 
   Widget _grandTotal() {
-    final value = getFormatedCurrency(widget.order.grandTotal, decimals: 1);
+    final value = getFormatedCurrency(widget.order.grandTotal);
     return labelContentH(
         'Total:', value.substring(0, value.length - 1), context,
         withInnerPading: false,

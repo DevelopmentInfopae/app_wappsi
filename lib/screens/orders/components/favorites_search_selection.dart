@@ -31,11 +31,12 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
       children: [
         _searchBarBackground(_searchBar(context)),
         RefreshIndicator(
-      displacement: 0,
-      onRefresh: ()async{
-        await _reloadFavs(context);
-      },
-      child: _products()).expand()
+                displacement: 0,
+                onRefresh: () async {
+                  await _reloadFavs(context);
+                },
+                child: _products())
+            .expand()
       ],
     );
   }
@@ -70,38 +71,37 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
         // transition: CircularFloatingSearchBarTransition(),
         actions: [
           FloatingSearchBarAction.searchToClear(
-            // showIfClosed: false,
-          ),
-
+              // showIfClosed: false,
+              ),
           _reloadFavoritesIcon(context),
         ],
       ),
     );
   }
 
-  Widget _reloadFavoritesIcon(BuildContext context){
+  Widget _reloadFavoritesIcon(BuildContext context) {
     return SizedBox(
-          width: 40,
-          child: FloatingSearchBarAction(
-            showIfOpened: false,
-            child: CircularButton(
-              icon: _reloadFavsingFavs
-                  ? FittedBox(
-                      child: Loader(
-                        decoration: const BoxDecoration(),
-                      ),
-                    )
-                  : Icon(
-                      Icons.refresh,
-                      size: leadingIconSize,
-                      color: pColor,
-                    ),
-              onPressed: () async {
-                await _reloadFavs(context);
-              },
-            ),
-          ),
-        );
+      width: 40,
+      child: FloatingSearchBarAction(
+        showIfOpened: false,
+        child: CircularButton(
+          icon: _reloadFavsingFavs
+              ? FittedBox(
+                  child: Loader(
+                    decoration: const BoxDecoration(),
+                  ),
+                )
+              : Icon(
+                  Icons.refresh,
+                  size: leadingIconSize,
+                  color: pColor,
+                ),
+          onPressed: () async {
+            await _reloadFavs(context);
+          },
+        ),
+      ),
+    );
   }
 
   Container _searchBarBackground(Widget child) {
@@ -181,7 +181,6 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
           return ProductCard(
             action: 'add_to_order',
             product: _favorites[index],
-            
           );
         });
   }

@@ -164,7 +164,7 @@ class SaleModel {
   List<double?> realUnitPrice;
   List<double> quantity;
   List<int> productUnit;
-  List<int> productUnitIdSelected;
+  List<int?> productUnitIdSelected;
   List<double> productBaseQuantity;
   List<double>? productAqty;
   List<String>? productPreferencesText;

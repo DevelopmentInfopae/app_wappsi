@@ -9,6 +9,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:nb_utils/src/extensions/widget_extensions.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/components/go_back_bottom.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/customer_groups_model.dart';
@@ -32,7 +33,8 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
   bool _adduUser = false;
   bool _addFavorites = false;
 
-  final TextEditingController _customerGroupController = TextEditingController();
+  final TextEditingController _customerGroupController =
+      TextEditingController();
   final TextEditingController _priceGroupController = TextEditingController();
 
   CustomerGroupsModel? _customerGroup;
@@ -84,7 +86,8 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
             CheckboxListTile(
               value: _adduUser,
               title: Text('Crear usuario', style: normalTextStyle(context)),
-              secondary: const Icon(FontAwesomeIcons.userCheck, size: kIconSize),
+              secondary:
+                  const Icon(FontAwesomeIcons.userCheck, size: kIconSize),
               onChanged: (value) {
                 setState(() {
                   _adduUser = !_adduUser;
@@ -116,28 +119,45 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
   }
 
   Widget _customerConfig() {
-    return AppButton(
-      child: Text('Siguiente', style: buttonsTextStyle(context)),
-      enabled: !_loading,
-      onTap: _loading
-          ? null
-          : () async {
-              if (_formKey.currentState?.validate() ?? false) {
-                if (_addFavorites) {
-                  final verifyUserN =
-                      await customerBloc.verifyUserName(context);
-                  if (!verifyUserN) {
-                    const AddFavorites().launch(context);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        const GoBackBottom(),
+        AppButton(
+          child: Row(
+            children: [
+              const Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: kIconSize,
+                color: pColor,
+              ),
+              Text('Siguiente',
+                  style: buttonsSmallTextStyle(context, color: pColor)),
+            ],
+          ),
+          enabled: !_loading,
+          onTap: _loading
+              ? null
+              : () async {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    if (_addFavorites) {
+                      final verifyUserN =
+                          await customerBloc.verifyUserName(context);
+                      if (!verifyUserN) {
+                        const AddFavorites().launch(context);
+                      }
+                    } else {
+                      await CompaniesProvider.sendCustomerInfo(context);
+                      await dataBloc.refreshToken(context);
+                    }
                   }
-                } else {
-                  await CompaniesProvider.sendCustomerInfo(context);
-                  await dataBloc.refreshToken(context);
-                }
-              }
-            },
-      color: _pc,
-      disabledColor: _pc,
-    ).withSize(width: _size.width);
+                },
+          color: Colors.white,
+          padding: kButtonPadding,
+          disabledColor: _pc,
+        ),
+      ],
+    );
   }
 
   Widget _customerGroups() {

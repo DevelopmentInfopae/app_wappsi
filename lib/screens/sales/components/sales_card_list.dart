@@ -217,16 +217,14 @@ class _SalesCardState extends State<SalesCard> {
 
   Widget _total() {
     final value = getFormatedCurrency(widget.sale.grandTotal);
-    return labelContentH(
-        'Total:', value.substring(0, value.length - 1), context,
+    return labelContentH('Total:', value.substring(0, value.length), context,
         withInnerPading: false,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 
   Widget _paid() {
     final value = getFormatedCurrency(widget.sale.paid);
-    return labelContentH(
-        'Pagado:', value.substring(0, value.length - 1), context,
+    return labelContentH('Pagado:', value.substring(0, value.length), context,
         withInnerPading: false,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }

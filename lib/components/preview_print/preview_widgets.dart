@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+// ignore: implementation_imports
+import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
+import 'package:pos_wappsi/models/units_model.dart';
+import 'package:pos_wappsi/providers/units_provider.dart';
+import 'package:pos_wappsi/utils/text_formating/date_to_text.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 Widget legalInformation(TextTheme textTheme, Map<dynamic, dynamic> printData) {
@@ -94,6 +99,7 @@ Widget billerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
   final customer = printData['customer'];
   final data = printData['sale_data'] ?? printData['order_data'];
   final sellerName = dataBloc.userData!.sellerName;
+  final date = data != null ? data['date'] ?? '' : DateTime.now().toString();
   return Column(
     // mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +109,9 @@ Widget billerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
               text: 'Fecha/hora: ',
               style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
               children: [
-            TextSpan(text: data['date'] ?? '', style: textTheme.bodyText1)
+            TextSpan(
+                text: parseDateStrES(date) + ' ' + parseTimeStrES(date),
+                style: textTheme.bodyText1)
           ])),
       RichText(
           text: TextSpan(
@@ -154,27 +162,81 @@ Widget billerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
   );
 }
 
-Widget products(Map<dynamic, dynamic> printData) {
+Widget products(Map<dynamic, dynamic> printData, {int? pricePolicy}) {
   // final size = MediaQuery.of(context).size;
   final List<Map> products = printData['products'];
   return DataTable(
-    columns: _pColumnsNames(),
-    rows: _products(products),
+    columns: pricePolicy == 10 ? _pColumnsNamesWUnits() : _pColumnsNames(),
+    rows: pricePolicy == 10 ? _productsWUnit(products) : _products(products),
     dataRowHeight: 50,
     showBottomBorder: true,
     columnSpacing: 5,
     horizontalMargin: 10,
-    dividerThickness: 2,
+    dividerThickness: 0,
     headingRowHeight: 30,
+  );
+}
+
+Widget productsFavs(Map<dynamic, dynamic> printData) {
+  // final size = MediaQuery.of(context).size;
+  final List<Map> products = printData['products'];
+  final Map<String, dynamic> customerInfo = printData['customer'];
+  final List<Widget> pFavList = [
+    Center(
+      child: const Text(
+        'Productos',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ).paddingBottom(5),
+    )
+  ];
+  for (Map element in products) {
+    final pName = Text(
+      element['name'],
+    );
+    pFavList.add(pName);
+    final units = FutureBuilder(
+      future: UnitsProvider.getProductUnits(
+          element['id_cloud'].toString(), customerInfo['price_group_id']),
+      builder:
+          (BuildContext context, AsyncSnapshot<List<UnitsModel>> snapshot) {
+        if (snapshot.hasData) {
+          final List<Widget> uDesc = [];
+          for (var element in snapshot.data!) {
+            uDesc.add(Row(
+              children: [
+                Text(
+                  element.name,
+                  maxLines: 2,
+                ).expand(),
+                Text(getFormatedCurrency(element.unitValue)),
+                const Text('  _______'),
+              ],
+            ));
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: uDesc,
+          );
+        } else {
+          //to return something
+          return Container();
+        }
+      },
+    );
+    pFavList.add(units);
+  }
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: pFavList,
   );
 }
 
 List<DataRow> _products(List<Map<dynamic, dynamic>> products) {
   return products.map((p) {
-    String value = getFormatedCurrency(p['quantity'] * p['price'], decimals: 1);
+    String value = getFormatedCurrency(p['quantity'] * p['price']);
     return DataRow(
       cells: <DataCell>[
-        DataCell(Text(getIntDouble(p['quantity']))),
+        DataCell(Text(getRoundedQtty(p['quantity']))),
         DataCell(Text(
           capitalizeText(p['name']),
           maxLines: 3,
@@ -190,11 +252,87 @@ List<DataRow> _products(List<Map<dynamic, dynamic>> products) {
   }).toList();
 }
 
+List<DataRow> _productsWUnit(List<Map<dynamic, dynamic>> products) {
+  List<DataRow> rows = [];
+  for (var p in products) {
+    final value = p['quantity'] * p['price'];
+    String valueS = getFormatedCurrency(value);
+    final unit = p['unit'];
+    final qtty = p['quantity'] / unit['operation_value'];
+    rows.add(DataRow(
+      cells: <DataCell>[
+        DataCell(Text(getRoundedQtty(qtty))),
+        DataCell(Text(
+          capitalizeText(unit['code']),
+          maxLines: 3,
+        )),
+        DataCell(Text(
+          capitalizeText(p['name']),
+          maxLines: 3,
+        )),
+        DataCell(
+          Text(
+            valueS,
+            textAlign: TextAlign.right,
+          ),
+        ),
+      ],
+    ));
+    if (p['base_unit'] != null) {
+      final bUnit = p['base_unit'];
+      final bUnitValue = value / bUnit['operation_value'];
+      final bUnitValueS = getFormatedCurrency(bUnitValue);
+      rows.add(DataRow(
+        cells: <DataCell>[
+          const DataCell(Text('')),
+          const DataCell(Text('')),
+          DataCell(Text(
+            capitalizeText(unit['code'] + ' x ' + bUnitValueS),
+            maxLines: 3,
+          )),
+          const DataCell(Text('')),
+        ],
+      ));
+    }
+  }
+
+  return rows;
+}
+
 List<DataColumn> _pColumnsNames() {
   return [
     const DataColumn(
       label: Text(
         'Cant',
+        // style: TextStyle(fontStyle: FontStyle.italic),
+      ),
+    ),
+    const DataColumn(
+      label: Text(
+        'Producto',
+        // style: TextStyle(fontStyle: FontStyle.italic),
+      ),
+    ),
+    const DataColumn(
+      label: Text(
+        'Valor',
+        // style: TextStyle(fontStyle: FontStyle.italic),
+      ),
+    ),
+  ];
+}
+
+List<DataColumn> _pColumnsNamesWUnits() {
+  return [
+    const DataColumn(
+      label: Text(
+        'Cant',
+        // style: TextStyle(fontStyle: FontStyle.italic),
+      ),
+    ),
+    const DataColumn(
+      label: Text(
+        'UMD',
         // style: TextStyle(fontStyle: FontStyle.italic),
       ),
     ),
@@ -279,10 +417,9 @@ Widget paymentDetails(TextTheme textTheme, Map<dynamic, dynamic> printData) {
 }
 
 Widget orderValueDetails(TextTheme textTheme, Map<dynamic, dynamic> printData) {
-  final total = getFormatedCurrency(printData['total'], decimals: 1);
-  final discount =
-      getFormatedCurrency(printData['total_discount'], decimals: 1);
-  final grandTotal = getFormatedCurrency(printData['grand_total'], decimals: 1);
+  final total = getFormatedCurrency(printData['total']);
+  final discount = getFormatedCurrency(printData['total_discount']);
+  final grandTotal = getFormatedCurrency(printData['grand_total']);
 
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -417,21 +554,23 @@ Widget posNote(TextTheme textTheme, Map<dynamic, dynamic> printData) {
 Widget resolution(TextTheme textTheme, Map<dynamic, dynamic> printData) {
   final resolution = printData['sale_data']['resolucion'];
   return Text(
-    resolution,
+    resolution ?? '',
     style: textTheme.bodyText1,
     textAlign: TextAlign.center,
   );
 }
 
 Widget wappsiSpam(TextTheme textTheme, Map<dynamic, dynamic> printData) {
-  final List<String> footer = printData['footer'];
-  return Column(
-    children: footer.map((element) {
-      return Text(
-        element,
-        style: textTheme.bodyText1,
-        textAlign: TextAlign.center,
-      );
-    }).toList(),
-  );
+  final List<String>? footer = printData['footer'];
+  return footer != null
+      ? Column(
+          children: footer.map((element) {
+            return Text(
+              element,
+              style: textTheme.bodyText1,
+              textAlign: TextAlign.center,
+            );
+          }).toList(),
+        )
+      : Container();
 }

@@ -22,20 +22,21 @@ class CustomerAddressesProvider {
       ];
 
   /// Load default customer address
-  static selectDefaultAddrs({bool returnBool = false, bool fromOrderCreation=false}) async {
+  static selectDefaultAddrs(
+      {bool returnBool = false, bool fromOrderCreation = false}) async {
     if (posBloc.getCustomer != null && posBloc.getCustomerAddresses == null) {
       final data = await findCustomerAddresses(
           '', posBloc.getCustomer!.idCloud!.toString());
       if (data != []) {
         final defaultAddrss = data.first;
-        if(fromOrderCreation){
+        if (fromOrderCreation) {
           orderBloc.setCustomerAddresses(
-            CustomerAddressesModel.fromJson(defaultAddrss));
-        }else{
+              CustomerAddressesModel.fromJson(defaultAddrss));
+        } else {
           posBloc.setCustomerAddresses(
-            CustomerAddressesModel.fromJson(defaultAddrss));
+              CustomerAddressesModel.fromJson(defaultAddrss));
         }
-        
+
         if (returnBool) {
           return true;
         }
@@ -45,7 +46,8 @@ class CustomerAddressesProvider {
 
   /// Load default customer address
   static selectDefaultAddrsToOrder({bool returnBool = false}) async {
-    if (orderBloc.getCustomer != null && orderBloc.getCustomerAddresses == null) {
+    if (orderBloc.getCustomer != null &&
+        orderBloc.getCustomerAddresses == null) {
       final data = await findCustomerAddresses(
           '', orderBloc.getCustomer!.idCloud!.toString());
       if (data != []) {
@@ -71,6 +73,18 @@ class CustomerAddressesProvider {
     }
   }
 
+  /// Load address given an address id
+
+  static Future<List<CustomerAddressesModel>> loadCustomerAddresses(
+      String id) async {
+    final data = await loadCustomerAddressesFromDB(id);
+    if (data != null) {
+      return CustomerAddressesModel.fromJsonList(data);
+    } else {
+      return [];
+    }
+  }
+
   /// To load POS sale customer addresses
   static Future<List<CustomerAddressesModel>> getDataAdrreses(filter) async {
     List<Map> data;
@@ -92,7 +106,8 @@ class CustomerAddressesProvider {
   }
 
   /// To load POS sale customer addresses
-  static Future<List<CustomerAddressesModel>> getDataAdrresesToOrder(filter) async {
+  static Future<List<CustomerAddressesModel>> getDataAdrresesToOrder(
+      filter) async {
     List<Map> data;
 
     String customerID = orderBloc.getCustomerId();
@@ -140,5 +155,12 @@ class CustomerAddressesProvider {
       String addressId) async {
     return await DBProvider.db
         .sqlFirstQuery('sma_addresses', where: "id_cloud = $addressId");
+  }
+
+  /// Returns customer address info given an address id
+  static Future<List<Map<String, dynamic>>?> loadCustomerAddressesFromDB(
+      String customerId) async {
+    return await DBProvider.db
+        .sqlQuery('sma_addresses', where: "company_id = $customerId");
   }
 }

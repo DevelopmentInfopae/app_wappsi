@@ -7,12 +7,15 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/order_model.dart';
 import 'package:pos_wappsi/providers/local_orders_provider.dart';
+import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/orders/components/order_card_list.dart';
+import 'package:pos_wappsi/utils/text_formating/order_status_mapping.dart';
 
 class OrdersList extends StatefulWidget {
   const OrdersList({Key? key}) : super(key: key);
@@ -26,6 +29,9 @@ class _ProductsState extends State<OrdersList> {
   final _ordersListStream = StreamController<List<OrderModel>>.broadcast();
 
   late Size _size;
+  bool showFilters = false;
+
+  final List<String> _filters = [];
   // late Color _pc;
   final Map<String, dynamic> _searchParams = {};
 
@@ -67,7 +73,99 @@ class _ProductsState extends State<OrdersList> {
 
   Widget _body() {
     return Column(
-      children: [_searchBar().paddingBottom(5), _ordersList().expand()],
+      children: [
+        _searchBar(),
+        showFilters ? _filterList() : const SizedBox(),
+        // _ordersList(),
+        GestureDetector(
+          child: RefreshIndicator(
+              displacement: 0,
+              onRefresh: () async {
+                /// sync sma_order_sales
+                final dbProvider = SyncDBProvider();
+
+                final result = await dbProvider.syncOption(
+                    context, tableNamesToSyncOpt['sma_order_sales']!);
+                if (result['error'] == false) {
+                  final orders = await LocalOrdersProvider.listLocalOrders(
+                      search: _searchParams['search'] ?? '', filters: _filters);
+                  _ordersListStream.sink.add(orders ?? []);
+                }
+              },
+              child: _ordersList()),
+          onVerticalDragStart: (val) {
+            if (showFilters) {
+              setState(() {
+                showFilters = false;
+              });
+            }
+          },
+          onTap: () {
+            if (showFilters) {
+              setState(() {
+                showFilters = false;
+              });
+            }
+          },
+        ).paddingTop(8).expand()
+      ],
+    );
+  }
+
+  AnimatedContainer _filterList() {
+    return AnimatedContainer(
+      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
+        BoxShadow(
+          color: Colors.grey,
+          offset: Offset(0.0, 1.0), //(x,y)
+          blurRadius: 2.0,
+        )
+      ]),
+      width: double.infinity,
+      duration: const Duration(seconds: 2),
+      curve: Curves.fastOutSlowIn,
+      // height: 100,
+      child: FutureBuilder(
+        future: LocalOrdersProvider.orderStatus(),
+        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data!.length == 1) {
+              // setState(() {
+              if (_filters.where((s) => s == snapshot.data!.first).isEmpty) {
+                _filters.add(snapshot.data!.first);
+              }
+              // });
+            }
+            return Wrap(
+              children: snapshot.data!.map((e) {
+                return FilterChip(
+                  label: Text(
+                    mapOrderStatus(e),
+                    style: normalTextStyle(context),
+                  ),
+                  selected:
+                      _filters.where((element) => element == e).isNotEmpty,
+                  onSelected: (bool value) {
+                    if (_filters.where((element) => element == e).isEmpty) {
+                      setState(() {
+                        _filters.add(e);
+                      });
+                    } else {
+                      setState(() {
+                        _filters.remove(e);
+                      });
+                    }
+                  },
+                ).paddingSymmetric(horizontal: 8);
+              }).toList(),
+            );
+          } else {
+            return const SizedBox(
+              height: 0,
+            );
+          }
+        },
+      ),
     );
   }
 
@@ -84,13 +182,17 @@ class _ProductsState extends State<OrdersList> {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(0.0, 1.0), //(x,y)
-          blurRadius: 2.0,
-        )
-      ]),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: showFilters
+              ? null
+              : [
+                  const BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0.0, 1.0), //(x,y)
+                    blurRadius: 2.0,
+                  )
+                ]),
     );
   }
 
@@ -116,6 +218,16 @@ class _ProductsState extends State<OrdersList> {
             FloatingSearchBarAction.searchToClear(
                 // showIfClosed: false,
                 ),
+            FloatingSearchBarAction.icon(
+                showIfOpened: true,
+                icon: showFilters
+                    ? Icons.filter_alt_rounded
+                    : Icons.filter_alt_outlined,
+                onTap: () {
+                  setState(() {
+                    showFilters = !showFilters;
+                  });
+                })
           ],
           automaticallyImplyBackButton: false,
           color: Colors.grey[200],
@@ -127,7 +239,7 @@ class _ProductsState extends State<OrdersList> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 7),
       child: FutureBuilder<List<OrderModel>?>(
-          future: LocalOrdersProvider.listLocalOrders(),
+          future: LocalOrdersProvider.listLocalOrders(filters: _filters),
           builder: (BuildContext context,
               AsyncSnapshot<List<OrderModel>?> snapshot) {
             if (snapshot.hasData) {
@@ -137,7 +249,9 @@ class _ProductsState extends State<OrdersList> {
                       (context, AsyncSnapshot<List<OrderModel>> snapshot2) {
                     if (snapshot2.hasData) {
                       return OrdersCardList(
-                          orders: snapshot2.data!, searchParams: _searchParams);
+                          orders: snapshot2.data!,
+                          searchParams: _searchParams,
+                          filters: _filters);
                     } else {
                       _ordersListStream.sink.add(snapshot.data!);
 
@@ -157,17 +271,11 @@ class _ProductsState extends State<OrdersList> {
 
   _onQueryChanged(String? query) async {
     _searchParams['search'] = query;
-    if (query == '' || query == null) {
-      final res = await LocalOrdersProvider.listLocalOrders();
-      // ignore: unnecessary_null_comparison
-      if (res != null) {
-        _ordersListStream.sink.add(res);
-      }
-    } else {
-      final res = await LocalOrdersProvider.listLocalOrders(search: query);
-      if (res != null) {
-        _ordersListStream.sink.add(res);
-      }
+
+    final res = await LocalOrdersProvider.listLocalOrders(
+        search: query ?? '', filters: _filters);
+    if (res != null) {
+      _ordersListStream.sink.add(res);
     }
   }
 }

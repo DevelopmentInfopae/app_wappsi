@@ -288,6 +288,7 @@ class _SaleCartState extends State<SaleCart> {
           await showCupertinoDialog(
               barrierDismissible: true,
               context: context,
+              useRootNavigator: false,
               builder: (context) {
                 return const SuspendSaleAlertDialog();
               });

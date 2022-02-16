@@ -69,13 +69,15 @@ Widget image(Size _size) {
 }
 
 Widget syncStatus(bool completed) {
-    if (completed) {
-      return const CircleAvatar(
-        backgroundColor: Colors.white,
-        
-        child: Icon(Icons.check_rounded,color: Colors.greenAccent,),
-      ).paddingRight(10);
-    } else {
-      return Loader();
-    }
+  if (completed) {
+    return const CircleAvatar(
+      backgroundColor: Colors.white,
+      child: Icon(
+        Icons.check_rounded,
+        color: Colors.greenAccent,
+      ),
+    ).paddingRight(10);
+  } else {
+    return Loader().paddingRight(10);
   }
+}

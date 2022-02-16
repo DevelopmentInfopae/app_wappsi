@@ -43,7 +43,7 @@ class _OrderProductsState extends State<OrderProducts> {
 
   // TO control changes in products and execute focus task
   int _productsCount = 0;
-  int _itemsCount = 0;
+  // int _itemsCount = 0;
 
   // late TextTheme _textTheme;
 
@@ -236,11 +236,11 @@ class _OrderProductsState extends State<OrderProducts> {
                 if (orderBloc.getItemsCount() == 0) {
                   _searchBarFocusManagement();
                   _productsCount = 0;
-                  _itemsCount = 0;
+                  // _itemsCount = 0;
                   return _empty(context).center();
                 } else {
                   _productsCount += 1;
-                  _itemsCount += 1;
+                  // _itemsCount += 1;
                   bool productRequestFocus = false;
                   if (_productsCount == snapshot.data!.length) {
                     if (_scrollController.hasClients) {
@@ -255,7 +255,7 @@ class _OrderProductsState extends State<OrderProducts> {
                   } else {
                     // _searchBarFocusManagement();
                     _productsCount = snapshot.data!.length;
-                    _itemsCount = orderBloc.getItemsCount();
+                    // _itemsCount = orderBloc.getItemsCount();
                   }
                   Map<String, ProductModel> saleProductsList = snapshot.data!;
                   return ProductsList(

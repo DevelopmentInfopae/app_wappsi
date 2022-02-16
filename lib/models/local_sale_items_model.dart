@@ -69,7 +69,7 @@ class LocalSaleItems {
   int? optionId;
   double netUnitPrice;
   double unitPrice;
-  int quantity;
+  double quantity;
   int warehouseId;
   double itemTax;
   int taxRateId;
@@ -85,7 +85,7 @@ class LocalSaleItems {
   double? saleItemId;
   int? productUnitId;
   int? productUnitCode;
-  int unitQuantity;
+  double unitQuantity;
   String? comment;
   double? gst;
   double? cgst;
@@ -112,43 +112,49 @@ class LocalSaleItems {
         productCode: json["product_code"],
         productName: json["product_name"],
         productType: json["product_type"],
-        optionId: json["option_id"],
-        netUnitPrice: json["net_unit_price"].toDouble(),
-        unitPrice: json["unit_price"].toDouble(),
-        quantity: json["quantity"],
+        optionId: int.tryParse(json["option_id"].toString()),
+        netUnitPrice: double.tryParse(json["net_unit_price"].toString()) ?? 0.0,
+        unitPrice: double.tryParse(json["unit_price"].toString()) ?? 0.0,
+        quantity: double.tryParse(json["quantity"].toString()) ?? 0.0,
         warehouseId: json["warehouse_id"],
-        itemTax: json["item_tax"].toDouble(),
+        itemTax: double.tryParse(json["item_tax"].toString()) ?? 0.0,
         taxRateId: json["tax_rate_id"],
         tax: json["tax"],
         itemTax2: json["item_tax_2"],
-        taxRate2Id: json["tax_rate_2_id"],
-        tax2: json["tax_2"],
+        taxRate2Id: int.tryParse(json["tax_rate_2_id"].toString()),
+        tax2: int.tryParse(json["tax_2"].toString()),
         discount: json["discount"],
-        itemDiscount: json["item_discount"],
-        subtotal: json["subtotal"].toDouble(),
+        itemDiscount: double.tryParse(json["item_discount"].toString()),
+        subtotal: double.tryParse(json["subtotal"].toString()) ?? 0.0,
         serialNo: json["serial_no"],
-        realUnitPrice: json["real_unit_price"],
-        saleItemId: json["sale_item_id"],
-        productUnitId: json["product_unit_id"],
-        productUnitCode: json["product_unit_code"],
-        unitQuantity: json["unit_quantity"],
+        realUnitPrice: double.tryParse(json["real_unit_price"].toString()),
+        saleItemId: double.tryParse(json["sale_item_id"].toString()),
+        productUnitId: int.tryParse(json["product_unit_id"].toString()),
+        productUnitCode: int.tryParse(json["product_unit_code"].toString()),
+        unitQuantity: double.tryParse(json["unit_quantity"].toString()) ?? 0.0,
         comment: json["comment"],
-        gst: json["gst"],
-        cgst: json["cgst"],
-        sgst: json["sgst"],
-        igst: json["igst"],
-        unitOrderDiscount: json["unit_order_discount"],
-        avgNetUnitCost: json["avg_net_unit_cost"],
-        stateReadiness: json["state_readiness"] ?? 1,
+        gst: double.tryParse(json["gst"].toString()),
+        cgst: double.tryParse(json["cgst"].toString()),
+        sgst: double.tryParse(json["sgst"].toString()),
+        igst: double.tryParse(json["igst"].toString()),
+        unitOrderDiscount:
+            double.tryParse(json["unit_order_discount"].toString()),
+        avgNetUnitCost: double.tryParse(json["avg_net_unit_cost"].toString()),
+        stateReadiness: int.tryParse(json["state_readiness"].toString()) ?? 1,
         preferences: json["preferences"],
-        priceBeforeTax: json["price_before_tax"].toDouble(),
-        productUnitIdSelected: json["product_unit_id_selected"],
-        consumptionSales: json["consumption_sales"],
-        consumptionSalesCosting: json["consumption_sales_costing"],
-        returnedQuantity: json["returned_quantity"],
-        priceBeforePromo: json["price_before_promo"],
+        priceBeforeTax:
+            double.tryParse(json["price_before_tax"].toString()) ?? 0.0,
+        productUnitIdSelected:
+            int.tryParse(json["product_unit_id_selected"].toString()),
+        consumptionSales: int.tryParse(json["consumption_sales"].toString()),
+        consumptionSalesCosting:
+            double.tryParse(json["consumption_sales_costing"].toString()),
+        returnedQuantity: double.tryParse(json["returned_quantity"].toString()),
+        priceBeforePromo:
+            double.tryParse(json["price_before_promo"].toString()),
         registrationDate: json["registration_date"],
-        underCostAuthorized: json["under_cost_authorized"],
+        underCostAuthorized:
+            int.tryParse(json["under_cost_authorized"].toString()),
       );
 
   Map<String, dynamic> toJson() => {

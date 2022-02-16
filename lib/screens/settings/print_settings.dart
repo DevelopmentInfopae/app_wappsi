@@ -23,13 +23,18 @@ class PrintSettings extends StatefulWidget {
   final String print;
   final Map<String, String>? movementInfo;
   final Map<dynamic, dynamic>? posPrintData;
+  final String? imagePath;
 
   // ignore: use_key_in_widget_constructors
   /// Receive an string `print` wich could be ['settings','movement','pos'], with that, print
   /// diferent things depending on the `print`, also receive `movementInfo` wich is required when tryint
   /// to print movement receipt
   const PrintSettings(
-      {Key? key, this.print = 'settings', this.movementInfo, this.posPrintData})
+      {Key? key,
+      this.print = 'settings',
+      this.movementInfo,
+      this.posPrintData,
+      this.imagePath})
       : super(key: key);
   @override
   _PrintSettingsState createState() => _PrintSettingsState();
@@ -63,6 +68,11 @@ class _PrintSettingsState extends State<PrintSettings> {
           productsList: widget.posPrintData?['products'] ?? [],
           movementInfo: widget.movementInfo);
       initSavetoPath(widget.posPrintData?['company_data'].logo);
+    } else if (widget.print == 'favorites') {
+      printFormat = PrintFormat(
+          productsList: widget.posPrintData?['products'] ?? [],
+          movementInfo: widget.movementInfo);
+      initSavetoPath(widget.posPrintData?['company_data'].logo);
     } else if (widget.print == 'movement') {
       String companyLogo = dataBloc.getBillerCompany!.logo!;
       if (companyLogo.substring(companyLogo.length - 4) == '.png') {
@@ -87,7 +97,7 @@ class _PrintSettingsState extends State<PrintSettings> {
     //if img is png convert to png
     if (img.substring(img.length - 4) == '.png') {
       imgURL = dataBloc.userData!.hostUrl +
-          "/wappsi_apis/public/utils/pngToJpg?img=" +
+          "/wappsi_apis/utils/pngToJpg?img=" +
           imgURL;
     }
 
@@ -403,6 +413,12 @@ class _PrintSettingsState extends State<PrintSettings> {
           printConsole(e);
         }
         if ((_connected)) {
+          try {
+            // just to get an error if pathimage is not initialized
+            pathImage += '';
+          } catch (e) {
+            await initSavetoPath(widget.posPrintData?['company_data'].logo);
+          }
           setState(() {
             // posBloc.setPrintState(true);
             _printing = true;
@@ -423,7 +439,8 @@ class _PrintSettingsState extends State<PrintSettings> {
             scaffoldAlert(context, 'Imprimiendo comprobante de movimiento',
                 const Duration(seconds: 10));
 
-            final result = await printFormat!.printMovement(pathImage);
+            final result =
+                await printFormat!.printMovement(widget.imagePath ?? pathImage);
             if (result ?? false) {
               await Future.delayed(const Duration(seconds: 3));
               hideCurrentScaffoldAlert(context);
@@ -438,8 +455,8 @@ class _PrintSettingsState extends State<PrintSettings> {
             scaffoldAlert(
                 context, 'Imprimiendo comprobante', const Duration(seconds: 2));
 
-            final result =
-                await printFormat!.printPOS(pathImage, widget.posPrintData);
+            final result = await printFormat!
+                .printPOS(widget.imagePath ?? pathImage, widget.posPrintData);
             if (result ?? false) {
               await Future.delayed(const Duration(seconds: 3));
               hideCurrentScaffoldAlert(context);
@@ -454,8 +471,24 @@ class _PrintSettingsState extends State<PrintSettings> {
             scaffoldAlert(
                 context, 'Imprimiendo comprobante', const Duration(seconds: 2));
 
-            final result =
-                await printFormat!.printOrder(pathImage, widget.posPrintData);
+            final result = await printFormat!
+                .printOrder(widget.imagePath ?? pathImage, widget.posPrintData);
+            if (result ?? false) {
+              await Future.delayed(const Duration(seconds: 3));
+              hideCurrentScaffoldAlert(context);
+              setState(() {
+                _printing = false;
+              });
+            } else {
+              scaffoldAlert(
+                  context, 'Error al imprimir', const Duration(seconds: 3));
+            }
+          } else if (widget.print == 'favorites') {
+            scaffoldAlert(
+                context, 'Imprimiendo favoritos', const Duration(seconds: 2));
+
+            final result = await printFormat!.printFavOrder(
+                widget.imagePath ?? pathImage, widget.posPrintData);
             if (result ?? false) {
               await Future.delayed(const Duration(seconds: 3));
               hideCurrentScaffoldAlert(context);

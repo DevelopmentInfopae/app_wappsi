@@ -76,7 +76,7 @@ class _NewSaleState extends State<NewSale> {
       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _userInfo().expand(),
-        bottom(_button(), _pc, _size,elevation: true),
+        bottom(_button(), _pc, _size, elevation: true),
       ],
     );
   }
@@ -348,10 +348,14 @@ class _NewSaleState extends State<NewSale> {
           },
           child: Row(
             children: [
-              const Icon(Icons.arrow_back_ios_rounded, color: pColor,size: kIconSize,),
+              const Icon(
+                Icons.arrow_back_ios_rounded,
+                color: pColor,
+                size: kIconSize,
+              ),
               Text(
                 'Salir',
-                style: buttonsSmallTextStyle(context,color: pColor),
+                style: buttonsSmallTextStyle(context, color: pColor),
               ),
             ],
           ),
@@ -367,10 +371,10 @@ class _NewSaleState extends State<NewSale> {
           },
           child: Row(
             children: [
-              const Icon(Icons.add, color: pColor,size: kIconSize),
+              const Icon(Icons.add, color: pColor, size: kIconSize),
               Text(
                 'Añadir productos',
-                style: buttonsSmallTextStyle(context,color: pColor),
+                style: buttonsSmallTextStyle(context, color: pColor),
               ),
             ],
           ),

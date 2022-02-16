@@ -8,6 +8,7 @@ import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/price_policy_provider.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 class ProductsProvider {
   static List get productColumns => [
@@ -176,6 +177,7 @@ class ProductsProvider {
         });
       }
       result = await saveSuspSaleProducts(productsMap);
+      printConsole(result);
     }
     return result;
   }

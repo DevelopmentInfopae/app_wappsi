@@ -8,7 +8,7 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/suspended_sale_model.dart';
 import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 import 'package:pos_wappsi/screens/sales/suspended_sale_details.dart';
-import 'package:pos_wappsi/utils/date_to_text.dart';
+import 'package:pos_wappsi/utils/text_formating/date_to_text.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class SuspendedSalesScreen extends StatefulWidget {
@@ -55,44 +55,48 @@ class _SuspendedSalesScreenState extends State<SuspendedSalesScreen> {
   Widget _suspendedSales() {
     return Center(
       child: Wrap(
-        // alignment: WrapAlignment.center,
-        // runAlignment: WrapAlignment.center,
-        // crossAxisAlignment: WrapCrossAlignment.center,
-        
+          // alignment: WrapAlignment.center,
+          // runAlignment: WrapAlignment.center,
+          // crossAxisAlignment: WrapCrossAlignment.center,
+
           children: widget.suspendedSales!.map((e) {
         final valueT = getFormatedCurrency(e.totalValue);
         return AppButton(
           elevation: 2,
-          
           padding: EdgeInsets.zero,
           shapeBorder: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                    side: BorderSide(
-                        color: pColor.withOpacity(0.5),
-                        width: 1)),
+              borderRadius: BorderRadius.circular(5),
+              side: BorderSide(color: pColor.withOpacity(0.5), width: 1)),
           child: SizedBox(
             width: 170,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                
-                    e.keyWord!=null?Text(
-                      capitalizeText(e.keyWord!),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: normalTextStyle(context, fontWeightDelta: 5, fontSizeFactor: 1.1),
-                    ):Container(),
-                    hDivider(padding: const EdgeInsets.symmetric(vertical: 4), height: 0.6),
+                e.keyWord != null
+                    ? Text(
+                        capitalizeText(e.keyWord!),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: normalTextStyle(context,
+                            fontWeightDelta: 5, fontSizeFactor: 1.1),
+                      )
+                    : Container(),
+                hDivider(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    height: 0.6),
+                Text(
+                  capitalizeText(e.customerName),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: normalTextStyle(
+                    context,
+                    fontWeightDelta: 5,
+                  ),
+                ),
+                Row(
+                  children: [
                     Text(
-                      capitalizeText(e.customerName),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: normalTextStyle(context,fontWeightDelta: 5, ),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                      'Articulos: ' ,
+                      'Articulos: ',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: normalTextStyle(context),
@@ -104,11 +108,11 @@ class _SuspendedSalesScreenState extends State<SuspendedSalesScreen> {
                       overflow: TextOverflow.ellipsis,
                       style: normalTextStyle(context),
                     ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
                       'Total: ',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -116,37 +120,37 @@ class _SuspendedSalesScreenState extends State<SuspendedSalesScreen> {
                     ),
                     const Spacer(),
                     Text(
-                     capitalizeText(valueT.substring(0, valueT.length - 3)),
+                      capitalizeText(valueT.substring(0, valueT.length)),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: normalTextStyle(context),
                     ),
-                      ],
-                    ),
-                    Text(
-                     capitalizeText(e.sellerName??''),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: normalTextStyle(context),
-                      textAlign: TextAlign.center,
-                    ),
-                    hDivider(padding: const EdgeInsets.symmetric(vertical: 4), height: 0.4),
-                    Text(
-                      capitalizeText(parseDateStrES(e.createdDate)),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: normalTextStyle(context),
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      capitalizeText(parseTimeStrES(e.createdDate)),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: normalTextStyle(context),
-                      textAlign: TextAlign.center,
-                    ),
-                    
-
+                  ],
+                ),
+                Text(
+                  capitalizeText(e.sellerName ?? ''),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: normalTextStyle(context),
+                  textAlign: TextAlign.center,
+                ),
+                hDivider(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    height: 0.4),
+                Text(
+                  capitalizeText(parseDateStrES(e.createdDate)),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: normalTextStyle(context),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  capitalizeText(parseTimeStrES(e.createdDate)),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: normalTextStyle(context),
+                  textAlign: TextAlign.center,
+                ),
               ],
             ).paddingSymmetric(horizontal: 8, vertical: 8),
           ),

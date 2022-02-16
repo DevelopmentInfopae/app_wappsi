@@ -133,11 +133,16 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
     return AppButton(
       // width: 70,
       // height: 50,
-      // padding: kButtonPadding,
-      child: Text(
-        'Seleccionar todo',
-        maxLines: 2,
-        style: buttonsSmallTextStyle(context),
+      padding: kButtonPadding,
+      child: Row(
+        children: [
+          const Icon(Icons.select_all, size: kIconSize, color: pColor),
+          Text(
+            ' Seleccionar todo',
+            maxLines: 2,
+            style: buttonsSmallTextStyle(context, color: pColor),
+          ),
+        ],
       ),
       onTap: () {
         setState(() {
@@ -157,16 +162,16 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
 
   Widget _sync() {
     return AppButton(
-      // padding: kButtonPadding,
+      padding: kButtonPadding,
       // width: 70,
       child: Row(
         children: [
+          const Icon(Icons.sync, size: kIconSize, color: pColor),
           Text(
-            'Sincronizar',
+            ' Sincronizar',
             maxLines: 2,
-            style: buttonsSmallTextStyle(context),
+            style: buttonsSmallTextStyle(context, color: pColor),
           ),
-          const Icon(Icons.sync, size: kIconSize),
         ],
       ),
       onTap: () {

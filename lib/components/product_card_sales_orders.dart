@@ -394,7 +394,7 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _productPrice() {
-    return Text('${widget.product.value.getFormatedPriceIVA()}',
+    return Text(widget.product.value.getFormatedPriceIVA(),
         style: numbersTextStyle(fontWeight: FontWeight.normal));
   }
 
@@ -415,10 +415,8 @@ class _ProductCardState extends State<ProductCard> {
   Widget _productPriceTotal() {
     return Text(
       (getFormatedCurrency(
-              widget.product.value.getPriceWithIVA() *
-                  widget.product.value.quantity,
-              decimals: 1))
-          .toString(),
+        widget.product.value.getPriceWithIVA() * widget.product.value.quantity,
+      )).toString(),
       style: numbersTextStyle(fontWeight: FontWeight.bold),
     );
   }

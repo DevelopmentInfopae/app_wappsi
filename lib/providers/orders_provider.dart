@@ -10,8 +10,6 @@ import 'package:pos_wappsi/models/order_sale_items.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/order_sale_items_provider.dart';
-import 'package:pos_wappsi/screens/home/home_screen.dart';
-import 'package:pos_wappsi/screens/orders/print_order.dart';
 
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
@@ -100,7 +98,7 @@ class OrdersProvider {
         .getDocumentDetails(order['document_type_id'].toString());
     final temp = removeRareSpaceChr(docDetails?['invoice_footer'] ?? '');
     return {
-      "products": orderBloc.getProductsListMap(),
+      "products": await orderBloc.getProductsListMap(),
       "customer": orderBloc.getCustomer!.toJson(),
       "customer_address": orderBloc.getCustomerAddresses!.toJson(),
       "order_data": order,

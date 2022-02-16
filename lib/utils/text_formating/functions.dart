@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:intl/intl.dart';
+import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'dart:math';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
 // import 'dart:math';
@@ -41,12 +43,19 @@ List getKeyValuesOfListMap(List<Map> map, String key) {
 //   return int.parse(sqrt().toString());
 // }
 
-String getFormatedCurrency(double value, {int decimals = 2}) {
-  final _formatCurrency = NumberFormat.simpleCurrency(decimalDigits: decimals);
+String getFormatedCurrency(double value, {int? decimals}) {
+  final _formatCurrency = NumberFormat.simpleCurrency(
+      decimalDigits: decimals ?? dataBloc.settings?['decimals']);
   return _formatCurrency.format(value);
 }
 
-String getIntDouble(double double) {
+double roundDouble(double value, int places) {
+  double mod = pow(10.0, places).toDouble();
+  return ((value * mod).round().toDouble() / mod);
+}
+
+String getRoundedQtty(double double) {
+  double = roundDouble(double, dataBloc.settings!['qty_decimals']);
   String value = '';
   if (double.toString().endsWith('.0')) {
     value = double.toInt().toString();

@@ -332,12 +332,9 @@ listInfoDialog(BuildContext context, List<Map> info, String column1Key,
                     ? getFormatedCurrency(
                         double.parse(e[column2Key].toString()))
                     : e[column2Key].toString();
-                return labelContentH(
-                    e[column1Key].toString(),
-                    isPrice ? value.substring(1, value.length - 3) : value,
-                    context,
-                    flexCol1: flexCol1,
-                    flexCol2: flexCol2);
+                return labelContentH(e[column1Key].toString(),
+                    isPrice ? value.substring(1, value.length) : value, context,
+                    flexCol1: flexCol1, flexCol2: flexCol2);
               }).toList(),
             ),
           ),
@@ -403,7 +400,7 @@ Future<bool> listInfoDialogChoice(BuildContext context, List<Map> info,
                 return labelContentH(
                     capitalizeText(e[column1Key].toString()),
                     isPrice
-                        ? value.substring(1, value.length - 3)
+                        ? value.substring(1, value.length)
                         : capitalizeText(value),
                     context,
                     flexCol1: flexCol1,

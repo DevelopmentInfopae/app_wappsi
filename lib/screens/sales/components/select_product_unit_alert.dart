@@ -182,7 +182,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
   Text unitValue(UnitsModel u) {
     final value = getFormatedCurrency(u.unitValue);
     return Text(
-      value.substring(0, value.length - 3),
+      value.substring(0, value.length),
       maxLines: 2,
       style: normalTextStyle(context, fontWeightDelta: 2),
     );

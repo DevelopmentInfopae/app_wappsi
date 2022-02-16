@@ -57,7 +57,7 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
         widget: Icon(
           FontAwesomeIcons.trashAlt,
           color: Colors.red,
-          size: leadingIconSize-4,
+          size: leadingIconSize - 4,
         ),
         onTap: () async {
           final choice = await choiceAlert(
@@ -118,8 +118,7 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           descText('Total', context, fontSizeFactor: 1),
-                          descText(
-                              valueT.substring(0, valueT.length - 3), context,
+                          descText(valueT.substring(0, valueT.length), context,
                               textStyle: numbersTextStyle(
                                   fontSizeFactor: 1.1, color: pColor)),
                         ],

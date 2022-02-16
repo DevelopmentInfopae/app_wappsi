@@ -133,8 +133,8 @@ double bottomPadding = 20;
 
 double bottomWigetHeight(BuildContext context) {
   Size size = MediaQuery.of(context).size;
-  return size.height * 0.0805 > 66
-      ? (size.height * 0.081 > 70 ? 70 : size.height * 0.0805)
+  return size.height * 0.0806 > 66
+      ? (size.height * 0.081 > 70 ? 70 : size.height * 0.0806)
       : 66;
 }
 

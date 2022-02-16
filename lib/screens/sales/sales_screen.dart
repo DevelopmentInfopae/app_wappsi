@@ -8,10 +8,12 @@ import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/environment/environment.dart';
 // import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/local_sales_model.dart';
 import 'package:pos_wappsi/providers/local_sales_provider.dart';
+import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/sales/components/sales_card_list.dart';
 
 class SalesList extends StatefulWidget {
@@ -26,6 +28,8 @@ class _ProductsState extends State<SalesList> {
   final _salesListStream = StreamController<List<SalesModel>>.broadcast();
 
   late Size _size;
+
+  // bool _pullingSales = false;
   // late Color _pc;
 
   final Map<String, dynamic> _searchParams = {};
@@ -53,6 +57,8 @@ class _ProductsState extends State<SalesList> {
         return true;
       },
       child: Scaffold(
+        floatingActionButton:
+            Environment().env == 'DEV' ? createSaleInsert(context) : null,
         key: _scaffoldKey,
         appBar: appBar(context, 'Lista de Ventas',
             elevation: false,
@@ -63,6 +69,34 @@ class _ProductsState extends State<SalesList> {
         }),
         body: _body(),
       ),
+    );
+  }
+
+  AppButton createSaleInsert(BuildContext context) {
+    return AppButton(
+      padding: kButtonPadding,
+      child: Text(
+        'Pull sales for testing',
+        style: normalTextStyle(context, color: pColor),
+      ),
+      // enabled: !_pullingSales,
+      onTap: () async {
+        // setState(() {
+        //   _pullingSales = true;
+        // });
+        final syncProv = SyncDBProvider();
+        await syncProv.synSelectedOption({
+          'path': 'sync/allSales',
+          'table': 'sma_sales',
+          'sync_id': 22,
+          'image': 'order-list.png'
+        }, context, isPost: false);
+        final sales = await LocalSalesProvider.listAllLocalSales();
+        _salesListStream.sink.add(sales ?? []);
+        // setState(() {
+        //   _pullingSales = false;
+        // });
+      },
     );
   }
 

@@ -13,10 +13,10 @@ import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 // import 'package:pos_wappsi/models/suspended_sale_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
-import 'package:pos_wappsi/providers/local_db_provider.dart';
 
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
+import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
 // import 'package:pos_wappsi/utils/local_storage/local_db.dart';
@@ -101,14 +101,16 @@ class POSBloc {
   ///and value is an instance of ProductModel(). Param getPrices is
   ///used to know if product prices should or not be calculated
   Future addProduct(Map<String, dynamic> productReq,
-      {bool getPrices = true,bool getQttys=true}) async {
+      {bool getPrices = true, bool getQttys = true}) async {
     bool res = false;
     if (_productsController.hasValue) {
-      res = await _addProductToProductPOSMap(productReq['product'], getPrices,getQttys,
+      res = await _addProductToProductPOSMap(
+          productReq['product'], getPrices, getQttys,
           unit: productReq['product_unit']);
     } else {
       emptyProductsAdded();
-      res = await _addProductToProductPOSMap(productReq['product'], getPrices,getQttys,
+      res = await _addProductToProductPOSMap(
+          productReq['product'], getPrices, getQttys,
           unit: productReq['product_unit']);
     }
     setSubTotal(getSubTotal());
@@ -117,7 +119,8 @@ class POSBloc {
 
   /// Add product to sale product list, if getPrices = true, calculate
   /// product prices
-  Future<bool> _addProductToProductPOSMap(ProductModel product, bool getPrices,bool getQttys,
+  Future<bool> _addProductToProductPOSMap(
+      ProductModel product, bool getPrices, bool getQttys,
       {UnitsModel? unit}) async {
     bool res = false;
     if (dataBloc.settings!['item_addition'] == 1) {
@@ -128,7 +131,7 @@ class POSBloc {
         // product.quantity = 1;
         if (unit != null) {
           addProductUnit(key, unit);
-          product.unit = unit.idCloud;
+          // product.unit = unit.idCloud;
         }
 
         final temp = {key: product};
@@ -139,7 +142,7 @@ class POSBloc {
             getPrices ? await ProductsProvider.getPOSProductPrices(key) : false;
 
         if (res) {
-          if(getQttys){
+          if (getQttys) {
             res = await addProductQuantity(key, product.quantity);
           }
         }
@@ -154,7 +157,7 @@ class POSBloc {
 
       /// gen an unique key for each product
       if (_productsController.value.keys.contains(key)) {
-        _addProductToProductPOSMap(product, getPrices,getQttys,unit: unit);
+        _addProductToProductPOSMap(product, getPrices, getQttys, unit: unit);
       } else {
         // add product unit if product unit is selected
         if (unit != null) {
@@ -168,7 +171,7 @@ class POSBloc {
         res =
             getPrices ? await ProductsProvider.getPOSProductPrices(key) : false;
         if (res) {
-          if(getQttys){
+          if (getQttys) {
             res = await addProductQuantity(key, product.quantity);
           }
         }
@@ -185,8 +188,8 @@ class POSBloc {
   ///SaleModel.fromJson(), it could be usefull to build an instance of
   ///SaleModel to send to an endpoint of API's service.
   Map<String, dynamic> getProductDetailMapLists() {
-    return ProductModel.getProductDetailMapLists(
-        _productsController.value, dataBloc.userData!.warehouseId);
+    return ProductModel.getProductDetailMapLists(_productsController.value,
+        dataBloc.userData!.warehouseId, _productUnitController.valueOrNull);
   }
 
   /// Modify quantity field of a ProductModel() given a key and a value
@@ -235,14 +238,14 @@ class POSBloc {
     } else {
       return [];
     }
-}
+  }
 
   /// Function to reload product data, costumer data and customer addresses data
   Future<bool> reloadPOSData() async {
-    final customer = await DBProvider.db.findTableFieldsById(
-        'sma_companies', _customerController.value!.idCloud!);
+    final customer = await CompanyModel.getCompanyDetails(
+        _customerController.value!.idCloud!);
     if (customer != null) {
-      setCustomer(CompanyModel.fromJson(customer));
+      setCustomer(customer);
       final res = await reloadProducts();
       return res;
     } else {
@@ -270,12 +273,12 @@ class POSBloc {
           // Map<String, dynamic>? temp2 =
           //     await ProductsProvider.findProductDetails(temp[key]!.idCloud);
           // if (temp2 != null) {
-            // Map<String, dynamic> pData = queryResultToMap(temp2);
-            // pData[keyInitialQtty] = temp[key]!.quantity;
-            // final product = ProductModel.fromJson(pData,
-            //     loadInitialQtty: true, qtyKey: keyInitialQtty);
-            await addProduct(
-                {'product': temp[key], 'product_unit': pUnits[key]},getQttys: false);
+          // Map<String, dynamic> pData = queryResultToMap(temp2);
+          // pData[keyInitialQtty] = temp[key]!.quantity;
+          // final product = ProductModel.fromJson(pData,
+          //     loadInitialQtty: true, qtyKey: keyInitialQtty);
+          await addProduct({'product': temp[key], 'product_unit': pUnits[key]},
+              getQttys: false);
           // }
         });
 
@@ -320,10 +323,17 @@ class POSBloc {
   }
 
   /// Returns product information in [Map] format
-  List<Map>? getProductsListMap() {
+  Future<List<Map>?> getProductsListMap() async {
     List<Map> productsMap = [];
-    for (var element in _productsController.value.values) {
-      productsMap.add(element.toJson());
+    for (var key in _productsController.value.keys) {
+      final pInfo = getProducts![key]!.toJson();
+      UnitsModel? unitS = getProductUnits?[key];
+      pInfo['unit'] = unitS?.toJson();
+      if (unitS != null) {
+        final baseUnit = await UnitsProvider.getUnitInfo(unitS.baseUnit);
+        pInfo['base_unit'] = baseUnit?.toJson();
+      }
+      productsMap.add(pInfo);
     }
 
     return productsMap;
@@ -373,16 +383,16 @@ class POSBloc {
 
   /// Returns total items in products Map
   int getItemsCount() {
-    int count = 0;
+    double count = 0;
     // ignore: unnecessary_null_comparison
     if (_productsController.hasValue) {
       for (var element in _productsController.value.values) {
         double temp = element.quantity;
-        count = (count + temp).toInt();
+        count = (count + temp);
       }
     }
 
-    return count;
+    return count.toInt();
   }
 
   /// Return the num of unique products in products Map.

@@ -53,7 +53,7 @@ class HomeState extends State<Home> {
             _close = false;
           } else {
             _close = await choiceAlert(
-                context, '¿Desea cerrar sesión?', 'assets/images/exit.png');
+                context, '¿Desea cerrar sesión?', 'assets/images/logout.png');
           }
         }
 
@@ -121,22 +121,21 @@ class HomeState extends State<Home> {
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // imgTumbnail().withWidth(_size.width*0.16).paddingSymmetric(horizontal: 10),
+        children: [
+          // imgTumbnail().withWidth(_size.width*0.16).paddingSymmetric(horizontal: 10),
 
-              _wappsi().paddingOnly(left: 15, right: 15),
-              // Spacer(),
-              // _cash(),
+          _wappsi().paddingOnly(left: 15, right: 15),
+          // Spacer(),
+          // _cash(),
 
-              // _notifications().withSize(height: 55, width: 55).paddingRight(10)
-            ],
-          ),
+          // _notifications().withSize(height: 55, width: 55).paddingRight(10)
+        ],
+      ),
     );
     // ignore: unnecessary_null_comparison
-   
   }
 
-   // display information about user in system
+  // display information about user in system
   Widget _wappsi() {
     return Row(
       children: [
@@ -153,8 +152,6 @@ class HomeState extends State<Home> {
       ],
     );
   }
-
-  
 
   /// Change bottom widget to show up on the bottom stack
   void changeBottomIndex(int index) {

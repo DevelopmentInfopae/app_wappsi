@@ -8,6 +8,7 @@ import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/components/go_back_bottom.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/constant.dart';
@@ -122,16 +123,34 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   }
 
   Widget _sendNewCustomer() {
-    return AppButton(
-      child: Text('Siguiente', style: buttonsTextStyle(context)),
-      onTap: () async {
-        if (_formKey.currentState!.validate()) {
-          await const NewCustomerData3().launch(context);
-        }
-      },
-      color: _pc,
-      disabledColor: _pc,
-    ).withSize(width: _size.width);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        const GoBackBottom(),
+        AppButton(
+          child: Row(
+            children: [
+              const Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: kIconSize,
+                color: pColor,
+              ),
+              Text('Siguiente',
+                  style: buttonsSmallTextStyle(context, color: pColor)),
+            ],
+          ),
+          enabled: !_loading,
+          onTap: () async {
+            if (_formKey.currentState!.validate()) {
+              await const NewCustomerData3().launch(context);
+            }
+          },
+          color: Colors.white,
+          padding: kButtonPadding,
+          disabledColor: _pc,
+        ),
+      ],
+    );
   }
 
   Widget _countries() {

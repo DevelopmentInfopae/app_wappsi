@@ -18,6 +18,7 @@ import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 
 import 'package:pos_wappsi/providers/products_provider.dart';
+import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 
@@ -182,8 +183,8 @@ class OrderBloc {
   ///SaleModel.fromJson(), it could be usefull to build an instance of
   ///SaleModel to send to an endpoint of API's service.
   Map<String, dynamic> getProductDetailMapLists() {
-    return ProductModel.getProductDetailMapLists(
-        _productsController.value, dataBloc.userData!.warehouseId);
+    return ProductModel.getProductDetailMapLists(_productsController.value,
+        dataBloc.userData!.warehouseId, _productUnitController.valueOrNull);
   }
 
   /// Modify quantity field of a ProductModel() given a key and a value
@@ -320,10 +321,17 @@ class OrderBloc {
   }
 
   /// Returns product information in [Map] format
-  List<Map>? getProductsListMap() {
+  Future<List<Map>?> getProductsListMap() async {
     List<Map> productsMap = [];
-    for (var element in _productsController.value.values) {
-      productsMap.add(element.toJson());
+    for (var key in _productsController.value.keys) {
+      final pInfo = getProducts![key]!.toJson();
+      UnitsModel? unitS = getProductUnits?[key];
+      pInfo['unit'] = unitS?.toJson();
+      if (unitS != null) {
+        final baseUnit = await UnitsProvider.getUnitInfo(unitS.baseUnit);
+        pInfo['base_unit'] = baseUnit?.toJson();
+      }
+      productsMap.add(pInfo);
     }
 
     return productsMap;

@@ -12,6 +12,7 @@ import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/order_sale_items_provider.dart';
+import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
@@ -152,17 +153,17 @@ class OrderModel {
   int? reteFuenteTotal;
   int? reteFuenteAccount;
   dynamic reteFuenteBase;
-  int? reteIvaPercentage;
-  int? reteIvaTotal;
-  int? reteIvaAccount;
+  double? reteIvaPercentage;
+  dynamic reteIvaTotal;
+  dynamic reteIvaAccount;
   dynamic reteIvaBase;
-  int? reteIcaPercentage;
-  int? reteIcaTotal;
-  int? reteIcaAccount;
+  dynamic reteIcaPercentage;
+  dynamic reteIcaTotal;
+  dynamic reteIcaAccount;
   dynamic reteIcaBase;
-  int? reteOtherPercentage;
-  int? reteOtherTotal;
-  int? reteOtherAccount;
+  dynamic reteOtherPercentage;
+  dynamic reteOtherTotal;
+  dynamic reteOtherAccount;
   dynamic reteOtherBase;
   dynamic resolucion;
   String documentTypeId;
@@ -188,17 +189,20 @@ class OrderModel {
         warehouseId: json["warehouse_id"],
         note: json["note"],
         staffNote: json["staff_note"],
-        total: json["total"] + 0.0,
-        productDiscount: json["product_discount"] + 0.0,
+        total: double.tryParse(json["total"].toString()),
+        productDiscount:
+            double.tryParse(json["product_discount"].toString()) ?? 0.0,
         orderDiscountId: json["order_discount_id"],
-        totalDiscount: json["total_discount"] + 0.0,
-        orderDiscount: json["order_discount"] + 0.0,
-        productTax: json["product_tax"] + 0.0,
+        totalDiscount:
+            double.tryParse(json["total_discount"].toString()) ?? 0.0,
+        orderDiscount:
+            double.tryParse(json["order_discount"].toString()) ?? 0.0,
+        productTax: double.tryParse(json["product_tax"].toString()) ?? 0.0,
         orderTaxId: json["order_tax_id"],
         orderTax: json["order_tax"],
-        totalTax: json["total_tax"] + 0.0,
-        shipping: json["shipping"],
-        grandTotal: json["grand_total"] + 0.0,
+        totalTax: double.tryParse(json["total_tax"].toString()) ?? 0.0,
+        shipping: double.tryParse(json["shipping"].toString()),
+        grandTotal: double.tryParse(json["grand_total"].toString()) ?? 0.0,
         saleStatus: json["sale_status"],
         paymentStatus: json["payment_status"],
         paymentTerm: json["payment_term"],
@@ -217,7 +221,7 @@ class OrderModel {
         returnSaleTotal: json["return_order_total"],
         rounding: json["rounding"],
         suspendNote: json["suspend_note"],
-        api: json["api"],
+        api: int.tryParse(json["api"].toString()),
         shop: json["shop"],
         sellerId: json["seller_id"],
         addressId: json["address_id"],
@@ -229,11 +233,13 @@ class OrderModel {
         igst: json["igst"],
         paymentMethod: json["payment_method"],
         payPartner: json["pay_partner"],
-        reteFuentePercentage: json["rete_fuente_percentage"],
-        reteFuenteTotal: json["rete_fuente_total"],
-        reteFuenteAccount: json["rete_fuente_account"],
+        reteFuentePercentage:
+            int.tryParse(json["rete_fuente_percentage"].toString()),
+        reteFuenteTotal: int.tryParse(json["rete_fuente_total"].toString()),
+        reteFuenteAccount: int.tryParse(json["rete_fuente_account"].toString()),
         reteFuenteBase: json["rete_fuente_base"],
-        reteIvaPercentage: json["rete_iva_percentage"],
+        reteIvaPercentage:
+            double.tryParse(json["rete_iva_percentage"].toString()),
         reteIvaTotal: json["rete_iva_total"],
         reteIvaAccount: json["rete_iva_account"],
         reteIvaBase: json["rete_iva_base"],
@@ -511,10 +517,14 @@ class OrderModel {
     Map<double, dynamic> ivasMap = {};
     try {
       for (var item in saleItems) {
+        final unit = await UnitsProvider.getUnitInfo(item.productUnitId);
+        final bUnit = await UnitsProvider.getUnitInfo(unit?.baseUnit);
         final tItempMap = {
           'quantity': item.quantity,
           'price': item.unitPrice,
           'name': item.productName,
+          'unit': unit,
+          'base_unit': bUnit
         };
         productsMap.add(tItempMap);
         final taxRate = (item.unitPrice / item.netUnitPrice) - 1;

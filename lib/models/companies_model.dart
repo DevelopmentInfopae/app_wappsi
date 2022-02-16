@@ -268,6 +268,7 @@ class CompanyModel {
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "id_cloud": idCloud,
         "group_id": groupId,
         "group_name": groupName,
         "customer_group_id": customerGroupId,

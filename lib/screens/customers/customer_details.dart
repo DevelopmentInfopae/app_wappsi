@@ -73,11 +73,11 @@ class _CustomerDetailsState extends State<CustomerDetails> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const Icon(FontAwesomeIcons.star, size: kIconSize, color: pColor),
           Text(
-            'Favoritos ',
-            style: buttonsSmallTextStyle(context),
+            ' Favoritos',
+            style: buttonsSmallTextStyle(context, color: pColor),
           ),
-          const Icon(FontAwesomeIcons.star, size: kIconSize),
         ],
       ),
     );

@@ -128,7 +128,7 @@ class OrderSaleItemsModel {
         gst: json["gst"],
         cgst: double.tryParse(json["cgst"].toString()),
         sgst: double.tryParse(json["sgst"].toString()),
-        igst: double.tryParse(json["igst"]),
+        igst: double.tryParse(json["igst"].toString()),
         unitOrderDiscount:
             double.tryParse(json["unit_order_discount"].toString()),
         priceBeforeTax:

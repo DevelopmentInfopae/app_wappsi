@@ -50,8 +50,7 @@ class ProductPriceVerifier extends StatelessWidget {
                                 .paddingOnly(left: 40, right: 40)
                                 .center()
                                 .withHeight(size.height * 0.076),
-                            descText(price.substring(0, price.length - 3),
-                                    context,
+                            descText(price.substring(0, price.length), context,
                                     color: pColor,
                                     fontSizeFactor: 2.5,
                                     fweigth: 4,
@@ -155,7 +154,7 @@ class ProductPriceVerifier extends StatelessWidget {
                   getFormatedCurrency((e['price'] ?? product.price) + 0.0);
               return Column(
                 children: [
-                  descText(price.substring(0, price.length - 3), context,
+                  descText(price.substring(0, price.length), context,
                       textStyle: numbersTextStyle(
                           color: greyDarkerColor, fontSizeFactor: 1.55)),
                   descText(e['name'] ?? '', context,

@@ -3,10 +3,10 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/constant.dart';
 
 class GoBackBottom extends StatelessWidget {
-  const GoBackBottom({
-    Key? key,
-  }) : super(key: key);
-
+  const GoBackBottom({Key? key, this.message = 'Regresar', this.function})
+      : super(key: key);
+  final String message;
+  final Function? function;
   @override
   Widget build(BuildContext context) {
     return AppButton(
@@ -16,15 +16,19 @@ class GoBackBottom extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.arrow_back_ios, size: kIconSize),
+          const Icon(
+            Icons.arrow_back_ios,
+            size: kIconSize,
+            color: pColor,
+          ),
           Text(
-            'Regresar',
-            style: buttonsSmallTextStyle(context),
+            message,
+            style: buttonsSmallTextStyle(context, color: pColor),
           ),
         ],
       ),
       onTap: () {
-        Navigator.pop(context);
+        function != null ? function!() : Navigator.pop(context);
       },
     );
   }

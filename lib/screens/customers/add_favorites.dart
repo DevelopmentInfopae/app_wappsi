@@ -8,6 +8,7 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/components/go_back_bottom.dart';
 import 'package:pos_wappsi/components/product_card.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
@@ -237,24 +238,38 @@ class _AddFavoritesState extends State<AddFavorites> {
   }
 
   Widget _bottom() {
-    return AppButton(
-      child: Text('Siguiente', style: buttonsTextStyle(context)),
-      enabled: !_loading,
-      onTap: _loading
-          ? null
-          : () async {
-              if (widget.currentAction == 'creating_customer') {
-                await dataBloc.refreshToken(context);
-                await CompaniesProvider.sendCustomerInfo(context);
-              } else if (widget.currentAction == 'adding_fav_to_customer') {
-                await dataBloc.refreshToken(context);
-                await CompaniesProvider.addCompanyFavs(
-                    context, widget.customer!);
-                gobackTwoTimes(context);
-              }
-            },
-      color: _pc,
-      disabledColor: _pc,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        const GoBackBottom(),
+        AppButton(
+          padding: kButtonPadding,
+          child: Row(
+            children: [
+              const Icon(Icons.arrow_forward_ios_rounded,
+                  size: kIconSize, color: pColor),
+              Text('Siguiente',
+                  style: buttonsSmallTextStyle(context, color: pColor)),
+            ],
+          ),
+          enabled: !_loading,
+          onTap: _loading
+              ? null
+              : () async {
+                  if (widget.currentAction == 'creating_customer') {
+                    await dataBloc.refreshToken(context);
+                    await CompaniesProvider.sendCustomerInfo(context);
+                  } else if (widget.currentAction == 'adding_fav_to_customer') {
+                    await dataBloc.refreshToken(context);
+                    await CompaniesProvider.addCompanyFavs(
+                        context, widget.customer!);
+                    gobackTwoTimes(context);
+                  }
+                },
+          color: Colors.white,
+          disabledColor: _pc,
+        ),
+      ],
     ).withSize(width: _size.width);
   }
 

@@ -57,8 +57,9 @@ class UserModel {
       gender: json["gender"] ?? '',
       email: json["email"],
       userName: json["username"],
-      hostUrl: Environment().env == 'DEV'?Environment().config.apiHost
-          :(json['host_url'] == 'default_host' ? Environment().config.apiHost : json['host_url'] ?? Environment().config.apiHost),
+      hostUrl: json['host_url'] == 'default_host'
+          ? Environment().config.apiHost
+          : json['host_url'] ?? Environment().config.apiHost,
       warehouseId: int.parse(json["warehouse_id"]),
       sellerId: int.parse(json["seller_id"]),
       companyName: json["company_name"],
@@ -67,8 +68,7 @@ class UserModel {
       billerId: int.parse(json['biller_id']),
       billerName: json['biller_name'],
       companyFolder: json['company_folder'] ?? Environment().config.cFolder,
-      documentTypeId:
-          int.tryParse(json['document_type_id'].toString()));
+      documentTypeId: int.tryParse(json['document_type_id'].toString()));
 
   Map<String, dynamic> toJson() => {
         "token": token,

@@ -61,7 +61,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
   void initState() {
     final discountVal = getFormatedCurrency(orderBloc.getOrderDiscount);
     _orderDController.text = orderBloc.getOrderDiscount != 0.0
-        ? discountVal.substring(0, discountVal.length - 1)
+        ? discountVal.substring(0, discountVal.length)
         : '';
     if (orderBloc.getInternalNote != null) {
       _internalNController.text = orderBloc.getInternalNote!;
@@ -152,7 +152,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
                     // style: textTheme,
                   ),
                   const Spacer(),
-                  Text(getFormatedCurrency(snapshot.data ?? 0, decimals: 1),
+                  Text(getFormatedCurrency(snapshot.data ?? 0),
                       style: numbersTextStyle())
                 ],
               );
@@ -170,7 +170,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
                     // style: textTheme,
                   ),
                   const Spacer(),
-                  Text(getFormatedCurrency(snapshot.data ?? 0, decimals: 1),
+                  Text(getFormatedCurrency(snapshot.data ?? 0),
                       style: numbersTextStyle())
                 ],
               );

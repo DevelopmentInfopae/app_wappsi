@@ -4,6 +4,8 @@ import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
+import 'package:pos_wappsi/providers/biller_data_provider.dart';
+import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 // import 'package:pos_wappsi/providers/price_policy_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
@@ -17,7 +19,7 @@ class WishlistProvider {
   static Future<List<ProductModel>> loadCustomerFavorites(
       CompanyModel customer) async {
     final products = await getCustomerFavFromDB(customer.id.toString());
-    if (products?.isEmpty??true) {
+    if (products?.isEmpty ?? true) {
       return [];
     } else {
       final temp = ProductModel.fromJsonList(products!);
@@ -217,5 +219,30 @@ class WishlistProvider {
         "customer_id=${customer.id} AND id IN (${favoritesIds.join(',')})";
 
     return await DBProvider.db.sqlDelete('sma_wishlist', where);
+  }
+
+  static Future<Map> buildPrintDataMap(
+      CompanyModel customer, List<ProductModel> products) async {
+    final billerId = dataBloc.userData!.billerId.toString();
+    final biller = await CompaniesProvider.getCompanyById(billerId);
+    final billerData = await BillerDataProvider.loadBillerDataId(billerId);
+    // final customerAddress = await CustomerAddressesProvider.loadCustomerAddress(
+    //     addressId.toString());
+    // Load only first sale payment
+
+    final settings = dataBloc.settings;
+
+    final productsInfo = products.map((p) {
+      return p.toJson();
+    }).toList();
+
+    return {
+      "products": productsInfo,
+      "customer": customer.toJson(),
+      // "customer_address": customerAddress?.toJson() ?? {},
+      "company_data": biller,
+      "biller_data": billerData,
+      "settings": settings
+    };
   }
 }

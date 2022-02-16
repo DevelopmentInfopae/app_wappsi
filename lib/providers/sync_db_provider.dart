@@ -20,25 +20,27 @@ class SyncDBProvider {
   String syncDate = '';
   bool firstTime = false;
 
-  _getUpdates(Map<String, dynamic> options) async {
+  _getUpdates(Map<String, dynamic> options, {bool isPost = true}) async {
     // String updateDate = '';
     DataProvider api = DataProvider();
 
-    updateDate = await DBProvider.db.getUpdateDate(options['sync_id']);
-    // ignore: unnecessary_null_comparison
-    if (updateDate == '[]' || updateDate == null || updateDate == 'null') {
-      updateDate = DateFormat('yyyy-MM-dd kk:mm:ss').format(DateTime.now());
-      firstTime = true;
+    Map<String, dynamic> res;
+    if (isPost) {
+      updateDate = await DBProvider.db.getUpdateDate(options['sync_id']);
+      // ignore: unnecessary_null_comparison
+      if (updateDate == '[]' || updateDate == null || updateDate == 'null') {
+        updateDate = DateFormat('yyyy-MM-dd kk:mm:ss').format(DateTime.now());
+        firstTime = true;
+      }
+      Map<String, dynamic> body = {
+        'last_sync': updateDate,
+        'first_time': firstTime
+      };
+      res = await api.postPetition(options['path'], body, dataBloc.getHeaders(),
+          awaitTime: 150);
+    } else {
+      res = await api.getPetition(options['path'], dataBloc.getHeaders());
     }
-    Map<String, dynamic> body = {
-      'last_sync': updateDate,
-      'first_time': firstTime
-    };
-
-    final res = await api.postPetition(
-        options['path'], body, dataBloc.getHeaders(),
-        awaitTime: 150);
-
     return res;
   }
 
@@ -62,8 +64,12 @@ class SyncDBProvider {
     return res;
   }
 
-  Future<Map> update(String option) async {
-    final res = await _getUpdates(options[option]!);
+  Future<Map> update(String option,
+      {Map<String, dynamic>? selectedOption,
+      bool isSpecial = false,
+      bool post = true}) async {
+    final res =
+        await _getUpdates(selectedOption ?? options[option]!, isPost: post);
     //check if JWT is ok, if not logout
     if (res['status'] == -1) {
       return {
@@ -79,9 +85,14 @@ class SyncDBProvider {
         // syncBloc.setProgressMessage('Escribiendo actualizaciones en la base de datos local');
         bool result = false;
         // ignore: unrelated_type_equality_checks
-        result = await _writeIntoLocalDB(res, options[option]!['table']);
+        if (specialSync.contains(option) || isSpecial) {
+          result = await _specialWriteIntoLocalDB(res);
+        } else {
+          result = await _writeIntoLocalDB(
+              res, (selectedOption ?? options[option])!['table']);
+        }
 
-        if (options[option]!['table'] == 'sma_settings') {
+        if ((selectedOption ?? options[option])!['table'] == 'sma_settings') {
           await dataBloc.getSettings();
         }
 
@@ -89,8 +100,8 @@ class SyncDBProvider {
         if (result) {
           // syncBloc.setProgressMessage('Estableciendo fecha de ultima actualización para $option');
 
-          await DBProvider.db.setUpdateDate(
-              res['body']['server_date_time'], options[option]!['sync_id']);
+          await DBProvider.db.setUpdateDate(res['body']['server_date_time'],
+              (selectedOption ?? options[option])!['sync_id']);
 
           // syncBloc.setProgressMessage('$option sincronizados');
           return {
@@ -186,7 +197,7 @@ class SyncDBProvider {
     try {
       dataBloc.setBillerCompany(companyData!);
     } catch (e) {
-   printConsole(e);
+      printConsole(e);
     }
 
     // update current companyBiller on dataBloc
@@ -194,7 +205,7 @@ class SyncDBProvider {
     try {
       dataBloc.setBillerData(billerData!);
     } catch (e) {
-   printConsole(e);
+      printConsole(e);
     }
   }
 
@@ -206,6 +217,23 @@ class SyncDBProvider {
       result =
           await DBProvider.db.insertOrUpdateQuerys(table, res['body']['data']);
     }
+    return result;
+  }
+
+  Future<bool> _specialWriteIntoLocalDB(Map<String, dynamic> res) async {
+    bool result = true;
+    if ((res['body']['data'] != null) ||
+        (res['body']['data'] != "[]") ||
+        (res['body']['data'] != [])) {
+      final data = res['body']['data'];
+
+      if (data != null) {
+        await Future.forEach(data.keys, (String key) async {
+          result = await DBProvider.db.insertOrUpdateQuerys(key, data[key]);
+        });
+      }
+    }
+    // print(result);
     return result;
   }
 
@@ -246,6 +274,27 @@ class SyncDBProvider {
       }
       // Environment().env!='DEV'?null:print('xd');
       return res;
+    }
+  }
+
+  Future<void> synSelectedOption(Map<String, dynamic> option, context,
+      {bool isPost = true}) async {
+    final res =
+        await update('', selectedOption: option, isSpecial: true, post: isPost);
+    if (res['status'] == -1) {
+      await reloadDialog(
+          context,
+          'Sesión expirada, es necesario a iniciar sesión',
+          'assets/images/warning.png');
+    } else {
+      if (res['error'] == true) {
+        final choice = await choiceAlert(context,
+            res['message'] + '¿Reintentar?', 'assets/images/warning.png');
+
+        if (choice) {
+          return await synSelectedOption(option, context, isPost: isPost);
+        }
+      }
     }
   }
 

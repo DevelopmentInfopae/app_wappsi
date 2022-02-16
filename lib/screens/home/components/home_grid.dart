@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/register_form_provider.dart';
+import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/cash_accounting/components/open_register_alert.dart';
 import 'package:pos_wappsi/screens/cash_accounting/register_options.dart';
 import 'package:pos_wappsi/screens/customers/new_customer.dart';
@@ -18,6 +20,7 @@ import 'package:pos_wappsi/screens/sales/new_sale.dart';
 import 'package:pos_wappsi/screens/sales/sales_screen.dart';
 import 'package:pos_wappsi/screens/user/profile_sreen.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:provider/provider.dart';
 import 'package:restart_app/restart_app.dart';
 
@@ -126,7 +129,13 @@ class HomeGridCards extends StatelessWidget {
     } else if (gridItems.route == 'settings') {
       dataBloc.homeKey.currentState?.selectTab(TabItem.settings);
     } else if (gridItems.route == 'list_orders') {
+      final dbProvider = SyncDBProvider();
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      final result = await dbProvider.syncOption(
+          context, tableNamesToSyncOpt['sma_order_sales']!);
+
+      printConsole(result);
+
       const OrdersList().launch(context);
     } else if (gridItems.route == 'profile') {
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
@@ -162,7 +171,7 @@ class HomeGridCards extends StatelessWidget {
   Future<void> _logout(BuildContext context) async {
     bool _close = false;
     _close = await choiceAlert(
-        context, '¿Desea cerrar sesión?', 'assets/images/exit.png');
+        context, '¿Desea cerrar sesión?', 'assets/images/logout.png');
     if (_close) {
       // with this we restart application
       await posBloc.suspendSale();

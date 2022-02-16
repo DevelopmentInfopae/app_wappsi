@@ -59,7 +59,7 @@ Widget _totalLarge(BuildContext context, String value, {Color? color}) {
 Widget totalValue(BuildContext context, String value, {Color? color}) {
   return FittedBox(
     fit: BoxFit.fitHeight,
-    child: Text(value.substring(0, value.length - 3),
+    child: Text(value.substring(0, value.length),
         style: numbersTextStyle(
             color: color ?? Colors.white, fontWeight: FontWeight.w800)),
   );

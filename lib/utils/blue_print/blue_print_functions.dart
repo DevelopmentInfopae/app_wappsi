@@ -57,7 +57,7 @@ List<int> printLabeledValues(Generator generator, List<int> bytes,
     }
 
     if ((valueCol2Len - 1) > emptySpacesCol2Total) {
-      final start = emptySpacesCol2;
+      final start = emptySpacesCol2Total - emptySpacesCol2;
       final end = value.length;
       final str = value.substring(start, end);
       bytes += generator.text(str, styles: PosStyles(align: col2));
@@ -161,11 +161,14 @@ List<int> legalInfo(List<int> bytes, Generator generator, bool _innerPrinter,
 }
 
 // Returns bytes from sale reference
-List<int> invoiceData(List<int> bytes, Generator generator, data) {
-  bytes += generator.text('Factura POS ',
+List<int> invoiceData(
+    List<int> bytes, Generator generator, data, String title) {
+  bytes += generator.text(title,
       styles: const PosStyles(bold: false, align: PosAlign.center));
-  bytes += generator.text(data['reference_no'],
-      styles: const PosStyles(bold: true, align: PosAlign.center));
+  if (data != null) {
+    bytes += generator.text(data['reference_no'] ?? '',
+        styles: const PosStyles(bold: true, align: PosAlign.center));
+  }
   return bytes;
 }
 

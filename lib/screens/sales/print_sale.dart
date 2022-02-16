@@ -111,7 +111,10 @@ class _PrintSaleState extends State<PrintSale> {
                   .withWidth(_size.width * 0.75)
                   .paddingSymmetric(horizontal: 10),
               emptyLine(),
-              products(widget.printData).withWidth(_size.width * 0.75),
+              products(widget.printData,
+                      pricePolicy:
+                          dataBloc.settings!['prioridad_precios_producto'])
+                  .withWidth(_size.width * 0.75),
               emptyLine(),
               paymentDetails(textTheme, widget.printData)
                   .withWidth(_size.width * 0.75)
@@ -198,11 +201,11 @@ class _PrintSaleState extends State<PrintSale> {
       },
       child: Row(
         children: [
+          const Icon(Icons.print, size: kIconSize, color: pColor),
           Text(
-            'Imprimir ',
-            style: buttonsSmallTextStyle(context),
+            ' Imprimir',
+            style: buttonsSmallTextStyle(context, color: pColor),
           ),
-          const Icon(Icons.print, size: kIconSize)
         ],
       ),
     );
@@ -238,11 +241,12 @@ class _PrintSaleState extends State<PrintSale> {
       },
       child: Row(
         children: [
+          const Icon(Icons.arrow_back_ios_new_rounded,
+              size: kIconSize, color: pColor),
           Text(
-            'Salir ',
-            style: buttonsSmallTextStyle(context),
+            ' Salir',
+            style: buttonsSmallTextStyle(context, color: pColor),
           ),
-          const Icon(Icons.exit_to_app, size: kIconSize)
         ],
       ),
     );

@@ -7,6 +7,7 @@ import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/components/go_back_bottom.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/constant.dart';
@@ -36,7 +37,8 @@ class _NewCustomerState extends State<NewCustomer> {
   final TextEditingController _name2Controller = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _lastName2Controller = TextEditingController();
-  final TextEditingController _comercialNameController = TextEditingController();
+  final TextEditingController _comercialNameController =
+      TextEditingController();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -297,19 +299,36 @@ class _NewCustomerState extends State<NewCustomer> {
   }
 
   Widget _customerConfig() {
-    return AppButton(
-      child: Text('Siguiente', style: buttonsTextStyle(context)),
-      enabled: !_loading,
-      onTap: _loading
-          ? null
-          : () {
-              if (_formKey.currentState?.validate() ?? false) {
-                const NewCustomerData2().launch(context);
-              }
-            },
-      color: _pc,
-      disabledColor: _pc,
-    ).withSize(width: _size.width);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        const GoBackBottom(),
+        AppButton(
+          child: Row(
+            children: [
+              const Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: kIconSize,
+                color: pColor,
+              ),
+              Text('Siguiente',
+                  style: buttonsSmallTextStyle(context, color: pColor)),
+            ],
+          ),
+          enabled: !_loading,
+          onTap: _loading
+              ? null
+              : () {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    const NewCustomerData2().launch(context);
+                  }
+                },
+          color: Colors.white,
+          padding: kButtonPadding,
+          disabledColor: _pc,
+        ),
+      ],
+    );
   }
 
   Widget _documents() {

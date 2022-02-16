@@ -5,6 +5,8 @@ import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/input_decoration.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/screens/home/home_screen.dart';
+import 'package:pos_wappsi/screens/sales/new_sale.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 // import 'package:pos_wappsi/utils/functions.dart';
 
@@ -48,8 +50,7 @@ class SuspendSaleAlertDialogState extends State<SuspendSaleAlertDialog> {
           ).paddingBottom(10),
           Text(
             'A continuación digite una palabra clave para identificar la venta suspendida:',
-            style:
-                buttonsSmallTextStyle(context).apply(color: kGreyTextColor),
+            style: buttonsSmallTextStyle(context).apply(color: kGreyTextColor),
           ),
         ],
       ).paddingBottom(10),
@@ -81,7 +82,14 @@ class SuspendSaleAlertDialogState extends State<SuspendSaleAlertDialog> {
 
               // Check if suspendSale fails
               if (res) {
-                Navigator.of(context).pop(false);
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const HomeScreen(),
+                  ),
+                  (route) => false,
+                );
+                const NewSale().launch(context);
               } else {
                 confirmDialog(
                     context,

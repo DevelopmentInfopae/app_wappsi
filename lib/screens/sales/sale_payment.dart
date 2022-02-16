@@ -76,9 +76,8 @@ class _SalePaymentState extends State<SalePayment> {
     if (posBloc.getPaymentValue != null) {
       final value =
           getFormatedCurrency(posBloc.getPaymentValue?.toDouble() ?? 0.0);
-      _valuePController.text = posBloc.getPaymentValue == 0
-          ? ''
-          : value.substring(0, value.length - 3);
+      _valuePController.text =
+          posBloc.getPaymentValue == 0 ? '' : value.substring(0, value.length);
 
       _paymentTermController.text = (posBloc.getPaymentTerm ?? '').toString();
       _valueP = posBloc.getPaymentValue!;
@@ -244,8 +243,7 @@ class _SalePaymentState extends State<SalePayment> {
             posBloc.setPaymentValue(posBloc.getSubTotal().toInt());
 
             _valueP = posBloc.getSubTotal().toInt();
-            _valuePController.text =
-                getFormatedCurrency(posBloc.getSubTotal(), decimals: 1);
+            _valuePController.text = getFormatedCurrency(posBloc.getSubTotal());
           }
         } else {
           posBloc.setPaymentValue(0);
@@ -504,7 +502,7 @@ class _SalePaymentState extends State<SalePayment> {
       },
       child: RichText(
         text: TextSpan(
-            text: valueString.substring(0, valueString.length - 3),
+            text: valueString.substring(0, valueString.length),
             style: _textTheme.bodyText1!.apply(color: Colors.black),
             children: [
               TextSpan(
