@@ -25,9 +25,11 @@ class ProductCard extends StatefulWidget {
       required this.product,
       required this.formKey,
       required this.quantityFocusNode,
-      this.fromOder = false})
+      this.fromOder = false,
+      this.requestFocus = false})
       : super(key: key);
   final bool fromOder;
+  final bool requestFocus;
   final FocusNode quantityFocusNode;
   final GlobalObjectKey<FormState> formKey;
   final MapEntry<String, ProductModel> product;
@@ -185,51 +187,43 @@ class _ProductCardState extends State<ProductCard> {
         textAlign: TextAlign.center,
         onChanged: (String value) async {
           // quantityFocusNode.requestFocus();
-          if (!value.endsWith('.')) {
-            if (!value.endsWith('.0')) {
-              double productInt = double.tryParse(value) ?? 0.0;
-              if (productInt == 0) {
-                if (value == '') {
-                  bool res;
-                  if (widget.fromOder) {
-                    res = await orderBloc.addProductQuantity(
-                        widget.product.key, 1);
-                  } else {
-                    res =
-                        await posBloc.addProductQuantity(widget.product.key, 1);
-                  }
-                  if (!res) {
-                    _stockAlert();
 
-                    _updateQuantityValue();
-                  } else {
-                    _updateQuantityValue();
-                  }
-                } else {
-                  confirmDialog(context, 'Cantidad de producto no valida',
-                      'assets/images/alert.png');
-                  // setState(() {
-                  //   _updateQuantityValue();
-                  // });
-                }
+          double productInt = double.tryParse(value) ?? 0.0;
+          if (productInt == 0) {
+            if (value == '') {
+              bool res;
+              if (widget.fromOder) {
+                res = await orderBloc.addProductQuantity(widget.product.key, 1);
               } else {
-                bool res;
-                if (widget.fromOder) {
-                  res = await orderBloc.addProductQuantity(
-                      widget.product.key, productInt);
-                } else {
-                  res = await posBloc.addProductQuantity(
-                      widget.product.key, productInt);
-                }
-                // printConsole(res);
-                if (!res) {
-                  _stockAlert();
-
-                  _updateQuantityValue();
-                } else {
-                  _updateQuantityValue();
-                }
+                res = await posBloc.addProductQuantity(widget.product.key, 1);
               }
+              if (!res) {
+                _stockAlert();
+
+                _updateQuantityValue();
+              } else {
+                _updateQuantityValue();
+              }
+            } else {
+              confirmDialog(context, 'Cantidad de producto no valida',
+                  'assets/images/alert.png');
+            }
+          } else {
+            bool res;
+            if (widget.fromOder) {
+              res = await orderBloc.addProductQuantity(
+                  widget.product.key, productInt);
+            } else {
+              res = await posBloc.addProductQuantity(
+                  widget.product.key, productInt);
+            }
+            // printConsole(res);
+            if (!res) {
+              _stockAlert();
+
+              _updateQuantityValue();
+            } else {
+              _updateQuantityValue(query: value);
             }
           }
         },
@@ -421,7 +415,7 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  _updateQuantityValue() {
+  _updateQuantityValue({String? query}) {
     double value;
     // double? operator;
     if (widget.fromOder) {
@@ -433,8 +427,13 @@ class _ProductCardState extends State<ProductCard> {
     }
     // printConsole(_quantityController.text);
     if (value.toString().endsWith('.0')) {
+      if (query ==
+          posBloc.getProductData(widget.product.key)!.quantity.toString()) {
+        _quantityController.text = (value).toString();
+      } else {
+        _quantityController.text = (value).toInt().toString();
+      }
       // to show product unit in terms of base unit 1
-      _quantityController.text = (value).toInt().toString();
     } else {
       // to show product unit in terms of base unit 1
       _quantityController.text = (value).toInt().toString();

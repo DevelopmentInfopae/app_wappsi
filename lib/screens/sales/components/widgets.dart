@@ -104,8 +104,9 @@ Widget customPopupCustomerItemBuilder(
       title: Text(capitalizeText(item?.name ?? '')),
       subtitle: Text(capitalizeText(item?.vatNo ?? '')),
       leading: ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
-          child: customerPhoto(item!.logoSquare!)),
+              borderRadius: BorderRadius.circular(8.0),
+              child: customerPhoto(item!.logoSquare!))
+          .withWidth(50),
     ),
   );
 }

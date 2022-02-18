@@ -296,13 +296,15 @@ class ProductsProvider {
 
   /// Returns map with product and its requirementes based on pricePolicy
   static Future<Map<String, dynamic>> getProductRequirements(
-      BuildContext context, ProductModel product) async {
+      BuildContext context, ProductModel product,
+      {bool showAllwaysUnitAlert = false}) async {
     final policyReq = PricePoliciesProvider.checkProductSelectionRequirements();
     Map<String, dynamic> req = {"product": product, "product_unit": null};
     Map<String, dynamic>? unitInfo;
     if (policyReq['product_unit']) {
       unitInfo = await UnitsProvider.getProductUnit(
-          context, product, posBloc.getCustomer!.priceGroupId!);
+          context, product, posBloc.getCustomer!.priceGroupId!,
+          showAllwaysUnitAlert: showAllwaysUnitAlert);
       if (unitInfo != null) {
         final unit = unitInfo['unit'];
         req['product_unit'] = unitInfo['unit'];

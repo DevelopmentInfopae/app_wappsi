@@ -186,7 +186,7 @@ Positioned loadingIndicator(double width) {
       ));
 }
 
-Widget customerPhoto(String img, {fit = BoxFit.cover}) {
+Widget customerPhoto(String img, {fit = BoxFit.contain}) {
   String url;
   if (img == '') {
     img = defaultCustomersImage;

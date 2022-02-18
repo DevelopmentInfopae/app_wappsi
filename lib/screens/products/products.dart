@@ -11,6 +11,7 @@ import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/products/components/product_card_list.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
+import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
 
 class Products extends StatefulWidget {
@@ -27,6 +28,7 @@ class _ProductsState extends State<Products> {
   final _searchController = FloatingSearchBarController();
 
   late Size _size;
+  int _queryLen = 0;
 
   // FloatingSearchBarController _controller = FloatingSearchBarController();
   final Map<String, dynamic> _searchParams = {};
@@ -183,6 +185,17 @@ class _ProductsState extends State<Products> {
       final res = await ProductsProvider.findProducts(query);
       if (res != null) {
         _productsStream.sink.add(ProductModel.fromJsonList(res));
+      } else {
+        if (query.length - _queryLen > 1) {
+          _searchController.clear();
+          scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
+              const Duration(seconds: 1, milliseconds: 500),
+              backGroundColor: Colors.red);
+          // posBloc.getSearchBarController.query='';
+          _queryLen = 0;
+        } else {
+          _queryLen = query.length;
+        }
       }
     }
   }

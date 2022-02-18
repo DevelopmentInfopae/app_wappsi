@@ -40,7 +40,7 @@ class _SaleCartState extends State<SaleCart> {
   final ScrollController _scrollController = ScrollController();
 
   late Size _size;
-  String _query = '';
+  int _queryLen = 0;
 
   // TO control changes in products and execute focus task
   int _productsCount = 0;
@@ -104,6 +104,9 @@ class _SaleCartState extends State<SaleCart> {
   FloatingSearchBar _searchField() {
     return FloatingSearchBar(
       clearQueryOnClose: true,
+      onFocusChanged: (value) {
+        FocusScope.of(context).unfocus();
+      },
       axisAlignment: -1,
       elevation: 0,
       // padding: EdgeInsets.symmetric(horizontal: 8),
@@ -213,8 +216,12 @@ class _SaleCartState extends State<SaleCart> {
       });
       return false;
     } else if (dataBloc.settings!['set_focus'] == 1) {
-      posBloc.getSearchBarController.close();
-      return true;
+      if ((posBloc.getProducts ?? {}).isEmpty) {
+        return true;
+      } else {
+        posBloc.getSearchBarController.close();
+        return true;
+      }
     }
   }
 
@@ -326,12 +333,15 @@ class _SaleCartState extends State<SaleCart> {
     // printConsole('xd');
     if (res != null) {
       if (res.isEmpty) {
-        if ((query.length - _query.length > 1)) {
+        if ((query.length - _queryLen > 1)) {
           posBloc.getSearchBarController.clear();
+          scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
+              const Duration(seconds: 1, milliseconds: 500),
+              backGroundColor: Colors.red);
           // posBloc.getSearchBarController.query='';
-          _query = '';
+          _queryLen = 0;
         } else {
-          _query = query;
+          _queryLen = query.length;
         }
       } else {
         if (res.length == 1) {
@@ -348,7 +358,7 @@ class _SaleCartState extends State<SaleCart> {
 
           products = [];
         } else {
-          _query = query;
+          _queryLen = query.length;
           if (query != '') {
             products = ProductModel.fromJsonList(res);
           } else {

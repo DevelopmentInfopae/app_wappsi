@@ -39,7 +39,7 @@ class _OrderProductsState extends State<OrderProducts> {
   final _searchController = FloatingSearchBarController();
 
   late Size _size;
-  String _query = '';
+  int _queryLen = 0;
 
   // TO control changes in products and execute focus task
   int _productsCount = 0;
@@ -286,9 +286,15 @@ class _OrderProductsState extends State<OrderProducts> {
         }
       });
       return false;
-    } else if (dataBloc.settings!['set_focus'] == 1) {
-      _searchController.close();
-      return true;
+    } else if (dataBloc.settings!['set_focus'] == 1 && index == 0) {
+      if ((orderBloc.getProducts ?? {}).isEmpty) {
+        return true;
+      } else {
+        _searchController.close();
+        return true;
+      }
+    } else {
+      return false;
     }
   }
 
@@ -369,12 +375,16 @@ class _OrderProductsState extends State<OrderProducts> {
     // printConsole('xd');
     if (res != null) {
       if (res.isEmpty) {
-        if ((query.length - _query.length > 1)) {
+        if ((query.length - _queryLen > 1)) {
           _searchController.clear();
+          scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
+              const Duration(seconds: 1, milliseconds: 500),
+              backGroundColor: Colors.red);
+
           // _searchController.query='';
-          _query = '';
+          _queryLen = 0;
         } else {
-          _query = query;
+          _queryLen = query.length;
         }
       } else {
         if (res.length == 1) {
@@ -391,7 +401,7 @@ class _OrderProductsState extends State<OrderProducts> {
 
           products = [];
         } else {
-          _query = query;
+          _queryLen = query.length;
           if (query != '') {
             products = ProductModel.fromJsonList(res);
           } else {

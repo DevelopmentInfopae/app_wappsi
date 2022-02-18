@@ -23,12 +23,14 @@ class ProductCard extends StatefulWidget {
   final String action;
 
   final bool searchPrice;
+  final bool showAllwaysUnitAlert;
 
   const ProductCard(
       {Key? key,
       required this.product,
       required this.action,
-      this.searchPrice = true})
+      this.searchPrice = true,
+      this.showAllwaysUnitAlert = false})
       : super(key: key);
 
   @override
@@ -72,26 +74,33 @@ class _ProductCardState extends State<ProductCard> {
               if (result) {
                 posBloc.getSearchBarController.clear();
                 posBloc.getSearchBarController.close();
-                scaffoldAlert(context, "Producto ${widget.product.name} añadido", const Duration(seconds: 1));
+                scaffoldAlert(
+                    context,
+                    "Producto ${widget.product.name} añadido",
+                    const Duration(seconds: 1));
               }
             }
 
             // Navigator.pop(context);
           } else if (widget.action == 'add_to_order') {
             final productReq = await ProductsProvider.getProductRequirements(
-                context, widget.product);
+                context, widget.product,
+                showAllwaysUnitAlert: widget.showAllwaysUnitAlert);
             if (productReq != {}) {
               final result = await orderBloc.addProduct(productReq);
               // printConsole(result);
-              if(result){
-                scaffoldAlert(context, "Producto ${widget.product.name} añadido", const Duration(seconds: 1));
-                // to avoid : 
+              if (result) {
+                scaffoldAlert(
+                    context,
+                    "Producto ${widget.product.name} añadido",
+                    const Duration(seconds: 1));
+                // to avoid :
                 // await Future.delayed(Duration(seconds:1));
               }
             }
 
             // Navigator.pop(context);
-          }else if (widget.action == 'price_verifier') {
+          } else if (widget.action == 'price_verifier') {
             ProductPriceVerifier(product: widget.product).launch(context);
           } else if (widget.action == 'add_to_favorites') {
             customerBloc.addProductToFav(

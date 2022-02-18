@@ -81,7 +81,9 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
         key: _formKey,
         child: ListView(
           children: [
-            _priceGroups().paddingSymmetric(vertical: 3),
+            dataBloc.settings?['prioridad_precios_producto'] == 10
+                ? Container()
+                : _priceGroups().paddingSymmetric(vertical: 3),
             _customerGroups().paddingSymmetric(vertical: 3),
             CheckboxListTile(
               value: _adduUser,

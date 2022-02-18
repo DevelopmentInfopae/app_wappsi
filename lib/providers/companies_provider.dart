@@ -17,39 +17,40 @@ import 'package:pos_wappsi/utils/nav_utils.dart';
 
 class CompaniesProvider {
   /// Load default customer from db to posBloc
-  static selectDefaultCustomer({bool returnBool = false, bool fromOrderCreation=false}) async {
+  static selectDefaultCustomer(
+      {bool returnBool = false, bool fromOrderCreation = false}) async {
     if (dataBloc.getBIllerData == null) {
       final billerData = await DBProvider.db.getBillerData();
       if (billerData != null) {
         dataBloc.setBillerData(BillerDataModel.fromJson(billerData));
       }
     }
-    if(fromOrderCreation){
+    if (fromOrderCreation) {
       if (orderBloc.getCustomer == null) {
-      String? idCustomer = dataBloc.getBIllerData!.defaultCustomerId;
-      if (idCustomer != null) {
-        Map<String, dynamic>? customer = await findCompanyById(idCustomer);
-        if (customer != null) {
-          orderBloc.setCustomer(CompanyModel.fromJson(customer));
-          if (returnBool) {
-            return true;
+        String? idCustomer = dataBloc.getBIllerData!.defaultCustomerId;
+        if (idCustomer != null) {
+          Map<String, dynamic>? customer = await findCompanyById(idCustomer);
+          if (customer != null) {
+            orderBloc.setCustomer(CompanyModel.fromJson(customer));
+            if (returnBool) {
+              return true;
+            }
           }
         }
       }
-    }
-    }else{
+    } else {
       if (posBloc.getCustomer == null) {
-      String? idCustomer = dataBloc.getBIllerData!.defaultCustomerId;
-      if (idCustomer != null) {
-        Map<String, dynamic>? customer = await findCompanyById(idCustomer);
-        if (customer != null) {
-          posBloc.setCustomer(CompanyModel.fromJson(customer));
-          if (returnBool) {
-            return true;
+        String? idCustomer = dataBloc.getBIllerData!.defaultCustomerId;
+        if (idCustomer != null) {
+          Map<String, dynamic>? customer = await findCompanyById(idCustomer);
+          if (customer != null) {
+            posBloc.setCustomer(CompanyModel.fromJson(customer));
+            if (returnBool) {
+              return true;
+            }
           }
         }
       }
-    }
     }
   }
 
@@ -80,7 +81,7 @@ class CompaniesProvider {
       body.remove('user_data');
       body.remove('favorites');
     } catch (e) {
-   printConsole(e);
+      printConsole(e);
     }
     body['id_cloud'] = res['body']['company_id'];
     dbUpdated = await DBProvider.db.insertQuery('sma_companies', body);
@@ -215,7 +216,7 @@ class CompaniesProvider {
         return customerId;
       }
     } catch (e) {
-   printConsole(e);
+      printConsole(e);
       return null;
     }
   }

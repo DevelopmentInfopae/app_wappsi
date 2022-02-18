@@ -34,11 +34,15 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
   void initState() {
     super.initState();
     _valueFocus = FocusNode();
+    if (widget.units.length == 1) {
+      _selection = widget.units.first.idCloud;
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
+
     _valueFocus.dispose();
   }
 

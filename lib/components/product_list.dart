@@ -31,38 +31,26 @@ class ProductsList extends StatelessWidget {
         itemBuilder: (context, index) {
           final k = productList.entries.elementAt(index).key;
           dynamic productCard;
-          if (fromOrder) {
-            final pCard = ProductCard(
-              key: UniqueKey(),
-              quantityFocusNode: FocusNode(),
-              formKey: GlobalObjectKey<FormState>(k),
-              product: productList.entries.elementAt(index),
-              fromOder: true,
-            );
-            if (index == 0 && dataBloc.settings!['set_focus'] == 1) {
-              if (productRequestFocus) {
-                pCard.quantityFocusNode.requestFocus();
-              }
-            } else {
-              pCard.quantityFocusNode.unfocus();
+          final product = productList.entries.elementAt(index);
+          final pCard = ProductCard(
+            key: UniqueKey(),
+            quantityFocusNode: FocusNode(),
+            formKey: GlobalObjectKey<FormState>(k),
+            product: product,
+            fromOder: fromOrder,
+          );
+
+          if (productList.values.elementAt(0) == product.value &&
+              dataBloc.settings!['set_focus'] == 1) {
+            if (productRequestFocus) {
+              FocusScope.of(context).unfocus();
+              pCard.quantityFocusNode.requestFocus();
             }
-            productCard = pCard;
           } else {
-            final pCard = ProductCard(
-              key: UniqueKey(),
-              quantityFocusNode: FocusNode(),
-              formKey: GlobalObjectKey<FormState>(k),
-              product: productList.entries.elementAt(index),
-            );
-            if (index == 0 && dataBloc.settings!['set_focus'] == 1) {
-              if (productRequestFocus) {
-                pCard.quantityFocusNode.requestFocus();
-              }
-            } else {
-              pCard.quantityFocusNode.unfocus();
-            }
-            productCard = pCard;
+            pCard.quantityFocusNode.unfocus();
           }
+
+          productCard = pCard;
 
           return Dismissible(
               key: Key(k),

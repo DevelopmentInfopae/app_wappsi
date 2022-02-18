@@ -330,10 +330,10 @@ listInfoDialog(BuildContext context, List<Map> info, String column1Key,
               children: info.map<Widget>((e) {
                 final value = isPrice
                     ? getFormatedCurrency(
-                        double.parse(e[column2Key].toString()))
+                        double.parse(e[column2Key].toString()),
+                        decimals: 0)
                     : e[column2Key].toString();
-                return labelContentH(e[column1Key].toString(),
-                    isPrice ? value.substring(1, value.length) : value, context,
+                return labelContentH(e[column1Key].toString(), value, context,
                     flexCol1: flexCol1, flexCol2: flexCol2);
               }).toList(),
             ),

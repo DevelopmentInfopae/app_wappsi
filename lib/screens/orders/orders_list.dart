@@ -203,7 +203,7 @@ class _ProductsState extends State<OrdersList> {
           color: Colors.grey[200],
           borderRadius: const BorderRadius.all(Radius.circular(10))),
       child: FloatingSearchAppBar(
-          hint: ' Buscar pedido',
+          hint: 'Buscar pedido',
           transitionDuration: const Duration(milliseconds: 800),
           clearQueryOnClose: true,
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),

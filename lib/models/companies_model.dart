@@ -342,7 +342,7 @@ class CompanyModel {
   Map<String, dynamic> customerToJson() => {
         "group_id": groupId,
         "group_name": groupName,
-        "customer_group_id": customerGroupId,
+        "customer_group_id": customerGroupId ?? 1,
         "customer_group_name": customerGroupName,
         "type_person": typePerson,
         "name": (firstName ?? '') +

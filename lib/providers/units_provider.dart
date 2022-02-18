@@ -8,6 +8,16 @@ import 'package:pos_wappsi/utils/print_errors.dart';
 class UnitsProvider {
   static Future<List<UnitsModel>> getProductUnits(
       String productId, String priceGroupId) async {
+    final res = await getProductUnitsRaw(productId, priceGroupId);
+    List<UnitsModel> units = [];
+    if (res != null && res.isNotEmpty) {
+      units = UnitsModel.fromJsonList(res);
+    }
+    return units;
+  }
+
+  static Future<List<Map<String, dynamic>>?> getProductUnitsRaw(
+      String productId, String priceGroupId) async {
     String sql = '''SELECT u.id as id,u.id_cloud as id_cloud,u.name as name,
     u.code as code ,u.operator as operator,u.base_unit as base_unit,u.operation_value 
     as operation_value,up.valor_unitario as valor_unitario,u.unit_value as unit_value,
@@ -18,11 +28,8 @@ class UnitsProvider {
     u2.price_group_id as price_group_id FROM sma_products p INNER JOIN sma_units u2 on u2.id_cloud = 
     p.sale_unit WHERE p.id_cloud = $productId ORDER BY valor_unitario ASC''';
     final res = await DBProvider.db.sqlRawQuery(sql);
-    List<UnitsModel> units = [];
-    if (res != null && res.isNotEmpty) {
-      units = UnitsModel.fromJsonList(res);
-    }
-    return units;
+
+    return res;
   }
 
   static Future<UnitsModel?> getUnitInfo(int? unitId) async {
@@ -55,16 +62,17 @@ class UnitsProvider {
   }
 
   static Future<Map<String, dynamic>?> getProductUnit(
-      BuildContext context, ProductModel product, String priceGroupId) async {
+      BuildContext context, ProductModel product, String priceGroupId,
+      {bool showAllwaysUnitAlert = false}) async {
     final units = await UnitsProvider.getProductUnits(
         product.idCloud.toString(), priceGroupId);
     printConsole(units.first.name);
 
-    if (units.length > 1) {
+    if (units.length > 1 || showAllwaysUnitAlert) {
       return await showCupertinoDialog<Map<String, dynamic>?>(
           // to make selection of product unit required
           barrierDismissible: false,
-          useRootNavigator: false,
+          // useRootNavigator: false,
           context: context,
           builder: (context) {
             return SelectProductUnitDialog(

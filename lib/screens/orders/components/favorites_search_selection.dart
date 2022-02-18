@@ -179,9 +179,9 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
         itemCount: _favorites.length,
         itemBuilder: (BuildContext context, int index) {
           return ProductCard(
-            action: 'add_to_order',
-            product: _favorites[index],
-          );
+              action: 'add_to_order',
+              product: _favorites[index],
+              showAllwaysUnitAlert: true);
         });
   }
 

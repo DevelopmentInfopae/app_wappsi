@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
+import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
@@ -188,14 +190,27 @@ class ProductDetails extends StatelessWidget {
       children: [
         labelContent('Precio ', price),
         buttonTextIcon(() async {
-          final res = await ProductsProvider.findProductPrices(
-              product.idCloud.toString());
-          if (res != null) {
-            listInfoDialog(context, res, 'name', 'price', 'Grupo', 'Precio',
-                isPrice: true);
+          if (dataBloc.settings?['prioridad_precios_producto'] == 10) {
+            final res = await UnitsProvider.getProductUnitsRaw(
+                product.idCloud.toString(), '');
+            if (res != null) {
+              listInfoDialog(
+                  context, res, 'name', 'valor_unitario', 'Grupo', 'Precio',
+                  flexCol2: 2, flexCol1: 3, isPrice: true);
+            } else {
+              confirmDialog(context, 'No se encontraron datos',
+                  'assets/images/warning.png');
+            }
           } else {
-            confirmDialog(context, 'No se encontraron datos',
-                'assets/images/warning.png');
+            final res = await ProductsProvider.findProductPrices(
+                product.idCloud.toString());
+            if (res != null) {
+              listInfoDialog(context, res, 'name', 'price', 'Grupo', 'Precio',
+                  flexCol2: 2, flexCol1: 3, isPrice: true);
+            } else {
+              confirmDialog(context, 'No se encontraron datos',
+                  'assets/images/warning.png');
+            }
           }
         }).paddingRight(20)
       ],
