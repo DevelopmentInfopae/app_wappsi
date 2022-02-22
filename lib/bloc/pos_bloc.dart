@@ -203,7 +203,7 @@ class POSBloc {
           if (_productsController.value[key]!.inventory > 0) {
             _productsController.value[key]!.quantity =
                 _productsController.value[key]!.inventory.toDouble();
-            // setProductView(_productsController.value);
+    
             setSubTotal(getSubTotal());
           } else {
             _productsController.value.remove(key);
@@ -211,17 +211,17 @@ class POSBloc {
           }
         } else {
           _productsController.value[key]!.quantity = value;
-          // setProductView(_productsController.value);
+  
           setSubTotal(getSubTotal());
           res = true;
         }
       } else {
         _productsController.value[key]!.quantity = value;
-        // setProductView(_productsController.value);
+
         setSubTotal(getSubTotal());
         res = true;
       }
-      reloadProductStream();
+      // reloadProductStream();
       // _updateProductViewQuantity(key,value);
     } else {
       await dataBloc.getSettings();

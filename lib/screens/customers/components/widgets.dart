@@ -31,11 +31,11 @@ Widget descText(String? desc, BuildContext context,
     {int maxLines = 1,
     double fontSizeFactor = 0.82,
     int fweigth = 1,
-    Color color = Colors.black,
+    Color? color,
     TextAlign? textAlign,
     TextStyle? textStyle}) {
   textStyle ??= buttonsTextStyle(context,
-      fontSizeFactor: fontSizeFactor, color: color, fontWeightDelta: fweigth);
+      fontSizeFactor: fontSizeFactor, color: color??greyColor, fontWeightDelta: fweigth);
   return Text(
     // ignore: unnecessary_null_comparison
     capitalizeText(desc ?? ''),

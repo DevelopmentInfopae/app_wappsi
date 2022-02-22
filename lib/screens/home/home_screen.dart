@@ -92,22 +92,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _companyNameLogo(CompanyModel company) {
-    return Center(
-      child: Row(
+    return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          billerThumbNail(company.logoSquare ?? '')
-              .paddingOnly(top: 10,bottom: 10,right: 2)
-              .flexible(flex: 1),
-          AutoSizeText(
-            capitalizeText(company.company ??company.name ??  ''),
-            style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w900,color: greyDarkerColor),
-            maxLines: 1,
-            // overflow: TextOverflow.fade,
-          ).flexible(flex: 3),
+          const SizedBox(width: 50,),
+          billerThumbNail(company.logo ?? '')
+              .paddingOnly(top: 5,bottom: 8,right: 2, left: 8)
+             ,
+          // AutoSizeText(
+          //   capitalizeText(company.company ??company.name ??  ''),
+          //   style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w900,color: greyDarkerColor),
+          //   maxLines: 1,
+          //   // overflow: TextOverflow.fade,
+          // ).flexible(flex: 3),
         ],
-      ).withWidth(_size.width * 0.8),
-    );
+      ).withWidth(_size.width * 0.8);
+    
   }
 
   // show notification icon and shows notification's page

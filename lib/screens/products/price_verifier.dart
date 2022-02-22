@@ -13,6 +13,7 @@ import 'package:pos_wappsi/providers/products_provider.dart';
 
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
+import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
 
 // import '../../constant.dart';
@@ -30,6 +31,8 @@ class _ProductPriceState extends State<ProductPrice> {
   // final _searchFocusNode = FocusNode();
   late Size _size;
   final _searchController = FloatingSearchBarController();
+
+  int _currentQueryLen = 0;
   // late Color _pc;
 
   @override
@@ -157,12 +160,26 @@ class _ProductPriceState extends State<ProductPrice> {
     );
   }
 
-  _onQueryChanged(value) async {
-    if (value == '') {
+  _onQueryChanged(query) async {
+    if (query == '') {
       _productsStream.sink.add(null);
       // _searchFocusNode.requestFocus();
+
     } else {
-      _productsStream.sink.add(await ProductsProvider.findProducts(value));
+      final res = await ProductsProvider.findProducts(query);
+      if ((res??[]).isEmpty) {
+        if ((query.length - _currentQueryLen > 1)) {
+          _searchController.clear();
+          scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
+              const Duration(seconds: 1, milliseconds: 500),
+              backGroundColor: Colors.red);
+          // posBloc.getSearchBarController.query='';
+          _currentQueryLen = 0;
+        } else {
+          _currentQueryLen = query.length;
+        }
+      }
+      _productsStream.sink.add(res);
     }
   }
 }

@@ -211,6 +211,7 @@ class OrderBloc {
 
           res = true;
         }
+        // reloadProductStream();
       } else {
         _productsController.value[key]!.quantity = value;
         // setProductView(_productsController.value);
@@ -218,12 +219,13 @@ class OrderBloc {
 
         res = true;
       }
-      reloadProductStream();
+      // reloadProductStream();
       // _updateProductViewQuantity(key,value);
     } else {
       await dataBloc.getSettings();
       res = await addProductQuantity(key, value);
     }
+    
     return res;
   }
 

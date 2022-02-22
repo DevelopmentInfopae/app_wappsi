@@ -14,6 +14,7 @@ import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/products/product_details.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
@@ -22,7 +23,7 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 class ProductCard extends StatefulWidget {
   const ProductCard(
       {Key? key,
-      required this.product,
+      required this.productKey,
       required this.formKey,
       required this.quantityFocusNode,
       this.fromOder = false,
@@ -32,7 +33,7 @@ class ProductCard extends StatefulWidget {
   final bool requestFocus;
   final FocusNode quantityFocusNode;
   final GlobalObjectKey<FormState> formKey;
-  final MapEntry<String, ProductModel> product;
+  final String productKey;
 
   @override
   _ProductCardState createState() => _ProductCardState();
@@ -44,6 +45,9 @@ class _ProductCardState extends State<ProductCard> {
   // final widget.formKey = GlobalKey<FormState>();
 
   final _quantityController = TextEditingController();
+  UnitsModel? unit;
+  ProductModel? product;
+  String unitInfo = '';
 
   @override
   void dispose() {
@@ -54,25 +58,37 @@ class _ProductCardState extends State<ProductCard> {
 
   @override
   void initState() {
-    _updateQuantityValue();
+    // _updateQuantityValue();
+    if (widget.fromOder) {
+      unit = orderBloc.getProductUnits?[widget.productKey];
+      product = orderBloc.getProducts?[widget.productKey];
+    } else {
+      unit = posBloc.getProductUnits?[widget.productKey];
+      product = posBloc.getProducts?[widget.productKey];
+    }
+    if (unit != null) {
+      final unitQtty = product!.quantity / (unit!.operationValue);
+      if (unitInfo == '') {
+        unitInfo += unitQtty.floor().toString() + ' ';
+      }
+    }
 
     super.initState();
   }
 
   Widget _productTile() {
-    String unitInfo = '';
     UnitsModel? unit;
     ProductModel? product;
     if (widget.fromOder) {
-      unit = orderBloc.getProductUnits?[widget.product.key];
-      product = orderBloc.getProducts?[widget.product.key];
+      unit = orderBloc.getProductUnits?[widget.productKey];
+      product = orderBloc.getProducts?[widget.productKey];
     } else {
-      unit = posBloc.getProductUnits?[widget.product.key];
-      product = posBloc.getProducts?[widget.product.key];
+      unit = posBloc.getProductUnits?[widget.productKey];
+      product = posBloc.getProducts?[widget.productKey];
     }
     if (unit != null) {
       final unitQtty = product!.quantity / (unit.operationValue);
-      unitInfo += unitQtty.floor().toString() + ' ';
+      unitInfo = unitQtty.floor().toString() + ' ';
     }
     unitInfo += unit?.name ?? '';
     return Column(
@@ -95,10 +111,10 @@ class _ProductCardState extends State<ProductCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              productPhoto(widget.product.value.image == ''
+              productPhoto((product?.image ?? '') == ''
                       ? 'no_image.png'
-                      : widget.product.value.image)
-                  .withSize(width: 92, height: 92),
+                      : product!.image)
+                  .withSize(width: 90, height: 92),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 // mainAxisAlignment: ,
@@ -140,7 +156,7 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _productDesc() {
-    return descText(widget.product.value.name, context,
+    return descText(product?.name ?? '', context,
         maxLines: 2, fontSizeFactor: 1, fweigth: 2);
   }
 
@@ -153,91 +169,121 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _textQty() {
-    return SizedBox(
-      width: 40,
-      height: 40,
-      child: TextFormField(
-        onEditingComplete: () {
-          widget.quantityFocusNode.unfocus();
-          widget.fromOder ? null : posBloc.getSearchBarController.open();
-        },
-        maxLines: 1,
-        // maxLength: 5,
-        scrollPadding: EdgeInsets.zero,
-        key: widget.formKey,
-        focusNode: widget.quantityFocusNode,
-        controller: _quantityController,
-        // autofocus: true,
-        // focusNode: quantityFocusNode,
-        // textFieldType: TextFieldType.PHONE,5
-        keyboardType: TextInputType.number,
-        style: Theme.of(context).textTheme.headline6,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(
-          // fillColor: Colors.red,
-          contentPadding: EdgeInsets.zero,
-          hintText: '1',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          filled: true,
-          fillColor: Colors.grey[100],
-        ),
-
-        textAlign: TextAlign.center,
-        onChanged: (String value) async {
-          // quantityFocusNode.requestFocus();
-
-          double productInt = double.tryParse(value) ?? 0.0;
-          if (productInt == 0) {
-            if (value == '') {
-              bool res;
-              if (widget.fromOder) {
-                res = await orderBloc.addProductQuantity(widget.product.key, 1);
-              } else {
-                res = await posBloc.addProductQuantity(widget.product.key, 1);
-              }
-              if (!res) {
-                _stockAlert();
-
-                _updateQuantityValue();
-              } else {
-                _updateQuantityValue();
-              }
-            } else {
-              confirmDialog(context, 'Cantidad de producto no valida',
-                  'assets/images/alert.png');
-            }
-          } else {
-            bool res;
+    return StreamBuilder<Map<String, ProductModel>>(
+        stream:
+            widget.fromOder ? orderBloc.productsStream : posBloc.productsStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
             if (widget.fromOder) {
-              res = await orderBloc.addProductQuantity(
-                  widget.product.key, productInt);
-            } else {
-              res = await posBloc.addProductQuantity(
-                  widget.product.key, productInt);
+              if (widget.requestFocus) {
+                // if product is last added
+                if (product == snapshot.data!.values.first) {
+                  widget.quantityFocusNode.requestFocus();
+                }
+              }
+              _updateQuantityValue(
+                  value: snapshot.data?[widget.productKey]?.quantity);
             }
-            // printConsole(res);
-            if (!res) {
-              _stockAlert();
+          }
+          return SizedBox(
+            width: 55,
+            height: 40,
+            child: TextFormField(
+              onEditingComplete: () {
+                widget.quantityFocusNode.unfocus();
+                widget.fromOder ? null : posBloc.getSearchBarController.open();
+              },
+              maxLines: 1,
+              // maxLength: 5,
+              scrollPadding: EdgeInsets.zero,
+              key: widget.formKey,
+              focusNode: widget.quantityFocusNode,
+              controller: _quantityController,
+              // autofocus: true,
+              // focusNode: quantityFocusNode,
+              // textFieldType: TextFieldType.PHONE,5
+              keyboardType: TextInputType.number,
+              style: Theme.of(context).textTheme.headline6,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              decoration: InputDecoration(
+                // fillColor: Colors.red,
+                contentPadding: EdgeInsets.zero,
+                hintText: '1',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                filled: true,
+                fillColor: Colors.grey[100],
+              ),
 
-              _updateQuantityValue();
-            } else {
-              _updateQuantityValue(query: value);
-            }
-          }
-        },
-        validator: (value) {
-          if (value!.isNotEmpty) {
-            return isNumeric(value) ? null : 'El valor ingresado no es valido';
-          } else {
-            // setState(() {
-            //   posBloc.getProductData(widget.product.key)!.quantity = 1;
-            // });
-          }
-        },
-      ),
-    );
+              textAlign: TextAlign.center,
+              onChanged: (String value) async {
+                // quantityFocusNode.requestFocus();
+                if (!value.endsWith('.')) {
+                  if (!value.endsWith('.0')) {
+                    double productInt = double.tryParse(value) ?? 0.0;
+                    if (productInt == 0) {
+                      if (value == '') {
+                        bool res;
+                        if (widget.fromOder) {
+                          res = await orderBloc.addProductQuantity(
+                              widget.productKey, 1);
+                        } else {
+                          res = await posBloc.addProductQuantity(
+                              widget.productKey, 1);
+                        }
+                        if (!res) {
+                          _stockAlert();
+
+                          setState(() {
+                            _updateQuantityValue();
+                          });
+                        } else {
+                          setState(() {
+                            _updateQuantityValue();
+                          });
+                        }
+                      } else {
+                        confirmDialog(context, 'Cantidad de producto no valida',
+                            'assets/images/alert.png');
+                      }
+                    } else {
+                      bool res;
+                      if (widget.fromOder) {
+                        res = await orderBloc.addProductQuantity(
+                            widget.productKey, productInt);
+                      } else {
+                        res = await posBloc.addProductQuantity(
+                            widget.productKey, productInt);
+                      }
+                      // printConsole(res);
+                      if (!res) {
+                        _stockAlert();
+
+                        setState(() {
+                          _updateQuantityValue();
+                        });
+                      } else {
+                        setState(() {
+                          _updateQuantityValue(query: value);
+                        });
+                      }
+                    }
+                  }
+                }
+              },
+              validator: (value) {
+                // if (value!.isNotEmpty) {
+                //   return isNumeric(value) ? null : 'El valor ingresado no es valido';
+                // } else {
+                //   // setState(() {
+                //   //   posBloc.getProductData(widget.productKey)!.quantity = 1;
+                //   // });
+                // }
+              },
+            ),
+          );
+        });
   }
 
   Widget _rmQty() {
@@ -252,28 +298,30 @@ class _ProductCardState extends State<ProductCard> {
       onTap: () {
         if (widget.fromOder) {
           final uOperator =
-              orderBloc.getProductUnits?[widget.product.key]?.operationValue ??
+              orderBloc.getProductUnits?[widget.productKey]?.operationValue ??
                   1;
-          if (orderBloc.getProductData(widget.product.key)!.quantity >
+          if (orderBloc.getProductData(widget.productKey)!.quantity >
               uOperator) {
+            // setState(() {
+            orderBloc.getProductData(widget.productKey)!.quantity -= uOperator;
             setState(() {
-              orderBloc.getProductData(widget.product.key)!.quantity -=
-                  uOperator;
               _updateQuantityValue();
-              // orderBloc.addProductQuantity(widget.product.key,
-              //     orderBloc.getProductData(widget.product.key)!.quantity);
             });
+            // orderBloc.addProductQuantity(widget.productKey,
+            //     orderBloc.getProductData(widget.productKey)!.quantity);
+            // });
           }
         } else {
           final uOperator =
-              (posBloc.getProductUnits?[widget.product.key]?.operationValue ??
+              (posBloc.getProductUnits?[widget.productKey]?.operationValue ??
                   1);
-          if (posBloc.getProductData(widget.product.key)!.quantity >
-              uOperator) {
+          if (posBloc.getProductData(widget.productKey)!.quantity > uOperator) {
+            // setState(() {
+            posBloc.getProductData(widget.productKey)!.quantity -= uOperator;
             setState(() {
-              posBloc.getProductData(widget.product.key)!.quantity -= uOperator;
               _updateQuantityValue();
             });
+            // });
           }
         }
         // quantityFocusNode.requestFocus();
@@ -295,28 +343,30 @@ class _ProductCardState extends State<ProductCard> {
         borderRadius: BorderRadius.circular(30),
       ),
       onTap: () async {
-        // posBloc.getProductData(widget.product.key)!.quantity += 1;
+        // posBloc.getProductData(widget.productKey)!.quantity += 1;
         bool res;
         if (widget.fromOder) {
-          final pQtty = orderBloc.getProductData(widget.product.key)!.quantity;
+          final pQtty = orderBloc.getProductData(widget.productKey)!.quantity;
           final uOperator =
-              orderBloc.getProductUnits?[widget.product.key]?.operationValue;
+              orderBloc.getProductUnits?[widget.productKey]?.operationValue;
           res = await orderBloc.addProductQuantity(
-              widget.product.key, pQtty + (uOperator ?? 1));
+              widget.productKey, pQtty + (uOperator ?? 1));
         } else {
-          final pQtty = posBloc.getProductData(widget.product.key)!.quantity;
+          final pQtty = posBloc.getProductData(widget.productKey)!.quantity;
           final uOperator =
-              posBloc.getProductUnits?[widget.product.key]?.operationValue;
+              posBloc.getProductUnits?[widget.productKey]?.operationValue;
           res = await posBloc.addProductQuantity(
-              widget.product.key, pQtty + (uOperator ?? 1));
+              widget.productKey, pQtty + (uOperator ?? 1));
         }
 
-        _updateQuantityValue();
+        setState(() {
+          _updateQuantityValue();
+        });
 
         if (!res) {
           confirmDialog(
               context,
-              'El producto ${widget.product.value.name} no tiene suficiente stock. Stock actual ${widget.product.value.inventory}',
+              "El producto ${product?.name ?? ''} no tiene suficiente stock. Stock actual ${product?.inventory ?? ''}",
               'assets/images/out-of-stock.png');
         }
       },
@@ -339,9 +389,9 @@ class _ProductCardState extends State<ProductCard> {
       width: 30,
       onTap: () {
         if (widget.fromOder) {
-          orderBloc.removeProduct(widget.product.key);
+          orderBloc.removeProduct(widget.productKey);
         } else {
-          posBloc.removeProduct(widget.product.key);
+          posBloc.removeProduct(widget.productKey);
         }
       },
       child: const Icon(
@@ -360,9 +410,9 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _baseUnitPrice(UnitsModel unit) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         // if selected unit is base unit
         unit.baseUnit == null
@@ -388,56 +438,71 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _productPrice() {
-    return Text(widget.product.value.getFormatedPriceIVA(),
+    return Text(product?.getFormatedPriceIVA(decimals: 1) ?? '',
         style: numbersTextStyle(fontWeight: FontWeight.normal));
   }
 
   void _stockAlert() {
     confirmDialog(
         context,
-        'El producto ${widget.product.value.name} no tiene suficiente stock. Stock actual ${widget.product.value.inventory}',
+        'El producto ${product?.name} no tiene suficiente stock. Stock actual ${product?.inventory}',
         'assets/images/out-of-stock.png');
     if (widget.fromOder) {
-      orderBloc.getProductData(widget.product.key)!.quantity =
-          orderBloc.getProductData(widget.product.key)!.quantity;
+      orderBloc.getProductData(widget.productKey)!.quantity =
+          orderBloc.getProductData(widget.productKey)!.quantity;
     } else {
-      posBloc.getProductData(widget.product.key)!.quantity =
-          posBloc.getProductData(widget.product.key)!.quantity;
+      posBloc.getProductData(widget.productKey)!.quantity =
+          posBloc.getProductData(widget.productKey)!.quantity;
     }
   }
 
   Widget _productPriceTotal() {
     return Text(
       (getFormatedCurrency(
-        widget.product.value.getPriceWithIVA() * widget.product.value.quantity,
+        (product?.getPriceWithIVA() ?? 1) * (product?.quantity ?? 1),
       )).toString(),
       style: numbersTextStyle(fontWeight: FontWeight.bold),
     );
   }
 
-  _updateQuantityValue({String? query}) {
-    double value;
+  _updateQuantityValue({double? value, String? query}) {
     // double? operator;
-    if (widget.fromOder) {
-      value = orderBloc.getProductData(widget.product.key)!.quantity;
-      // operator = orderBloc.getProductUnits?[widget.product.key]!.operationValue;
-    } else {
-      value = posBloc.getProductData(widget.product.key)!.quantity;
-      // operator = posBloc.getProductUnits?[widget.product.key]!.operationValue;
-    }
-    // printConsole(_quantityController.text);
-    if (value.toString().endsWith('.0')) {
-      if (query ==
-          posBloc.getProductData(widget.product.key)!.quantity.toString()) {
-        _quantityController.text = (value).toString();
+    if (value == null) {
+      if (widget.fromOder) {
+        value = orderBloc.getProductData(widget.productKey)!.quantity;
+        // operator = orderBloc.getProductUnits?[widget.productKey]!.operationValue;
       } else {
-        _quantityController.text = (value).toInt().toString();
+        value = posBloc.getProductData(widget.productKey)!.quantity;
+        // operator = posBloc.getProductUnits?[widget.productKey]!.operationValue;
       }
-      // to show product unit in terms of base unit 1
-    } else {
-      // to show product unit in terms of base unit 1
-      _quantityController.text = (value).toInt().toString();
     }
+    if (query != null) {
+      if (query.endsWith('.')) {
+        _quantityController.text = query;
+      } else {
+        _quantityController.text = (value).toString();
+      }
+    } else {
+      if (value == value.toInt().toDouble()) {
+        _quantityController.text = (value).toInt().toString();
+      } else {
+        _quantityController.text = (value).toString();
+      }
+    }
+
+    printConsole(_quantityController.text);
+    // if (query == null) {
+    //   if (value.toString().endsWith('.0')) {
+    //     _quantityController.text = (value).toInt().toString();
+
+    //     // to show product unit in terms of base unit 1
+    //   } else {
+    //     // to show product unit in terms of base unit 1
+    //     _quantityController.text = (value).toString();
+    //   }
+    // }else{
+    //   _quantityController.text = (value).toString();
+    // }
 
     if (value == 1.0) {
       _quantityController.selection = TextSelection(
@@ -452,13 +517,13 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     if (widget.fromOder) {
       setState(() {
-        orderBloc.getProductData(widget.product.key)!.quantity =
-            orderBloc.getProductData(widget.product.key)!.quantity;
+        orderBloc.getProductData(widget.productKey)!.quantity =
+            orderBloc.getProductData(widget.productKey)!.quantity;
       });
     } else {
       setState(() {
-        posBloc.getProductData(widget.product.key)!.quantity =
-            posBloc.getProductData(widget.product.key)!.quantity;
+        posBloc.getProductData(widget.productKey)!.quantity =
+            posBloc.getProductData(widget.productKey)!.quantity;
       });
     }
     return Card(
@@ -467,7 +532,7 @@ class _ProductCardState extends State<ProductCard> {
           onTap: () {
             widget.quantityFocusNode.unfocus();
             ProductDetails(
-              product: widget.product.value,
+              product: product!,
             ).launch(context);
           },
           child: _productTile()),

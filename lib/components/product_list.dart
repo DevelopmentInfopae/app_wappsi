@@ -36,15 +36,16 @@ class ProductsList extends StatelessWidget {
             key: UniqueKey(),
             quantityFocusNode: FocusNode(),
             formKey: GlobalObjectKey<FormState>(k),
-            product: product,
+            productKey: product.key,
             fromOder: fromOrder,
+            requestFocus: productRequestFocus,
           );
 
           if (productList.values.elementAt(0) == product.value &&
               dataBloc.settings!['set_focus'] == 1) {
             if (productRequestFocus) {
-              FocusScope.of(context).unfocus();
-              pCard.quantityFocusNode.requestFocus();
+              // FocusScope.of(context).unfocus();
+              // pCard.quantityFocusNode.requestFocus();
             }
           } else {
             pCard.quantityFocusNode.unfocus();

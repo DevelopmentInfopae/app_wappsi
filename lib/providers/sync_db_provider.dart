@@ -68,6 +68,7 @@ class SyncDBProvider {
       {Map<String, dynamic>? selectedOption,
       bool isSpecial = false,
       bool post = true}) async {
+ 
     final res =
         await _getUpdates(selectedOption ?? options[option]!, isPost: post);
     //check if JWT is ok, if not logout
@@ -252,6 +253,7 @@ class SyncDBProvider {
       }
       return res;
     } else {
+
       final res = await update(option);
       if (res['status'] == -1) {
         await reloadDialog(

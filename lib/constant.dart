@@ -96,8 +96,8 @@ TextStyle normalTextStyle(BuildContext context,
 
 double bottomBarIconSize(BuildContext context) {
   final size = MediaQuery.of(context).size;
-  return size.height * 0.1 > 38
-      ? (size.height * 0.11 > 43 ? 43 : size.height * 0.1)
+  return size.height * 0.1 > 66
+      ? (size.height * 0.1 > 70 ? 42 : size.height * 0.0555)
       : 38;
 }
 
@@ -133,8 +133,8 @@ double bottomPadding = 20;
 
 double bottomWigetHeight(BuildContext context) {
   Size size = MediaQuery.of(context).size;
-  return size.height * 0.0806 > 66
-      ? (size.height * 0.081 > 70 ? 70 : size.height * 0.0806)
+  return size.height * 0.1 > 66
+      ? (size.height * 0.1 > 70 ? 70 : size.height * 0.1)
       : 66;
 }
 

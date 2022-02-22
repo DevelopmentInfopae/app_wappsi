@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
+import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
@@ -52,10 +54,9 @@ class ProductPriceVerifier extends StatelessWidget {
                                 .withHeight(size.height * 0.076),
                             descText(price.substring(0, price.length), context,
                                     color: pColor,
-                                    fontSizeFactor: 2.5,
                                     fweigth: 4,
                                     textStyle: numbersTextStyle(
-                                        fontSizeFactor: 2.5, color: pColor))
+                                        fontSizeFactor: 2, color: pColor))
                                 .paddingTop(4),
                             Column(
                               mainAxisSize: MainAxisSize.min,
@@ -122,7 +123,7 @@ class ProductPriceVerifier extends StatelessWidget {
                 children: [
                   descText((e['quantity'] ?? product.price).toString(), context,
                       textStyle: numbersTextStyle(
-                          color: greyDarkerColor, fontSizeFactor: 1.5)),
+                          color: greyDarkerColor, fontSizeFactor: 1.3)),
                   descText(
                     e['name'] ?? '',
                     context,
@@ -130,7 +131,7 @@ class ProductPriceVerifier extends StatelessWidget {
                     fweigth: 2,
                     maxLines: 2,
                     textAlign: TextAlign.center,
-                    color: greyDarkerColor,
+                    color: greyColor,
                   ).paddingBottom(8),
                 ],
               );
@@ -145,22 +146,23 @@ class ProductPriceVerifier extends StatelessWidget {
 
   Widget _prices(Size size) {
     return FutureBuilder<List<Map>?>(
-      future: ProductsProvider.findProductPrices(product.idCloud.toString()),
+      future: dataBloc.settings?['prioridad_precios_producto'] == 10?UnitsProvider.getProductUnitsRaw(
+                product.idCloud.toString(), ''):ProductsProvider.findProductPrices(product.idCloud.toString()),
       builder: (BuildContext context, AsyncSnapshot<List<Map>?> snapshot) {
         if (snapshot.hasData && (snapshot.data?.length ?? 0) > 0) {
           return Column(
             children: snapshot.data!.map((e) {
               final price =
-                  getFormatedCurrency((e['price'] ?? product.price) + 0.0);
+                  getFormatedCurrency((e['price']??e['valor_unitario'] ?? product.price) + 0.0);
               return Column(
                 children: [
                   descText(price.substring(0, price.length), context,
                       textStyle: numbersTextStyle(
-                          color: greyDarkerColor, fontSizeFactor: 1.55)),
-                  descText(e['name'] ?? '', context,
+                          color: greyDarkerColor, fontSizeFactor: 1.2)),
+                  descText(e['name'] ?? e['name']?? '', context,
                           fontSizeFactor: 0.9,
                           fweigth: 2,
-                          color: greyDarkerColor)
+                          color: greyColor)
                       .paddingBottom(8),
                 ],
               );

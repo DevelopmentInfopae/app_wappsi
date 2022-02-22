@@ -5,21 +5,21 @@ class GridItems {
 }
 
 List<GridItems> freeIcons = [
-  GridItems(
-    title: 'Agregar venta',
-    route: "sales",
-    icon: 'assets/images/add-to-cart.png',
-  ),
+  // GridItems(
+  //   title: 'Agregar venta',
+  //   route: "sales",
+  //   icon: 'assets/images/add-to-cart.png',
+  // ),
   GridItems(
     title: 'Agregar pedido',
     route: "orders",
     icon: 'assets/images/cargo.png',
   ),
-  GridItems(
-    title: 'Listado de ventas',
-    route: "list_sales",
-    icon: 'assets/images/shopping-list.png',
-  ),
+  // GridItems(
+  //   title: 'Listado de ventas',
+  //   route: "list_sales",
+  //   icon: 'assets/images/shopping-list.png',
+  // ),
   GridItems(
     title: 'Listado de pedidos',
     route: "list_orders",
@@ -45,11 +45,11 @@ List<GridItems> freeIcons = [
     route: "priceVerifier",
     icon: 'assets/images/give-money.png',
   ),
-  GridItems(
-    title: 'Control de caja',
-    route: "register",
-    icon: 'assets/images/cash-register.png',
-  ),
+  // GridItems(
+  //   title: 'Control de caja',
+  //   route: "register",
+  //   icon: 'assets/images/cash-register.png',
+  // ),
   GridItems(
     title: 'Sincronizar datos',
     route: "syncElements",

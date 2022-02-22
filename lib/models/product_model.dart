@@ -206,8 +206,8 @@ class ProductModel {
     return pwoutIVA;
   }
 
-  String getFormatedPriceIVA() {
-    return getFormatedCurrency(getPriceWithIVA());
+  String getFormatedPriceIVA({int? decimals}) {
+    return getFormatedCurrency(getPriceWithIVA(), decimals: decimals);
   }
 
   String getFormatedPriceNoIva() {
@@ -229,6 +229,7 @@ class ProductModel {
   double getIVA() {
     return getPriceWithIVA() - getPriceWithoutIVA();
   }
+  
 
   Map<String, dynamic> toJson() => {
         "slug": slug,
