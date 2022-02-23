@@ -262,7 +262,7 @@ class OrderSaleItemsModel {
           productUnitCode: unit?.code,
           realUnitPrice: product.pricePolicyPrices,
           unitQuantity: product.quantity / (unit?.operationValue ?? 1),
-          productUnitId: product.unit,
+          productUnitId: unit?.idCloud ?? product.unit,
           tax: product.taxRateName,
           subtotal: pIVA * product.quantity);
       orderSaleItems.add(orderSaleItem.toJson(withoutIds: true));
