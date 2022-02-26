@@ -529,7 +529,7 @@ class PrintFormat {
     final umdEmptSpcs = (umdLenght - 4) > 0 ? (umdLenght - 4) : 0;
     final header = 'Cant ' +
         getEmptySpaces(qttyEmptSpces) +
-        'UMD ' +
+        'UM ' +
         getEmptySpaces(umdEmptSpcs) +
         'Producto' +
         getEmptySpaces(chrLen - (22 + qttyEmptSpces + umdEmptSpcs)) +

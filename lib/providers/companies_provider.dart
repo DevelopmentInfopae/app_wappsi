@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
@@ -9,6 +12,7 @@ import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/providers/groups_providers.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/providers/price_groups_provider.dart';
 import 'package:pos_wappsi/providers/wishlist_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
@@ -249,6 +253,12 @@ class CompaniesProvider {
       body['user_data'] = temp;
     }
 
+    if (customerBloc.getCustomer.priceGroupId == null) {
+      final defPriceGroup = await PriceGroupsProvider.loadDefaultPriceGroup();
+      customerBloc.getCustomer.priceGroupId = defPriceGroup!.idCloud;
+      customerBloc.getCustomer.priceGroupName = defPriceGroup.name;
+    }
+
     // ignore: unnecessary_null_comparison
     if (customerBloc.getProducts() != null) {
       List<int> favorites = [];
@@ -256,6 +266,12 @@ class CompaniesProvider {
         favorites.add(value.idCloud);
       });
       body['favorites'] = favorites;
+    }
+
+    if (customerBloc.getImagePath != null) {
+      final bytes = File(customerBloc.getImagePath!).readAsBytesSync();
+      String img64 = base64Encode(bytes);
+      body['image'] = img64;
     }
 
     scaffoldAlert(context, 'Registrando cliente', const Duration(seconds: 10),

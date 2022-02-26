@@ -72,8 +72,6 @@ class _ProductCardState extends State<ProductCard> {
               final result = await posBloc.addProduct(productReq);
               // printConsole(result);
               if (result) {
-                posBloc.getSearchBarController.clear();
-                posBloc.getSearchBarController.close();
                 scaffoldAlert(
                     context,
                     "Producto ${widget.product.name} añadido",
@@ -88,6 +86,7 @@ class _ProductCardState extends State<ProductCard> {
                 showAllwaysUnitAlert: widget.showAllwaysUnitAlert);
             if (productReq != {}) {
               final result = await orderBloc.addProduct(productReq);
+
               // printConsole(result);
               if (result) {
                 scaffoldAlert(
@@ -97,6 +96,7 @@ class _ProductCardState extends State<ProductCard> {
                 // to avoid :
                 // await Future.delayed(Duration(seconds:1));
               }
+              // Navigator.pop(context);
             }
 
             // Navigator.pop(context);

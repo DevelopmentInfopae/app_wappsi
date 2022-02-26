@@ -438,7 +438,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
                     await PrintOrder(
                       printData: orderBloc.getPrintData!,
                     ).launch(context);
-                    orderBloc.reload();
+                    orderBloc.reload(disposeFirst: true);
                   });
                   setState(() {
                     _sending = false;

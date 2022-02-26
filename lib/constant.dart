@@ -9,6 +9,7 @@ const kBorderColorTextField = Color(0xFFC2C2C2);
 const kDarkWhite = Color(0xFFF1F7F7);
 const pColor = Color.fromRGBO(0, 125, 204, 1);
 const okColor = Color.fromRGBO(21, 178, 106, 1);
+const cancelColor = Color.fromRGBO(237, 50, 55, 1);
 const okColorWappsi = Color.fromRGBO(0, 176, 82, 1);
 
 const kIconSize = 19.0;
@@ -20,6 +21,7 @@ const kButtonDecoration = BoxDecoration(
 );
 
 const kButtonPadding = EdgeInsets.all(10);
+const kButtonHPadding = EdgeInsets.symmetric(horizontal: 10);
 const kIconButtonPadding = EdgeInsets.all(15);
 
 const kIconPadding = EdgeInsets.all(5);

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'dart:math';
 
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+// import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
@@ -39,9 +39,6 @@ class POSBloc {
   BehaviorSubject<int?> _paymenttermController = BehaviorSubject<int?>();
 
   BehaviorSubject<Map> _printDataController = BehaviorSubject<Map>();
-
-  BehaviorSubject<FloatingSearchBarController> _searchController =
-      BehaviorSubject<FloatingSearchBarController>();
 
   BehaviorSubject<CompanyModel?> _customerController =
       BehaviorSubject<CompanyModel?>();
@@ -203,7 +200,7 @@ class POSBloc {
           if (_productsController.value[key]!.inventory > 0) {
             _productsController.value[key]!.quantity =
                 _productsController.value[key]!.inventory.toDouble();
-    
+
             setSubTotal(getSubTotal());
           } else {
             _productsController.value.remove(key);
@@ -211,7 +208,7 @@ class POSBloc {
           }
         } else {
           _productsController.value[key]!.quantity = value;
-  
+
           setSubTotal(getSubTotal());
           res = true;
         }
@@ -523,9 +520,6 @@ class POSBloc {
 
   int? get getVerifyPrices => _verifyPricesController.valueOrNull;
 
-  FloatingSearchBarController get getSearchBarController =>
-      _searchController.value;
-
   //__________________________
   //
   //                                       SETTERS
@@ -568,8 +562,6 @@ class POSBloc {
   Function(int) get setVerifyPrices => _verifyPricesController.sink.add;
 
   Function(int) get setPaymentValue => _paymentValueController.sink.add;
-  Function(FloatingSearchBarController) get setSearchController =>
-      _searchController.sink.add;
 
   dispose() {
     isDisposed = true;
@@ -588,7 +580,7 @@ class POSBloc {
     // _settingsController.close();
     _paymentDocumentController.close();
     _printDataController.close();
-    _searchController.close();
+
     _paymenttermController.close();
     // _printStateController.close();
   }
@@ -605,7 +597,6 @@ class POSBloc {
     _paymentDocumentController = BehaviorSubject<DocumentsTypes?>();
     _paymenttermController = BehaviorSubject<int?>();
     _printDataController = BehaviorSubject<Map>();
-    _searchController = BehaviorSubject<FloatingSearchBarController>();
 
     _customerController = BehaviorSubject<CompanyModel?>();
 
@@ -626,10 +617,6 @@ class POSBloc {
     _dispatchNoteController = BehaviorSubject<String>();
 
     _productSearchController = StreamController<List<ProductModel>>.broadcast();
-  }
-
-  disposeSearchController() {
-    _searchController.value.dispose();
   }
 }
 

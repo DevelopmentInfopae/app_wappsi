@@ -3,13 +3,19 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:place_picker/entities/location_result.dart';
+import 'package:place_picker/place_picker.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+
 // import 'package:nb_utils/src/extensions/widget_extensions.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/go_back_bottom.dart';
+// import 'package:pos_wappsi/components/image_file.dart';
+import 'package:pos_wappsi/components/image_preview.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/customer_groups_model.dart';
@@ -19,6 +25,8 @@ import 'package:pos_wappsi/providers/customer_groups_provider.dart';
 import 'package:pos_wappsi/providers/price_groups_provider.dart';
 import 'package:pos_wappsi/screens/customers/add_favorites.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
+import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 
 class NewCustomerData3 extends StatefulWidget {
   const NewCustomerData3({Key? key}) : super(key: key);
@@ -85,38 +93,238 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
                 ? Container()
                 : _priceGroups().paddingSymmetric(vertical: 3),
             _customerGroups().paddingSymmetric(vertical: 3),
-            CheckboxListTile(
-              value: _adduUser,
-              title: Text('Crear usuario', style: normalTextStyle(context)),
-              secondary:
-                  const Icon(FontAwesomeIcons.userCheck, size: kIconSize),
-              onChanged: (value) {
-                setState(() {
-                  _adduUser = !_adduUser;
-                  if (!_adduUser) _addFavorites = false;
-                });
-              },
-            ),
+            _createCustomerUserCheck(),
             _adduUser ? _user() : Container(),
             _adduUser ? _password() : Container(),
-            CheckboxListTile(
-              // contentPadding:,
-              value: _addFavorites,
-              title: Text('Añadir productos favoritos',
-                  style: normalTextStyle(context)),
-              secondary: const Icon(FontAwesomeIcons.star, size: kIconSize),
-              controlAffinity: ListTileControlAffinity.platform,
-              onChanged: (value) {
-                setState(() {
-                  _addFavorites = !_addFavorites;
-
-                  _adduUser = _addFavorites;
-                });
-              },
-            ),
+            _addFavoritesCheck(),
+            _customerImage().paddingSymmetric(vertical: 3),
+            _locationSelector().paddingSymmetric(vertical: 3),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _customerImage() {
+    // String imName = '';
+    // if (customerBloc.getImagePath != null) {
+    //   final temp = customerBloc.getImagePath!.split('/');
+    //   imName = temp.last;
+    // }
+    return Row(
+      children: [
+        AppButton(
+          // color: ,
+          // width: double.infinity,
+          padding: kButtonPadding,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: customerBloc.getImagePath == null
+                ? [
+                    const Icon(
+                      Icons.add,
+                      // size: kIconSize,
+                      color: pColor,
+                    ),
+                    Text(' Seleccionar Imagen',
+                        style: buttonsSmallTextStyle(context, color: pColor)),
+                  ]
+                : [
+                    const Icon(
+                      Icons.remove_red_eye_outlined,
+                      size: kIconSize,
+                      color: pColor,
+                    ),
+                    Text(' Ver imagen seleccionada',
+                        style: buttonsSmallTextStyle(context, color: pColor)),
+                  ],
+          ),
+          onTap: () async {
+            if (customerBloc.getImagePath != null) {
+              ImagePreview(imagePath: customerBloc.getImagePath!)
+                  .launch(context);
+            } else {
+              final image = await imagePickerDialog(context);
+              if (image != null) {
+                setState(() {
+                  customerBloc.setImage(image.path);
+                });
+              }
+            }
+          },
+        ).paddingRight(10).expand(),
+        Tooltip(
+          message: 'Eliminar',
+          child: AppButton(
+            // color: greyLight,
+            enabled: customerBloc.getImagePath != null,
+            disabledColor: grey,
+            color: cancelColor,
+            width: 35,
+            child: const Icon(
+              Icons.disabled_by_default_outlined,
+              // size: kIconSize,
+              color: Colors.white,
+            ),
+            padding: kButtonPadding,
+            onTap: () async {
+              setState(() {
+                customerBloc.setImage(null);
+              });
+            },
+          ),
+        ).paddingRight(4),
+        Tooltip(
+          message: 'Editar',
+          child: AppButton(
+            // color: greyLight,
+            width: 35,
+            child: Icon(
+              (customerBloc.getImagePath == null
+                  ? Icons.add_a_photo_outlined
+                  : Icons.edit_outlined),
+              // size: kIconSize,
+              color: pColor,
+            ),
+            padding: kButtonPadding,
+            onTap: () async {
+              final image = await imagePickerDialog(context);
+              if (image != null) {
+                setState(() {
+                  customerBloc.setImage(image.path);
+                });
+              }
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _locationSelector() {
+    return Row(
+      children: [
+        AppButton(
+          // color: ,
+          // width: double.infinity,
+          padding: kButtonPadding,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Icon(
+                customerBloc.getLocation != null
+                    ? Icons.location_on_outlined
+                    : Icons.add_location_outlined,
+                size: kIconSize,
+                color: pColor,
+              ),
+              Text(
+                  customerBloc.getLocation != null
+                      ? ' Ver '
+                      : ' Añadir localización',
+                  style: buttonsSmallTextStyle(context, color: pColor)),
+            ],
+          ),
+          onTap: () async {
+            if (customerBloc.getLocation != null) {
+              LocationResult? result = await _getLocation();
+              printConsole(result);
+            } else {
+              LocationResult? result = await _getLocation();
+
+              // Handle the result in your way
+              printConsole(result);
+            }
+          },
+        ).paddingRight(10).expand(),
+        Tooltip(
+          message: 'Eliminar',
+          child: AppButton(
+            // color: greyLight,
+            enabled: customerBloc.getLocation != null,
+            color: cancelColor,
+            disabledColor: grey,
+            width: 35,
+            child: const Icon(
+              Icons.disabled_by_default_outlined,
+              // size: kIconSize,
+              color: Colors.white,
+            ),
+            padding: kButtonPadding,
+            onTap: () async {
+              setState(() {
+                customerBloc.setImage(null);
+              });
+            },
+          ),
+        ).paddingRight(4),
+        Tooltip(
+          message: 'Selecionar localización',
+          child: AppButton(
+            // color: greyLight,
+            width: 35,
+            child: Icon(
+              customerBloc.getLocation != null
+                  ? Icons.edit_location_alt_outlined
+                  : Icons.add_location_alt_outlined,
+              // size: kIconSize,
+              color: pColor,
+            ),
+            padding: kButtonPadding,
+            onTap: () async {
+              if (customerBloc.getLocation != null) {
+                LocationResult? result = await _getLocation();
+                printConsole(result);
+              } else {
+                LocationResult? result = await _getLocation();
+                // Handle the result in your way
+                printConsole(result);
+              }
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<LocationResult?> _getLocation() async {
+    LocationResult? result = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => PlacePicker(
+              "YOUR API KEY",
+              displayLocation: customerBloc.getLocation?.latLng,
+            )));
+    return result;
+  }
+
+  CheckboxListTile _createCustomerUserCheck() {
+    return CheckboxListTile(
+      value: _adduUser,
+      title: Text('Crear usuario', style: normalTextStyle(context)),
+      secondary: const Icon(FontAwesomeIcons.userCheck, size: kIconSize),
+      onChanged: (value) {
+        setState(() {
+          _adduUser = !_adduUser;
+          if (!_adduUser) _addFavorites = false;
+        });
+      },
+    );
+  }
+
+  CheckboxListTile _addFavoritesCheck() {
+    return CheckboxListTile(
+      // contentPadding:,
+      value: _addFavorites,
+      title:
+          Text('Añadir productos favoritos', style: normalTextStyle(context)),
+      secondary: const Icon(FontAwesomeIcons.star, size: kIconSize),
+      controlAffinity: ListTileControlAffinity.platform,
+      onChanged: (value) {
+        setState(() {
+          _addFavorites = !_addFavorites;
+
+          _adduUser = _addFavorites;
+        });
+      },
     );
   }
 
@@ -128,13 +336,13 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
         AppButton(
           child: Row(
             children: [
+              Text('Siguiente',
+                  style: buttonsSmallTextStyle(context, color: pColor)),
               const Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: kIconSize,
                 color: pColor,
               ),
-              Text('Siguiente',
-                  style: buttonsSmallTextStyle(context, color: pColor)),
             ],
           ),
           enabled: !_loading,
@@ -201,6 +409,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
       validator: (item) {
         if (item == null) return "Campo requerido";
       },
+
       maxHeight: _size.width * 0.9,
       dialogMaxWidth: _size.width * 0.8,
       isFilteredOnline: true,

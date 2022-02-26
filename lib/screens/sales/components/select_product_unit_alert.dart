@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/components/input_decoration.dart';
 // ignore: implementation_imports
 // import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/constant.dart';
@@ -24,16 +25,16 @@ class SelectProductUnitDialog extends StatefulWidget {
 }
 
 class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
-  late FocusNode _valueFocus;
+  final _valueController = TextEditingController();
 
   int _selection = 0;
 
-  int qtty = 1;
+  double qtty = 1;
 
   @override
   void initState() {
+    _valueController.text = qtty.toString();
     super.initState();
-    _valueFocus = FocusNode();
     if (widget.units.length == 1) {
       _selection = widget.units.first.idCloud;
     }
@@ -43,7 +44,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
   void dispose() {
     super.dispose();
 
-    _valueFocus.dispose();
+    _valueController.dispose();
   }
 
   @override
@@ -60,11 +61,11 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
             style: normalTextStyle(context, fontSizeFactor: 1.1),
           ).paddingTop(8)
         ],
-      ).paddingBottom(10),
+      ),
       content: Column(
         children: [
-          SingleChildScrollView(child: _select(context)),
-          qttyControl(context).paddingTop(4),
+          qttyControl(context).paddingTop(8),
+          _select(context),
         ],
       ),
       actions: <Widget>[
@@ -95,7 +96,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                 Navigator.of(context).pop({
                   "unit":
                       widget.units.where((u) => u.idCloud == _selection).first,
-                  "quantity": qtty
+                  "quantity": qtty == 0 ? 1.0 : qtty
                 });
               }
               // return widget.product;
@@ -109,23 +110,41 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
   Widget qttyControl(BuildContext context) {
     return Column(
       children: [
-        Text(
-          'Unidad U.M seleccionada:',
-          style: buttonsSmallTextStyle(context),
-        ).paddingSymmetric(vertical: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _rmQty(),
             Container(
-              padding: kButtonPadding,
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
-              child: Text(
-                qtty.toString(),
-                style: buttonsSmallTextStyle(context),
-              ),
-            ),
+                height: 40,
+                width: 55,
+                // padding: kButtonPadding,
+                decoration: BoxDecoration(
+                    // color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.grey,
+                        blurRadius: 2.0,
+                        spreadRadius: 0.0, // shadow direction: bottom right
+                      )
+                    ]),
+                child: Material(
+                  color: Colors.transparent,
+                  child: AppTextField(
+                    onChanged: (value) {
+                      if (isNumeric(value)) {
+                        qtty = double.tryParse(value) ?? 1.0;
+                      }
+                    },
+                    enabled: _selection != 0,
+                    controller: _valueController,
+                    textStyle: buttonsSmallTextStyle(context),
+                    textFieldType: TextFieldType.PHONE,
+                    textAlign: TextAlign.center,
+                    decoration:
+                        InputDecorations.noBorders(hintText: '', labelText: ''),
+                  ),
+                )),
             _addQty()
           ],
         ),
@@ -137,48 +156,34 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
     // final _textTheme = Theme.of(context).textTheme;
     return Material(
       color: Colors.transparent,
-      child: SingleChildScrollView(
-        child: Column(
-          children: widget.units.map((UnitsModel u) {
-            return AppButton(
-              onTap: () {
-                setState(() {
-                  _selection = u.idCloud;
-                });
-              },
-              color: greyLight,
-              shapeBorder: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  side: BorderSide(
-                      color: u.idCloud == _selection ? pColor : Colors.white,
-                      width: 3)),
-              padding: EdgeInsets.zero,
-              child: ListTile(
-                title: Row(
-                  children: [
-                    Text(
-                      u.name,
-                      maxLines: 2,
-                    ).expand(),
-                    unitValue(u),
-
-                    // Checkbox(
-                    //   checkColor: Colors.white,
-                    //   activeColor: pColor,
-                    //   value: u.idCloud == _selection,
-                    //   shape: CircleBorder(),
-                    //   onChanged: (bool? value) {
-                    //     setState(() {
-                    //       _selection = u.idCloud;
-                    //     });
-                    //   },
-                    // ).flexible(flex: 1)
-                  ],
-                ),
+      child: Column(
+        children: widget.units.map((UnitsModel u) {
+          return AppButton(
+            onTap: () {
+              setState(() {
+                _selection = u.idCloud;
+              });
+            },
+            color: greyLight,
+            shapeBorder: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+                side: BorderSide(
+                    color: u.idCloud == _selection ? pColor : Colors.white,
+                    width: 3)),
+            padding: EdgeInsets.zero,
+            child: ListTile(
+              title: Row(
+                children: [
+                  Text(
+                    u.name,
+                    maxLines: 2,
+                  ).expand(),
+                  unitValue(u),
+                ],
               ),
-            ).paddingSymmetric(vertical: 4);
-          }).toList(),
-        ),
+            ),
+          ).paddingSymmetric(vertical: 2);
+        }).toList(),
       ),
     );
   }
@@ -207,6 +212,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
           setState(() {
             qtty = qtty - 1;
           });
+          _valueController.text = qtty.toString();
         }
       },
       child: const Icon(
@@ -230,6 +236,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
         setState(() {
           qtty = qtty + 1;
         });
+        _valueController.text = qtty.toString();
       },
       child: const Icon(
         Icons.add,

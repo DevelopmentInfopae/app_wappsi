@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/image_file.dart';
+import 'package:pos_wappsi/components/image_preview.dart';
 import 'package:pos_wappsi/config/host_params.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/utils/local_storage/local_files.dart';
@@ -207,7 +208,17 @@ Widget customerPhoto(String img, {fit = BoxFit.contain}) {
       future: initSavetoPath(img, 'images/customers', url),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          return imageFile(snapshot.data, fit: fit);
+          return AppButton(
+            child: imageFile(snapshot.data, fit: fit),
+            elevation: 0,
+            padding: EdgeInsets.zero,
+            onTap: () {
+              ImagePreview(
+                imagePath: snapshot.data,
+                isFileImage: true,
+              ).launch(context);
+            },
+          );
         } else {
           return Image.asset(
             'assets/images/no_image.png',
@@ -230,7 +241,17 @@ Widget productPhoto(String img) {
       future: initSavetoPath(img, 'images/products', url),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          return imageFile(snapshot.data);
+          return AppButton(
+            elevation: 0,
+            child: imageFile(snapshot.data),
+            width: 10,
+            padding: EdgeInsets.zero,
+            onTap: () {
+              if (snapshot.data != null) {
+                ImagePreview(imagePath: snapshot.data!).launch(context);
+              }
+            },
+          );
         } else {
           return Image.asset('assets/images/no_image.png');
         }

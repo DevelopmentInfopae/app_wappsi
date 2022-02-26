@@ -111,7 +111,10 @@ class _PrintOrderState extends State<PrintOrder> {
                   .withWidth(_size.width * 0.75)
                   .paddingSymmetric(horizontal: 10),
               emptyLine(),
-              products(widget.printData).withWidth(_size.width * 0.75),
+              products(widget.printData,
+                      pricePolicy:
+                          dataBloc.settings!['prioridad_precios_producto'])
+                  .withWidth(_size.width * 0.75),
               emptyLine(),
               emptyLine(),
               taxRatesValues(textTheme, widget.printData)

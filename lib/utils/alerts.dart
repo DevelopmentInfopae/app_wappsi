@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
@@ -85,6 +87,92 @@ confirmDialog(BuildContext context, String msg, String img) async {
           ],
         );
       });
+}
+
+///Shows a popUp alert dialog to take or select image
+Future<XFile?> imagePickerDialog(BuildContext context) async {
+  XFile? image;
+  final _picker = ImagePicker();
+  return await showCupertinoDialog<XFile?>(
+      barrierDismissible: true,
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              'Selecciona la forma en la que deseas cargar la imagen',
+            ),
+          ),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Tooltip(
+                message: 'Tomar foto',
+                child: AppButton(
+                  padding: kButtonPadding,
+                  width: 30,
+                  child: const Icon(
+                    Icons.add_a_photo_outlined,
+                    size: kIconSize + 25,
+                    color: pColor,
+                  ),
+                  onTap: () async {
+                    image = await _picker.pickImage(
+                      source: ImageSource.camera,
+                      maxWidth: dataBloc.settings?['iwidth'] != null
+                          ? (dataBloc.settings!['iwidth'] + 0.0)
+                          : null,
+                      maxHeight: dataBloc.settings?['iheight'] != null
+                          ? (dataBloc.settings!['iheight'] + 0.0)
+                          : null,
+                    );
+                  },
+                ),
+              ),
+              Tooltip(
+                message: 'Elegir de galería',
+                child: AppButton(
+                  width: 30,
+                  padding: kButtonPadding,
+                  child: const Icon(
+                    Icons.image_search_rounded,
+                    size: kIconSize + 25,
+                    color: pColor,
+                  ),
+                  onTap: () async {
+                    image = await _picker.pickImage(
+                      source: ImageSource.gallery,
+                      maxWidth: dataBloc.settings?['iwidth'] != null
+                          ? (dataBloc.settings!['iwidth'] * 1)
+                          : null,
+                      maxHeight: dataBloc.settings?['iheight'] != null
+                          ? (dataBloc.settings!['iheight'] * 1)
+                          : null,
+                    );
+                  },
+                ),
+              )
+            ],
+          ),
+          actions: <Widget>[
+            Container(
+              color: pColor.withOpacity(0.7),
+              child: CupertinoDialogAction(
+                child: const Text(
+                  'Aceptar',
+                  style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(image);
+                },
+              ),
+            ),
+          ],
+        );
+      });
+  // return image;
 }
 
 reloadDialog(BuildContext context, String msg, String img) async {

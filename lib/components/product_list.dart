@@ -41,13 +41,8 @@ class ProductsList extends StatelessWidget {
             requestFocus: productRequestFocus,
           );
 
-          if (productList.values.elementAt(0) == product.value &&
-              dataBloc.settings!['set_focus'] == 1) {
-            if (productRequestFocus) {
-              // FocusScope.of(context).unfocus();
-              // pCard.quantityFocusNode.requestFocus();
-            }
-          } else {
+          if (!(productList.values.first == product.value &&
+              dataBloc.settings!['set_focus'] == 1)) {
             pCard.quantityFocusNode.unfocus();
           }
 

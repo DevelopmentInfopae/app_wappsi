@@ -233,6 +233,7 @@ class _OrderProductsState extends State<OrderProducts> {
             stream: orderBloc.productsStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
+                _searchController.close();
                 if (orderBloc.getItemsCount() == 0) {
                   _searchBarFocusManagement();
                   _productsCount = 0;

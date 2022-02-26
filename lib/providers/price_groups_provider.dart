@@ -12,6 +12,16 @@ class PriceGroupsProvider {
     }
   }
 
+  /// Load price group given a country id
+  static Future<PriceGroupsModel?> loadDefaultPriceGroup() async {
+    final res = await loadDefPriceGroupFromDB();
+    if (res == null) {
+      return null;
+    } else {
+      return PriceGroupsModel.fromJson(res);
+    }
+  }
+
   static Future<List<PriceGroupsModel>> loadFromDB({String? search}) async {
     List<Map<String, dynamic>>? data = [];
     if (search == null || search == '') {
@@ -42,6 +52,12 @@ class PriceGroupsProvider {
   static Future<Map<String, dynamic>?> loadPriceGroupFromDB(String id) async {
     return await DBProvider.db
         .sqlFirstQuery('sma_price_groups', where: 'id_cloud = $id');
+  }
+
+  /// Return all rows in sma_states
+  static Future<Map<String, dynamic>?> loadDefPriceGroupFromDB() async {
+    return await DBProvider.db
+        .sqlFirstQuery('sma_price_groups', where: 'price_group_base =1');
   }
 
   /// Return a list with price_groups data wich fields name or percent LIKE

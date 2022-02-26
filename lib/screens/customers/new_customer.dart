@@ -306,13 +306,13 @@ class _NewCustomerState extends State<NewCustomer> {
         AppButton(
           child: Row(
             children: [
+              Text('Siguiente',
+                  style: buttonsSmallTextStyle(context, color: pColor)),
               const Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: kIconSize,
                 color: pColor,
               ),
-              Text('Siguiente',
-                  style: buttonsSmallTextStyle(context, color: pColor)),
             ],
           ),
           enabled: !_loading,

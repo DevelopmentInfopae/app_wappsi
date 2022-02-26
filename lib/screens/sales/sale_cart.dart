@@ -41,10 +41,11 @@ class _SaleCartState extends State<SaleCart> {
 
   late Size _size;
   int _queryLen = 0;
+  final _searchController = FloatingSearchBarController();
 
   // TO control changes in products and execute focus task
   int _productsCount = 0;
-  int _itemsCount = 0;
+  // int _itemsCount = 0;
 
   @override
   void initState() {
@@ -53,7 +54,7 @@ class _SaleCartState extends State<SaleCart> {
 
   @override
   void dispose() {
-    posBloc.disposeSearchController();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -63,7 +64,6 @@ class _SaleCartState extends State<SaleCart> {
     // _textTheme = Theme.of(context).textTheme;
 
     // initialize search controller
-    posBloc.setSearchController(FloatingSearchBarController());
     return Scaffold(
         appBar: appBar(context, 'Venta POS',
             elevation: false,
@@ -78,10 +78,10 @@ class _SaleCartState extends State<SaleCart> {
         _searchHeight(),
         _searchField().paddingOnly(left: 5, right: 5, top: 1),
         barCode(context, () async {
-          posBloc.getSearchBarController.open();
+          _searchController.open();
           final res = await scanBarcodeNormal();
-          posBloc.getSearchBarController.query = res ?? '';
-          // posBloc.getSearchBarController.hide();
+          _searchController.query = res ?? '';
+          // _searchController.hide();
         }),
       ],
     );
@@ -105,7 +105,7 @@ class _SaleCartState extends State<SaleCart> {
     return FloatingSearchBar(
       clearQueryOnClose: true,
       onFocusChanged: (value) {
-        FocusScope.of(context).unfocus();
+        // FocusScope.of(context).unfocus();
       },
       axisAlignment: -1,
       elevation: 0,
@@ -127,17 +127,18 @@ class _SaleCartState extends State<SaleCart> {
       // leadingActions: _leadingActions,
       hintStyle: buttonsSmallTextStyle(context),
       automaticallyImplyBackButton: false,
-      controller: posBloc.getSearchBarController,
+      controller: _searchController,
       body: _body(),
       onSubmitted: (_) {
-        posBloc.getSearchBarController.close();
+        _searchController.close();
       },
       backgroundColor: Colors.grey[200],
       backdropColor: Colors.white30,
       transitionCurve: Curves.easeInOutCubic,
       transition: CircularFloatingSearchBarTransition(),
       physics: const BouncingScrollPhysics(),
-      builder: (context, _) => buildBody(stream: posBloc.productSearchStream),
+      builder: (context, _) =>
+          buildBody(stream: posBloc.productSearchStream, action: 'add_to_cart'),
       title: Text(
         'Buscar producto',
         style: buttonsSmallTextStyle(context),
@@ -165,17 +166,18 @@ class _SaleCartState extends State<SaleCart> {
             stream: posBloc.productsStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
+                _searchController.close();
+
                 if (posBloc.getItemsCount() == 0) {
                   _searchBarFocusManagement();
                   _productsCount = 0;
-                  _itemsCount = 0;
+                  // _itemsCount = 0;
                   return _empty(context).center();
                 } else {
                   _productsCount += 1;
-                  _itemsCount += 1;
+                  // _itemsCount += 1;
                   bool productRequestFocus = false;
-                  if (_productsCount == snapshot.data!.length ||
-                      _itemsCount == posBloc.getItemsCount()) {
+                  if (_productsCount == snapshot.data!.length) {
                     if (_scrollController.hasClients) {
                       _scrollController
                           .jumpTo(_scrollController.position.minScrollExtent);
@@ -188,7 +190,7 @@ class _SaleCartState extends State<SaleCart> {
                   } else {
                     // _searchBarFocusManagement();
                     _productsCount = snapshot.data!.length;
-                    _itemsCount = posBloc.getItemsCount();
+                    // _itemsCount = posBloc.getItemsCount();
                   }
                   Map<String, ProductModel> saleProductsList = snapshot.data!;
                   return ProductsList(
@@ -207,19 +209,21 @@ class _SaleCartState extends State<SaleCart> {
   _searchBarFocusManagement() {
     if (dataBloc.settings!['set_focus'] == 0) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
-        // posBloc.getSearchBarController.close();
-        if (posBloc.getSearchBarController.isOpen) {
-          posBloc.getSearchBarController.query = '';
+        // _searchController.close();
+        if (_searchController.isOpen) {
+          _searchController.query = '';
         } else {
-          posBloc.getSearchBarController.open();
+          _searchController.open();
         }
       });
       return false;
     } else if (dataBloc.settings!['set_focus'] == 1) {
       if ((posBloc.getProducts ?? {}).isEmpty) {
-        return true;
+        return false;
       } else {
-        posBloc.getSearchBarController.close();
+        if (_searchController.isOpen) {
+          _searchController.close();
+        }
         return true;
       }
     }
@@ -243,7 +247,7 @@ class _SaleCartState extends State<SaleCart> {
       ),
       color: pColor,
       onTap: () {
-        posBloc.getSearchBarController.open();
+        _searchController.open();
       },
     );
   }
@@ -291,7 +295,7 @@ class _SaleCartState extends State<SaleCart> {
       width: 10,
       onTap: () async {
         if ((posBloc.getProducts?.length ?? 0) > 0) {
-          posBloc.getSearchBarController.close();
+          _searchController.close();
           await showCupertinoDialog(
               barrierDismissible: true,
               context: context,
@@ -301,7 +305,7 @@ class _SaleCartState extends State<SaleCart> {
               });
           // check if empty products then reload view
           if (posBloc.getProducts == {} || posBloc.getProducts == null) {
-            posBloc.getSearchBarController.close();
+            _searchController.close();
             WidgetsBinding.instance!.addPostFrameCallback((_) async {
               Navigator.pushAndRemoveUntil(
                 context,
@@ -334,11 +338,11 @@ class _SaleCartState extends State<SaleCart> {
     if (res != null) {
       if (res.isEmpty) {
         if ((query.length - _queryLen > 1)) {
-          posBloc.getSearchBarController.clear();
+          _searchController.clear();
           scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
               const Duration(seconds: 1, milliseconds: 500),
               backGroundColor: Colors.red);
-          // posBloc.getSearchBarController.query='';
+          // _searchController.query='';
           _queryLen = 0;
         } else {
           _queryLen = query.length;

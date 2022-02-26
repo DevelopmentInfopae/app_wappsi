@@ -1,6 +1,6 @@
 // ignore: import_of_legacy_library_into_null_safe
 
-import 'package:auto_size_text_pk/auto_size_text_pk.dart';
+// import 'package:auto_size_text_pk/auto_size_text_pk.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
@@ -15,7 +15,7 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/screens/home/components/grid_items.dart';
 import 'package:pos_wappsi/screens/home/components/home_grid.dart';
-import 'package:pos_wappsi/utils/text_formating/functions.dart';
+// import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -69,11 +69,9 @@ class _HomeScreenState extends State<HomeScreen> {
             (dataBloc.getBillerCompany != null
                 ? _companyNameLogo(dataBloc.getBillerCompany!)
                 : _futureCompNameLogo()),
-
             _notifications()
           ],
-        ).paddingSymmetric(horizontal: 8)
-           ,
+        ).paddingSymmetric(horizontal: 8),
         _size);
   }
 
@@ -93,21 +91,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _companyNameLogo(CompanyModel company) {
     return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(width: 50,),
-          billerThumbNail(company.logo ?? '')
-              .paddingOnly(top: 5,bottom: 8,right: 2, left: 8)
-             ,
-          // AutoSizeText(
-          //   capitalizeText(company.company ??company.name ??  ''),
-          //   style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w900,color: greyDarkerColor),
-          //   maxLines: 1,
-          //   // overflow: TextOverflow.fade,
-          // ).flexible(flex: 3),
-        ],
-      ).withWidth(_size.width * 0.8);
-    
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(
+          width: 50,
+        ),
+        billerThumbNail(company.logo ?? '')
+            .paddingOnly(top: 5, bottom: 8, right: 2, left: 8),
+        // AutoSizeText(
+        //   capitalizeText(company.company ??company.name ??  ''),
+        //   style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w900,color: greyDarkerColor),
+        //   maxLines: 1,
+        //   // overflow: TextOverflow.fade,
+        // ).flexible(flex: 3),
+      ],
+    ).withWidth(_size.width * 0.8);
   }
 
   // show notification icon and shows notification's page
@@ -119,7 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
           // NotificationScreen().launch(context);
         },
         borderSideColor: Colors.white,
-        widget: Icon(FontAwesomeIcons.bell,size: leadingIconSize, color: pColor));
+        widget:
+            Icon(FontAwesomeIcons.bell, size: leadingIconSize, color: pColor));
     // return AppButton(
     //     padding: EdgeInsets.zero,
     //     elevation: 0,
@@ -149,10 +148,8 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: Text(
         'Menú principal',
-        style: Theme.of(context)
-            .textTheme
-            .headline6
-            ?.apply(fontWeightDelta: 5, fontSizeFactor: 1.1, color: greyDarkerColor),
+        style: Theme.of(context).textTheme.headline6?.apply(
+            fontWeightDelta: 5, fontSizeFactor: 1.1, color: greyDarkerColor),
       ),
     );
   }
