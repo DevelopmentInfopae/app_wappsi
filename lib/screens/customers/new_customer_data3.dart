@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:place_picker/entities/location_result.dart';
-import 'package:place_picker/place_picker.dart';
+// import 'package:place_picker/entities/location_result.dart';
+// import 'package:place_picker/place_picker.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 
@@ -98,7 +98,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
             _adduUser ? _password() : Container(),
             _addFavoritesCheck(),
             _customerImage().paddingSymmetric(vertical: 3),
-            _locationSelector().paddingSymmetric(vertical: 3),
+            // _locationSelector().paddingSymmetric(vertical: 3),
           ],
         ),
       ),
@@ -201,100 +201,100 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
     );
   }
 
-  Widget _locationSelector() {
-    return Row(
-      children: [
-        AppButton(
-          // color: ,
-          // width: double.infinity,
-          padding: kButtonPadding,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Icon(
-                customerBloc.getLocation != null
-                    ? Icons.location_on_outlined
-                    : Icons.add_location_outlined,
-                size: kIconSize,
-                color: pColor,
-              ),
-              Text(
-                  customerBloc.getLocation != null
-                      ? ' Ver '
-                      : ' Añadir localización',
-                  style: buttonsSmallTextStyle(context, color: pColor)),
-            ],
-          ),
-          onTap: () async {
-            if (customerBloc.getLocation != null) {
-              LocationResult? result = await _getLocation();
-              printConsole(result);
-            } else {
-              LocationResult? result = await _getLocation();
+  // Widget _locationSelector() {
+  //   return Row(
+  //     children: [
+  //       AppButton(
+  //         // color: ,
+  //         // width: double.infinity,
+  //         padding: kButtonPadding,
+  //         child: Row(
+  //           mainAxisAlignment: MainAxisAlignment.start,
+  //           children: [
+  //             Icon(
+  //               customerBloc.getLocation != null
+  //                   ? Icons.location_on_outlined
+  //                   : Icons.add_location_outlined,
+  //               size: kIconSize,
+  //               color: pColor,
+  //             ),
+  //             Text(
+  //                 customerBloc.getLocation != null
+  //                     ? ' Ver '
+  //                     : ' Añadir localización',
+  //                 style: buttonsSmallTextStyle(context, color: pColor)),
+  //           ],
+  //         ),
+  //         onTap: () async {
+  //           if (customerBloc.getLocation != null) {
+  //             // LocationResult? result = await _getLocation();
+  //             // printConsole(result);
+  //           } else {
+  //             // LocationResult? result = await _getLocation();
 
-              // Handle the result in your way
-              printConsole(result);
-            }
-          },
-        ).paddingRight(10).expand(),
-        Tooltip(
-          message: 'Eliminar',
-          child: AppButton(
-            // color: greyLight,
-            enabled: customerBloc.getLocation != null,
-            color: cancelColor,
-            disabledColor: grey,
-            width: 35,
-            child: const Icon(
-              Icons.disabled_by_default_outlined,
-              // size: kIconSize,
-              color: Colors.white,
-            ),
-            padding: kButtonPadding,
-            onTap: () async {
-              setState(() {
-                customerBloc.setImage(null);
-              });
-            },
-          ),
-        ).paddingRight(4),
-        Tooltip(
-          message: 'Selecionar localización',
-          child: AppButton(
-            // color: greyLight,
-            width: 35,
-            child: Icon(
-              customerBloc.getLocation != null
-                  ? Icons.edit_location_alt_outlined
-                  : Icons.add_location_alt_outlined,
-              // size: kIconSize,
-              color: pColor,
-            ),
-            padding: kButtonPadding,
-            onTap: () async {
-              if (customerBloc.getLocation != null) {
-                LocationResult? result = await _getLocation();
-                printConsole(result);
-              } else {
-                LocationResult? result = await _getLocation();
-                // Handle the result in your way
-                printConsole(result);
-              }
-            },
-          ),
-        ),
-      ],
-    );
-  }
+  //             // Handle the result in your way
+  //             // printConsole(result);
+  //           }
+  //         },
+  //       ).paddingRight(10).expand(),
+  //       Tooltip(
+  //         message: 'Eliminar',
+  //         child: AppButton(
+  //           // color: greyLight,
+  //           enabled: customerBloc.getLocation != null,
+  //           color: cancelColor,
+  //           disabledColor: grey,
+  //           width: 35,
+  //           child: const Icon(
+  //             Icons.disabled_by_default_outlined,
+  //             // size: kIconSize,
+  //             color: Colors.white,
+  //           ),
+  //           padding: kButtonPadding,
+  //           onTap: () async {
+  //             setState(() {
+  //               customerBloc.setImage(null);
+  //             });
+  //           },
+  //         ),
+  //       ).paddingRight(4),
+  //       Tooltip(
+  //         message: 'Selecionar localización',
+  //         child: AppButton(
+  //           // color: greyLight,
+  //           width: 35,
+  //           child: Icon(
+  //             customerBloc.getLocation != null
+  //                 ? Icons.edit_location_alt_outlined
+  //                 : Icons.add_location_alt_outlined,
+  //             // size: kIconSize,
+  //             color: pColor,
+  //           ),
+  //           padding: kButtonPadding,
+  //           onTap: () async {
+  //             if (customerBloc.getLocation != null) {
+  //               // LocationResult? result = await _getLocation();
+  //               // printConsole(result);
+  //             } else {
+  //               // LocationResult? result = await _getLocation();
+  //               // Handle the result in your way
+  //               // printConsole(result);
+  //             }
+  //           },
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
-  Future<LocationResult?> _getLocation() async {
-    LocationResult? result = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => PlacePicker(
-              "YOUR API KEY",
-              displayLocation: customerBloc.getLocation?.latLng,
-            )));
-    return result;
-  }
+  // Future<LocationResult?> _getLocation() async {
+  //   LocationResult? result = await Navigator.of(context).push(MaterialPageRoute(
+  // //       builder: (context) => PlacePicker(
+  //             "YOUR API KEY",
+  //             displayLocation: customerBloc.getLocation?.latLng,
+  //           )));
+  //   return result;
+  // }
 
   CheckboxListTile _createCustomerUserCheck() {
     return CheckboxListTile(

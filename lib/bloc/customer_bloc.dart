@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 // ignore: unused_import
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
-import 'package:place_picker/entities/location_result.dart';
+// import 'package:place_picker/entities/location_result.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 
@@ -20,7 +20,7 @@ class CustomerBloc {
   final _userNameController = BehaviorSubject<String?>();
   final _passwordController = BehaviorSubject<String?>();
   final _imageController = BehaviorSubject<String?>();
-  final _locationController = BehaviorSubject<LocationResult?>();
+  // final _locationController = BehaviorSubject<LocationResult?>();
 
   //-----------------------------------------------------------------------------
   //                                Streams
@@ -81,9 +81,9 @@ class CustomerBloc {
     return _imageController.valueOrNull;
   }
 
-  LocationResult? get getLocation {
-    return _locationController.valueOrNull;
-  }
+  // LocationResult? get getLocation {
+  //   return _locationController.valueOrNull;
+  // }
 
   Map<String, ProductModel>? getProducts() {
     return _favoritesController.valueOrNull;
@@ -96,7 +96,7 @@ class CustomerBloc {
 
   Function(String) get setUserName => _userNameController.sink.add;
   Function(String?) get setImage => _imageController.sink.add;
-  Function(LocationResult?) get setLocation => _locationController.sink.add;
+  // Function(LocationResult?) get setLocation => _locationController.sink.add;
   Function(String) get setPassword => _passwordController.sink.add;
 
   dispose() {
@@ -105,7 +105,7 @@ class CustomerBloc {
     _passwordController.close();
     _favoritesController.close();
     _imageController.close();
-    _locationController.close();
+    // _locationController.close();
   }
 
   clear() {
@@ -114,7 +114,7 @@ class CustomerBloc {
     _passwordController.value = null;
     _favoritesController.value = {};
     _imageController.value = null;
-    _locationController.value = null;
+    // _locationController.value = null;
   }
 }
 
