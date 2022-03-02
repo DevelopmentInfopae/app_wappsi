@@ -5,6 +5,7 @@ import 'package:pos_wappsi/components/input_decoration.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 Widget descRichText(String label, String? desc, BuildContext context,
@@ -35,7 +36,9 @@ Widget descText(String? desc, BuildContext context,
     TextAlign? textAlign,
     TextStyle? textStyle}) {
   textStyle ??= buttonsTextStyle(context,
-      fontSizeFactor: fontSizeFactor, color: color??greyColor, fontWeightDelta: fweigth);
+      fontSizeFactor: fontSizeFactor,
+      color: color ?? greyColor,
+      fontWeightDelta: fweigth);
   return Text(
     // ignore: unnecessary_null_comparison
     capitalizeText(desc ?? ''),
@@ -102,7 +105,7 @@ Widget customerDesc(BuildContext context, CompanyModel customer) {
       children: [
         // SizedBox(height: 8,),
         descText(customer.company ?? customer.name, context,
-                maxLines: 2, fontSizeFactor: 1.1, fweigth: 10)
+                maxLines: 2, fontSizeFactor: 1.1, fweigth: 2)
             .paddingSymmetric(vertical: 1),
         descText(customer.name, context, fontSizeFactor: 0.75)
             .paddingSymmetric(vertical: 1),
@@ -111,6 +114,39 @@ Widget customerDesc(BuildContext context, CompanyModel customer) {
             .paddingSymmetric(vertical: 1),
         descRichText('Telefono : ', customer.phone, context,
                 fontW: 2, fontsizeF: 0.75)
+            .paddingSymmetric(vertical: 1),
+      ],
+    ).paddingRight(6),
+  );
+}
+
+Widget addressDesc(BuildContext context, CompanyModel customer,
+    CustomerAddressesModel address) {
+  String stateCity = '';
+  if (address.state != null) {
+    stateCity = address.state! + ' - ';
+  }
+  if (address.city != null) {
+    stateCity = address.city!;
+  }
+  return Padding(
+    padding: const EdgeInsets.only(top: 5, bottom: 5, right: 5, left: 5),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // SizedBox(height: 8,),
+        descText(address.sucursal, context,
+                maxLines: 2,
+                fontSizeFactor: 1.1,
+                fweigth: 2,
+                color: greyDarkerColor)
+            .paddingSymmetric(vertical: 1),
+        descText(customer.name, context, fontSizeFactor: 0.75)
+            .paddingSymmetric(vertical: 1),
+        descText(address.direccion, context, fontSizeFactor: 0.75)
+            .paddingSymmetric(vertical: 1),
+        descText(stateCity, context, fontSizeFactor: 0.75)
             .paddingSymmetric(vertical: 1),
       ],
     ).paddingRight(6),

@@ -223,6 +223,7 @@ class CompaniesProvider {
       printConsole(e);
       return null;
     }
+    return null;
   }
 
   /// Return all data in sma_customer_groups of a given id
@@ -243,6 +244,11 @@ class CompaniesProvider {
       customerBloc.getCustomer.groupId = customerGroup.idCloud.toString();
       customerBloc.getCustomer.groupName = customerGroup.name;
     }
+    if (customerBloc.getCustomer.priceGroupId == null) {
+      final defPriceGroup = await PriceGroupsProvider.loadDefaultPriceGroup();
+      customerBloc.getCustomer.priceGroupId = defPriceGroup!.idCloud;
+      customerBloc.getCustomer.priceGroupName = defPriceGroup.name;
+    }
 
     final body = customerBloc.getCustomer.customerToJson();
 
@@ -251,12 +257,6 @@ class CompaniesProvider {
       temp['username'] = customerBloc.getUserName;
       temp['password'] = encodePass(customerBloc.getPassword!);
       body['user_data'] = temp;
-    }
-
-    if (customerBloc.getCustomer.priceGroupId == null) {
-      final defPriceGroup = await PriceGroupsProvider.loadDefaultPriceGroup();
-      customerBloc.getCustomer.priceGroupId = defPriceGroup!.idCloud;
-      customerBloc.getCustomer.priceGroupName = defPriceGroup.name;
     }
 
     // ignore: unnecessary_null_comparison
@@ -272,6 +272,9 @@ class CompaniesProvider {
       final bytes = File(customerBloc.getImagePath!).readAsBytesSync();
       String img64 = base64Encode(bytes);
       body['image'] = img64;
+    }
+    if (customerBloc.getLocation != null) {
+      body['geo_location'] = customerBloc.getLocation!.toMap();
     }
 
     scaffoldAlert(context, 'Registrando cliente', const Duration(seconds: 10),

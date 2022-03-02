@@ -147,6 +147,7 @@ class _NewCustomerState extends State<NewCustomer> {
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
         if (item == null) return "Campo requerido";
+        return null;
       },
       maxHeight: _size.width * 0.9,
       dialogMaxWidth: _size.width * 0.8,
@@ -373,6 +374,7 @@ class _NewCustomerState extends State<NewCustomer> {
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
         if (item == null) return "Campo requerido";
+        return null;
       },
       maxHeight: _size.width * 0.9,
       dialogMaxWidth: _size.width * 0.8,

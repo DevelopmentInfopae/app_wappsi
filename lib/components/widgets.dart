@@ -230,6 +230,49 @@ Widget customerPhoto(String img, {fit = BoxFit.contain}) {
   );
 }
 
+Widget addressPhoto(String img, {fit = BoxFit.contain}) {
+  String url;
+  if (img == '') {
+    img = defaultCustomersImage;
+    url = dataBloc.userData!.hostUrl +
+        dataBloc.userData!.companyFolder +
+        defaultImgDir +
+        defaultCustomersImage;
+  } else {
+    url = dataBloc.userData!.hostUrl +
+        dataBloc.userData!.companyFolder +
+        avatarsImgDir +
+        img;
+  }
+
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+    child: FutureBuilder(
+      future: initSavetoPath(img, 'images/customers', url),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          return AppButton(
+            child: imageFile(snapshot.data, fit: fit),
+            elevation: 0,
+            padding: EdgeInsets.zero,
+            onTap: () {
+              ImagePreview(
+                imagePath: snapshot.data,
+                isFileImage: true,
+              ).launch(context);
+            },
+          );
+        } else {
+          return Image.asset(
+            'assets/images/no_image.png',
+            fit: fit,
+          );
+        }
+      },
+    ),
+  );
+}
+
 Widget productPhoto(String img) {
   final url = dataBloc.userData!.hostUrl +
       dataBloc.userData!.companyFolder +

@@ -215,6 +215,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
         if (item == null) return "Campo requerido";
+        return null;
       },
       // key: _documentTypeKey,
       maxHeight: _size.width * 0.9,
@@ -298,6 +299,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
             return 'El valor suministrado no es valido';
           }
         }
+        return null;
       },
       // textStyle: const TextStyle(fontSize: 20),
       onChanged: (value) {

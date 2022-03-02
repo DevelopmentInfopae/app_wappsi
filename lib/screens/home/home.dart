@@ -32,6 +32,8 @@ class HomeState extends State<Home> {
 
   int _bottomIndex = 1;
 
+  bool resizeToAvoidBottomInset = true;
+
   bool syncing = false;
 
   @override
@@ -70,6 +72,7 @@ class HomeState extends State<Home> {
         return _close;
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: resizeToAvoidBottomInset,
         body: Stack(children: <Widget>[
           _buildOffstageNavigator(TabItem.home),
           _buildOffstageNavigator(TabItem.products),
@@ -157,6 +160,13 @@ class HomeState extends State<Home> {
   void changeBottomIndex(int index) {
     setState(() {
       _bottomIndex = index;
+    });
+  }
+
+  /// Change resizeToAvoidBottomInset
+  void changeResizeToAvoidBottomInset({bool value = true}) {
+    setState(() {
+      resizeToAvoidBottomInset = value;
     });
   }
 

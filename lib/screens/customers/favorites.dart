@@ -189,7 +189,9 @@ class _ListFavoritesState extends State<ListFavorites> {
         ],
       ),
       color: pColor,
-      onTap: () async {},
+      onTap: () async {
+        await _reload(context);
+      },
     );
   }
 

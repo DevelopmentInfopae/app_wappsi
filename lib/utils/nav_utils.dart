@@ -10,6 +10,14 @@ void goHomeAndEmptyCustomerBloc(BuildContext context) {
   );
 }
 
+void goHome(BuildContext context) {
+  Navigator.pushNamedAndRemoveUntil(
+    context,
+    '/',
+    (route) => false,
+  );
+}
+
 void gobackTwoTimes(BuildContext context) {
   Navigator.pop(context);
   Navigator.pop(context);

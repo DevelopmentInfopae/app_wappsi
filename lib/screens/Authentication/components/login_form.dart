@@ -58,6 +58,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
         if (value!.length < 6) {
           return "La contraseña debe tener minimo 6 caracteres";
         }
+        return null;
       },
       onChanged: (value) {
         loginForm.passsword = value;
@@ -90,6 +91,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
         if (value!.isEmpty) {
           return "Debe suministrar un nombre de usuario";
         }
+        return null;
       },
       onChanged: (value) {
         loginForm.user = value;
@@ -114,7 +116,9 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
             ),
             // to change color based on _isloading property
             color: loginForm.loading ? Colors.grey : pColor),
-        onPressed: loginForm.loading ? (){} : ()async=>await _login(loginForm, context));
+        onPressed: loginForm.loading
+            ? () {}
+            : () async => await _login(loginForm, context));
   }
 
   _login(LoginFormProvider loginForm, BuildContext context,

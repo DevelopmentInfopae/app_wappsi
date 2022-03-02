@@ -1,8 +1,16 @@
+import 'package:flutter/material.dart';
+import 'package:pos_wappsi/bloc/customer_bloc.dart';
+import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/config/endpoints.dart';
+import 'package:pos_wappsi/models/companies_model.dart';
 // import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
+import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/nav_utils.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
 class CustomerAddressesProvider {
@@ -126,6 +134,16 @@ class CustomerAddressesProvider {
     return [];
   }
 
+  /// Write customer and his address created locally into local DB with ids comming from cloud
+  /// DB
+  static Future<bool> writeAddressOnDB(Map<String, dynamic> body) async {
+    bool dbUpdated = false;
+
+    dbUpdated = await DBProvider.db.insertQuery('sma_addresses', body);
+
+    return dbUpdated;
+  }
+
   //-----------------------------------------------------------------------------
   //                              CUSTOMER ADDRESSES
   //
@@ -162,5 +180,75 @@ class CustomerAddressesProvider {
       String customerId) async {
     return await DBProvider.db
         .sqlQuery('sma_addresses', where: "company_id = $customerId");
+  }
+
+  static createAddress(BuildContext context, CompanyModel customer) async {
+    final apiProvider = DataProvider();
+
+    customerBloc.getAddress.customerGroupId = customer.customerGroupId!;
+    customerBloc.getAddress.customerGroupName = customer.customerGroupName!;
+    customerBloc.getAddress.companyId = customer.idCloud!;
+    customerBloc.getAddress.vatNo = customer.vatNo ?? '';
+    customerBloc.getAddress.customerAddressSellerIdAssigned =
+        customer.customerSellerIdAssigned!;
+    customerBloc.getAddress.priceGroupId = customer.priceGroupId!;
+    customerBloc.getAddress.priceGroupName = customer.priceGroupName!;
+
+    final customerAddresses =
+        await CustomerAddressesProvider.findCustomerAddresses(
+            '', customer.idCloud!);
+    String nAddress = '';
+    if (customerAddresses.isNotEmpty) {
+      final addLen = customerAddresses.length;
+      if (addLen >= 9) {
+        nAddress = (addLen + 1).toString();
+      } else {
+        nAddress = '0' + (addLen + 1).toString();
+      }
+    }
+
+    customerBloc.getAddress.code = (customer.vatNo ?? '') + '-' + nAddress;
+
+    final body = customerBloc.getAddress.toJson();
+
+    scaffoldAlert(context, 'Creando sucursal', const Duration(seconds: 10),
+        key: UniqueKey());
+    final res = await apiProvider.postPetition(
+        addAddressEnd, body, dataBloc.getHeaders());
+
+    hideCurrentScaffoldAlert(context);
+    if (res['status'] == -1) {
+      await reloadDialog(
+          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+    } else if (res['error']) {
+      confirmDialog(
+          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+    } else {
+      // update local DB with company info
+      body['id_cloud'] = res['body']['address_id'];
+      bool dbUpdated = await CustomerAddressesProvider.writeAddressOnDB(body);
+
+      // if fails we force DB sync
+      if (!dbUpdated) {
+        customerBloc.clearAdressCreationData();
+        // goHome(context);
+        Navigator.pop(context);
+        Navigator.pop(context);
+        // DBSyncElements(
+        //   options: {'Terceros': true, 'Sucursales': true},
+        // ).launch(context);
+        await dataBloc.syncElements(['Sucursales'], context);
+        confirmDialog(
+            context, res['body']['message'], 'assets/images/success.png');
+      } else {
+        customerBloc.clearAdressCreationData();
+        goHome(context);
+        // dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
+        confirmDialog(
+            context, res['body']['message'], 'assets/images/success.png');
+      }
+
+      // Navigator.pop(context);
+    }
   }
 }

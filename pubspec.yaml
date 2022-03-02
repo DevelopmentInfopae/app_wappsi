@@ -34,14 +34,14 @@ dependencies:
   dio: ^4.0.4
   material_floating_search_bar: ^0.3.4
   nb_utils: ^4.3.0+5
-  provider: ^6.0.1
+  provider: ^6.0.2
   rxdart:
   flutter_svg: 0.22.0
   restart_app: ^1.1.0
   font_awesome_flutter:
   encrypt:
   # flutter_secure_storage: ^4.2.1
-  path_provider: ^2.0.8
+  path_provider: ^2.0.9
   sqflite: ^2.0.2
   intl:
   blue_thermal_printer: ^1.2.0
@@ -54,6 +54,7 @@ dependencies:
   badges: ^2.0.2
   image_picker: ^0.8.4+9
   photo_view: ^0.13.0
+  flutter_osm_plugin: ^0.31.0
   # place_picker: 0.9.20-nullsafety
   # whatsapp_unilink: ^2.0.1+1
   # liquid_progress_indicator: ^0.4.0

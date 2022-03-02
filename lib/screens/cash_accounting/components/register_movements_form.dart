@@ -107,6 +107,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
         if (item == null) return "Campo requerido";
+        return null;
       },
       // maxHeight: _size.height * 0.9,
 
@@ -191,6 +192,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
         if (item == null) return "Campo requerido";
+        return null;
       },
 
       maxHeight: _size.width * 0.9,
@@ -251,6 +253,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
         if (item == null) return "Campo requerido";
+        return null;
       },
       // key: _paymentDestiny,
       enabled: _destinyPaymentStatus,
@@ -317,6 +320,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
         if (item == null) return "Campo requerido";
+        return null;
       },
       // key: _documentTypeKey,
       maxHeight: _size.width * 0.9,

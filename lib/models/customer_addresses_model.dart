@@ -14,47 +14,80 @@ String customerAddressesModelToJson(CustomerAddressesModel data) =>
     json.encode(data.toJson());
 
 class CustomerAddressesModel {
-  CustomerAddressesModel({
-    required this.id,
-    required this.idCloud,
-    required this.companyId,
-    required this.sucursal,
-    required this.direccion,
-    required this.country,
-    required this.state,
-    required this.city,
-    required this.priceGroupId,
-    required this.customerGroupId,
-    required this.vatNo,
-    required this.code,
-  });
+  CustomerAddressesModel(
+      {required this.id,
+      required this.idCloud,
+      required this.companyId,
+      required this.sucursal,
+      required this.direccion,
+      this.country,
+      this.state,
+      this.email,
+      this.customerAddressSellerIdAssigned,
+      this.phone,
+      this.line1,
+      this.line2,
+      this.postalCode,
+      this.city,
+      required this.priceGroupId,
+      required this.customerGroupId,
+      required this.vatNo,
+      this.geoLocation,
+      this.cityCode,
+      this.customerGroupName,
+      this.priceGroupName,
+      this.code});
   String id;
   int idCloud;
-  String sucursal;
+  String? sucursal;
   String companyId;
   String? country;
   String? state;
+  String? email;
+  String? customerAddressSellerIdAssigned;
+  String? phone;
+  Map? geoLocation;
   String? direccion;
   String? city;
   String? vatNo;
 
   String? code;
-  String customerGroupId;
+  String? line1;
+  String? postalCode;
+  String? line2;
+  String? cityCode;
+  String? customerGroupId;
+  String? customerGroupName;
+  String? priceGroupName;
   String priceGroupId;
 
   factory CustomerAddressesModel.fromJson(Map<dynamic, dynamic> json) =>
       CustomerAddressesModel(
         id: json["id"].toString(),
         idCloud: json["id_cloud"],
+        customerAddressSellerIdAssigned:
+            (json["customer_address_seller_id_assigned"] ?? '').toString(),
         sucursal: json["sucursal"] ?? '',
         companyId: json["companyId"] ?? '',
-        country: json["tipo_documento"].toString(),
-        state: json['vat_no'].toString(),
+        country: json["country"].toString(),
+        state: json['state'].toString(),
+        email: json['email'].toString(),
+        phone: json['phone'].toString(),
+        priceGroupName: json['price_group_name'].toString(),
         direccion: json["direccion"] ?? '',
+        geoLocation:
+            (json["geo_location"] != null && json["geo_location"] != '')
+                ? jsonDecode(json["geo_location"] ?? "")
+                : null,
         city: json["city"] ?? '',
-        vatNo: json["invoice_footer"] ?? '',
-        code: json["group_id"].toString(),
+        line1: json["line1"] ?? '',
+        line2: json["line2"] ?? '',
+        postalCode: json["postal_code"] ?? '',
+        vatNo: json["vat_no"] ?? '',
+        code: json["code"].toString(),
+        cityCode: json["city_code"].toString(),
         customerGroupId: json["customer_group_id"].toString(),
+        customerGroupName: json["customer_group_name"].toString(),
         priceGroupId: json["price_group_id"].toString(),
       );
 
@@ -81,13 +114,23 @@ class CustomerAddressesModel {
         "country": country,
         "state": state,
         "direccion": direccion,
+        "geo_location": jsonEncode(geoLocation),
         "city": city,
         "vat_no": vatNo,
+        "email": email,
+        "phone": phone,
         "code": code,
+        "city_code": cityCode,
         "customer_group_id": customerGroupId,
+        "customer_group_name": customerGroupName,
+        "price_group_name": priceGroupName,
         "price_group_id": priceGroupId,
+        "postal_code": postalCode,
+        "line1": line1,
+        "line2": line2,
+        "customer_address_seller_id_assigned": customerAddressSellerIdAssigned
       };
 
   @override
-  String toString() => capitalizeText(sucursal);
+  String toString() => capitalizeText(sucursal ?? '');
 }

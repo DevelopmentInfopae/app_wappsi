@@ -260,15 +260,6 @@ class _ProductCardState extends State<ProductCard> {
             }
           }
         },
-        validator: (value) {
-          // if (value!.isNotEmpty) {
-          //   return isNumeric(value) ? null : 'El valor ingresado no es valido';
-          // } else {
-          //   // setState(() {
-          //   //   posBloc.getProductData(widget.productKey)!.quantity = 1;
-          //   // });
-          // }
-        },
       ),
     );
   }

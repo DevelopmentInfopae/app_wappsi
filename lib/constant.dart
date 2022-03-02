@@ -44,11 +44,17 @@ const kInputDecoration = InputDecoration(
   ),
 );
 
-OutlineInputBorder outlineInputBorder() {
+OutlineInputBorder outlineInputBorder({double radius = 5}) {
   return OutlineInputBorder(
-    borderRadius: BorderRadius.circular(5.0),
+    borderRadius: BorderRadius.circular(radius),
     borderSide: const BorderSide(color: kBorderColorTextField),
   );
+}
+
+double appBarHeight(Size size) {
+  return size.height * 0.1 > 75
+      ? (size.height * 0.11 > 85 ? 85 : size.height * 0.1)
+      : 75;
 }
 
 OutlineInputBorder outlineFocusedInputBorder() {
@@ -128,7 +134,7 @@ Color greyMediumLight = Colors.grey[200]!;
 Color blueTextColor = const Color.fromRGBO(0, 124, 209, 1);
 
 /// Color darker to subtitles
-Color greyDarkerColor = Colors.grey[850]!;
+Color greyDarkerColor = Colors.grey[800]!;
 
 /// Default padding for bottom widget
 double bottomPadding = 20;

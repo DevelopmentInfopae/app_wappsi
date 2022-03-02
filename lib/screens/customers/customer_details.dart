@@ -4,11 +4,11 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/go_back_bottom.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/screens/customers/adresses_list.dart';
 
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/favorites.dart';
@@ -49,7 +49,8 @@ class _CustomerDetailsState extends State<CustomerDetails> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const GoBackBottom(),
+                // const GoBackBottom(),
+                _addresses(context),
                 _favorites(context),
               ],
             ),
@@ -76,6 +77,30 @@ class _CustomerDetailsState extends State<CustomerDetails> {
           const Icon(FontAwesomeIcons.star, size: kIconSize, color: pColor),
           Text(
             ' Favoritos',
+            style: buttonsSmallTextStyle(context, color: pColor),
+          ),
+        ],
+      ),
+    );
+  }
+
+  AppButton _addresses(BuildContext context) {
+    return AppButton(
+      onTap: () async {
+        // await dataBloc.refreshToken(context);
+        ListAddresses(customer: widget.customer).launch(context);
+      },
+      color: Colors.white,
+      padding: kButtonPadding,
+      // disabledColor: Colors.white,
+
+      margin: EdgeInsets.zero,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(FontAwesomeIcons.building, size: kIconSize, color: pColor),
+          Text(
+            ' Sucursales',
             style: buttonsSmallTextStyle(context, color: pColor),
           ),
         ],

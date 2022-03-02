@@ -1,52 +1,45 @@
 // ignore_for_file: implementation_imports, unused_field
-
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:nb_utils/nb_utils.dart';
-// ignore: unnecessary_import
-import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/go_back_bottom.dart';
+import 'package:pos_wappsi/components/location/location_picker.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/constant.dart';
-// import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/cities_model.dart';
+import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/countries_dart.dart';
+import 'package:pos_wappsi/models/documentypes_model.dart';
 import 'package:pos_wappsi/models/states_model.dart';
 import 'package:pos_wappsi/providers/cities_provider.dart';
 import 'package:pos_wappsi/providers/countries_provider.dart';
+import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
 import 'package:pos_wappsi/providers/states_provider.dart';
-import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
-import 'package:pos_wappsi/screens/customers/new_customer_data3.dart';
-import 'package:pos_wappsi/utils/text_formating/functions.dart';
-import 'package:pos_wappsi/utils/validation_encoding/reg_exp.dart';
 
-class NewCustomerData2 extends StatefulWidget {
-  const NewCustomerData2({Key? key}) : super(key: key);
+import '../../utils/text_formating/functions.dart';
+// import 'package:pos_wappsi/utils/alerts.dart';
 
+class NewAddress extends StatefulWidget {
+  const NewAddress({Key? key, required this.customer}) : super(key: key);
+  final CompanyModel customer;
   @override
-  _NewCustomerData2State createState() => _NewCustomerData2State();
+  _NewAddressState createState() => _NewAddressState();
 }
 
-class _NewCustomerData2State extends State<NewCustomerData2> {
+class _NewAddressState extends State<NewAddress> {
   late Size _size;
   late Color _pc;
 
-  TextEditingController personTypeypeController = TextEditingController();
-  final _statesDropDownKey = GlobalKey<DropdownSearchState<StatesModel?>>();
-  final _citiesDropDownKey = GlobalKey<DropdownSearchState<CitiesModel?>>();
-
-  final FocusNode _e = FocusNode();
-  final FocusNode _p = FocusNode();
-  final FocusNode _d = FocusNode();
-
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _documentNController = TextEditingController();
+  final TextEditingController _direccionController = TextEditingController();
+  final TextEditingController _sucursalController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   CountriesModel? _country;
   StatesModel? _states;
@@ -56,29 +49,45 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
 
-  final bool _loading = false;
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _statesDropDownKey = GlobalKey<DropdownSearchState<StatesModel?>>();
+  final _citiesDropDownKey = GlobalKey<DropdownSearchState<CitiesModel?>>();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  final FocusNode _direccionFocus = FocusNode();
+  final FocusNode _sucursalFocus = FocusNode();
+  final FocusNode _phoneFocus = FocusNode();
+  final FocusNode _emailFocus = FocusNode();
+
+  GeoPoint? geoLoc;
+
+  DocumentypeModel? _doc;
+
+  bool _loading = false;
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
-    customerBloc.getCustomer.tipoRegimen ??= regimenT["1"]!.value.toString();
-    customerBloc.getCustomer.typePerson ??= personT["1"]!.value.toString();
-
-    _addressController.text = customerBloc.getCustomer.address ?? '';
-    _emailController.text = customerBloc.getCustomer.email ?? '';
-    _phoneController.text = customerBloc.getCustomer.phone ?? '';
+    _sucursalController.text = customerBloc.getAddress.sucursal ?? '';
+    _direccionController.text = customerBloc.getAddress.direccion ?? '';
+    _emailController.text = customerBloc.getAddress.email ?? '';
+    _phoneController.text = customerBloc.getAddress.phone ?? '';
     super.initState();
   }
 
   @override
   void dispose() {
-    personTypeypeController.dispose();
-    _countryController.dispose();
-    _stateController.dispose();
-    _cityController.dispose();
+    _direccionFocus.dispose();
+    _sucursalFocus.dispose();
+    _phoneFocus.dispose();
+    _emailFocus.dispose();
+
+    _direccionController.dispose();
+    _sucursalController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _documentNController.dispose();
 
     super.dispose();
   }
@@ -91,13 +100,17 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   }
 
   PreferredSize _appBar() {
-    return appBar(context, 'Crear cliente POS',
-        image: 'assets/images/add-user.png');
+    return appBar(
+      context,
+      'Crear sucursal',
+      back: true,
+      image: 'assets/images/add-location.png',
+    );
   }
 
   Widget _body() {
     return Column(
-      children: [_form().expand(), bottom(_sendNewCustomer(), _pc, _size)],
+      children: [_form().expand(), bottom(_customerConfig(), _pc, _size)],
     );
   }
 
@@ -105,64 +118,39 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
       child: Form(
+        // autovalidateMode: AutovalidateMode.onUserInteraction,
         key: _formKey,
         child: ListView(
           children: [
-            _regimenTypeDropdown().paddingSymmetric(vertical: 3),
-            _countries().paddingSymmetric(vertical: 3),
-            _state().paddingSymmetric(vertical: 3),
-            _cities().paddingSymmetric(vertical: 3),
-            _address().paddingSymmetric(vertical: 3),
-            _email().paddingSymmetric(vertical: 3),
-            _phone().paddingSymmetric(vertical: 3),
-            // _direction().paddingSymmetric(vertical: 3)
+            _countries().withHeight(75).paddingSymmetric(vertical: 2),
+            _state().withHeight(75).paddingSymmetric(vertical: 2),
+            _cities().withHeight(75).paddingSymmetric(vertical: 2),
+            _locationSelector().paddingSymmetric(vertical: 4),
+            _sucursal(),
+            _direccion(),
+            Row(
+              children: [
+                _email().flexible(flex: 2),
+                _phone().flexible(flex: 1),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _sendNewCustomer() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        const GoBackBottom(),
-        AppButton(
-          child: Row(
-            children: [
-              Text('Siguiente',
-                  style: buttonsSmallTextStyle(context, color: pColor)),
-              const Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: kIconSize,
-                color: pColor,
-              ),
-            ],
-          ),
-          enabled: !_loading,
-          onTap: () async {
-            if (_formKey.currentState!.validate()) {
-              await const NewCustomerData3().launch(context);
-            }
-          },
-          color: Colors.white,
-          padding: kButtonPadding,
-          disabledColor: _pc,
-        ),
-      ],
-    );
-  }
-
   Widget _countries() {
     return FutureBuilder<CountriesModel?>(
       // load country if already defined in customerdata, if not load default country
-      future: customerBloc.getCustomer.country == null
-          ? CountriesProvider.defaultCountry()
-          : CountriesProvider.loadCountry(customerBloc.getCustomer.country!),
+      future: customerBloc.getAddress.country != null
+          ? CountriesProvider.loadCountry(customerBloc.getAddress.country!)
+          : CountriesProvider.defaultCountry(),
+
       builder: (BuildContext context, AsyncSnapshot<CountriesModel?> snapshot) {
         if (snapshot.hasData && _country == null) {
           _country = snapshot.data;
-          customerBloc.getCustomer.country = snapshot.data!.nombre;
+          customerBloc.getAddress.country ??= snapshot.data!.nombre;
           return _countriesDropdown();
         } else {
           return _countriesDropdown();
@@ -174,13 +162,13 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   Widget _state() {
     return FutureBuilder<StatesModel?>(
       //load state if already defined in customer data, if not load default state
-      future: customerBloc.getCustomer.state == null
-          ? StatesProvider.defaultState()
-          : StatesProvider.loadState(customerBloc.getCustomer.state!),
+      future: customerBloc.getAddress.state != null
+          ? StatesProvider.loadState(customerBloc.getAddress.state!)
+          : StatesProvider.defaultState(),
       builder: (BuildContext context, AsyncSnapshot<StatesModel?> snapshot) {
         if (snapshot.hasData && _states == null && _country != null) {
           _states = snapshot.data;
-          customerBloc.getCustomer.state = snapshot.data!.departamento;
+          customerBloc.getAddress.state ??= snapshot.data!.departamento;
           return _statesDropdown();
         } else {
           return _statesDropdown();
@@ -192,17 +180,18 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   Widget _cities() {
     return FutureBuilder<CitiesModel?>(
       //load city if already defined in customer data, if not load default city
-      future: customerBloc.getCustomer.city == null
-          ? CitiesProvider.defaultCity()
-          : CitiesProvider.loadCity(customerBloc.getCustomer.city!),
+      future: customerBloc.getAddress.city != null
+          ? CitiesProvider.loadCity(customerBloc.getAddress.city!)
+          : CitiesProvider.defaultCity(),
       builder: (BuildContext context, AsyncSnapshot<CitiesModel?> snapshot) {
         if (snapshot.hasData &&
             _citys == null &&
             _states != null &&
             _country != null) {
           _citys = snapshot.data;
-          customerBloc.getCustomer.city = snapshot.data!.descripcion;
-          customerBloc.getCustomer.cityCode = snapshot.data!.codigo;
+          customerBloc.getAddress.city ??= snapshot.data!.descripcion;
+          customerBloc.getAddress.cityCode ??= snapshot.data!.codigo;
+
           return _citiesDropdown();
         } else {
           return _citiesDropdown();
@@ -211,42 +200,97 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
     );
   }
 
-  Widget _regimenTypeDropdown() {
-    return DropdownSearch<DropdDownSItem>(
-      mode: Mode.BOTTOM_SHEET,
-      validator: (item) {
-        if (item == null) return "Campo requerido";
-        return null;
-      },
-
-      maxHeight: _size.width * 0.9,
-      dialogMaxWidth: _size.width * 0.8,
-      isFilteredOnline: true,
-      showClearButton: true,
-      showSelectedItems: true,
-      compareFn: (item, selectedItem) => item?.name == selectedItem?.name,
-      items: regimenT.values.toList(),
-      selectedItem: regimenT[customerBloc.getCustomer.tipoRegimen ?? "1"],
-      // selectedItem: _doc,
-      dropdownSearchDecoration: InputDecoration(
-        labelText: 'Tipo de regimen :',
-        labelStyle: TextStyle(color: _pc),
-        filled: true,
-        fillColor: Theme.of(context).inputDecorationTheme.fillColor,
-      ),
-
-      autoValidateMode: AutovalidateMode.onUserInteraction,
-
-      onChanged: (data) async {
-        customerBloc.getCustomer.tipoRegimen = data?.value.toString();
-      },
-      // selectedItem: posBloc.getCustomer,
-      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
-      scrollbarProps: ScrollbarProps(
-        isAlwaysShown: true,
-        thickness: 7,
-      ),
+  Widget _locationSelector() {
+    return Row(
+      children: [
+        AppButton(
+          // color: ,
+          // width: double.infinity,
+          padding: kButtonPadding,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Icon(
+                customerBloc.getAddress.geoLocation != null
+                    ? Icons.location_on_outlined
+                    : Icons.add_location_outlined,
+                size: kIconSize,
+                color: pColor,
+              ),
+              Text(
+                  customerBloc.getAddress.geoLocation != null
+                      ? 'Lat:' +
+                          roundDouble(
+                                  customerBloc.getAddress.geoLocation!['lon'],
+                                  3)
+                              .toString() +
+                          ', Lon:' +
+                          roundDouble(
+                                  customerBloc.getAddress.geoLocation!['lon'],
+                                  3)
+                              .toString()
+                      : ' Añadir localización',
+                  style: buttonsSmallTextStyle(context, color: pColor)),
+            ],
+          ),
+          onTap: () async {
+            await _getLocation();
+          },
+        ).paddingRight(10).expand(),
+        Tooltip(
+          message: 'Eliminar',
+          child: AppButton(
+            // color: greyLight,
+            enabled: customerBloc.getAddress.geoLocation != null,
+            color: cancelColor,
+            disabledColor: grey,
+            width: 35,
+            child: const Icon(
+              Icons.disabled_by_default_outlined,
+              // size: kIconSize,
+              color: Colors.white,
+            ),
+            padding: kButtonPadding,
+            onTap: () async {
+              setState(() {
+                customerBloc.getAddress.geoLocation = null;
+              });
+            },
+          ),
+        ).paddingRight(4),
+        Tooltip(
+          message: 'Selecionar localización',
+          child: AppButton(
+            // color: greyLight,
+            width: 35,
+            child: Icon(
+              customerBloc.getAddress.geoLocation != null
+                  ? Icons.edit_location_alt_outlined
+                  : Icons.add_location_alt_outlined,
+              // size: kIconSize,
+              color: pColor,
+            ),
+            padding: kButtonPadding,
+            onTap: () async {
+              await _getLocation();
+            },
+          ),
+        ),
+      ],
     );
+  }
+
+  Future<void> _getLocation() async {
+    GeoPoint? result = await SearchLocationPage(
+      geoLoc: customerBloc.getAddress.geoLocation != null
+          ? GeoPoint.fromMap(customerBloc.getAddress.geoLocation!)
+          : null,
+    ).launch(context);
+    if (result != null) {
+      setState(() {
+        customerBloc.getAddress.geoLocation = result.toMap();
+      });
+    }
   }
 
   Widget _countriesDropdown() {
@@ -290,16 +334,15 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       onFind: (String? filter) => CountriesProvider.loadFromDB(search: filter),
       onChanged: (data) async {
         if (data != null) {
-          _country = data;
-
           _statesDropDownKey.currentState?.changeSelectedItem(null);
           await Future.delayed(const Duration(milliseconds: 500));
           _statesDropDownKey.currentState?.openDropDownSearch();
         } else {
-          _country = data;
+          customerBloc.getAddress.state = null;
           _statesDropDownKey.currentState?.changeSelectedItem(null);
         }
-        customerBloc.getCustomer.country = data?.nombre;
+        _country = data;
+        customerBloc.getAddress.country = _country?.nombre;
       },
       // selectedItem: posBloc.getCustomer,
       popupItemBuilder: _customPopupCountriesItemBuilder,
@@ -377,16 +420,16 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
           StatesProvider.loadFromDB(search: filter, country: _country?.codigo),
       onChanged: (data) async {
         if (data != null) {
-          _states = data;
-
           _citiesDropDownKey.currentState?.changeSelectedItem(null);
           await Future.delayed(const Duration(milliseconds: 500));
           _citiesDropDownKey.currentState?.openDropDownSearch();
         } else {
-          _states = data;
+          customerBloc.getAddress.city = null;
           _citiesDropDownKey.currentState?.changeSelectedItem(null);
         }
-        customerBloc.getCustomer.state = data?.departamento;
+        _states = data;
+
+        customerBloc.getAddress.state = _states?.departamento;
       },
       // selectedItem: posBloc.getCustomer,
       popupItemBuilder: _customPopupStatesItemBuilder,
@@ -463,10 +506,10 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onFind: (String? filter) => CitiesProvider.loadFromDB(
           search: filter, departament: _states?.coddepartamento),
-      onChanged: (data) async {
+      onChanged: (data) {
         _citys = data;
-        customerBloc.getCustomer.city = data?.descripcion;
-        customerBloc.getCustomer.cityCode = data?.codigo;
+        customerBloc.getAddress.city = _citys?.descripcion;
+        customerBloc.getAddress.cityCode = _citys?.codigo;
       },
       // selectedItem: posBloc.getCustomer,
       popupItemBuilder: _customPopupCitysItemBuilder,
@@ -497,48 +540,104 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
     );
   }
 
-  Widget _email() {
-    return textFormField(context, 'Correo electrónico', (value) {
-      customerBloc.getCustomer.email = value;
+  Widget _direccion() {
+    return textFormField(context, 'Dirección', (value) {
+      customerBloc.getAddress.direccion = value;
     }, (String? value) {
-      if (!emailRegex.hasMatch(value ?? '') && (value?.length ?? 0) > 0) {
-        return 'Correo electrónico no valido';
+      if (value == null || value == '') {
+        return 'El campo es necesario';
       }
     }, () {
-      _p.requestFocus();
-    }, focus: _e, controller: _emailController)
-        .paddingSymmetric(vertical: 5);
+      _emailFocus.requestFocus();
+    }, focus: _direccionFocus, controller: _direccionController)
+        .paddingSymmetric(vertical: 4);
+  }
+
+  Widget _sucursal() {
+    return textFormField(context, 'Nombre de sucursal', (value) {
+      customerBloc.getAddress.sucursal = value;
+    }, (value) {
+      if (value == null || value == '') {
+        _direccionFocus.requestFocus();
+        return 'El campo es necesario';
+      }
+    }, () {
+      _direccionFocus.requestFocus();
+    }, focus: _sucursalFocus, controller: _sucursalController)
+        .paddingSymmetric(vertical: 4);
   }
 
   Widget _phone() {
-    return textFormField(context, 'Telefono', (value) {
-      customerBloc.getCustomer.phone = value;
-    }, (String? value) {
-      if (!isNumeric(value ?? '') && (value?.length ?? 0) > 0) {
-        return 'Telefono no valido';
-      }
-    }, () async {
-      if (_formKey.currentState!.validate()) {
-        await const NewCustomerData3().launch(context);
-      }
-    }, focus: _p, controller: _phoneController, keyBType: TextInputType.phone)
-        .paddingSymmetric(vertical: 5);
-  }
-
-  Widget _address() {
     return textFormField(
             context,
-            'Dirección',
+            'Telefono',
             (value) {
-              customerBloc.getCustomer.address = value;
+              customerBloc.getAddress.phone = value;
             },
             (String? value) {},
             () {
-              final _currentFocus = FocusScope.of(context);
-              _currentFocus.unfocus();
+              // _phoneFocus.requestFocus();
             },
-            focus: _d,
-            controller: _addressController)
-        .paddingSymmetric(vertical: 5);
+            focus: _phoneFocus,
+            controller: _phoneController,
+            keyBType: TextInputType.number)
+        .paddingSymmetric(vertical: 4, horizontal: 2);
+  }
+
+  Widget _email() {
+    return textFormField(
+            context,
+            'Email',
+            (value) {
+              customerBloc.getAddress.email = value;
+            },
+            (value) {},
+            () {
+              _phoneFocus.requestFocus();
+            },
+            focus: _emailFocus,
+            controller: _emailController,
+            keyBType: TextInputType.emailAddress)
+        .paddingSymmetric(vertical: 4, horizontal: 2);
+  }
+
+  Widget _customerConfig() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        const GoBackBottom(),
+        AppButton(
+          child: Row(
+            children: [
+              const Icon(
+                Icons.add,
+                size: kIconSize,
+                color: pColor,
+              ),
+              Text(' Crear',
+                  style: buttonsSmallTextStyle(context, color: pColor)),
+            ],
+          ),
+          enabled: !_loading,
+          onTap: _loading
+              ? null
+              : () async {
+                  setState(() {
+                    _loading = true;
+                  });
+                  if (_formKey.currentState?.validate() ?? false) {
+                    await CustomerAddressesProvider.createAddress(
+                        context, widget.customer);
+                  }
+                  setState(() {
+                    _loading = true;
+                  });
+                },
+          color: Colors.white,
+          padding: kButtonPadding,
+          disabledColor: _pc,
+        ),
+      ],
+    );
   }
 }

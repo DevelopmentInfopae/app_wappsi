@@ -1,10 +1,12 @@
 // ignore_for_file: implementation_imports
 
 import 'package:flutter/material.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 // ignore: unused_import
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 // import 'package:place_picker/entities/location_result.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 
 import 'package:pos_wappsi/providers/user_provider.dart';
@@ -16,11 +18,15 @@ class CustomerBloc {
   // final _tokenController = BehaviorSubject<String>();
 
   final _customerController = BehaviorSubject<CompanyModel?>();
+
+  // to manage addresses creation data
+  final _addressController = BehaviorSubject<CustomerAddressesModel?>();
+
   final _favoritesController = BehaviorSubject<Map<String, ProductModel>>();
   final _userNameController = BehaviorSubject<String?>();
   final _passwordController = BehaviorSubject<String?>();
   final _imageController = BehaviorSubject<String?>();
-  // final _locationController = BehaviorSubject<LocationResult?>();
+  final _locationController = BehaviorSubject<GeoPoint?>();
 
   //-----------------------------------------------------------------------------
   //                                Streams
@@ -69,6 +75,32 @@ class CustomerBloc {
     return _customerController.value!;
   }
 
+  CustomerAddressesModel get getAddress {
+    if (!_addressController.hasValue) {
+      _addressController.value = CustomerAddressesModel(
+          id: '',
+          direccion: '',
+          vatNo: '',
+          idCloud: 0,
+          customerGroupId: '',
+          sucursal: '',
+          companyId: '',
+          priceGroupId: '');
+    } else if (_addressController.hasValue &&
+        _addressController.value == null) {
+      _addressController.value = CustomerAddressesModel(
+          id: '',
+          direccion: '',
+          vatNo: '',
+          idCloud: 0,
+          customerGroupId: '',
+          sucursal: '',
+          companyId: '',
+          priceGroupId: '');
+    }
+    return _addressController.value!;
+  }
+
   String? get getUserName {
     return _userNameController.valueOrNull;
   }
@@ -81,9 +113,9 @@ class CustomerBloc {
     return _imageController.valueOrNull;
   }
 
-  // LocationResult? get getLocation {
-  //   return _locationController.valueOrNull;
-  // }
+  GeoPoint? get getLocation {
+    return _locationController.valueOrNull;
+  }
 
   Map<String, ProductModel>? getProducts() {
     return _favoritesController.valueOrNull;
@@ -96,7 +128,7 @@ class CustomerBloc {
 
   Function(String) get setUserName => _userNameController.sink.add;
   Function(String?) get setImage => _imageController.sink.add;
-  // Function(LocationResult?) get setLocation => _locationController.sink.add;
+  Function(GeoPoint?) get setLocation => _locationController.sink.add;
   Function(String) get setPassword => _passwordController.sink.add;
 
   dispose() {
@@ -105,7 +137,8 @@ class CustomerBloc {
     _passwordController.close();
     _favoritesController.close();
     _imageController.close();
-    // _locationController.close();
+    _locationController.close();
+    _addressController.close();
   }
 
   clear() {
@@ -114,7 +147,11 @@ class CustomerBloc {
     _passwordController.value = null;
     _favoritesController.value = {};
     _imageController.value = null;
-    // _locationController.value = null;
+    _locationController.value = null;
+  }
+
+  clearAdressCreationData() {
+    _addressController.value = null;
   }
 }
 

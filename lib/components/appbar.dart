@@ -1,14 +1,11 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
+import 'package:pos_wappsi/constant.dart';
 
 PreferredSize boxAppBar(Widget child, Size size,
     {bool elevation = true, double radius = 5}) {
   return PreferredSize(
-      preferredSize: Size(
-          size.width,
-          size.height * 0.1 > 75
-              ? (size.height * 0.11 > 85 ? 85 : size.height * 0.1)
-              : 75),
+      preferredSize: Size(size.width, appBarHeight(size)),
       child: Container(
         decoration: BoxDecoration(
             color: Colors.white,
