@@ -18,7 +18,7 @@ import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 
-import 'package:pos_wappsi/screens/sales/components/search.dart';
+import 'package:pos_wappsi/components/search_products.dart';
 
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
@@ -111,7 +111,8 @@ class _AddFavoritesState extends State<AddFavorites> {
   FloatingSearchBar _searchField() {
     return FloatingSearchBar(
       clearQueryOnClose: true,
-      axisAlignment: -1,
+            axisAlignment: 0,
+
       elevation: 0,
       padding: const EdgeInsets.symmetric(horizontal: 5),
       // border: BorderSide(color: _pc, width: 1),

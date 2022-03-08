@@ -274,7 +274,7 @@ Widget addressPhoto(String img, {fit = BoxFit.contain}) {
 }
 
 Widget productPhoto(String img) {
-  final url = dataBloc.userData!.hostUrl +
+  final url = dataBloc.userData!.hostUrl+
       dataBloc.userData!.companyFolder +
       imgDir +
       img;
@@ -324,7 +324,7 @@ Widget billerThumbNail(String img) {
 }
 
 Widget billerImage(String image) {
-  String imgURL = dataBloc.userData!.hostUrl +
+  String imgURL = dataBloc.userData!.hostUrl+
       dataBloc.userData!.companyFolder +
       'assets/uploads/logos/' +
       image;

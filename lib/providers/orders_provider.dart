@@ -65,10 +65,11 @@ class OrdersProvider {
           order['reference_no'] = res['body']['data']['reference_no'];
           order['registration_date'] = res['body']['data']['server_date'];
           order['id_cloud'] = orderId;
+          // orderItems['registration_date'] = res['body']['data']['server_date'];
           final orderSaveR =
               await DBProvider.db.insertQuery('sma_order_sales', order);
           final orderItemsSaveR =
-              await OrderSaleItemsProvider.saveAllIntoDB(orderItems, orderId);
+              await OrderSaleItemsProvider.saveAllIntoDB(orderItems, orderId, res['body']['data']['server_date']??'',);
 
           if (orderSaveR && orderItemsSaveR) {
             confirmDialog(context, 'Pedido creado exitosamente',

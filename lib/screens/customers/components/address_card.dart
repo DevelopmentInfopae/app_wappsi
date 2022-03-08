@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:pos_wappsi/components/widgets.dart';
+// import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/screens/customers/addresses_details.dart';
@@ -34,14 +34,15 @@ class AddressCard extends StatelessWidget {
         children: [
           // addressPhoto(customer.customerProfilePhoto ?? '')
           Image.asset('assets/images/locations.png')
-              .paddingAll(12)
-              .withSize(width: 90, height: 90),
+              .paddingAll(8)
+              .withSize(width: 100, height: 100),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 address.sucursal ?? '',
-                style: buttonsTextStyle(context, color: greyDarkerColor),
+                maxLines: 2,
+                style: buttonsSmallTextStyle(context, color: greyDarkerColor),
               ),
               Text(
                 customer.name ?? '',
@@ -56,7 +57,7 @@ class AddressCard extends StatelessWidget {
                 style: normalTextStyle(context),
               ),
             ],
-          ).paddingSymmetric(horizontal: 8)
+          ).paddingSymmetric(horizontal: 8,vertical: 4).expand()
         ],
       ),
     );

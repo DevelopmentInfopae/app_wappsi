@@ -107,7 +107,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
           _productsInfo().paddingSymmetric(vertical: 6),
           // _paymentMethod().paddingSymmetric(vertical: 6),
           _orderDocumentType().paddingSymmetric(vertical: 6),
-          _orderDiscount().paddingSymmetric(vertical: 6),
+          dataBloc.userData!.allowDiscount==1?_orderDiscount().paddingSymmetric(vertical: 6):Container(),
           _invoiceNote().paddingSymmetric(vertical: 6),
           _dispatchNote().paddingSymmetric(vertical: 6)
         ],
@@ -178,7 +178,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
 
         // RichText(
         //   text: TextSpan(
-        //       text: 'Numero de productos: ',
+        //       text: 'Numero de productos: ',hostUrl
         //       style: buttonsTextStyle(context, color: pColor),
         //       children: [
         //         TextSpan(
@@ -437,10 +437,11 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
                       ),
                       (route) => false,
                     );
-                    await PrintOrder(
-                      printData: orderBloc.getPrintData!,
-                    ).launch(context);
+                    final printData = orderBloc.getPrintData!;
                     orderBloc.reload(disposeFirst: true);
+                    await PrintOrder(
+                      printData: printData,
+                    ).launch(context);
                   });
                   setState(() {
                     _sending = false;

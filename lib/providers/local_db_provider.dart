@@ -1,4 +1,4 @@
-import 'dart:convert';
+// import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
@@ -119,17 +119,9 @@ class DBProvider {
     bool result = true;
     Batch batch = db!.batch();
     for (var element in query) {
-      String values = '';
       try {
-        final val = element.values;
-        values = getStringFromValues(val);
-        // if (table == 'sma_payments') {
-        //   printConsole('xd');
-        // }
-        String sql =
-            "INSERT OR REPLACE INTO $table ('${element.keys.join("','")}') VALUES ($values);";
-        if (printSql) printConsole(sql);
-        batch.rawQuery(sql);
+
+        batch.insert(table,element, conflictAlgorithm: ConflictAlgorithm.replace);
       } catch (e) {
         printConsole(e);
         if (element is List) {
@@ -154,6 +146,28 @@ class DBProvider {
       return await insertOrUpdateQuerys2(table, query);
     }
   }
+  ///-----------------------------------------------------------------------------
+  ///                                UPDATE QUERYS
+  ///              With '' as field separator in query used with json
+  ///                        fields in db with "" inside
+  ///
+  ///-----------------------------------------------------------------------------
+  Future<bool> deleteQuerys(String table, String where) async {
+    final db = await database;
+    bool result = true;
+
+  try {
+    await db!.delete(table, where: where);
+    
+    // disable ientity writing
+    // await db.execute('SET IDENTITY_INSERT $table ON');
+    // debugprintConsole(res.toString());
+    return result;
+  } catch (e) {
+    printConsole(e);
+    return false;
+  }
+}
 
   ///-----------------------------------------------------------------------------
   ///                                UPDATE QUERYS
@@ -163,16 +177,16 @@ class DBProvider {
   Future<bool> insertOrUpdateQuerys2(String table, List query,
       {String replace = '^'}) async {
     final db = await database;
-    final enc = jsonEncode(query);
-    final queryF = jsonDecode(enc.replaceAll("'", replace));
+    // final enc = jsonEncode(query);
+    // final queryF = jsonDecode(enc.replaceAll("'", replace));
     Batch batch = db!.batch();
-    queryF.forEach((element) {
+    for (var element in query) {
       String values = getStringFromValues(element.values);
       String sql =
           'INSERT OR REPLACE INTO $table ("${element.keys.join('","')}") VALUES ($values);';
       batch.rawQuery(sql);
       // printConsole(sql);
-    });
+    }
 
     try {
       await batch.commit();

@@ -35,8 +35,10 @@ List<int> printLabeledValues(Generator generator, List<int> bytes,
 
     final valueCol2Len =
         value.length < emptySpacesCol2Total ? (value.length + 1) : value.length;
+    int temp = (emptySpacesCol2Total - (valueCol2Len).toInt());
     final emptySpacesCol2 =
-        (emptySpacesCol2Total - (valueCol2Len).toInt()).abs();
+        temp>0?temp:0;
+        
 
     if (column1Width < 12) {
       bytes += generator.row([

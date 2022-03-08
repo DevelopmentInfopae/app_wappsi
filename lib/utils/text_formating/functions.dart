@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_string_escapes
+
 import 'dart:convert';
 
 import 'package:intl/intl.dart';
@@ -111,7 +113,8 @@ String capitalizeText(String value) {
     's.a.s.',
     'pvp',
     'iva',
-    'fb'
+    'fb',
+    '"adis"'
   ];
   final specialLowerCases = ['de', 'la', 'el', 'los', 'las', 'y', 'o', 'con'];
 
@@ -157,21 +160,88 @@ String getStringFromValues(var values) {
 
   for (var i = 0; i < values.length; i++) {
     if (i == 0) {
-      if (values.elementAt(i) == null) {
+      if (values.elementAt(i) == null || values.elementAt(i) == '') {
         string = string + "null";
       } else {
-        string = string + "'" + values.elementAt(i).toString() + "'";
+        var val = values.elementAt(i);
+        String valString;
+        if (val is String) {
+          valString = val;
+          try {
+            final temp = jsonDecode(valString);
+            if ((temp is! Map)) {
+              valString = valString.replaceAll('"', '\"').replaceAll("'", "\'");
+            }
+          } catch (e) {
+            // printConsole(e);
+          }
+        } else if (val is num) {
+          valString = val.toString();
+        } else {
+          if (val is Map) {
+            valString = jsonEncode(val);
+            // valString =  valString.replaceAll(from, replace)
+          } else {
+            valString =
+                val.toString().replaceAll('"', '\"').replaceAll("'", "\'");
+          }
+        }
+        // printConsole(valString);
+        string = string + '"' + valString + '"';
       }
     } else {
       if (values.elementAt(i) == null) {
-        string = string + ",''";
+        string = string + ",null";
       } else {
-        string = string + ",'" + values.elementAt(i).toString() + "'";
+        var val = values.elementAt(i);
+        String valString;
+        if (val is String) {
+          valString = val;
+          try {
+            final temp = jsonDecode(valString);
+            if (temp is! num) {
+              if ((temp is! Map)) {
+                valString =
+                    valString.replaceAll('"', '\"').replaceAll("'", "\'");
+              } else {
+                valString = valString
+                    .replaceAll('"{', '{')
+                    .replaceAll('}"', '}')
+                    .replaceAll('"', "'");
+              }
+            }
+          } catch (e) {
+            // printConsole(e);
+          }
+        } else if (val is num) {
+          valString = val.toString();
+        } else {
+          if (val is Map) {
+            valString = jsonEncode(val);
+            valString = valString
+              ..replaceAll('"{', '{')
+                  .replaceAll('}"', '}')
+                  .replaceAll('"', "'");
+            // valString =  valString.replaceAll(from, replace)
+          } else {
+            valString =
+                val.toString().replaceAll('"', '\"').replaceAll("'", "\'");
+          }
+        }
+        // printConsole(valString);
+        // if(jsonDecode(valString)is Map){
+        string = string + ',"' + valString + '"';
+        // }else{
+        //   // ignore: unnecessary_string_escapes
+        //   valString = valString.replaceAll('"', '\"').replaceAll("'", "\'");
+        //   string = string + ',"' + valString + '"';
+        // }
+        // string = string + ',"' + valString + '"';
       }
     }
   }
 
-  return string;
+  return string.replaceAll('""{', '"{').replaceAll('}""', '}"');
 }
 
 String getEmptySpaces(int n) {

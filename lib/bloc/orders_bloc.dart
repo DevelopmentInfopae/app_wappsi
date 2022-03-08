@@ -319,7 +319,7 @@ class OrderBloc {
   /// Returns an instance of [ProductModel()] from products Map
   /// given a key
   ProductModel? getProductData(String key) {
-    return _productsController.value[key];
+    return _productsController.valueOrNull?[key];
   }
 
   /// Returns product information in [Map] format

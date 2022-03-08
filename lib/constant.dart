@@ -105,7 +105,7 @@ TextStyle normalTextStyle(BuildContext context,
 double bottomBarIconSize(BuildContext context) {
   final size = MediaQuery.of(context).size;
   return size.height * 0.1 > 66
-      ? (size.height * 0.1 > 70 ? 42 : size.height * 0.0555)
+      ? (size.height * 0.1 > 70 ? 43 : size.height * 0.0555)
       : 38;
 }
 
@@ -148,9 +148,9 @@ double bottomWigetHeight(BuildContext context) {
 
 double loginFormSpacer(BuildContext context) {
   Size size = MediaQuery.of(context).size;
-  return size.height * 0.04 < 25
-      ? 25
-      : (size.height * 0.04 < 35 ? 35 : size.height * 0.04);
+  return size.height * 0.04 < 20
+      ? 20
+      : (size.height * 0.04 < 25 ? 25 : size.height * 0.03);
 }
 
 double loginLogoWidth(BuildContext context) {

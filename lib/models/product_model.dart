@@ -101,30 +101,32 @@ class ProductModel {
   factory ProductModel.fromJson(Map<dynamic, dynamic> json,
           {bool loadInitialQtty = false, String? qtyKey}) =>
       ProductModel(
-          idCloud: json["id_cloud"],
-          id: json["id"],
+          idCloud: int.parse(json["id_cloud"].toString()),
+          id: int.parse(json["id"].toString()),
           slug: json["slug"] ?? json["name"],
           image: json["image"] ?? '',
-          name: json["name"] ?? json["slug"],
+          name: (json["name"] ?? json["slug"] ?? '').toString(),
           code: json["code"],
-          price: double.tryParse(json["price"].toString()) ?? 0.0,
+          price: double.tryParse(json["price"]?.toString() ?? '0.0') ?? 0.0,
           pricePolicyPrices:
-              double.tryParse(json["price_policy"].toString()) ?? 0.0,
-          priceWithoutDiscount:
-              double.tryParse(json["price_without_discount"].toString()) ?? 0.0,
-          discount: double.tryParse(json["discount"].toString()) ?? 0.0,
+              double.tryParse(json["price_policy"]?.toString() ?? '0.0') ?? 0.0,
+          priceWithoutDiscount: double.tryParse(
+                  json["price_without_discount"]?.toString() ?? '0') ??
+              0.0,
+          discount: double.tryParse(json["discount"]?.toString() ?? '0') ?? 0.0,
           promoStart: json["start_date"] ?? '',
           promoEnd: json["end_date"] ?? '',
-          taxMethod: json["tax_method"],
+          taxMethod: int.tryParse(json["tax_method"]?.toString() ?? '0') ?? 0,
           promoPrice: _promoPrice(json),
-          inventory: double.tryParse(json["quantity"].toString()) ?? 0.0,
+          inventory:
+              double.tryParse(json["quantity"]?.toString() ?? '0') ?? 0.0,
           brand: json["brand"],
-          unit: int.tryParse(json['unit'].toString()) ?? 0,
+          unit: int.tryParse(json['unit']?.toString() ?? '0') ?? 0,
           taxRateId: json["tax_rate"],
-          taxRate: double.tryParse(json['rate'].toString()) ?? 0.0,
-          type: json['type'],
-          categoryId: json['category_id'].toString(),
-          subCategoryId: json['subcategory_id'].toString(),
+          taxRate: double.tryParse(json['rate']?.toString() ?? '0') ?? 0.0,
+          type: json['type'] ?? '',
+          categoryId: (json['category_id'] ?? 0).toString(),
+          subCategoryId: (json['subcategory_id'] ?? 0).toString(),
           taxRateName: json['tax_rate_name'],
           quantity: loadInitialQtty ? (json[qtyKey]) + 0.0 : 1.0);
 
@@ -173,21 +175,23 @@ class ProductModel {
     if (temp['start_date'] == '' || temp['end_date'] == '') {
       return null;
     } else {
-      final start = DateTime.parse(temp['start_date']);
-      final end = DateTime.parse(temp['end_date']);
+      final start = DateTime.tryParse(temp['start_date']??'');
+      final end = DateTime.tryParse(temp['end_date']??'');
       double? promoPrice;
       var now = DateTime.now();
       // printConsole(temp['name'] + start.toString() +end.toString());
-      if (!(now.isAfter(start) && now.isBefore(end)) ||
-          !(start.difference(now).inDays <= 0 ||
-              end.difference(now).inDays >= 0)) {
-        promoPrice = null;
-      } else {
-        try {
-          promoPrice = double.parse(temp['promo_price'].toString());
-        } catch (e) {
-          printConsole(e);
+      if (start != null && end != null) {
+        if (!(now.isAfter(start) && now.isBefore(end)) ||
+            !(start.difference(now).inDays <= 0 ||
+                end.difference(now).inDays >= 0)) {
           promoPrice = null;
+        } else {
+          try {
+            promoPrice = double.parse(temp['promo_price'].toString());
+          } catch (e) {
+            printConsole(e);
+            promoPrice = null;
+          }
         }
       }
       return promoPrice;
@@ -229,7 +233,6 @@ class ProductModel {
   double getIVA() {
     return getPriceWithIVA() - getPriceWithoutIVA();
   }
-  
 
   Map<String, dynamic> toJson() => {
         "slug": slug,

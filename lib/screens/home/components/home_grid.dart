@@ -20,7 +20,7 @@ import 'package:pos_wappsi/screens/sales/new_sale.dart';
 import 'package:pos_wappsi/screens/sales/sales_screen.dart';
 import 'package:pos_wappsi/screens/user/profile_sreen.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/print_errors.dart';
+// import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:provider/provider.dart';
 import 'package:restart_app/restart_app.dart';
 
@@ -131,10 +131,10 @@ class HomeGridCards extends StatelessWidget {
     } else if (gridItems.route == 'list_orders') {
       final dbProvider = SyncDBProvider();
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
-      final result = await dbProvider.syncOption(
-          context, tableNamesToSyncOpt['sma_order_sales']!);
+      await dbProvider.syncSpecialSelectedOption(
+          tableNamesToSyncOpt['sma_order_sales']!, context);
 
-      printConsole(result);
+      // printConsole(result);
 
       const OrdersList().launch(context);
     } else if (gridItems.route == 'profile') {

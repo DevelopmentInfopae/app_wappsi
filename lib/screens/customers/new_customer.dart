@@ -192,7 +192,7 @@ class _NewCustomerState extends State<NewCustomer> {
       }
     }, () {
       _n2.requestFocus();
-    }, focus: _n1, controller: _nameController)
+    }, focus: _n1, controller: _nameController, keyBType: TextInputType.name)
         .paddingSymmetric(vertical: 5);
   }
 
@@ -238,7 +238,7 @@ class _NewCustomerState extends State<NewCustomer> {
       // }
     }, () {
       _ln1.requestFocus();
-    }, focus: _n2, controller: _name2Controller)
+    }, focus: _n2, controller: _name2Controller, keyBType: TextInputType.name)
         .paddingSymmetric(vertical: 5);
   }
 
@@ -277,7 +277,10 @@ class _NewCustomerState extends State<NewCustomer> {
       }
     }, () {
       _ln2.requestFocus();
-    }, focus: _ln1, controller: _lastNameController)
+    },
+            focus: _ln1,
+            controller: _lastNameController,
+            keyBType: TextInputType.name)
         .paddingSymmetric(vertical: 5);
   }
 
@@ -295,7 +298,10 @@ class _NewCustomerState extends State<NewCustomer> {
       if (_formKey.currentState?.validate() ?? false) {
         const NewCustomerData2().launch(context);
       }
-    }, focus: _ln2, controller: _lastName2Controller)
+    },
+            focus: _ln2,
+            controller: _lastName2Controller,
+            keyBType: TextInputType.name)
         .paddingSymmetric(vertical: 5);
   }
 

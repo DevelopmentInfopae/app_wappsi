@@ -16,6 +16,7 @@ class UserModel {
       {required this.id,
       required this.token,
       this.gender,
+      this.allowDiscount=0,
       required this.hostUrl,
       required this.lastName,
       required this.sellerId,
@@ -34,6 +35,7 @@ class UserModel {
   String token;
   String firstName;
   String lastName;
+  int allowDiscount;
   String userName;
   String email;
   String? gender;
@@ -51,6 +53,7 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
       id: json["id"],
+      allowDiscount: int.parse(json["allow_discount"]??'0'),
       token: json["token"],
       firstName: json["first_name"],
       lastName: json["last_name"],
@@ -75,6 +78,7 @@ class UserModel {
         "id": id,
         "gender": gender,
         "host_url": hostUrl,
+        "allow_discount": allowDiscount,
         "last_name": lastName,
         "biller_id": billerId,
         "seller_id": sellerId,

@@ -12,7 +12,10 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/printer_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/widgets.dart';
+import 'package:pos_wappsi/config/print_settings_options.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/environment/environment.dart';
+import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 
 // import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
@@ -189,7 +192,11 @@ class _PrintSettingsState extends State<PrintSettings> {
   Widget _deviceSetup() {
     return Card(
       child: ListView(
-        children: [_devicesDropDown().paddingAll(10), _options()],
+        children: [
+          _devicesDropDown().paddingAll(10),
+          _options(),
+          _paperSzDropDown().paddingAll(10)
+        ],
       ),
     );
   }
@@ -288,6 +295,43 @@ class _PrintSettingsState extends State<PrintSettings> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _paperSzDropDown() {
+    return DropdownSearch<DropdDownSItem>(
+      mode: Mode.BOTTOM_SHEET,
+      validator: (item) {
+        if (item == null) return "Campo requerido";
+        return null;
+      },
+      maxHeight: _size.width * 0.9,
+      dialogMaxWidth: _size.width * 0.8,
+      isFilteredOnline: true,
+      showClearButton: true,
+      showSelectedItems: true,
+      compareFn: (item, selectedItem) => item?.name == selectedItem?.name,
+      items: (paperSz.values.toList()),
+      selectedItem: paperSz[Environment().printerPaperSize],
+      dropdownSearchDecoration: InputDecoration(
+        labelText: 'Tamaño de papel :',
+        labelStyle: TextStyle(color: _pc),
+        filled: true,
+        fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+      ),
+
+      autoValidateMode: AutovalidateMode.onUserInteraction,
+      onChanged: (data) async {
+        if (data != null) {
+          Environment().printerPaperSize = data.value;
+        }
+      },
+      // selectedItem: posBloc.getCustomer,
+      popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
+      scrollbarProps: ScrollbarProps(
+        isAlwaysShown: true,
+        thickness: 7,
+      ),
     );
   }
 
@@ -417,7 +461,11 @@ class _PrintSettingsState extends State<PrintSettings> {
             // just to get an error if pathimage is not initialized
             pathImage += '';
           } catch (e) {
-            await initSavetoPath(widget.posPrintData?['company_data'].logo);
+            try {
+              await initSavetoPath(widget.posPrintData?['company_data'].logo);
+            } catch (e) {
+              printConsole(e);
+            }
           }
           setState(() {
             // posBloc.setPrintState(true);

@@ -82,7 +82,7 @@ Widget textFormField(BuildContext context, String label, Function function,
 }
 
 Widget customerPhotoAndName(BuildContext context, CompanyModel customer) {
-  final Size _size = MediaQuery.of(context).size;
+  // final Size _size = MediaQuery.of(context).size;
   return Card(
     elevation: 1,
     child: Row(
@@ -90,7 +90,7 @@ Widget customerPhotoAndName(BuildContext context, CompanyModel customer) {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           customerPhoto(customer.customerProfilePhoto ?? '')
-              .withWidth(_size.width * 0.3),
+              .withSize(width: 120,height: 120),
           customerDesc(context, customer).expand()
         ]),
   );
@@ -138,11 +138,11 @@ Widget addressDesc(BuildContext context, CompanyModel customer,
         // SizedBox(height: 8,),
         descText(address.sucursal, context,
                 maxLines: 2,
-                fontSizeFactor: 1.1,
+                fontSizeFactor: 1.05,
                 fweigth: 2,
                 color: greyDarkerColor)
             .paddingSymmetric(vertical: 1),
-        descText(customer.name, context, fontSizeFactor: 0.75)
+        descText(customer.name, context, fontSizeFactor: 0.75, maxLines: 1, )
             .paddingSymmetric(vertical: 1),
         descText(address.direccion, context, fontSizeFactor: 0.75)
             .paddingSymmetric(vertical: 1),

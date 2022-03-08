@@ -85,9 +85,7 @@ class _AddressDetailsState extends State<AddressDetails> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _addressHead(context)
-            .paddingOnly(left: 10, right: 10, bottom: 5)
-            .withSize(width: double.infinity, height: 120),
+        _addressHead(context).paddingOnly(left: 10, right: 10, bottom: 5),
         _addressDetails().paddingOnly(left: 10, right: 10, bottom: 5).expand(),
         // bottom(
         //     Row(
@@ -109,8 +107,10 @@ class _AddressDetailsState extends State<AddressDetails> {
       child: Row(
         children: [
           addressPhoto(widget.customer.customerProfilePhoto!, fit: BoxFit.cover)
-              .withSize(width: 110, height: 110),
+              .withSize(width: 100, height: 100),
           addressDesc(context, widget.customer, widget.address)
+              .paddingSymmetric(vertical: 4)
+              .expand()
         ],
       ),
     );
@@ -152,17 +152,17 @@ class _AddressDetailsState extends State<AddressDetails> {
   }
 
   Widget _map() {
-    controller!.addMarker(gLoc!,
-        markerIcon: const MarkerIcon(
-            icon: Icon(
-          Icons.location_on,
-          color: Colors.red,
-          size: kIconSize + 50,
-        )));
     // to make this shit draw position marker
     if (!markerDrawed) {
       Timer(const Duration(seconds: 2), () {
         try {
+          controller!.addMarker(gLoc!,
+              markerIcon: const MarkerIcon(
+                  icon: Icon(
+                Icons.location_on,
+                color: Colors.red,
+                size: kIconSize + 50,
+              )));
           controller!.osmBaseController;
           setState(() {
             markerDrawed = true;

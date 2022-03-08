@@ -59,15 +59,28 @@ class _ProductCardState extends State<ProductCard> {
   @override
   void initState() {
     // _updateQuantityValue();
-    ProductModel? firstProduct;
+    try {
+      if (widget.fromOder) {
+        orderBloc.getProductData(widget.productKey)?.quantity =
+            orderBloc.getProductData(widget.productKey)!.quantity;
+      } else {
+        posBloc.getProductData(widget.productKey)?.quantity =
+            posBloc.getProductData(widget.productKey)!.quantity;
+      }
+    } catch (e) {
+      printConsole(e);
+    }
+    String? firstKey;
     if (widget.fromOder) {
       unit = orderBloc.getProductUnits?[widget.productKey];
       product = orderBloc.getProducts?[widget.productKey];
-      firstProduct = orderBloc.getProducts?.values.first;
+      // firstProduct = orderBloc.getProducts?.values.first;
+      firstKey = orderBloc.getProducts?.keys.first;
     } else {
       unit = posBloc.getProductUnits?[widget.productKey];
       product = posBloc.getProducts?[widget.productKey];
-      firstProduct = posBloc.getProducts?.values.first;
+      // firstProduct = posBloc.getProducts?.values.first;
+      firstKey = posBloc.getProducts?.keys.first;
     }
     if (unit != null) {
       final unitQtty = product!.quantity / (unit!.operationValue);
@@ -76,12 +89,12 @@ class _ProductCardState extends State<ProductCard> {
       }
     }
     if (widget.requestFocus) {
-      if (product == firstProduct) {
+      if (widget.productKey == firstKey) {
         widget.quantityFocusNode.requestFocus();
       }
     }
 
-    _updateQuantityValue(value: product!.quantity);
+    _updateQuantityValue(value: product?.quantity);
 
     super.initState();
   }
@@ -274,10 +287,11 @@ class _ProductCardState extends State<ProductCard> {
         borderRadius: BorderRadius.circular(30),
       ),
       onTap: () {
+        final uOperator = unit?.operationValue ?? 1;
         if (widget.fromOder) {
-          final uOperator =
-              orderBloc.getProductUnits?[widget.productKey]?.operationValue ??
-                  1;
+          // final uOperator =
+          //     orderBloc.getProductUnits?[widget.productKey]?.operationValue ??
+          //         1;
           if (orderBloc.getProductData(widget.productKey)!.quantity >
               uOperator) {
             // setState(() {
@@ -290,9 +304,6 @@ class _ProductCardState extends State<ProductCard> {
             // });
           }
         } else {
-          final uOperator =
-              (posBloc.getProductUnits?[widget.productKey]?.operationValue ??
-                  1);
           if (posBloc.getProductData(widget.productKey)!.quantity > uOperator) {
             // setState(() {
             posBloc.getProductData(widget.productKey)!.quantity -= uOperator;
@@ -323,18 +334,16 @@ class _ProductCardState extends State<ProductCard> {
       onTap: () async {
         // posBloc.getProductData(widget.productKey)!.quantity += 1;
         bool res;
+        final uOperator = unit?.operationValue ?? 1;
         if (widget.fromOder) {
           final pQtty = orderBloc.getProductData(widget.productKey)!.quantity;
-          final uOperator =
-              orderBloc.getProductUnits?[widget.productKey]?.operationValue;
           res = await orderBloc.addProductQuantity(
-              widget.productKey, pQtty + (uOperator ?? 1));
+              widget.productKey, pQtty + (uOperator));
         } else {
           final pQtty = posBloc.getProductData(widget.productKey)!.quantity;
-          final uOperator =
-              posBloc.getProductUnits?[widget.productKey]?.operationValue;
+
           res = await posBloc.addProductQuantity(
-              widget.productKey, pQtty + (uOperator ?? 1));
+              widget.productKey, pQtty + (uOperator));
         }
 
         setState(() {
@@ -425,12 +434,17 @@ class _ProductCardState extends State<ProductCard> {
         context,
         'El producto ${product?.name} no tiene suficiente stock. Stock actual ${product?.inventory}',
         'assets/images/out-of-stock.png');
-    if (widget.fromOder) {
-      orderBloc.getProductData(widget.productKey)!.quantity =
-          orderBloc.getProductData(widget.productKey)!.quantity;
-    } else {
-      posBloc.getProductData(widget.productKey)!.quantity =
-          posBloc.getProductData(widget.productKey)!.quantity;
+
+    try {
+      if (widget.fromOder) {
+        orderBloc.getProductData(widget.productKey)?.quantity =
+            orderBloc.getProductData(widget.productKey)!.quantity;
+      } else {
+        posBloc.getProductData(widget.productKey)?.quantity =
+            posBloc.getProductData(widget.productKey)!.quantity;
+      }
+    } catch (e) {
+      printConsole(e);
     }
   }
 
@@ -447,10 +461,10 @@ class _ProductCardState extends State<ProductCard> {
     // double? operator;
     if (value == null) {
       if (widget.fromOder) {
-        value = orderBloc.getProductData(widget.productKey)!.quantity;
+        value = orderBloc.getProductData(widget.productKey)?.quantity ?? 1;
         // operator = orderBloc.getProductUnits?[widget.productKey]!.operationValue;
       } else {
-        value = posBloc.getProductData(widget.productKey)!.quantity;
+        value = posBloc.getProductData(widget.productKey)?.quantity ?? 1;
         // operator = posBloc.getProductUnits?[widget.productKey]!.operationValue;
       }
     }
@@ -493,17 +507,6 @@ class _ProductCardState extends State<ProductCard> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.fromOder) {
-      setState(() {
-        orderBloc.getProductData(widget.productKey)!.quantity =
-            orderBloc.getProductData(widget.productKey)!.quantity;
-      });
-    } else {
-      setState(() {
-        posBloc.getProductData(widget.productKey)!.quantity =
-            posBloc.getProductData(widget.productKey)!.quantity;
-      });
-    }
     return Card(
       elevation: 10,
       child: GestureDetector(

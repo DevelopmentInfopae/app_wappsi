@@ -385,7 +385,7 @@ class CompanyModel {
         "payment_term": paymentTerm ?? '',
         "logo": logo ?? '',
         "deposit_amount": depositAmount ?? '',
-        "price_group_id": priceGroupId ?? '',
+        "price_group_id": (priceGroupId ?? '0'),
         "price_group_name": priceGroupName ?? '',
         "id_partner": idPartner ?? '',
         "tipo_regimen": tipoRegimen ?? '',

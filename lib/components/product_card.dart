@@ -13,6 +13,7 @@ import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/products/product_details.dart';
 import 'package:pos_wappsi/screens/products/product_price_verifier.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 // class to show product indormation in form of a card
@@ -72,10 +73,14 @@ class _ProductCardState extends State<ProductCard> {
               final result = await posBloc.addProduct(productReq);
               // printConsole(result);
               if (result) {
-                scaffoldAlert(
+                try {
+                  scaffoldAlert(
                     context,
                     "Producto ${widget.product.name} añadido",
                     const Duration(seconds: 1));
+                } catch (e) {
+                  printConsole(e);
+                }
               }
             }
 

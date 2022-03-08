@@ -5,6 +5,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/date_to_text.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
@@ -259,6 +260,7 @@ List<DataRow> _productsWUnit(List<Map<dynamic, dynamic>> products) {
     String valueS = getFormatedCurrency(value);
     final unit = p['unit'];
     final qtty = p['quantity'] / unit['operation_value'];
+    printConsole(qtty);
     rows.add(DataRow(
       cells: <DataCell>[
         DataCell(Text(getRoundedQtty(qtty))),

@@ -815,7 +815,7 @@ class SalesModel {
           'base_unit': baseUnit?.toJson()
         };
         productsMap.add(tItempMap);
-        final taxRate = (item.unitPrice / item.netUnitPrice) - 1;
+        final taxRate = roundDouble((item.unitPrice / item.netUnitPrice) - 1,2);
         if (ivasMap.containsKey(taxRate)) {
           ivasMap[taxRate]['value'] =
               ivasMap[taxRate]['value'] + (item.priceBeforeTax * item.quantity);

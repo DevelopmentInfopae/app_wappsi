@@ -50,6 +50,9 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
   CustomerGroupsModel? _customerGroup;
   PriceGroupsModel? _priceGroup;
 
+  FocusNode _unameFocus = FocusNode();
+  FocusNode _passwdFocus = FocusNode();
+
   // ignore: prefer_final_fields
   bool _loading = false;
 
@@ -62,6 +65,8 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
 
   @override
   void dispose() {
+    _unameFocus.dispose();
+    _passwdFocus.dispose();
     super.dispose();
   }
 
@@ -142,6 +147,8 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
                   ],
           ),
           onTap: () async {
+            _passwdFocus.unfocus();
+            _unameFocus.unfocus();
             if (customerBloc.getImagePath != null) {
               ImagePreview(imagePath: customerBloc.getImagePath!)
                   .launch(context);
@@ -233,6 +240,9 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
             ],
           ),
           onTap: () async {
+            _passwdFocus.unfocus();
+            _unameFocus.unfocus();
+            await Future.delayed(const Duration(milliseconds: 500));
             if (customerBloc.getLocation != null) {
               await _getLocation();
             } else {
@@ -529,7 +539,11 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
           return 'Debe suministrar un nombre de usuario';
         }
       },
-      () {},
+      
+      () {
+        _passwdFocus.requestFocus();
+      },
+      focus: _unameFocus
     ).paddingSymmetric(vertical: 5);
   }
 
@@ -545,7 +559,10 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
           return 'Contraseña valida';
         }
       },
-      () {},
+      () {
+        _passwdFocus.unfocus();
+      },
+      focus: _passwdFocus
     ).paddingSymmetric(vertical: 5);
   }
 }

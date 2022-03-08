@@ -124,15 +124,15 @@ class WishlistProvider {
   }
 
   static Future<bool> saveCustomerFavFromLocal(
-      CompanyModel customer, List<ProductModel> favorites) async {
+      String customerId, List<int> favorites) async {
     if (favorites.isNotEmpty) {
-      final query = [];
+      final List<Map> query = [];
       for (var p in favorites) {
         query.add({
           'user_id': null,
           'id_cloud': null,
-          'product_id': p.idCloud,
-          'customer_id': customer.id,
+          'product_id': p.toString(),
+          'customer_id': customerId,
         });
       }
       return await DBProvider.db.insertQuerys('sma_wishlist', query);

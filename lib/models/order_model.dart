@@ -523,11 +523,11 @@ class OrderModel {
           'quantity': item.quantity,
           'price': item.unitPrice,
           'name': item.productName,
-          'unit': unit,
-          'base_unit': bUnit
+          'unit': unit?.toJson(),
+          'base_unit': bUnit?.toJson()
         };
         productsMap.add(tItempMap);
-        final taxRate = (item.unitPrice / item.netUnitPrice) - 1;
+        final taxRate = roundDouble((item.unitPrice / item.netUnitPrice) - 1,2);
         if (ivasMap.containsKey(taxRate)) {
           ivasMap[taxRate]['value'] =
               ivasMap[taxRate]['value'] + (item.priceBeforeTax * item.quantity);
@@ -542,6 +542,7 @@ class OrderModel {
       printConsole(e);
       return {};
     }
+    
     return {
       'iva': ivasMap,
       'products': productsMap,

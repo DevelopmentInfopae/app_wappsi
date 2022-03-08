@@ -64,11 +64,12 @@ class SyncDBProvider {
     return res;
   }
 
-  Future<Map> update(String option,
-      {Map<String, dynamic>? selectedOption,
-      bool isSpecial = false,
-      bool post = true}) async {
- 
+  Future<Map> update(
+    String option, {
+    Map<String, dynamic>? selectedOption,
+    bool isSpecial = false,
+    bool post = true,
+  }) async {
     final res =
         await _getUpdates(selectedOption ?? options[option]!, isPost: post);
     //check if JWT is ok, if not logout
@@ -86,8 +87,15 @@ class SyncDBProvider {
         // syncBloc.setProgressMessage('Escribiendo actualizaciones en la base de datos local');
         bool result = false;
         // ignore: unrelated_type_equality_checks
-        if (specialSync.contains(option) || isSpecial) {
-          result = await _specialWriteIntoLocalDB(res);
+
+        if (specialSync.contains(option)) {
+          final optionInfo = options[option];
+          result = await _specialWriteIntoLocalDB(res,
+              deleteBefore: optionInfo!['delete_before'],
+              independentTable: optionInfo['independent_table'],
+              dependentTable: optionInfo['dependent_table'],
+              idKey: optionInfo['id_key'],
+              columnName: optionInfo['column_name']);
         } else {
           result = await _writeIntoLocalDB(
               res, (selectedOption ?? options[option])!['table']);
@@ -221,7 +229,15 @@ class SyncDBProvider {
     return result;
   }
 
-  Future<bool> _specialWriteIntoLocalDB(Map<String, dynamic> res) async {
+  ///This function is used to sync tables who have tables directly related, like sma_order_sales and
+  ///sma_order_sale_items. If we dont have a unique constraint, we can delete before insert using delete_before
+  ///param, with that we need to specify the identifierKey (id) and the columnName to build delete query.
+  Future<bool> _specialWriteIntoLocalDB(Map<String, dynamic> res,
+      {bool deleteBefore = false,
+      String? idKey,
+      String? independentTable,
+      String? dependentTable,
+      String? columnName}) async {
     bool result = true;
     if ((res['body']['data'] != null) ||
         (res['body']['data'] != "[]") ||
@@ -229,7 +245,23 @@ class SyncDBProvider {
       final data = res['body']['data'];
 
       if (data != null) {
+        // data always come organized in father table and son table
         await Future.forEach(data.keys, (String key) async {
+          if (deleteBefore) {
+            String? idValue;
+
+            if (key == independentTable) {
+              for (var i = 0; i < data[key]!.length; i++) {
+                idValue = data[key][i][idKey];
+                if (idValue != null) {
+                  final res = await DBProvider.db.deleteQuerys(
+                      dependentTable!,
+                      '$columnName=$idValue');
+                  printConsole(res);
+                }
+              }
+            }
+          }
           result = await DBProvider.db.insertOrUpdateQuerys(key, data[key]);
         });
       }
@@ -238,7 +270,8 @@ class SyncDBProvider {
     return result;
   }
 
-  Future syncOption(BuildContext context, String option) async {
+  Future syncOption(BuildContext context, String option,
+      {bool deleteBefore = false}) async {
     if (option == 'Datos de Facturación') {
       final res = await updateBillerData(context);
       if (res['status'] == -1) {
@@ -253,7 +286,6 @@ class SyncDBProvider {
       }
       return res;
     } else {
-
       final res = await update(option);
       if (res['status'] == -1) {
         await reloadDialog(
@@ -281,8 +313,11 @@ class SyncDBProvider {
 
   Future<void> synSelectedOption(Map<String, dynamic> option, context,
       {bool isPost = true}) async {
-    final res =
-        await update('', selectedOption: option, isSpecial: true, post: isPost);
+    final res = await update(
+      '',
+      selectedOption: option,
+      post: isPost,
+    );
     if (res['status'] == -1) {
       await reloadDialog(
           context,
@@ -298,6 +333,36 @@ class SyncDBProvider {
         }
       }
     }
+  }
+
+  Future<bool> syncSpecialSelectedOption(String option, context,
+      {bool isPost = true}) async {
+    bool result = false;
+    final res = await _getUpdates(options[option]!, isPost: isPost);
+    if (res['status'] == -1) {
+      await reloadDialog(
+          context,
+          'Sesión expirada, es necesario a iniciar sesión',
+          'assets/images/warning.png');
+    } else {
+      if (res['error'] == true) {
+        final choice = await choiceAlert(context,
+            res['message'] + '¿Reintentar?', 'assets/images/warning.png');
+
+        if (choice) {
+          return await syncSpecialSelectedOption(option, context);
+        }
+      } else {
+        final optionInfo = options[option];
+        return await _specialWriteIntoLocalDB(res,
+            deleteBefore: optionInfo!['delete_before'],
+            independentTable: optionInfo['independent_table'],
+            dependentTable: optionInfo['dependent_table'],
+            idKey: optionInfo['id_key'],
+            columnName: optionInfo['column_name']);
+      }
+    }
+    return result;
   }
 
   Future<Map> updateBillerData(BuildContext context) async {

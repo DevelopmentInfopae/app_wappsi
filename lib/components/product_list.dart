@@ -42,7 +42,7 @@ class ProductsList extends StatelessWidget {
           );
 
           if (!(productList.values.first == product.value &&
-              dataBloc.settings!['set_focus'] == 1)) {
+              dataBloc.settings?['set_focus'] == 1)) {
             pCard.quantityFocusNode.unfocus();
           }
 

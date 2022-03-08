@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
@@ -15,7 +17,7 @@ import 'package:pos_wappsi/screens/orders/order_other_details.dart';
 // import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 
-import 'package:pos_wappsi/screens/sales/components/search.dart';
+import 'package:pos_wappsi/components/search_products.dart';
 
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
@@ -23,6 +25,7 @@ import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
 class OrderProducts extends StatefulWidget {
@@ -43,6 +46,7 @@ class _OrderProductsState extends State<OrderProducts> {
 
   // TO control changes in products and execute focus task
   int _productsCount = 0;
+  bool _initOpenSearch = false;
   // int _itemsCount = 0;
 
   // late TextTheme _textTheme;
@@ -84,9 +88,14 @@ class _OrderProductsState extends State<OrderProducts> {
             if (index == 1) {
               index = 0;
             } else {
-              pop = true;
+              if (_searchController.isOpen) {
+                _searchController.close();
+              } else {
+                pop = true;
+              }
             }
           });
+
           return pop;
         });
   }
@@ -103,7 +112,11 @@ class _OrderProductsState extends State<OrderProducts> {
           if (index == 1) {
             index = 0;
           } else {
-            Navigator.pop(context);
+            if (_searchController.isOpen) {
+              _searchController.close();
+            } else {
+              Navigator.pop(context);
+            }
           }
         });
       },
@@ -170,13 +183,25 @@ class _OrderProductsState extends State<OrderProducts> {
   }
 
   FloatingSearchBar _searchField() {
+    if (!_initOpenSearch) {
+      Timer(const Duration(milliseconds: 00), () {
+        try {
+          _searchController.open();
+          // setState(() {
+          _initOpenSearch = true;
+          // });
+        } catch (e) {
+          printConsole(e);
+        }
+      });
+    }
     return FloatingSearchBar(
-      clearQueryOnClose: true,
-      axisAlignment: -1,
+      axisAlignment: 0,
       elevation: 0,
       // padding: EdgeInsets.symmetric(horizontal: 5),
       // border: BorderSide(color: _pc, width: 1),
       borderRadius: BorderRadius.circular(10),
+
       margins: EdgeInsets.zero,
       hint: 'Buscar producto',
       actions: [
@@ -229,49 +254,70 @@ class _OrderProductsState extends State<OrderProducts> {
         // to avoid overlap with floatingSearchBar
         margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
         padding: const EdgeInsets.only(top: 15),
-        child: StreamBuilder<Map<String, ProductModel>>(
-            stream: orderBloc.productsStream,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                _searchController.close();
-                if (orderBloc.getItemsCount() == 0) {
-                  _searchBarFocusManagement();
-                  _productsCount = 0;
-                  // _itemsCount = 0;
-                  return _empty(context).center();
-                } else {
-                  _productsCount += 1;
-                  // _itemsCount += 1;
-                  bool productRequestFocus = false;
-                  if (_productsCount == snapshot.data!.length) {
-                    if (_scrollController.hasClients) {
-                      _scrollController
-                          .jumpTo(_scrollController.position.minScrollExtent);
-                    }
-                    // final xd = orderBloc.settings['set_focus'];
-                    // printConsole();
-                    productRequestFocus = _searchBarFocusManagement();
-                  } else if (_productsCount - 2 == snapshot.data!.length) {
-                    // Nothing to do when items are removed from cart
-                  } else {
-                    // _searchBarFocusManagement();
-                    _productsCount = snapshot.data!.length;
-                    // _itemsCount = orderBloc.getItemsCount();
-                  }
-                  Map<String, ProductModel> saleProductsList = snapshot.data!;
-                  return ProductsList(
-                    productList: saleProductsList,
-                    scrollController: _scrollController,
-                    productRequestFocus: productRequestFocus,
-                    fromOrder: true,
-                  );
-                }
-              } else {
-                // ignore: unnecessary_null_comparison
+        child: _productsStream());
+  }
 
-                return _empty(context).center();
+  StreamBuilder<Map<String, ProductModel>> _productsStream() {
+    return StreamBuilder<Map<String, ProductModel>>(
+        stream: orderBloc.productsStream,
+        builder: (context, snapshot) {
+          // _searchBarFocusManagement();
+          if (_productsCount + 1 == snapshot.data?.length) {
+            _productsCount += 1;
+            _searchBarFocusManagement();
+          }
+           if (snapshot.hasData && _searchController.isClosed) {
+            bool productRequestFocus = false;
+            if (orderBloc.getItemsCount() == 0) {
+              _productsCount = 0;
+              // _itemsCount = 0;
+              return Container();
+              //
+              // return _empty(context).center();
+            } else {
+              
+              // _itemsCount += 1;
+
+              if (_productsCount == snapshot.data!.length) {
+                if (_scrollController.hasClients) {
+                  _scrollController
+                      .jumpTo(_scrollController.position.minScrollExtent);
+                }
+                // final xd = orderBloc.settings['set_focus'];
+                // printConsole();
+
+                productRequestFocus = _productFocus();
+              } else if (_productsCount - 2 == snapshot.data!.length) {
+                // Nothing to do when items are removed from cart
+              } else {
+                // _searchBarFocusManagement();
+                _productsCount = snapshot.data!.length;
+                // _itemsCount = orderBloc.getItemsCount();
               }
-            }));
+            }
+            Map<String, ProductModel> saleProductsList = snapshot.data!;
+            return ProductsList(
+              productList: saleProductsList,
+              scrollController: _scrollController,
+              productRequestFocus: productRequestFocus,
+              fromOrder: true,
+            );
+          } else if (orderBloc.getProducts?.isNotEmpty ?? false) {
+            return ProductsList(
+              productList: orderBloc.getProducts!,
+              scrollController: _scrollController,
+              productRequestFocus: false,
+              fromOrder: true,
+            );
+          } else if (snapshot.hasData && _searchController.isOpen) {
+            return Container();
+          } else {
+            // ignore: unnecessary_null_comparison
+            return Container();
+
+            // return _empty(context).center();
+          }
+        });
   }
 
   _searchBarFocusManagement() {
@@ -286,8 +332,13 @@ class _OrderProductsState extends State<OrderProducts> {
           }
         }
       });
-      return false;
-    } else if (dataBloc.settings!['set_focus'] == 1 && index == 0) {
+    } else {
+      _searchController.close();
+    }
+  }
+
+  _productFocus() {
+    if (dataBloc.settings!['set_focus'] == 1 && index == 0) {
       if ((orderBloc.getProducts ?? {}).isEmpty) {
         return true;
       } else {
@@ -299,28 +350,28 @@ class _OrderProductsState extends State<OrderProducts> {
     }
   }
 
-  Widget _empty(BuildContext context) {
-    return AppButton(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: const [
-          Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
-          Text(
-            'Añadir productos',
-            style: TextStyle(color: Colors.white),
-          ),
-        ],
-      ),
-      padding: kButtonPadding,
-      color: pColor,
-      onTap: () {
-        _searchController.open();
-      },
-    );
-  }
+  // Widget _empty(BuildContext context) {
+  //   return AppButton(
+  //     child: Row(
+  //       mainAxisSize: MainAxisSize.min,
+  //       children: const [
+  //         Icon(
+  //           Icons.add,
+  //           color: Colors.white,
+  //         ),
+  //         Text(
+  //           'Añadir productos',
+  //           style: TextStyle(color: Colors.white),
+  //         ),
+  //       ],
+  //     ),
+  //     padding: kButtonPadding,
+  //     color: pColor,
+  //     onTap: () {
+  //       _searchController.open();
+  //     },
+  //   );
+  // }
 
   Widget _bottom() {
     return Row(
@@ -365,55 +416,57 @@ class _OrderProductsState extends State<OrderProducts> {
   }
 
   _onQueryChanged(String query) async {
-    List<ProductModel> products = [];
-    final settings = await dataBloc.getSettings();
-    List<Map>? res;
-    if (settings['overselling'] == 1) {
-      res = await ProductsProvider.findProducts(query, limit: true);
-    } else {
-      res = await ProductsProvider.findProducts(query, overselling: false);
-    }
-    // printConsole('xd');
-    if (res != null) {
-      if (res.isEmpty) {
-        if ((query.length - _queryLen > 1)) {
-          _searchController.clear();
-          scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
-              const Duration(seconds: 1, milliseconds: 500),
-              backGroundColor: Colors.red);
-
-          // _searchController.query='';
-          _queryLen = 0;
-        } else {
-          _queryLen = query.length;
-        }
+    if (query != '') {
+      List<ProductModel> products = [];
+      final settings = await dataBloc.getSettings();
+      List<Map>? res;
+      if (settings['overselling'] == 1) {
+        res = await ProductsProvider.findProducts(query, limit: true);
       } else {
-        if (res.length == 1) {
-          final temp = ProductModel.fromJson(res.first);
-          final productReq =
-              await ProductsProvider.getProductRequirements(context, temp);
-          if (productReq != {}) {
-            final result = await orderBloc.addProduct(productReq);
-            if (result) {
-              scaffoldAlert(context, 'Producto ${temp.name} añadido',
-                  const Duration(seconds: 1));
+        res = await ProductsProvider.findProducts(query, overselling: false);
+      }
+      // printConsole('xd');
+      if (res != null) {
+        if (res.isEmpty) {
+          if ((query.length - _queryLen > 1)) {
+            _searchController.clear();
+            scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
+                const Duration(seconds: 1, milliseconds: 500),
+                backGroundColor: Colors.red);
+
+            // _searchController.query='';
+            _queryLen = 0;
+          } else {
+            _queryLen = query.length;
+          }
+        } else {
+          if (res.length == 1) {
+            final temp = ProductModel.fromJson(res.first);
+            final productReq =
+                await ProductsProvider.getProductRequirements(context, temp);
+            if (productReq != {}) {
+              final result = await orderBloc.addProduct(productReq);
+              if (result) {
+                scaffoldAlert(context, 'Producto ${temp.name} añadido',
+                    const Duration(seconds: 1));
+              }
+            }
+
+            products = [];
+          } else {
+            _queryLen = query.length;
+            if (query != '') {
+              products = ProductModel.fromJsonList(res);
+            } else {
+              products = [];
             }
           }
-
-          products = [];
-        } else {
-          _queryLen = query.length;
-          if (query != '') {
-            products = ProductModel.fromJsonList(res);
-          } else {
-            products = [];
-          }
         }
+      } else {
+        products = [];
       }
-    } else {
-      products = [];
+      orderBloc.setProductSearchData(products);
     }
-    orderBloc.setProductSearchData(products);
   }
 
   void _send() {

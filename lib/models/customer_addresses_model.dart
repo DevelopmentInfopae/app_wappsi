@@ -75,10 +75,8 @@ class CustomerAddressesModel {
         phone: json['phone'].toString(),
         priceGroupName: json['price_group_name'].toString(),
         direccion: json["direccion"] ?? '',
-        geoLocation:
-            (json["geo_location"] != null && json["geo_location"] != '')
-                ? jsonDecode(json["geo_location"] ?? "")
-                : null,
+        geoLocation:jsonDecode(json["geo_location"] ?? "null")
+                ,
         city: json["city"] ?? '',
         line1: json["line1"] ?? '',
         line2: json["line2"] ?? '',
@@ -117,8 +115,8 @@ class CustomerAddressesModel {
         "geo_location": jsonEncode(geoLocation),
         "city": city,
         "vat_no": vatNo,
-        "email": email,
-        "phone": phone,
+        "email": email??'',
+        "phone": phone??'',
         "code": code,
         "city_code": cityCode,
         "customer_group_id": customerGroupId,

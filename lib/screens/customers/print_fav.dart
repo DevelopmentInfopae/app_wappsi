@@ -13,6 +13,7 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/img_dir.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/select_customer_add_alert.dart';
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
@@ -154,7 +155,7 @@ class _PrintFavState extends State<PrintFav> {
             widget.printData['customer']['id_cloud'].toString());
         // printConsole(addresses);
         if (addresses.length > 1) {
-          final address = await showCupertinoDialog(
+          final address = await showCupertinoDialog<CustomerAddressesModel?>(
               barrierDismissible: true,
               context: context,
               useRootNavigator: false,
@@ -164,7 +165,7 @@ class _PrintFavState extends State<PrintFav> {
                         CompanyModel.fromJson(widget.printData['customer']),
                     adresses: addresses);
               });
-          widget.printData['customer_address'] = address;
+          widget.printData['customer_address'] = address?.toJson();
         }
         bool isConnected;
 

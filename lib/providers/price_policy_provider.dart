@@ -95,7 +95,14 @@ class PricePoliciesProvider {
     try {
       /// For price_plicy with id 6
       if (policy == 6) {
-        if (posBloc.getProducts![productKey]!.promoPrice != null) {
+        ProductModel? t;
+        if(toOrder){
+          t = orderBloc.getProducts?[productKey];
+        }else{
+          t = posBloc.getProducts?[productKey];
+
+        }
+        if (t?.promoPrice != null) {
           product.price = product.promoPrice!;
           product.discount = 0;
           product.priceWithoutDiscount = product.promoPrice!;

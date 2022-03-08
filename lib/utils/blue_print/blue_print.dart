@@ -6,6 +6,7 @@ import 'package:esc_pos_utils/esc_pos_utils.dart';
 // import 'package:image_downloader/image_downloader.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/printer_bloc.dart';
+import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/utils/blue_print/blue_print_functions.dart';
@@ -15,7 +16,8 @@ class PrintFormat {
   PrintFormat({this.productsList, this.movementInfo});
   List<Map>? productsList;
   Map<String, String>? movementInfo;
-  int chrLen = 48;
+  // int chrLen = 48;
+  int chrLen = Environment().printerPaperSize=='1'?32:48;
 
   int valueMaxCharLen = 12;
 
@@ -302,10 +304,10 @@ class PrintFormat {
         .toString()
         .substring(1);
     final labelsPayDetails = [
-      'Total ',
+      'Total         ',
       'Valor recibido',
-      'Cambio',
-      'Pagado en '
+      'Cambio        ',
+      'Pagado en     '
     ];
     final valuesPayDetails = [
       getFormatedCurrency((printData!['total']! ?? '')).toString().substring(1),
@@ -361,7 +363,7 @@ class PrintFormat {
     generator.setGlobalFont(PosFontType.fontB);
     bytes = _footer(generator, bytes, innerPrinter, printData);
     // // ignore: unnecessary_statements
-    // bytes += generator.feed(1);
+    bytes += generator.feed(1);
     // ignore: unnecessary_statements
     innerPrinter ? null : bytes += generator.cut();
     return bytes;
@@ -391,7 +393,7 @@ class PrintFormat {
   }
 
   Future<List<int>> ticketProductsPP6(
-    Generator generator,
+    Generator generator,  
     bool innerPrinter,
   ) async {
     //init print format values
@@ -471,9 +473,10 @@ class PrintFormat {
               value;
         } else {
           final namePart = innerPrinter ? replaceSpecialCharacters(str) : str;
+          final emptySpace = chrLen - (namePart.length +qttyLenght+1);
           text += getEmptySpaces(qttyLenght + 1) +
               namePart +
-              getEmptySpaces(chrLen - (namePart.length + valueLenght + 1));
+              getEmptySpaces(emptySpace);
         }
       }
       bytes += generator.text(text,
@@ -540,7 +543,7 @@ class PrintFormat {
     bytes += generator.hr(len: chrLen, ch: '-');
     for (var element in productsList!) {
       List<String> formatedS = formatString(element['name'].toString(),
-          chrSpaces: (chrLen - (qttyLenght + valueLenght + 2)));
+          chrSpaces: (chrLen - (qttyLenght + valueLenght + umdLenght + 3)));
       String text = '';
       // text = '';
       final price = element['quantity'] * element['price'];
@@ -566,8 +569,8 @@ class PrintFormat {
               getEmptySpaces(((umdLenght + 1) - unitCode.length).toInt()) +
               namePart +
               getEmptySpaces(
-                  (chrLen - (qttyLenght + umdLenght + valueLenght + 3)) -
-                      namePart.length) +
+                  (chrLen - (qttyLenght + umdLenght + valueLenght + 3+namePart.length))
+                      ) +
               getEmptySpaces((valueLenght + 1) - value.length) +
               value;
         } else {
@@ -602,8 +605,8 @@ class PrintFormat {
     //init print format values
     List<int> bytes = [];
     // delete print buffer
-    int spacesAfterPName = 8;
-    int spacesBeforeUName = 4;
+    int spacesAfterUName = 4;
+    int spacesBeforeUName = 1;
 
     generator.reset();
     generator.spaceBetweenRows = 1;
@@ -617,7 +620,7 @@ class PrintFormat {
 
     for (var element in productsList!) {
       List<String> formatedS = formatString(element['name'].toString(),
-          chrSpaces: (chrLen - spacesAfterPName));
+          chrSpaces: chrLen);
       String text = '';
       // text = '';
 
@@ -631,17 +634,18 @@ class PrintFormat {
         }
       }
       bytes += generator.text(text,
-          styles: const PosStyles(bold: false, align: PosAlign.left));
+          styles: const PosStyles(bold: true, align: PosAlign.left, fontType: PosFontType.fontB));
       final units = await UnitsProvider.getProductUnits(
           element['id_cloud'].toString(),
           customer['price_group_id'].toString());
       String unitsText = '';
       for (UnitsModel element in units) {
         List<String> formatedU = formatString(element.name.toString(),
-            chrSpaces: chrLen - (spacesAfterPName + spacesBeforeUName));
+            chrSpaces: (chrLen -
+                    (15)));
 
         for (String fU in formatedU) {
-          final value = getFormatedCurrency(element.unitValue);
+          final value = getFormatedCurrency(element.unitValue, decimals: 0);
           if (fU == formatedU.first) {
             final namePart = innerPrinter ? replaceSpecialCharacters(fU) : fU;
             unitsText = getEmptySpaces(spacesBeforeUName) +
@@ -650,15 +654,14 @@ class PrintFormat {
                     (spacesBeforeUName +
                         namePart.length +
                         value.length +
-                        spacesAfterPName)) +
+                        spacesAfterUName+1)) + ' '+
                 value +
-                (' ') +
-                ('_' * (spacesAfterPName - 1));
+                ('_' * (spacesAfterUName));
           } else {
             final namePart = innerPrinter ? replaceSpecialCharacters(fU) : fU;
             unitsText += getEmptySpaces(spacesBeforeUName) +
                 namePart +
-                getEmptySpaces(chrLen - (namePart.length + spacesAfterPName));
+                getEmptySpaces(chrLen - (namePart.length + spacesAfterUName));
           }
         }
         bytes += generator.text(unitsText,
@@ -700,7 +703,7 @@ class PrintFormat {
           temp2);
       bytes += generator.text(
           (chrLen == 32 ? '' : getEmptySpaces(9)) + (textToPrint),
-          styles: const PosStyles(bold: false, align: PosAlign.left));
+          styles: const PosStyles(bold: false, align: PosAlign.center));
     });
     return bytes;
   }

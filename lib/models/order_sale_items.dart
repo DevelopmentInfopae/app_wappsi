@@ -103,7 +103,8 @@ class OrderSaleItemsModel {
         productName: json["product_name"],
         productType: json["product_type"],
         optionId: int.tryParse(json["option_id"].toString()),
-        netUnitPrice: json["net_unit_price"] + 0.0,
+        netUnitPrice:
+            double.tryParse(json["net_unit_price"]?.toString() ?? '0.0') ?? 0.0,
         unitPrice: json["unit_price"] + 0.0,
         quantity: json["quantity"] + 0.0,
         quantityToBill: json["quantity_to_bill"] + 0.0,
@@ -132,7 +133,11 @@ class OrderSaleItemsModel {
         unitOrderDiscount:
             double.tryParse(json["unit_order_discount"].toString()),
         priceBeforeTax:
-            double.tryParse(json["price_before_tax"].toString()) ?? 0.0,
+            double.tryParse(json["price_before_tax"]?.toString() ?? '0') == 0.0
+                ? (double.tryParse(
+                        json["net_unit_price"]?.toString() ?? '0.0') ??
+                    0.0)
+                : 0.0,
         preferences: json["preferences"],
         registrationDate: json["registration_date"],
       );
@@ -254,6 +259,7 @@ class OrderSaleItemsModel {
           productName: product.name,
           productType: product.type,
           netUnitPrice: product.getPriceWithoutIVA(),
+          priceBeforeTax: product.getPriceWithoutIVA(),
           unitPrice: product.getPriceWithIVA(),
           quantity: product.quantity,
           warehouseId: dataBloc.userData!.warehouseId,

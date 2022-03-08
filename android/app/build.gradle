@@ -43,7 +43,13 @@ android {
         applicationId "com.wappsi.wappsi_pos_app"
         minSdkVersion 20
         targetSdkVersion 30
+        // lapappaya
+        // versionCode 2
+        // dulcelandia
         versionCode 1
+        // lapappaya
+        // versionName "1.0.1"
+        // dulcelandia
         versionName "1.0.0"
         multiDexEnabled true
     }

@@ -42,7 +42,7 @@ class _CustomerCardState extends State<CustomerCard> {
             // hDivider(heigh: 60, width: 1, pleft: 6),
             _description().flexible(flex: 7)
           ],
-        ),
+        ).withHeight(100),
       ),
     );
   }

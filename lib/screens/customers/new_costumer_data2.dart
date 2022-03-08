@@ -506,7 +506,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       }
     }, () {
       _p.requestFocus();
-    }, focus: _e, controller: _emailController)
+    }, focus: _e, controller: _emailController, keyBType: TextInputType.emailAddress)
         .paddingSymmetric(vertical: 5);
   }
 

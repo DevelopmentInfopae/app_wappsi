@@ -144,10 +144,10 @@ Future<XFile?> imagePickerDialog(BuildContext context) async {
                     image = await _picker.pickImage(
                       source: ImageSource.gallery,
                       maxWidth: dataBloc.settings?['iwidth'] != null
-                          ? (dataBloc.settings!['iwidth'] * 1)
+                          ? (dataBloc.settings!['iwidth'] * 1.0)
                           : null,
                       maxHeight: dataBloc.settings?['iheight'] != null
-                          ? (dataBloc.settings!['iheight'] * 1)
+                          ? (dataBloc.settings!['iheight'] * 1.0)
                           : null,
                     );
                   },

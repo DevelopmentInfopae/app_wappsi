@@ -87,7 +87,12 @@ class CustomerAddressesProvider {
       String id) async {
     final data = await loadCustomerAddressesFromDB(id);
     if (data != null) {
-      return CustomerAddressesModel.fromJsonList(data);
+      try {
+        return CustomerAddressesModel.fromJsonList(data);
+      } catch (e) {
+        printConsole(e);
+        return [];
+      }
     } else {
       return [];
     }
@@ -226,6 +231,7 @@ class CustomerAddressesProvider {
     } else {
       // update local DB with company info
       body['id_cloud'] = res['body']['address_id'];
+      body.remove('id');
       bool dbUpdated = await CustomerAddressesProvider.writeAddressOnDB(body);
 
       // if fails we force DB sync

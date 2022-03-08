@@ -19,6 +19,8 @@ class Environment {
   // static const String STAGING = 'STAGING';
   static const String PROD = 'PROD';
 
+  String printerPaperSize = '1';
+
   late BaseConfig config;
 
   late String env;

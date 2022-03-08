@@ -39,23 +39,12 @@ class UnitsModel {
         idCloud: json["id_cloud"],
         code: json["code"],
         name: json["name"],
-        baseUnit: (json["base_unit"] == "" || json["base_unit"] == null)
-            ? null
-            : json["base_unit"],
-        operator: json["operator"],
-        unitValue: (json.containsKey('valor_unitario')
-                    ? (json['valor_unitario'])
-                    : (json["unit_value"])) ==
-                ''
-            ? 1.0
-            : (json.containsKey('valor_unitario')
-                    ? (json['valor_unitario'])
-                    : (json["unit_value"])) +
-                0.0,
-        operationValue:
-            (json["operation_value"] == '' || json["operation_value"] == null)
-                ? 1
-                : (json["operation_value"] + 0.0),
+        baseUnit: int.tryParse(json["base_unit"].toString()),
+        operator: json["operator"]??'',
+        unitValue: double.tryParse(
+            (json['valor_unitario'] ?? json["unit_value"]??'').toString()) ?? 1.0,
+        operationValue:double.tryParse((json["operation_value"]??'').toString())??1.0,
+           
         priceGroupId:
             json["price_group_id"] == '' ? null : json["price_group_id"],
         lastUpdate: json["last_update"],

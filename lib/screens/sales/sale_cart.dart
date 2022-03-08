@@ -1,5 +1,7 @@
 // ignore_for_file: unnecessary_statements
 
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +19,7 @@ import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 // import 'package:pos_wappsi/screens/sales/components/sale_product_list_widget.dart';
 
-import 'package:pos_wappsi/screens/sales/components/search.dart';
+import 'package:pos_wappsi/components/search_products.dart';
 // import 'package:pos_wappsi/screens/sales/components/select_product_unit_alert.dart';
 import 'package:pos_wappsi/screens/sales/components/suspend_sale_alert.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -27,6 +29,7 @@ import 'package:pos_wappsi/screens/sales/sale_payment.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
 class SaleCart extends StatefulWidget {
@@ -45,6 +48,8 @@ class _SaleCartState extends State<SaleCart> {
 
   // TO control changes in products and execute focus task
   int _productsCount = 0;
+
+  bool _initOpenSearch = false;
   // int _itemsCount = 0;
 
   @override
@@ -64,12 +69,23 @@ class _SaleCartState extends State<SaleCart> {
     // _textTheme = Theme.of(context).textTheme;
 
     // initialize search controller
-    return Scaffold(
-        appBar: appBar(context, 'Venta POS',
-            elevation: false,
-            radius: 0,
-            image: 'assets/images/add-to-cart.png'),
-        body: _searchbar());
+    return WillPopScope(
+      onWillPop: () async {
+        bool pop = false;
+        if (_searchController.isOpen) {
+          _searchController.close();
+        } else {
+          pop = true;
+        }
+        return pop;
+      },
+      child: Scaffold(
+          appBar: appBar(context, 'Venta POS',
+              elevation: false,
+              radius: 0,
+              image: 'assets/images/add-to-cart.png'),
+          body: _searchbar()),
+    );
   }
 
   Widget _searchbar() {
@@ -102,12 +118,25 @@ class _SaleCartState extends State<SaleCart> {
   }
 
   FloatingSearchBar _searchField() {
+    if (!_initOpenSearch) {
+      Timer(const Duration(milliseconds: 600), () {
+        try {
+          _searchController.open();
+          // setState(() {
+          _initOpenSearch = true;
+          // });
+        } catch (e) {
+          printConsole(e);
+        }
+      });
+    }
     return FloatingSearchBar(
       clearQueryOnClose: true,
       onFocusChanged: (value) {
         // FocusScope.of(context).unfocus();
       },
-      axisAlignment: -1,
+      axisAlignment: 0,
+
       elevation: 0,
       // padding: EdgeInsets.symmetric(horizontal: 8),
       // border: BorderSide(color: _pc, width: 1),
@@ -165,18 +194,23 @@ class _SaleCartState extends State<SaleCart> {
         child: StreamBuilder<Map<String, ProductModel>>(
             stream: posBloc.productsStream,
             builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                _searchController.close();
+              if (_productsCount + 1 == snapshot.data?.length) {
+                _searchBarFocusManagement();
+              }
 
+              if (snapshot.hasData && _searchController.isClosed) {
+                // _searchController.close();
+                bool productRequestFocus = false;
                 if (posBloc.getItemsCount() == 0) {
-                  _searchBarFocusManagement();
+                  // _searchBarFocusManagement();
                   _productsCount = 0;
                   // _itemsCount = 0;
-                  return _empty(context).center();
+                  return Container();
+
+                  // return _empty(context).center();
                 } else {
                   _productsCount += 1;
                   // _itemsCount += 1;
-                  bool productRequestFocus = false;
                   if (_productsCount == snapshot.data!.length) {
                     if (_scrollController.hasClients) {
                       _scrollController
@@ -184,7 +218,7 @@ class _SaleCartState extends State<SaleCart> {
                     }
                     // final xd = posBloc.settings['set_focus'];
                     // printConsole();
-                    productRequestFocus = _searchBarFocusManagement();
+                    productRequestFocus = _productFocus();
                   } else if (_productsCount - 2 == snapshot.data!.length) {
                     // Nothing to do when items are removed from cart
                   } else {
@@ -192,16 +226,26 @@ class _SaleCartState extends State<SaleCart> {
                     _productsCount = snapshot.data!.length;
                     // _itemsCount = posBloc.getItemsCount();
                   }
-                  Map<String, ProductModel> saleProductsList = snapshot.data!;
-                  return ProductsList(
-                      productList: saleProductsList,
-                      scrollController: _scrollController,
-                      productRequestFocus: productRequestFocus);
                 }
+                Map<String, ProductModel> saleProductsList = snapshot.data!;
+                return ProductsList(
+                    productList: saleProductsList,
+                    scrollController: _scrollController,
+                    productRequestFocus: productRequestFocus);
+              } else if (posBloc.getProducts?.isNotEmpty ?? false) {
+                return ProductsList(
+                  productList: posBloc.getProducts??{},
+                  scrollController: _scrollController,
+                  productRequestFocus: false,
+                  fromOrder: false,
+                );
+              } else if (snapshot.hasData && _searchController.isOpen) {
+                return Container();
               } else {
                 // ignore: unnecessary_null_comparison
+                return Container();
 
-                return _empty(context).center();
+                // return _empty(context).center();
               }
             }));
   }
@@ -216,8 +260,13 @@ class _SaleCartState extends State<SaleCart> {
           _searchController.open();
         }
       });
-      return false;
-    } else if (dataBloc.settings!['set_focus'] == 1) {
+    } else {
+      _searchController.close();
+    }
+  }
+
+  _productFocus() {
+    if (dataBloc.settings?['set_focus'] == 1) {
       if ((posBloc.getProducts ?? {}).isEmpty) {
         return false;
       } else {
@@ -226,31 +275,33 @@ class _SaleCartState extends State<SaleCart> {
         }
         return true;
       }
+    }else{
+      return false;
     }
   }
 
-  Widget _empty(BuildContext context) {
-    return AppButton(
-      padding: kButtonPadding,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: const [
-          Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
-          Text(
-            'Añadir productos',
-            style: TextStyle(color: Colors.white),
-          ),
-        ],
-      ),
-      color: pColor,
-      onTap: () {
-        _searchController.open();
-      },
-    );
-  }
+  // Widget _empty(BuildContext context) {
+  //   return AppButton(
+  //     padding: kButtonPadding,
+  //     child: Row(
+  //       mainAxisSize: MainAxisSize.min,
+  //       children: const [
+  //         Icon(
+  //           Icons.add,
+  //           color: Colors.white,
+  //         ),
+  //         Text(
+  //           'Añadir productos',
+  //           style: TextStyle(color: Colors.white),
+  //         ),
+  //       ],
+  //     ),
+  //     color: pColor,
+  //     onTap: () {
+  //       _searchController.open();
+  //     },
+  //   );
+  // }
 
   Widget _bottom() {
     return Row(

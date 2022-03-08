@@ -93,7 +93,7 @@ class _PrintOrderState extends State<PrintOrder> {
   Widget _preview() {
     final textTheme = Theme.of(context).textTheme;
     return Container(
-      width: _size.width * 0.9,
+      width: _size.width * 0.99,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: SingleChildScrollView(
         child: Card(
@@ -108,17 +108,17 @@ class _PrintOrderState extends State<PrintOrder> {
               orderRef(textTheme, widget.printData),
               emptyLine(),
               billerData(textTheme, widget.printData)
-                  .withWidth(_size.width * 0.75)
+                  .withWidth(_size.width * 0.85)
                   .paddingSymmetric(horizontal: 10),
               emptyLine(),
               products(widget.printData,
                       pricePolicy:
                           dataBloc.settings!['prioridad_precios_producto'])
-                  .withWidth(_size.width * 0.75),
+                  .withWidth(_size.width * 0.85),
               emptyLine(),
               emptyLine(),
               taxRatesValues(textTheme, widget.printData)
-                  .withWidth(_size.width * 0.75),
+                  .withWidth(_size.width * 0.85),
               emptyLine(),
               // hDivider(),
               posNote(textTheme, widget.printData)

@@ -79,17 +79,28 @@ class CompaniesProvider {
   /// DB
   static Future<bool> writeCustomerInLDB(
       Map<String, dynamic> body, Map<String, dynamic> res) async {
-    bool dbUpdated = false;
+    // ignore: prefer_typing_uninitialized_variables
+    var customerId;
+    bool result = false;
+    final List<int> favorites = body['favorites'] ?? [];
+    final geoLoc = body['geo_location'];
     try {
       // to remove data for user and favorites creation
       body.remove('user_data');
+      body.remove('image');
+      body.remove('geo_location');
       body.remove('favorites');
     } catch (e) {
       printConsole(e);
     }
+
     body['id_cloud'] = res['body']['company_id'];
-    dbUpdated = await DBProvider.db.insertQuery('sma_companies', body);
-    if (dbUpdated) {
+    body['customer_profile_photo'] = res['body']['customer_profile_photo'];
+
+    customerId =
+        await DBProvider.db.insertQuery('sma_companies', body, returnId: true);
+    if (customerId != 0) {
+      // result = true;
       final address = {
         'id_cloud': res['body']['address_id'],
         'company_id': body['id_cloud'],
@@ -105,11 +116,23 @@ class CompaniesProvider {
         'price_group_name': body['price_group_name'],
         'price_group_id': body['price_group_id'],
         'email': body['email'],
+        'geo_location': jsonEncode(geoLoc??{}),
         'code': body['vat_no'] + '-01',
       };
-      dbUpdated = await DBProvider.db.insertQuery('sma_addresses', address);
+      result = await DBProvider.db.insertQuery('sma_addresses', address);
+      printConsole(result);
+      try {
+        // if (favorites != []) {
+          final favRes = await WishlistProvider.saveCustomerFavFromLocal(
+              customerId.toString(), favorites);
+          printConsole(favRes);
+        // }
+      } catch (e) {
+        printConsole(e);
+      }
     }
-    return dbUpdated;
+
+    return result;
   }
 
   //-----------------------------------------------------------------------------
@@ -148,11 +171,11 @@ class CompaniesProvider {
           offset: true,
           offsetValue: offsetValue);
     } else {
-      return await findCustomerBySearch(searchs,
+      return (await findCustomerBySearch(searchs,
           limit: limit,
           orderBy: orderBy,
           offset: offset,
-          offsetValue: offsetValue);
+          offsetValue: offsetValue)) ??[];
     }
   }
 
@@ -234,6 +257,8 @@ class CompaniesProvider {
 
   static sendCustomerInfo(BuildContext context) async {
     final customerGroup = await GroupsProvider.loadCustomerGroup();
+    // bool closeLoading = false;
+
     final apiProvider = DataProvider();
     if (customerGroup == null) {
       return {
@@ -244,9 +269,10 @@ class CompaniesProvider {
       customerBloc.getCustomer.groupId = customerGroup.idCloud.toString();
       customerBloc.getCustomer.groupName = customerGroup.name;
     }
-    if (customerBloc.getCustomer.priceGroupId == null) {
+    if (customerBloc.getCustomer.priceGroupId == null ||
+        customerBloc.getCustomer.priceGroupId == '') {
       final defPriceGroup = await PriceGroupsProvider.loadDefaultPriceGroup();
-      customerBloc.getCustomer.priceGroupId = defPriceGroup!.idCloud;
+      customerBloc.getCustomer.priceGroupId = (defPriceGroup!.idCloud);
       customerBloc.getCustomer.priceGroupName = defPriceGroup.name;
     }
 
@@ -277,13 +303,22 @@ class CompaniesProvider {
       body['geo_location'] = customerBloc.getLocation!.toMap();
     }
 
-    scaffoldAlert(context, 'Registrando cliente', const Duration(seconds: 10),
+    try {
+      scaffoldAlert(context, 'Registrando cliente', const Duration(seconds: 10),
         key: UniqueKey());
+    } catch (e) {
+      printConsole(e);
+      // closeLoading = true;
+      // loading(context);
+    }
 
     final res = await apiProvider.postPetition(
         addCompanyEndP, body, dataBloc.getHeaders());
 
     hideCurrentScaffoldAlert(context);
+    // if(closeLoading){
+    //     Navigator.pop(context);
+    //   }
     if (res['status'] == -1) {
       await reloadDialog(
           context, res['body']['message'], 'assets/images/dizzy-robot.png');
@@ -292,7 +327,10 @@ class CompaniesProvider {
           context, res['body']['message'], 'assets/images/dizzy-robot.png');
     } else {
       // update local DB with company info
+
       bool dbUpdated = await CompaniesProvider.writeCustomerInLDB(body, res);
+
+      
 
       // if fails we force DB sync
       if (!dbUpdated) {
