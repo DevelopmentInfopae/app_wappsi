@@ -43,6 +43,7 @@ class _OrderProductsState extends State<OrderProducts> {
 
   late Size _size;
   int _queryLen = 0;
+  final pListKey = UniqueKey();
 
   // TO control changes in products and execute focus task
   int _productsCount = 0;
@@ -126,11 +127,13 @@ class _OrderProductsState extends State<OrderProducts> {
             message: "Favoritos",
             child: AppBarLeading(
                 widget: Icon(
-                  index == 1 ? Icons.favorite : Icons.favorite_border_outlined,
+                  Icons.star,
                   size: leadingIconSize,
-                  color: pColor,
+                  color: index == 1 ? Colors.white : favColor,
                 ),
+                backgroundColor: index == 0 ? Colors.white : favColor,
                 onTap: () {
+                  FocusScope.of(context).unfocus();
                   setState(() {
                     if (index == 0) {
                       _searchController.close();
@@ -165,6 +168,7 @@ class _OrderProductsState extends State<OrderProducts> {
 
     return FavoritesOrderSelection(
         isPortrait: isPortrait,
+        toOrder: true,
         context: _scaffoldKey.currentContext ?? context);
   }
 
@@ -266,7 +270,7 @@ class _OrderProductsState extends State<OrderProducts> {
             _productsCount += 1;
             _searchBarFocusManagement();
           }
-           if (snapshot.hasData && _searchController.isClosed) {
+          if (snapshot.hasData && _searchController.isClosed&& _productsCount!=(orderBloc.getProducts?.length??0)) {
             bool productRequestFocus = false;
             if (orderBloc.getItemsCount() == 0) {
               _productsCount = 0;
@@ -275,7 +279,6 @@ class _OrderProductsState extends State<OrderProducts> {
               //
               // return _empty(context).center();
             } else {
-              
               // _itemsCount += 1;
 
               if (_productsCount == snapshot.data!.length) {
@@ -297,6 +300,7 @@ class _OrderProductsState extends State<OrderProducts> {
             }
             Map<String, ProductModel> saleProductsList = snapshot.data!;
             return ProductsList(
+              key:pListKey,
               productList: saleProductsList,
               scrollController: _scrollController,
               productRequestFocus: productRequestFocus,
@@ -304,6 +308,7 @@ class _OrderProductsState extends State<OrderProducts> {
             );
           } else if (orderBloc.getProducts?.isNotEmpty ?? false) {
             return ProductsList(
+              key:pListKey,
               productList: orderBloc.getProducts!,
               scrollController: _scrollController,
               productRequestFocus: false,

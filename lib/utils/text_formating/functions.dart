@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:intl/intl.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/environment/environment.dart';
 import 'dart:math';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
@@ -119,7 +120,10 @@ String capitalizeText(String value) {
   final specialLowerCases = ['de', 'la', 'el', 'los', 'las', 'y', 'o', 'con'];
 
   if (value.isNotEmpty) {
-    final words = value.split(' ');
+    List<String> words = value.split(' ');
+    if (words.isEmpty) {
+      words = value.split('  ');
+    }
     String output = '';
     if (words.isNotEmpty) {
       for (var element in words) {
@@ -139,8 +143,8 @@ String capitalizeText(String value) {
           } else {
             output = output +
                 ' ' +
-                temp.substring(0, 1).toUpperCase() +
-                temp.substring(1);
+                temp.substring(0, 1).toUpperCase() + 
+                temp.substring(1)+' ';
           }
         }
       }
@@ -148,7 +152,7 @@ String capitalizeText(String value) {
       final temp = value.toLowerCase();
       output = temp.substring(0, 1).toUpperCase() + temp.substring(1);
     }
-
+    printConsole(output);
     return output;
   } else {
     return value;
@@ -245,7 +249,7 @@ String getStringFromValues(var values) {
 }
 
 String getEmptySpaces(int n) {
-  String empty = ' ';
+  String empty = Environment().config.printErrors ? '-' : ' ';
 
   return empty * n;
 }

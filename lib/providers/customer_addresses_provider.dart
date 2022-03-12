@@ -195,7 +195,7 @@ class CustomerAddressesProvider {
     customerBloc.getAddress.companyId = customer.idCloud!;
     customerBloc.getAddress.vatNo = customer.vatNo ?? '';
     customerBloc.getAddress.customerAddressSellerIdAssigned =
-        customer.customerSellerIdAssigned!;
+        customer.customerSellerIdAssigned;
     customerBloc.getAddress.priceGroupId = customer.priceGroupId!;
     customerBloc.getAddress.priceGroupName = customer.priceGroupName!;
 

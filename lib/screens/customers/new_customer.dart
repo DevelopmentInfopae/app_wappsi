@@ -12,6 +12,7 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/documentypes_model.dart';
+import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/providers/documenttypes_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 import 'package:pos_wappsi/screens/customers/components/functions.dart';
@@ -51,6 +52,8 @@ class _NewCustomerState extends State<NewCustomer> {
 
   DocumentypeModel? _doc;
 
+  String? _docNumError;
+
   final bool _loading = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -64,7 +67,7 @@ class _NewCustomerState extends State<NewCustomer> {
     _name2Controller.text = customerBloc.getCustomer.secondName ?? '';
     _lastNameController.text = customerBloc.getCustomer.firstLastname ?? '';
     _lastName2Controller.text = customerBloc.getCustomer.secondLastname ?? '';
-    _documentypeController.text = customerBloc.getCustomer.tipoDocumento ?? '';
+    // _documentypeController.text = ;
     _documentNController.text = customerBloc.getCustomer.vatNo ?? '';
     _comercialNameController.text = customerBloc.getCustomer.company ?? '';
     _verificationCodeController.text =
@@ -129,9 +132,7 @@ class _NewCustomerState extends State<NewCustomer> {
             _documents().paddingSymmetric(vertical: 3),
             _docNum().paddingSymmetric(vertical: 3),
             _doc?.nombre == 'NIT' ? _verificationCode() : Container(),
-            customerBloc.getCustomer.typePerson == '2'
-                ? _comercialName()
-                : Container(),
+            _comercialName(),
             _nameFirst().paddingSymmetric(vertical: 3),
             _nameSecond().paddingSymmetric(vertical: 3),
             _lastNm1().paddingSymmetric(vertical: 3),
@@ -197,7 +198,9 @@ class _NewCustomerState extends State<NewCustomer> {
   }
 
   Widget _docNum() {
-    return textFormField(context, 'NIT/CC', (value) {
+    return textFormField(context, 'NIT/CC', (value) async {
+      _docNumError = await _validateDocNum(value);
+
       final res = getVerificationCode(value);
       if (res['error']) {
         _documentNController.selection = TextSelection(
@@ -207,7 +210,11 @@ class _NewCustomerState extends State<NewCustomer> {
         setState(() {
           _verificationCodeController.text = res['value'];
           customerBloc.getCustomer.vatNo = value;
-          customerBloc.getCustomer.digitoVerificacion = value ?? '';
+          if (_doc?.nombre == 'NIT') {
+            customerBloc.getCustomer.digitoVerificacion = res['value'] ?? '';
+          } else {
+            customerBloc.getCustomer.digitoVerificacion = '';
+          }
         });
       }
     }, (String? value) {
@@ -217,6 +224,9 @@ class _NewCustomerState extends State<NewCustomer> {
         _d.requestFocus();
         return 'El valor suministrado no es valido';
       }
+      if (_docNumError != null) {
+        return _docNumError;
+      }
     }, () {
       _n1.requestFocus();
     },
@@ -224,6 +234,20 @@ class _NewCustomerState extends State<NewCustomer> {
             focus: _d,
             controller: _documentNController)
         .paddingSymmetric(vertical: 5);
+  }
+
+  Future<String?> _validateDocNum(String? value) async {
+    if (value != null) {
+      final res = await CompaniesProvider.verifyDocNum(value);
+      if (res != null) {
+        if (res['status'] == 0) {
+          return 'Numero de documento registrado en cliente suspendido';
+        } else {
+          return 'Numero de documento registrado';
+        }
+      }
+    }
+    return null;
   }
 
   Widget _nameSecond() {

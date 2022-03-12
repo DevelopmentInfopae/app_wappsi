@@ -6,6 +6,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:restart_app/restart_app.dart';
 
@@ -24,24 +25,28 @@ void scaffoldAlert(BuildContext context, String message, Duration duration,
     Color textColor = Colors.white,
     Key? key}) {
   final _size = MediaQuery.of(context).size;
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    key: key,
-    duration: duration,
-    padding: EdgeInsets.zero,
-    content: bottom(
-      Text(
-        message,
-        style: Theme.of(context)
-            .textTheme
-            .headline6!
-            .apply(fontSizeFactor: 0.8, color: textColor),
-      ).paddingSymmetric(horizontal: 8),
-      backGroundColor,
-      _size,
-      alignment: Alignment.center,
-    ),
-    backgroundColor: backGroundColor,
-  ));
+  try {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      key: key,
+      duration: duration,
+      padding: EdgeInsets.zero,
+      content: bottom(
+        Text(
+          message,
+          style: Theme.of(context)
+              .textTheme
+              .headline6!
+              .apply(fontSizeFactor: 0.8, color: textColor),
+        ).paddingSymmetric(horizontal: 8),
+        backGroundColor,
+        _size,
+        alignment: Alignment.center,
+      ),
+      backgroundColor: backGroundColor,
+    ));
+  } catch (e) {
+    printConsole(e);
+  }
 }
 
 void hideCurrentScaffoldAlert(BuildContext context) {

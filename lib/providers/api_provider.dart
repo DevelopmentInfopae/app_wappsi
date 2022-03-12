@@ -1,6 +1,6 @@
 // ignore_for_file: implementation_imports
 
-// import 'dart:convert';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 
@@ -32,7 +32,7 @@ class DataProvider {
     // to seconds to milliseconds, seconds * 1000
     dio.options.receiveTimeout = awaitTime * 1000;
     dio.options.method = 'POST';
-    // final data2 = jsonEncode(data);
+    final data2 = jsonEncode(data);
 
     try {
       resp = await dio

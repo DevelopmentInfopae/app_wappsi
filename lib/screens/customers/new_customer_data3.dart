@@ -50,8 +50,8 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
   CustomerGroupsModel? _customerGroup;
   PriceGroupsModel? _priceGroup;
 
-  FocusNode _unameFocus = FocusNode();
-  FocusNode _passwdFocus = FocusNode();
+  final FocusNode _unameFocus = FocusNode();
+  final FocusNode _passwdFocus = FocusNode();
 
   // ignore: prefer_final_fields
   bool _loading = false;
@@ -361,6 +361,9 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
           onTap: _loading
               ? null
               : () async {
+                  setState(() {
+                    _loading = true;
+                  });
                   if (_formKey.currentState?.validate() ?? false) {
                     if (_addFavorites) {
                       final verifyUserN =
@@ -372,6 +375,13 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
                       await CompaniesProvider.sendCustomerInfo(context);
                       await dataBloc.refreshToken(context);
                     }
+                    setState(() {
+                      _loading = false;
+                    });
+                  } else {
+                    setState(() {
+                      _loading = false;
+                    });
                   }
                 },
           color: Colors.white,
@@ -528,41 +538,28 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
   }
 
   Widget _user() {
-    return textFormField(
-      context,
-      'Nombre de usuario',
-      (value) {
-        customerBloc.setUserName(value);
-      },
-      (String? value) {
-        if ((value?.length ?? 0) == 0) {
-          return 'Debe suministrar un nombre de usuario';
-        }
-      },
-      
-      () {
-        _passwdFocus.requestFocus();
-      },
-      focus: _unameFocus
-    ).paddingSymmetric(vertical: 5);
+    return textFormField(context, 'Nombre de usuario', (value) {
+      customerBloc.setUserName(value);
+    }, (String? value) {
+      if ((value?.length ?? 0) == 0) {
+        return 'Debe suministrar un nombre de usuario';
+      }
+    }, () {
+      _passwdFocus.requestFocus();
+    }, focus: _unameFocus)
+        .paddingSymmetric(vertical: 5);
   }
 
   Widget _password() {
-    return textFormField(
-      context,
-      'Contraseña',
-      (value) {
-        customerBloc.setPassword(value);
-      },
-      (String? value) {
-        if ((value?.length ?? 0) < 6) {
-          return 'Contraseña valida';
-        }
-      },
-      () {
-        _passwdFocus.unfocus();
-      },
-      focus: _passwdFocus
-    ).paddingSymmetric(vertical: 5);
+    return textFormField(context, 'Contraseña', (value) {
+      customerBloc.setPassword(value);
+    }, (String? value) {
+      if ((value?.length ?? 0) < 6) {
+        return 'Contraseña valida';
+      }
+    }, () {
+      _passwdFocus.unfocus();
+    }, focus: _passwdFocus)
+        .paddingSymmetric(vertical: 5);
   }
 }

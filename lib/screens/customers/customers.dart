@@ -138,9 +138,9 @@ class _ProductsState extends State<Customers> {
                       (context, AsyncSnapshot<List<CompanyModel>?> snapshot2) {
                     if (snapshot2.hasData) {
                       return CustomerCardList(
-                        customer: snapshot2.data!,
-                        searchParams: _searchParams,
-                      );
+                          customer: snapshot2.data!,
+                          searchParams: _searchParams,
+                        );
                     } else {
                       _customersStream.sink
                           .add(CompanyModel.fromJsonList(snapshot.data!));

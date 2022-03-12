@@ -501,12 +501,19 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
     return textFormField(context, 'Correo electrónico', (value) {
       customerBloc.getCustomer.email = value;
     }, (String? value) {
-      if (!emailRegex.hasMatch(value ?? '') && (value?.length ?? 0) > 0) {
+      if (value == null || value == '') {
+        _e.requestFocus();
+        return 'El campo es necesario';
+      }
+      if (!emailRegex.hasMatch(value)) {
         return 'Correo electrónico no valido';
       }
     }, () {
       _p.requestFocus();
-    }, focus: _e, controller: _emailController, keyBType: TextInputType.emailAddress)
+    },
+            focus: _e,
+            controller: _emailController,
+            keyBType: TextInputType.emailAddress)
         .paddingSymmetric(vertical: 5);
   }
 
@@ -514,7 +521,11 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
     return textFormField(context, 'Telefono', (value) {
       customerBloc.getCustomer.phone = value;
     }, (String? value) {
-      if (!isNumeric(value ?? '') && (value?.length ?? 0) > 0) {
+      if (value == null || value == '') {
+        _p.requestFocus();
+        return 'El campo es necesario';
+      }
+      if (!isNumeric(value)) {
         return 'Telefono no valido';
       }
     }, () async {
@@ -526,19 +537,17 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   }
 
   Widget _address() {
-    return textFormField(
-            context,
-            'Dirección',
-            (value) {
-              customerBloc.getCustomer.address = value;
-            },
-            (String? value) {},
-            () {
-              final _currentFocus = FocusScope.of(context);
-              _currentFocus.unfocus();
-            },
-            focus: _d,
-            controller: _addressController)
+    return textFormField(context, 'Dirección', (value) {
+      customerBloc.getCustomer.address = value;
+    }, (String? value) {
+      if (value == null || value == '') {
+        _d.requestFocus();
+        return 'El campo es necesario';
+      }
+    }, () {
+      final _currentFocus = FocusScope.of(context);
+      _currentFocus.unfocus();
+    }, focus: _d, controller: _addressController)
         .paddingSymmetric(vertical: 5);
   }
 }

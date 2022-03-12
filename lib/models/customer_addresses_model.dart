@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/json_parsing.dart';
 
 CustomerAddressesModel customerAddressesModelFromJson(
         Map<String, dynamic> str) =>
@@ -44,7 +45,7 @@ class CustomerAddressesModel {
   String? country;
   String? state;
   String? email;
-  String? customerAddressSellerIdAssigned;
+  int? customerAddressSellerIdAssigned;
   String? phone;
   Map? geoLocation;
   String? direccion;
@@ -65,8 +66,8 @@ class CustomerAddressesModel {
       CustomerAddressesModel(
         id: json["id"].toString(),
         idCloud: json["id_cloud"],
-        customerAddressSellerIdAssigned:
-            (json["customer_address_seller_id_assigned"] ?? '').toString(),
+        customerAddressSellerIdAssigned: int.tryParse(
+            json["customer_address_seller_id_assigned"]?.toString() ?? ''),
         sucursal: json["sucursal"] ?? '',
         companyId: json["companyId"] ?? '',
         country: json["country"].toString(),
@@ -75,8 +76,7 @@ class CustomerAddressesModel {
         phone: json['phone'].toString(),
         priceGroupName: json['price_group_name'].toString(),
         direccion: json["direccion"] ?? '',
-        geoLocation:jsonDecode(json["geo_location"] ?? "null")
-                ,
+        geoLocation: decodeJson(json["geo_location"]),
         city: json["city"] ?? '',
         line1: json["line1"] ?? '',
         line2: json["line2"] ?? '',
@@ -115,8 +115,8 @@ class CustomerAddressesModel {
         "geo_location": jsonEncode(geoLocation),
         "city": city,
         "vat_no": vatNo,
-        "email": email??'',
-        "phone": phone??'',
+        "email": email ?? '',
+        "phone": phone ?? '',
         "code": code,
         "city_code": cityCode,
         "customer_group_id": customerGroupId,

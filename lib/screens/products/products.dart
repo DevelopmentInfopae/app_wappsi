@@ -46,6 +46,8 @@ class _ProductsState extends State<Products> {
     super.dispose();
   }
 
+  bool showFilters = false;
+
   @override
   Widget build(BuildContext context) {
     // avoid errors related to unstability of scaffold with no key
@@ -133,6 +135,16 @@ class _ProductsState extends State<Products> {
             FloatingSearchBarAction.searchToClear(
                 // showIfClosed: false,
                 ),
+            FloatingSearchBarAction.icon(
+                showIfOpened: true,
+                icon: showFilters
+                    ? Icons.filter_alt_rounded
+                    : Icons.filter_alt_outlined,
+                onTap: () {
+                  // setState(() {
+                    showFilters = !showFilters;
+                  // });
+                }),
             Container(width: _size.width * 0.15)
           ],
           // leadingActions: [Icon(Icons.search)],

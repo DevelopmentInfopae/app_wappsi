@@ -6,6 +6,7 @@ import 'package:pos_wappsi/components/image_preview.dart';
 import 'package:pos_wappsi/config/host_params.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/utils/local_storage/local_files.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 Widget labelContent(String label, String content,
@@ -208,23 +209,26 @@ Widget customerPhoto(String img, {fit = BoxFit.contain}) {
       future: initSavetoPath(img, 'images/customers', url),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          return AppButton(
-            child: imageFile(snapshot.data, fit: fit),
-            elevation: 0,
-            padding: EdgeInsets.zero,
-            onTap: () {
-              ImagePreview(
-                imagePath: snapshot.data,
-                isFileImage: true,
-              ).launch(context);
-            },
-          );
-        } else {
-          return Image.asset(
-            'assets/images/no_image.png',
-            fit: fit,
-          );
+          try {
+            return AppButton(
+              child: imageFile(snapshot.data, fit: fit),
+              elevation: 0,
+              padding: EdgeInsets.zero,
+              onTap: () {
+                ImagePreview(
+                  imagePath: snapshot.data,
+                  isFileImage: true,
+                ).launch(context);
+              },
+            );
+          } catch (e) {
+            printConsole(e);
+          }
         }
+        return Image.asset(
+          'assets/images/no_image.png',
+          fit: fit,
+        );
       },
     ),
   );
@@ -251,30 +255,33 @@ Widget addressPhoto(String img, {fit = BoxFit.contain}) {
       future: initSavetoPath(img, 'images/customers', url),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          return AppButton(
-            child: imageFile(snapshot.data, fit: fit),
-            elevation: 0,
-            padding: EdgeInsets.zero,
-            onTap: () {
-              ImagePreview(
-                imagePath: snapshot.data,
-                isFileImage: true,
-              ).launch(context);
-            },
-          );
-        } else {
-          return Image.asset(
-            'assets/images/no_image.png',
-            fit: fit,
-          );
+          try {
+            return AppButton(
+              child: imageFile(snapshot.data, fit: fit),
+              elevation: 0,
+              padding: EdgeInsets.zero,
+              onTap: () {
+                ImagePreview(
+                  imagePath: snapshot.data,
+                  isFileImage: true,
+                ).launch(context);
+              },
+            );
+          } catch (e) {
+            printConsole(e);
+          }
         }
+        return Image.asset(
+          'assets/images/no_image.png',
+          fit: fit,
+        );
       },
     ),
   );
 }
 
 Widget productPhoto(String img) {
-  final url = dataBloc.userData!.hostUrl+
+  final url = dataBloc.userData!.hostUrl +
       dataBloc.userData!.companyFolder +
       imgDir +
       img;
@@ -284,20 +291,25 @@ Widget productPhoto(String img) {
       future: initSavetoPath(img, 'images/products', url),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          return AppButton(
-            elevation: 0,
-            child: imageFile(snapshot.data),
-            width: 10,
-            padding: EdgeInsets.zero,
-            onTap: () {
-              if (snapshot.data != null) {
-                ImagePreview(imagePath: snapshot.data!).launch(context);
-              }
-            },
-          );
-        } else {
-          return Image.asset('assets/images/no_image.png');
+          try {
+            return AppButton(
+              child: imageFile(snapshot.data),
+              elevation: 0,
+              padding: EdgeInsets.zero,
+              onTap: () {
+                ImagePreview(
+                  imagePath: snapshot.data,
+                  isFileImage: true,
+                ).launch(context);
+              },
+            );
+          } catch (e) {
+            printConsole(e);
+          }
         }
+        return Image.asset(
+          'assets/images/no_image.png',
+        );
       },
     ),
   );
@@ -314,17 +326,20 @@ Widget billerThumbNail(String img) {
       future: initSavetoPath(img, 'images/biller', url),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          return imageFile(snapshot.data);
-        } else {
-          return Image.asset('assets/images/no_image.png');
+          try {
+            return imageFile(snapshot.data);
+          } catch (e) {
+            printConsole(e);
+          }
         }
+        return Image.asset('assets/images/no_image.png');
       },
     ),
   );
 }
 
 Widget billerImage(String image) {
-  String imgURL = dataBloc.userData!.hostUrl+
+  String imgURL = dataBloc.userData!.hostUrl +
       dataBloc.userData!.companyFolder +
       'assets/uploads/logos/' +
       image;
@@ -343,10 +358,26 @@ Widget billerImage(String image) {
       future: initSavetoPath(img, 'images/biller/', imgURL),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          return imageFile(snapshot.data, fit: BoxFit.fitHeight);
-        } else {
-          return Image.asset('assets/images/wappsi.png');
+          try {
+            return AppButton(
+            child: imageFile(snapshot.data),
+            elevation: 0,
+            padding: EdgeInsets.zero,
+            onTap: () {
+              ImagePreview(
+                imagePath: snapshot.data,
+                isFileImage: true,
+              ).launch(context);
+            },
+          );
+          } catch (e) {
+            printConsole(e);
+          }
         }
+          return Image.asset(
+            'assets/images/no_image.png',
+            
+          );
       },
     ),
   );

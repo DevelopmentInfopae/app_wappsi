@@ -64,7 +64,7 @@ class HomeGridCards extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 1),
       alignment: Alignment.center,
       child: Text(
-        gridItems.title.toString(),
+        gridItems.title,
         maxLines: 2,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.subtitle1,

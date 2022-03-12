@@ -17,7 +17,7 @@ class PrintFormat {
   List<Map>? productsList;
   Map<String, String>? movementInfo;
   // int chrLen = 48;
-  int chrLen = Environment().printerPaperSize=='1'?32:48;
+  int chrLen = Environment().printerPaperSize == '1' ? 32 : 48;
 
   int valueMaxCharLen = 12;
 
@@ -27,11 +27,16 @@ class PrintFormat {
       String pathImage, Map<dynamic, dynamic>? printData) async {
     await bluetooth.isConnected.then((isConnected) async {
       if (isConnected!) {
-        final _innerPrinter =
-            (printerBloc.getPrinterDevice?.name == 'InnerPrinter');
+        final _innerPrinter = ((printerBloc.getPrinterDevice?.name ??
+                // ignore: unrelated_type_equality_checks
+                (Environment().printerPaperSize == 1
+                    ? 'InnerPrinter'
+                    : null)) ==
+            'InnerPrinter');
         final profile = await CapabilityProfile.load();
-        final generator =
-            Generator(PaperSize.mm80, profile, spaceBetweenRows: 1);
+        final generator = Generator(
+            chrLen == 32 ? PaperSize.mm58 : PaperSize.mm80, profile,
+            spaceBetweenRows: 1);
         // delete print buffer
 
         await bluetooth.writeBytes(Uint8List.fromList(await ticketHeader(
@@ -216,7 +221,9 @@ class PrintFormat {
 
     ///data to print
     final settings = printData?['settings'];
-    final data = printData?['sale_data'] ?? printData?['order_data'];
+    final data = printData?['sale_data']?['data'] ??
+        printData?['sale_data'] ??
+        printData?['order_data'];
     final customer = printData?['customer'];
     final customerAddres =
         printData?['customer_address'] ?? printData?['customer'];
@@ -224,18 +231,17 @@ class PrintFormat {
     final regType = settings?['tipo_regimen'];
 
     final labelsCustomer = [
-      'Cliente:',
-      'NIT/CC:',
+      'Cliente: ',
+      'NIT/CC: ',
       innerPrinter ? 'Direccion: ' : 'Dirección: ',
-      'Email:'
+      'Email: '
     ];
     final valuesCustomer = [
-      (innerPrinter
-              ? replaceSpecialCharacters(customer['name'])
-              : customer['name'])
-          .toString(),
+      capitalizeText(innerPrinter
+          ? replaceSpecialCharacters(customer['name'])
+          : customer['name']),
       customer['vat_no'].toString(),
-      (innerPrinter
+      capitalizeText(innerPrinter
               ? (replaceSpecialCharacters(customerAddres['direccion'] ??
                   customerAddres['address'] +
                       '-' +
@@ -273,14 +279,14 @@ class PrintFormat {
       valuesCustomer,
       innerPrinter,
       chrLen,
-      col2: PosAlign.right,
+      col2: PosAlign.left,
       col1: PosAlign.left,
     );
     //seller data
     generator.reset();
     bytes = printLabeledValues(
         generator, bytes, labelsSeller, valuesSeller, innerPrinter, chrLen,
-        col2: PosAlign.right, col1: PosAlign.left);
+        col2: PosAlign.left, col1: PosAlign.left);
 
     // bytes = _seller(bytes, generator, _innerPrinter);
     bytes += generator.emptyLines(1);
@@ -381,6 +387,7 @@ class PrintFormat {
     // generator.
     generator.setGlobalCodeTable('CP1252');
     generator.setGlobalFont(PosFontType.fontB);
+    // generator.setGlobalFont(PosFontType.fontB);
     // bytes += generator.hr(len: chrLen, ch: '_');
 
     if (dataBloc.settings!['prioridad_precios_producto'] == 10) {
@@ -393,7 +400,7 @@ class PrintFormat {
   }
 
   Future<List<int>> ticketProductsPP6(
-    Generator generator,  
+    Generator generator,
     bool innerPrinter,
   ) async {
     //init print format values
@@ -406,7 +413,7 @@ class PrintFormat {
     generator.setGlobalFont(PosFontType.fontB);
     // bytes += generator.hr(len: chrLen, ch: '_');
 
-    int qttyLenght = 0;
+    int qttyLenght = 2;
     int valueLenght = 0;
     // to get value and qtty max values
     for (var element in productsList!) {
@@ -435,10 +442,10 @@ class PrintFormat {
     }
 
     final qttyEmptSpces = (qttyLenght - 5) > 0 ? (qttyLenght - 5) : 0;
-    final header = 'Cant ' +
+    final header = 'CT ' +
         getEmptySpaces(qttyEmptSpces) +
         'Producto' +
-        getEmptySpaces(chrLen - (18 + qttyEmptSpces)) +
+        getEmptySpaces(chrLen - (16 + qttyEmptSpces)) +
         'Valor';
 
     bytes += generator.text(header,
@@ -473,7 +480,7 @@ class PrintFormat {
               value;
         } else {
           final namePart = innerPrinter ? replaceSpecialCharacters(str) : str;
-          final emptySpace = chrLen - (namePart.length +qttyLenght+1);
+          final emptySpace = chrLen - (namePart.length + qttyLenght + 1);
           text += getEmptySpaces(qttyLenght + 1) +
               namePart +
               getEmptySpaces(emptySpace);
@@ -496,7 +503,7 @@ class PrintFormat {
     List<int> bytes = [];
     // delete print buffer
 
-    int qttyLenght = 0;
+    int qttyLenght = 2;
     int valueLenght = 0;
     int umdLenght = 0;
     // to get value and qtty max values
@@ -528,23 +535,24 @@ class PrintFormat {
       }
     }
 
-    final qttyEmptSpces = (qttyLenght - 5) > 0 ? (qttyLenght - 5) : 0;
-    final umdEmptSpcs = (umdLenght - 4) > 0 ? (umdLenght - 4) : 0;
-    final header = 'Cant ' +
+    final qttyEmptSpces = (qttyLenght - 3) > 0 ? (qttyLenght - 3) : 0;
+    final umdEmptSpcs = (umdLenght - 3) > 0 ? (umdLenght - 3) : 0;
+    final header = 'CT ' +
         getEmptySpaces(qttyEmptSpces) +
         'UM ' +
         getEmptySpaces(umdEmptSpcs) +
         'Producto' +
-        getEmptySpaces(chrLen - (22 + qttyEmptSpces + umdEmptSpcs)) +
+        getEmptySpaces(chrLen - (20 + qttyEmptSpces + umdEmptSpcs)) +
         'Valor';
 
     bytes += generator.text(header,
         styles: const PosStyles(bold: true, align: PosAlign.left));
     bytes += generator.hr(len: chrLen, ch: '-');
+    String text = '';
     for (var element in productsList!) {
       List<String> formatedS = formatString(element['name'].toString(),
           chrSpaces: (chrLen - (qttyLenght + valueLenght + umdLenght + 3)));
-      String text = '';
+
       // text = '';
       final price = element['quantity'] * element['price'];
 
@@ -568,32 +576,38 @@ class PrintFormat {
               unitCode +
               getEmptySpaces(((umdLenght + 1) - unitCode.length).toInt()) +
               namePart +
-              getEmptySpaces(
-                  (chrLen - (qttyLenght + umdLenght + valueLenght + 3+namePart.length))
-                      ) +
+              getEmptySpaces((chrLen -
+                  (qttyLenght +
+                      umdLenght +
+                      valueLenght +
+                      3 +
+                      namePart.length))) +
               getEmptySpaces((valueLenght + 1) - value.length) +
               value;
         } else {
           final namePart = innerPrinter ? replaceSpecialCharacters(str) : str;
-          text += getEmptySpaces(qttyLenght + 1 + umdLenght + 1) +
+          text += getEmptySpaces(qttyLenght + umdLenght + 2) +
               namePart +
-              getEmptySpaces(chrLen - (namePart.length + valueLenght + 1));
+              getEmptySpaces(
+                  chrLen - (namePart.length + umdLenght + qttyLenght + 2));
         }
       }
-      bytes += generator.text(text,
-          styles: const PosStyles(bold: false, align: PosAlign.left));
+
       if (element['base_unit'] != null) {
         final bUnit = element['base_unit'];
         final bUnitValue = price / bUnit['operation_value'];
         final bUnitValueS = getFormatedCurrency(bUnitValue);
         final unitP = bUnit['code'].toString() + ' x ' + bUnitValueS;
-        final bUnitDetails = getEmptySpaces(qttyLenght + 1 + umdLenght + 1) +
+        text += getEmptySpaces(qttyLenght + umdLenght + 2) +
             unitP +
-            getEmptySpaces(chrLen - (unitP.length + valueLenght + 1));
-        bytes += generator.text(bUnitDetails,
-            styles: const PosStyles(bold: false, align: PosAlign.left));
+            getEmptySpaces(
+                chrLen - (unitP.length + umdLenght + qttyLenght + 2));
+        // bytes += generator.text(bUnitDetails,
+        //     styles: const PosStyles(bold: false, align: PosAlign.left));
       }
     }
+    bytes += generator.text(text,
+        styles: const PosStyles(bold: false, align: PosAlign.left));
     // bluetooth.printNewLine();
     bytes += generator.feed(1);
     // bytes += generator.hr(len: chrLen, ch: '-');
@@ -619,8 +633,8 @@ class PrintFormat {
     bytes += generator.hr(len: chrLen, ch: '-');
 
     for (var element in productsList!) {
-      List<String> formatedS = formatString(element['name'].toString(),
-          chrSpaces: chrLen);
+      List<String> formatedS =
+          formatString(element['name'].toString(), chrSpaces: chrLen);
       String text = '';
       // text = '';
 
@@ -634,15 +648,15 @@ class PrintFormat {
         }
       }
       bytes += generator.text(text,
-          styles: const PosStyles(bold: true, align: PosAlign.left, fontType: PosFontType.fontB));
+          styles: const PosStyles(
+              bold: true, align: PosAlign.left, fontType: PosFontType.fontB));
       final units = await UnitsProvider.getProductUnits(
           element['id_cloud'].toString(),
           customer['price_group_id'].toString());
       String unitsText = '';
       for (UnitsModel element in units) {
-        List<String> formatedU = formatString(element.name.toString(),
-            chrSpaces: (chrLen -
-                    (15)));
+        List<String> formatedU =
+            formatString(element.name.toString(), chrSpaces: (chrLen - (15)));
 
         for (String fU in formatedU) {
           final value = getFormatedCurrency(element.unitValue, decimals: 0);
@@ -654,7 +668,9 @@ class PrintFormat {
                     (spacesBeforeUName +
                         namePart.length +
                         value.length +
-                        spacesAfterUName+1)) + ' '+
+                        spacesAfterUName +
+                        1)) +
+                ' ' +
                 value +
                 ('_' * (spacesAfterUName));
           } else {
@@ -710,7 +726,9 @@ class PrintFormat {
 
   List<int> _footer(Generator generator, List<int> bytes, bool _innerPrinter,
       Map<dynamic, dynamic>? printData) {
-    final data = printData?['sale_data'] ?? printData?['order_data'];
+    final data = printData?['sale_data']?['data'] ??
+        printData?['sale_data'] ??
+        printData?['order_data'];
     bytes += generator.emptyLines(1);
     if (data != null) {
       if (data['resolucion'] != null) {

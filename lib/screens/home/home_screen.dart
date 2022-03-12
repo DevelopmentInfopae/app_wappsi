@@ -156,6 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // aplciation functions
   Widget _options() {
+    final gridItems = gridItemsForPermissions();
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Wrap(
@@ -164,11 +165,11 @@ class _HomeScreenState extends State<HomeScreen> {
         // childAspectRatio: 1.3,
         // crossAxisCount: 3,
         children: List.generate(
-          freeIcons.length,
+          gridItems.length,
           (index) => FittedBox(
             fit: BoxFit.fitHeight,
             child: HomeGridCards(
-              gridItems: freeIcons[index],
+              gridItems: gridItems[index],
             ).paddingSymmetric(vertical: 8, horizontal: 10),
           ),
         ),

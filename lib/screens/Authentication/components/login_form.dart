@@ -7,6 +7,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/button_global.dart';
 import 'package:pos_wappsi/components/input_decoration.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/models/permissions_model.dart';
 import 'package:pos_wappsi/models/register_model.dart';
 import 'package:pos_wappsi/models/user_model.dart';
 
@@ -150,6 +151,13 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
     //_______________________________________________________________________________________________________________
 
     dataBloc.setUserData(UserModel.fromJson(res['body']['user_data']));
+
+    //______________________________________________________________________________________________________________
+    //
+    //                                    SAVE PERMISSIONS DATA INTO DATABLOC
+    //_______________________________________________________________________________________________________________
+
+    dataBloc.setPermissions(PermissionsModel.fromJson(res['body']['permissions']));
 
     //______________________________________________________________________________________________________________
     //

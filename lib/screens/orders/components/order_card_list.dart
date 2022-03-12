@@ -192,7 +192,7 @@ class _OrdersCardState extends State<OrdersCard> {
 
   Widget _customer() {
     return labelContentH(
-        'Cliente:', capitalizeText(widget.order.customer), context,
+        'Cliente:', capitalizeText(widget.order.idCloud?.toString()??''), context,
         withInnerPading: false,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }

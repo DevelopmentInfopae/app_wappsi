@@ -40,8 +40,13 @@ initSavetoPath(String file, String folder, String url) async {
   return pathImage;
 }
 
-Future<void> writeToFile(ByteData data, String path) {
+Future<void> writeToFile(ByteData data, String path) async{
   final buffer = data.buffer;
-  return io.File(path)
-      .writeAsBytes(buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+  try {
+    await io.File(path).writeAsBytes(
+        buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+  } catch (e) {
+    printConsole(e);
+    // return null;
+  }
 }

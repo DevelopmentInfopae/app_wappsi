@@ -68,12 +68,17 @@ class OrdersProvider {
           // orderItems['registration_date'] = res['body']['data']['server_date'];
           final orderSaveR =
               await DBProvider.db.insertQuery('sma_order_sales', order);
-          final orderItemsSaveR =
-              await OrderSaleItemsProvider.saveAllIntoDB(orderItems, orderId, res['body']['data']['server_date']??'',);
+          final orderItemsSaveR = await OrderSaleItemsProvider.saveAllIntoDB(
+            orderItems,
+            orderId,
+            res['body']['data']['server_date'] ?? '',
+          );
 
           if (orderSaveR && orderItemsSaveR) {
-            confirmDialog(context, 'Pedido creado exitosamente',
-                'assets/images/success.png');
+            scaffoldAlert(
+                context,
+                'Pedido creado exitosamente',
+                const Duration(seconds: 2));
           }
           // get Order print data
           final printData = await _buildPrintDataMap(order);

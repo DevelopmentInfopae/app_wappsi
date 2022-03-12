@@ -36,15 +36,27 @@ class SalesProvider {
             res['body']['error_message'] ?? res['body']['message'],
             'assets/images/dizzy-robot.png');
       } else {
+        hideCurrentScaffoldAlert(context);
+        // try {
+        // scaffoldAlert(
+        //     context,
+        //     res['body']['message'] ??
+        //         res['message'] ??
+        //         'Error al registrar la venta',
+        //     const Duration(seconds: 2),
+        //     backGroundColor: Colors.red);
+        // } catch (e) {
+        //   confirmDialog(context, res['body']['message'] ?? res['message'],
+        //       'assets/images/browser.png');
+        // }
         if (res['error'] ?? true) {
           if (res['body']['data'] != [] &&
               res['body']['data'] != null &&
               res['body']['sync']) {
-            hideCurrentScaffoldAlert(context);
-            scaffoldAlert(
-                context,
-                res['body']['error_message'] ?? res['body']['message'],
-                const Duration(seconds: 2));
+            scaffoldAlert(context, 'Recargando datos de venta POS',
+                  const Duration(seconds: 2),
+                  backGroundColor: Colors.red);
+
             final Map<String, dynamic> changes = res['body']['data'];
             // to show changes in costumer or products
             // String chText = _getChangesString(changes);
@@ -58,18 +70,26 @@ class SalesProvider {
             final reload = await posBloc.reloadPOSData();
 
             if (!reload) {
-              confirmDialog(context, 'Error al recargar datos de venta POS',
-                  'assets/images/browser.png');
+              hideCurrentScaffoldAlert(context);
+              scaffoldAlert(context, 'Error al recargar datos de venta POS',
+                  const Duration(seconds: 2),
+                  backGroundColor: Colors.red);
             } else {
               hideCurrentScaffoldAlert(context);
 
               Navigator.pop(context);
-              confirmDialog(context, 'Datos de venta POS recargados',
-                  'assets/images/success.png');
+
+              scaffoldAlert(context, 'Datos de venta POS recargados',
+                  const Duration(seconds: 2));
             }
           } else {
-            confirmDialog(context, res['body']['message'] ?? res['message'],
-                'assets/images/browser.png');
+            scaffoldAlert(
+                context,
+                res['body']['message'] ??
+                    res['message'] ??
+                    'Error al registrar la venta',
+                const Duration(seconds: 2),
+                backGroundColor: Colors.red);
           }
         } else {
           try {

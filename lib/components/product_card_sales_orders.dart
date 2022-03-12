@@ -92,6 +92,8 @@ class _ProductCardState extends State<ProductCard> {
       if (widget.productKey == firstKey) {
         widget.quantityFocusNode.requestFocus();
       }
+    }else{
+      widget.quantityFocusNode.unfocus();
     }
 
     _updateQuantityValue(value: product?.quantity);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/date_to_text.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
+import 'package:pos_wappsi/utils/text_formating/hmtl_formating.dart';
 
 Widget legalInformation(TextTheme textTheme, Map<dynamic, dynamic> printData) {
   final companyData = printData['company_data'];
@@ -63,7 +65,7 @@ Widget emptyLine() {
 }
 
 Widget invoiceRef(TextTheme textTheme, Map<dynamic, dynamic> printData) {
-  final data = printData['sale_data'];
+  final data = printData['sale_data']['data'] ?? printData['sale_data'];
   return Column(
     children: [
       Text(
@@ -98,7 +100,9 @@ Widget orderRef(TextTheme textTheme, Map<dynamic, dynamic> printData) {
 
 Widget billerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
   final customer = printData['customer'];
-  final data = printData['sale_data'] ?? printData['order_data'];
+  final data = printData['sale_data']?['data'] ??
+      printData['sale_data'] ??
+      printData['sale_data'];
   final sellerName = dataBloc.userData!.sellerName;
   final date = data != null ? data['date'] ?? '' : DateTime.now().toString();
   return Column(
@@ -169,7 +173,7 @@ Widget products(Map<dynamic, dynamic> printData, {int? pricePolicy}) {
   return DataTable(
     columns: pricePolicy == 10 ? _pColumnsNamesWUnits() : _pColumnsNames(),
     rows: pricePolicy == 10 ? _productsWUnit(products) : _products(products),
-    dataRowHeight: 50,
+    dataRowHeight: 60,
     showBottomBorder: true,
     columnSpacing: 5,
     horizontalMargin: 10,
@@ -544,9 +548,11 @@ Widget posNote(TextTheme textTheme, Map<dynamic, dynamic> printData) {
       ? Container()
       : Column(
           children: [
-            Text(
-              posNote,
-              style: textTheme.bodyText1,
+            Html(
+              data: htmlFormating(posNote.toString()),
+              style: {
+                'p': Style(textAlign: TextAlign.justify,fontSize: FontSize.medium)
+              },
             ),
             emptyLine(),
           ],
@@ -554,7 +560,8 @@ Widget posNote(TextTheme textTheme, Map<dynamic, dynamic> printData) {
 }
 
 Widget resolution(TextTheme textTheme, Map<dynamic, dynamic> printData) {
-  final resolution = printData['sale_data']['resolucion'];
+  final resolution = printData['sale_data']?['data']?['resolucion'] ??
+      printData['sale_data']?['resolucion'];
   return Text(
     resolution ?? '',
     style: textTheme.bodyText1,

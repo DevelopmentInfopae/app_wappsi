@@ -37,7 +37,7 @@ class _CustomerCardState extends State<CustomerCard> {
         elevation: 5,
         child: Row(
           children: [
-            customerPhoto(widget.customer.customerProfilePhoto!)
+            customerPhoto(widget.customer.customerProfilePhoto??'')
                 .flexible(flex: 2),
             // hDivider(heigh: 60, width: 1, pleft: 6),
             _description().flexible(flex: 7)

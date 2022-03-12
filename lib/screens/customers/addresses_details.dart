@@ -106,7 +106,8 @@ class _AddressDetailsState extends State<AddressDetails> {
     return Card(
       child: Row(
         children: [
-          addressPhoto(widget.customer.customerProfilePhoto!, fit: BoxFit.cover)
+          addressPhoto(widget.customer.customerProfilePhoto ?? '',
+                  fit: BoxFit.cover)
               .withSize(width: 100, height: 100),
           addressDesc(context, widget.customer, widget.address)
               .paddingSymmetric(vertical: 4)
@@ -122,7 +123,8 @@ class _AddressDetailsState extends State<AddressDetails> {
       stateCity = widget.address.state! + ' - ';
     }
     if (widget.address.city != null) {
-      stateCity = widget.address.city!;
+      stateCity =
+          (widget.address.state ?? '') + '-' + (widget.address.city ?? '');
     }
     return Column(
       children: [
@@ -132,9 +134,11 @@ class _AddressDetailsState extends State<AddressDetails> {
               crossAxisAlignment: CrossAxisAlignment.start,
               // padding: const EdgeInsets.all(5),
               children: [
+                labelContent('Ubicación ', stateCity),
+                hDivider(),
                 labelContent('Dirección ', widget.address.direccion ?? ''),
                 hDivider(),
-                labelContent('Ubicación ', stateCity),
+                labelContent('Telefono ', widget.address.phone ?? ''),
                 // hDivider(),
                 // futureLabelContent(DBProvider.db.findCustomerDiscount(customer.customerGroupId??1), 'name', 'Marca')
               ],

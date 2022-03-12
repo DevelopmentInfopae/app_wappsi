@@ -44,13 +44,11 @@ android {
         minSdkVersion 20
         targetSdkVersion 30
         // lapappaya
+        versionCode 3
+        versionName "1.0.3"
+        // dulcelandia
         // versionCode 2
-        // dulcelandia
-        versionCode 1
-        // lapappaya
-        // versionName "1.0.1"
-        // dulcelandia
-        versionName "1.0.0"
+        // versionName "1.0.2"
         multiDexEnabled true
     }
 

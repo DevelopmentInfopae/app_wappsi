@@ -478,10 +478,15 @@ class _SalePaymentState extends State<SalePayment> {
   }
 
   AppButton _defaultValuesWidget(int counter, int value) {
-    final valueString = getFormatedCurrency(value.toDouble());
+    final valueString = getFormatedCurrency(value.toDouble(), decimals: 0);
     return AppButton(
       color: Colors.white,
-      padding: const EdgeInsets.symmetric(vertical: 13),
+      padding: kButtonPadding,
+      width: 20,
+      shapeBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(color: counter != 0 ? _pc : Colors.white, width: 1)),
+      // padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       onTap: () {
         setState(() {
           if (posBloc.getPaymentMethod?.code != 'Credito' &&
@@ -510,9 +515,9 @@ class _SalePaymentState extends State<SalePayment> {
             style: _textTheme.bodyText1!.apply(color: Colors.black),
             children: [
               TextSpan(
-                  text: (counter == 0 ? '' : 'x $counter'),
+                  text: (counter == 0 ? '' : 'x$counter'),
                   style: _textTheme.bodyText1!
-                      .apply(color: Colors.black87, fontSizeFactor: 0.85))
+                      .apply(color: Colors.black87, fontSizeFactor: 0.95))
             ]),
       ),
     );

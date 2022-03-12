@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
+import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/product_card.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/wishlist_provider.dart';
 
@@ -11,10 +13,16 @@ class FavoritesOrderSelection extends StatefulWidget {
   const FavoritesOrderSelection({
     Key? key,
     required this.isPortrait,
+    this.toOrder = false,
+    this.toSale = false,
+    this.toQuote = false,
     required this.context,
   }) : super(key: key);
 
   final bool isPortrait;
+  final bool toOrder;
+  final bool toSale;
+  final bool toQuote;
   final BuildContext context;
 
   @override
@@ -25,8 +33,42 @@ class FavoritesOrderSelection extends StatefulWidget {
 class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
   List<ProductModel> _favorites = [];
   bool _reloadFavsingFavs = false;
+
+  late CompanyModel customer;
+
+  late String action;
+
+  @override
+  void initState() {
+    if (widget.toOrder) {
+      customer = orderBloc.getCustomer!;
+      action = 'add_to_order';
+    }
+    if (widget.toSale) {
+      customer = posBloc.getCustomer!;
+      action = 'add_to_cart';
+    }
+    if (widget.toQuote) {
+      // customer = orderBloc.getCustomer!;
+      // action = 'add_to_cart';
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (widget.toOrder) {
+      customer = orderBloc.getCustomer!;
+      action = 'add_to_order';
+    }
+    if (widget.toSale) {
+      customer = posBloc.getCustomer!;
+      action = 'add_to_cart';
+    }
+    if (widget.toQuote) {
+      // customer = orderBloc.getCustomer!;
+      // action = 'add_to_cart';
+    }
     return Column(
       children: [
         _searchBarBackground(_searchBar(context)),
@@ -123,9 +165,9 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
     setState(() {
       _reloadFavsingFavs = true;
     });
-    await WishlistProvider.reloadCustomerFavs(context, orderBloc.getCustomer!);
-    final pFav =
-        await WishlistProvider.loadCustomerFavorites(orderBloc.getCustomer!);
+
+    await WishlistProvider.reloadCustomerFavs(context, customer);
+    final pFav = await WishlistProvider.loadCustomerFavorites(customer);
 
     setState(() {
       _favorites = pFav;
@@ -139,7 +181,7 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
         // margin: EdgeInsets.o,
         child: FutureBuilder<List<ProductModel>?>(
             future:
-                WishlistProvider.loadCustomerFavorites(orderBloc.getCustomer!),
+                WishlistProvider.loadCustomerFavorites(customer),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 // setState(() {
@@ -179,7 +221,7 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
         itemCount: _favorites.length,
         itemBuilder: (BuildContext context, int index) {
           return ProductCard(
-              action: 'add_to_order',
+              action: action,
               product: _favorites[index],
               showAllwaysUnitAlert: true);
         });

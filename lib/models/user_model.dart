@@ -19,6 +19,7 @@ class UserModel {
       this.allowDiscount=0,
       required this.hostUrl,
       required this.lastName,
+      required this.viewRight,
       required this.sellerId,
       required this.firstName,
       required this.companyName,
@@ -39,6 +40,7 @@ class UserModel {
   String userName;
   String email;
   String? gender;
+  int viewRight;
 
   String companyFolder;
   String hostUrl;
@@ -64,6 +66,7 @@ class UserModel {
           ? Environment().config.apiHost
           : json['host_url'] ?? Environment().config.apiHost,
       warehouseId: int.parse(json["warehouse_id"]),
+      viewRight: int.parse(json["view_right"]??'0'),
       sellerId: int.parse(json["seller_id"]),
       companyName: json["company_name"],
       warehouseName: json["warehouse_name"],
@@ -82,6 +85,7 @@ class UserModel {
         "last_name": lastName,
         "biller_id": billerId,
         "seller_id": sellerId,
+        "view_right": viewRight,
         "first_name": firstName,
         "company_folder": companyFolder,
         "seller_name": sellerName,

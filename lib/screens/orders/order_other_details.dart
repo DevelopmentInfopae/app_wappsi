@@ -107,7 +107,9 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
           _productsInfo().paddingSymmetric(vertical: 6),
           // _paymentMethod().paddingSymmetric(vertical: 6),
           _orderDocumentType().paddingSymmetric(vertical: 6),
-          dataBloc.userData!.allowDiscount==1?_orderDiscount().paddingSymmetric(vertical: 6):Container(),
+          dataBloc.userData!.allowDiscount == 1
+              ? _orderDiscount().paddingSymmetric(vertical: 6)
+              : Container(),
           _invoiceNote().paddingSymmetric(vertical: 6),
           _dispatchNote().paddingSymmetric(vertical: 6)
         ],
@@ -387,13 +389,13 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
 
   Widget _invoiceNote() {
     return textFormField(context, 'Nota de venta', (String value) {
-      orderBloc.setInternalNote(value);
+      orderBloc.setOrderNote(value);
     }, (String value) {}, () {}, controller: _internalNController, maxLines: 4);
   }
 
   Widget _dispatchNote() {
     return textFormField(context, 'Nota interna', (String value) {
-      orderBloc.setOrderNote(value);
+      orderBloc.setInternalNote(value);
     }, (String value) {}, () {}, controller: _orderNController, maxLines: 4);
   }
 

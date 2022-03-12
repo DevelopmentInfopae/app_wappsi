@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:pos_wappsi/models/biller_data_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/models/permissions_model.dart';
 import 'package:pos_wappsi/models/register_model.dart';
 import 'package:pos_wappsi/models/user_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
@@ -17,6 +18,7 @@ class DataBloc {
   // to save data of user
   // final _tokenController = BehaviorSubject<String>();
   final _userController = BehaviorSubject<UserModel>();
+  final _permissionsController = BehaviorSubject<PermissionsModel>();
   final _registerController = BehaviorSubject<RegisterModel>();
   final _settingsController = BehaviorSubject<Map<String, dynamic>>();
 
@@ -44,6 +46,8 @@ class DataBloc {
   // Function(String) get setToken => _tokenController.sink.add;
 
   Function(UserModel) get setUserData => _userController.sink.add;
+
+  Function(PermissionsModel) get setPermissions => _permissionsController.sink.add;
   Function(RegisterModel) get setRegisterData => _registerController.sink.add;
   Function(BillerDataModel) get setBillerData => _billerDataController.sink.add;
   Function(CompanyModel) get setBillerCompany =>
@@ -89,6 +93,8 @@ class DataBloc {
   Map<String, dynamic> get userDataMap => _userController.value.toJson();
 
   UserModel? get userData => _userController.valueOrNull;
+
+  PermissionsModel? get permissions => _permissionsController.valueOrNull;
 
   String? get dirPath => _dirPathController.valueOrNull;
 
@@ -162,6 +168,7 @@ class DataBloc {
     _billerDataController.close();
     _dirPathController.close();
     _syncingController.close();
+    _permissionsController.close();
   }
 }
 

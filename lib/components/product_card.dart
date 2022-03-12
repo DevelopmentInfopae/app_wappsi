@@ -55,7 +55,7 @@ class _ProductCardState extends State<ProductCard> {
     return AppButton(
         margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
         padding: EdgeInsets.zero,
-        elevation: 5,
+        elevation: 2,
         child: Row(
           children: [
             productPhoto(widget.product.image == ''
@@ -68,16 +68,17 @@ class _ProductCardState extends State<ProductCard> {
         onTap: () async {
           if (widget.action == 'add_to_cart') {
             final productReq = await ProductsProvider.getProductRequirements(
-                context, widget.product);
+                context, widget.product,
+                showAllwaysUnitAlert: widget.showAllwaysUnitAlert);
             if (productReq != {}) {
               final result = await posBloc.addProduct(productReq);
               // printConsole(result);
               if (result) {
                 try {
                   scaffoldAlert(
-                    context,
-                    "Producto ${widget.product.name} añadido",
-                    const Duration(seconds: 1));
+                      context,
+                      "Producto ${widget.product.name} añadido",
+                      const Duration(seconds: 1));
                 } catch (e) {
                   printConsole(e);
                 }

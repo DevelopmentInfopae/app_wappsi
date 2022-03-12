@@ -116,16 +116,16 @@ class CompaniesProvider {
         'price_group_name': body['price_group_name'],
         'price_group_id': body['price_group_id'],
         'email': body['email'],
-        'geo_location': jsonEncode(geoLoc??{}),
+        'geo_location': jsonEncode(geoLoc ?? {}),
         'code': body['vat_no'] + '-01',
       };
       result = await DBProvider.db.insertQuery('sma_addresses', address);
       printConsole(result);
       try {
         // if (favorites != []) {
-          final favRes = await WishlistProvider.saveCustomerFavFromLocal(
-              customerId.toString(), favorites);
-          printConsole(favRes);
+        final favRes = await WishlistProvider.saveCustomerFavFromLocal(
+            customerId.toString(), favorites);
+        printConsole(favRes);
         // }
       } catch (e) {
         printConsole(e);
@@ -149,9 +149,13 @@ class CompaniesProvider {
     if (offset) {
       limit = 50;
     }
+    final sellerIdFilter = dataBloc.userData?.viewRight == 0
+        ? ' AND customer_seller_id_assigned=${dataBloc.userData!.sellerId}'
+        : '';
     return await DBProvider.db.sqlQuery(
       'sma_companies',
-      where: 'group_id = 3 AND status=1',
+      where:
+          'group_id = 3 AND status=1$sellerIdFilter',
       limit: limit,
       orderBy: orderBy,
       offset: offsetValue,
@@ -172,10 +176,11 @@ class CompaniesProvider {
           offsetValue: offsetValue);
     } else {
       return (await findCustomerBySearch(searchs,
-          limit: limit,
-          orderBy: orderBy,
-          offset: offset,
-          offsetValue: offsetValue)) ??[];
+              limit: limit,
+              orderBy: orderBy,
+              offset: offset,
+              offsetValue: offsetValue)) ??
+          [];
     }
   }
 
@@ -187,9 +192,12 @@ class CompaniesProvider {
       String orderBy = 'name',
       bool offset = false,
       int offsetValue = 1}) async {
+    final sellerIdFilter = dataBloc.userData?.viewRight == 0
+        ? 'AND customer_seller_id_assigned=${dataBloc.userData!.sellerId} '
+        : '';
     return await DBProvider.db.sqlQuery('sma_companies',
         where:
-            '''group_id = 3 AND status=1 AND (name LIKE "%$searchs%" OR company 
+            '''group_id = 3 AND status=1 AND $sellerIdFilter(name LIKE "%$searchs%" OR company 
             LIKE "%$searchs%" OR vat_no LIKE "%$searchs%" OR first_name LIKE "%$searchs%" 
             OR second_name LIKE "%$searchs%" OR first_lastname LIKE "%$searchs%"
             OR second_lastname LIKE "%$searchs%") ${offset ? "LIMIT 50 offset " + offsetValue.toString() : ""}''',
@@ -202,6 +210,13 @@ class CompaniesProvider {
     return await DBProvider.db.sqlFirstQuery('sma_companies',
         // columns: _customerColumns,
         where: "id_cloud = $id");
+  }
+
+  /// Return a row of sma_companies given an id
+  static Future<Map<String, dynamic>?> verifyDocNum(String docNum) async {
+    return await DBProvider.db.sqlFirstQuery('sma_companies',
+        // columns: _customerColumns,
+        where: "vat_no = $docNum");
   }
 
   /// Return a CompanyModel object given a company ID
@@ -276,6 +291,9 @@ class CompaniesProvider {
       customerBloc.getCustomer.priceGroupName = defPriceGroup.name;
     }
 
+    customerBloc.getCustomer.customerSellerIdAssigned =
+        dataBloc.userData?.sellerId;
+
     final body = customerBloc.getCustomer.customerToJson();
 
     if (customerBloc.getUserName != null && customerBloc.getPassword != null) {
@@ -305,7 +323,7 @@ class CompaniesProvider {
 
     try {
       scaffoldAlert(context, 'Registrando cliente', const Duration(seconds: 10),
-        key: UniqueKey());
+          key: UniqueKey());
     } catch (e) {
       printConsole(e);
       // closeLoading = true;
@@ -329,8 +347,6 @@ class CompaniesProvider {
       // update local DB with company info
 
       bool dbUpdated = await CompaniesProvider.writeCustomerInLDB(body, res);
-
-      
 
       // if fails we force DB sync
       if (!dbUpdated) {

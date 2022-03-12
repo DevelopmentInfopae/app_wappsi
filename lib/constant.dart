@@ -10,6 +10,8 @@ const kDarkWhite = Color(0xFFF1F7F7);
 const pColor = Color.fromRGBO(0, 125, 204, 1);
 const okColor = Color.fromRGBO(21, 178, 106, 1);
 const cancelColor = Color.fromRGBO(237, 50, 55, 1);
+const loveColor = Color.fromRGBO(237, 50, 55, 1);
+const favColor = Color.fromRGBO(248, 214, 78, 1);
 const okColorWappsi = Color.fromRGBO(0, 176, 82, 1);
 
 const kIconSize = 19.0;
@@ -121,7 +123,7 @@ double searchHeight = 55;
 double leadingWidgetSize = 50;
 
 /// Default height of icon of leading widget of appBar
-double leadingIconSize = 27;
+double leadingIconSize = 30;
 
 /// Color to subtitles
 Color greyColor = Colors.grey[700]!;

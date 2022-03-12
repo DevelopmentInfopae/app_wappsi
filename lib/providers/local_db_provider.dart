@@ -123,7 +123,7 @@ class DBProvider {
 
         batch.insert(table,element, conflictAlgorithm: ConflictAlgorithm.replace);
       } catch (e) {
-        printConsole(e);
+      printConsole(e);
         if (element is List) {
           if (element.isNotEmpty) {
             result =

@@ -122,7 +122,7 @@ class _PrintOrderState extends State<PrintOrder> {
               emptyLine(),
               // hDivider(),
               posNote(textTheme, widget.printData)
-                  .paddingSymmetric(vertical: 8),
+                  .paddingSymmetric(vertical: 8).withWidth(_size.width * 0.85),
               // hDivider(),
               orderValueDetails(textTheme, widget.printData)
                   .paddingSymmetric(horizontal: 6, vertical: 8),
