@@ -158,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _options() {
     final gridItems = gridItemsForPermissions();
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 7),
       child: Wrap(
         // physics: NeverScrollableScrollPhysics(),
         // shrinkWrap: true,

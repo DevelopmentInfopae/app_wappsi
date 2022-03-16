@@ -24,6 +24,7 @@ class AppBarLeading extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppButton(
       padding: padding,
+      
       width: leadingWidgetSize,
       height: leadingWidgetSize,
       enabled: enabled,
@@ -34,7 +35,7 @@ class AppBarLeading extends StatelessWidget {
           side: BorderSide(color: borderSideColor ?? greyMediumLight)),
       // hoverColor: pColor,
 
-      child: widget,
+      child: widget.paddingRight(3),
       onTap: onTap,
       // onTap: () {
       //   SuspendedSalesScreen(suspendedSales: suspendedSales).launch(context);

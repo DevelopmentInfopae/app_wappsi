@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/bloc/quotes_bloc.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 
 import 'package:pos_wappsi/models/product_model.dart';
@@ -297,14 +299,25 @@ class ProductsProvider {
   /// Returns map with product and its requirementes based on pricePolicy
   static Future<Map<String, dynamic>> getProductRequirements(
       BuildContext context, ProductModel product,
-      {bool showAllwaysUnitAlert = false}) async {
+      {bool showAllwaysUnitAlert = false, bool fromOrder=false,bool fromQuote=false}) async {
     final policyReq = PricePoliciesProvider.checkProductSelectionRequirements();
     Map<String, dynamic> req = {"product": product, "product_unit": null};
     Map<String, dynamic>? unitInfo;
     if (policyReq['product_unit']) {
+      String priceGroupId='';
+
+      if(fromOrder){
+        priceGroupId = orderBloc.getCustomer!.priceGroupId!;
+      }else if(fromQuote){
+        priceGroupId = quoteBloc.getCustomer!.priceGroupId!;
+      }else{
+        priceGroupId = posBloc.getCustomer!.priceGroupId!;
+      }
+
       unitInfo = await UnitsProvider.getProductUnit(
-          context, product, posBloc.getCustomer!.priceGroupId!,
-          showAllwaysUnitAlert: showAllwaysUnitAlert);
+          context, product, priceGroupId,
+          showAllwaysUnitAlert: showAllwaysUnitAlert
+      );
       if (unitInfo != null) {
         final unit = unitInfo['unit'];
         req['product_unit'] = unitInfo['unit'];
@@ -342,11 +355,11 @@ class ProductsProvider {
   static Future<bool> getPOSProductPrices(String productKey,
       {String? customerId,
       bool defaultPrice = false,
-      bool toOrder = false}) async {
+      bool toOrder = false, bool toQuote = false}) async {
     if (dataBloc.settings != null) {
       final result = await PricePoliciesProvider.policyCasesFromPos(productKey,
           dataBloc.settings!['prioridad_precios_producto'], posBloc.getCustomer,
-          defaultPrice: defaultPrice, toOrder: toOrder);
+          defaultPrice: defaultPrice, toOrder: toOrder, toQuote: toQuote);
 
       return result;
       //aply discount

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 
 void goHomeAndEmptyCustomerBloc(BuildContext context) {
-  customerBloc.clear();
+  customerBloc.dispose();
   Navigator.pushNamedAndRemoveUntil(
     context,
     '/',

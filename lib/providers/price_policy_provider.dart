@@ -1,6 +1,7 @@
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/bloc/quotes_bloc.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
@@ -79,7 +80,7 @@ class PricePoliciesProvider {
   /// Return ProductModel object with prices calculatd by price_policy
   static Future<bool> policyCasesFromPos(
       String? productKey, int? policy, CompanyModel? customer,
-      {bool defaultPrice = false, bool toOrder = false}) async {
+      {bool defaultPrice = false, bool toOrder = false, bool toQuote=false}) async {
     //tax rate for IVA
 
     double price = 0.0;
@@ -88,7 +89,9 @@ class PricePoliciesProvider {
 
     if (toOrder) {
       product = orderBloc.getProducts![productKey]!;
-    } else {
+    } else if (toQuote) {
+      product = quoteBloc.getProducts![productKey]!;
+    } else{
       product = posBloc.getProducts![productKey]!;
     }
 
@@ -98,6 +101,8 @@ class PricePoliciesProvider {
         ProductModel? t;
         if(toOrder){
           t = orderBloc.getProducts?[productKey];
+        }else if(toQuote){
+          t = quoteBloc.getProducts?[productKey];
         }else{
           t = posBloc.getProducts?[productKey];
 
@@ -134,6 +139,8 @@ class PricePoliciesProvider {
 
         if (toOrder) {
           unit = orderBloc.getProductUnits![productKey]!;
+        } else if (toQuote) {
+          unit = quoteBloc.getProductUnits![productKey]!;
         } else {
           unit = posBloc.getProductUnits![productKey]!;
         }
@@ -146,7 +153,9 @@ class PricePoliciesProvider {
       }
       if (toOrder) {
         orderBloc.getProducts![productKey!] = product;
-      } else {
+      } else if (toQuote) {
+        quoteBloc.getProducts![productKey!] = product;
+      } else{
         posBloc.getProducts![productKey!] = product;
       }
       return true;

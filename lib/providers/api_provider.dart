@@ -109,7 +109,8 @@ class DataProvider {
         'status': 0,
         'error': true,
         'body': {
-          'message': 'Petición fallida',
+          'message': 'Error de conexión con el servidor',
+          // 'message': 'Error de conexión con el servidor: ${e.toString()}',
         }
       };
     }

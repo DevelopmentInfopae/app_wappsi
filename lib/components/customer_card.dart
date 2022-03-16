@@ -37,9 +37,9 @@ class _CustomerCardState extends State<CustomerCard> {
         elevation: 5,
         child: Row(
           children: [
-            customerPhoto(widget.customer.customerProfilePhoto??'')
-                .flexible(flex: 2),
-            // hDivider(heigh: 60, width: 1, pleft: 6),
+            customerPhoto(widget.customer.customerProfilePhoto??'', fit: BoxFit.cover)
+                .withSize(height: 90, width: 90),
+            vDivider(width: 2,heigh: 80 ),
             _description().flexible(flex: 7)
           ],
         ).withHeight(100),

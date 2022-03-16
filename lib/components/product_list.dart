@@ -4,6 +4,7 @@ import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/bloc/quotes_bloc.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/components/product_card_sales_orders.dart';
@@ -15,10 +16,12 @@ class ProductsList extends StatelessWidget {
       required this.productList,
       required ScrollController scrollController,
       required this.productRequestFocus,
+      this.fromQuote=false,
       this.fromOrder = false})
       : _scrollController = scrollController,
         super(key: key);
   final bool fromOrder;
+  final bool fromQuote;
   final Map<String, ProductModel> productList;
   final ScrollController _scrollController;
   final bool productRequestFocus;
@@ -38,6 +41,8 @@ class ProductsList extends StatelessWidget {
             formKey: GlobalObjectKey<FormState>(k),
             productKey: product.key,
             fromOder: fromOrder,
+            fromQuote: fromQuote,
+            
             requestFocus: productRequestFocus,
           );
 
@@ -71,7 +76,9 @@ class ProductsList extends StatelessWidget {
               onDismissed: (direction) {
                 if (fromOrder) {
                   orderBloc.removeProduct(k);
-                } else {
+                } else if (fromQuote) {
+                  quoteBloc.removeProduct(k);
+                } else{
                   posBloc.removeProduct(k);
                 }
               },

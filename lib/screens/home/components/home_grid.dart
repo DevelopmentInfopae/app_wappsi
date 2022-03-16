@@ -6,6 +6,8 @@ import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
+import 'package:pos_wappsi/screens/Quotes/new_quote.dart';
+import 'package:pos_wappsi/screens/Quotes/quotes_list.dart';
 import 'package:pos_wappsi/screens/cash_accounting/components/open_register_alert.dart';
 import 'package:pos_wappsi/screens/cash_accounting/register_options.dart';
 import 'package:pos_wappsi/screens/customers/new_customer.dart';
@@ -87,9 +89,7 @@ class HomeGridCards extends StatelessWidget {
   Future<void> _navigation(BuildContext context) async {
     if (gridItems.route == 'sales') {
       // to show or hide home bottombar
-      if (posBloc.isDisposed) {
-        posBloc.reload();
-      }
+      
       await _newSale(context);
       await dataBloc.refreshToken(context);
     } else if (gridItems.route == 'orders') {
@@ -128,7 +128,13 @@ class HomeGridCards extends StatelessWidget {
       const SalesList().launch(context);
     } else if (gridItems.route == 'settings') {
       dataBloc.homeKey.currentState?.selectTab(TabItem.settings);
-    } else if (gridItems.route == 'list_orders') {
+    } else if (gridItems.route == 'quotes') {
+      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      const NewQuote().launch(context);
+    }else if (gridItems.route == 'quotes_index') {
+      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      const QuotesList().launch(context);
+    }else if (gridItems.route == 'list_orders') {
       final dbProvider = SyncDBProvider();
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
       await dbProvider.syncSpecialSelectedOption(

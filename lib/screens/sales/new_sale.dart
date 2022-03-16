@@ -45,6 +45,14 @@ class _NewSaleState extends State<NewSale> {
   // final _customerFocusNode = FocusNode();
 
   @override
+  void initState() {
+    if (posBloc.isDisposed) {
+      posBloc.reload();
+    }
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _customerController.dispose();
     _customerAddrController.dispose();

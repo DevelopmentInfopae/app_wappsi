@@ -3,6 +3,7 @@ import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/bloc/quotes_bloc.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 // import 'package:pos_wappsi/environment/environment.dart';
@@ -62,6 +63,23 @@ class CustomerAddressesProvider {
         final defaultAddrss = data.first;
 
         orderBloc.setCustomerAddresses(
+            CustomerAddressesModel.fromJson(defaultAddrss));
+        if (returnBool) {
+          return true;
+        }
+      }
+    }
+  }
+  /// Load default customer address
+  static selectDefaultAddrsToQuote({bool returnBool = false}) async {
+    if (quoteBloc.getCustomer != null &&
+        quoteBloc.getCustomerAddresses == null) {
+      final data = await findCustomerAddresses(
+          '', quoteBloc.getCustomer!.idCloud!.toString());
+      if (data != []) {
+        final defaultAddrss = data.first;
+
+        quoteBloc.setCustomerAddresses(
             CustomerAddressesModel.fromJson(defaultAddrss));
         if (returnBool) {
           return true;
@@ -138,6 +156,26 @@ class CustomerAddressesProvider {
 
     return [];
   }
+  /// To load POS sale customer addresses
+  static Future<List<CustomerAddressesModel>> getDataAdrresesToQuote(
+      filter) async {
+    List<Map> data;
+
+    String customerID = quoteBloc.getCustomerId();
+
+    if (customerID == '0') {
+      data = [];
+    } else {
+      data = await findCustomerAddresses(filter, customerID);
+    }
+
+    // ignore: unnecessary_null_comparison
+    if (data != null) {
+      return CustomerAddressesModel.fromJsonList(data);
+    }
+
+    return [];
+  }
 
   /// Write customer and his address created locally into local DB with ids comming from cloud
   /// DB
@@ -198,6 +236,8 @@ class CustomerAddressesProvider {
         customer.customerSellerIdAssigned;
     customerBloc.getAddress.priceGroupId = customer.priceGroupId!;
     customerBloc.getAddress.priceGroupName = customer.priceGroupName!;
+    customerBloc.getAddress.customerAddressSellerIdAssigned =
+        customer.customerSellerIdAssigned!;
 
     final customerAddresses =
         await CustomerAddressesProvider.findCustomerAddresses(

@@ -643,10 +643,11 @@ class _SalePaymentState extends State<SalePayment> {
                       ),
                       (route) => false,
                     );
-                    await PrintSale(
-                      printData: posBloc.getPrintData!,
-                    ).launch(context);
+                    final printData = posBloc.getPrintData!;
                     posBloc.dispose();
+                    await PrintSale(
+                      printData: printData,
+                    ).launch(context);
                   });
                   setState(() {
                     _sending = false;

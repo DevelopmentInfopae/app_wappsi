@@ -193,9 +193,9 @@ class _PrintSettingsState extends State<PrintSettings> {
     return Card(
       child: ListView(
         children: [
+          _paperSzDropDown().paddingAll(10),
           _devicesDropDown().paddingAll(10),
           _options(),
-          _paperSzDropDown().paddingAll(10)
         ],
       ),
     );
@@ -531,7 +531,23 @@ class _PrintSettingsState extends State<PrintSettings> {
               scaffoldAlert(
                   context, 'Error al imprimir', const Duration(seconds: 3));
             }
-          } else if (widget.print == 'favorites') {
+          } else if (widget.print == 'quote') {
+            scaffoldAlert(
+                context, 'Imprimiendo comprobante', const Duration(seconds: 2));
+
+            final result = await printFormat!
+                .printQuote(widget.imagePath ?? pathImage, widget.posPrintData);
+            if (result ?? false) {
+              await Future.delayed(const Duration(seconds: 3));
+              hideCurrentScaffoldAlert(context);
+              setState(() {
+                _printing = false;
+              });
+            } else {
+              scaffoldAlert(
+                  context, 'Error al imprimir', const Duration(seconds: 3));
+            }
+          }else if (widget.print == 'favorites') {
             scaffoldAlert(
                 context, 'Imprimiendo favoritos', const Duration(seconds: 2));
 

@@ -86,6 +86,36 @@ class PrintFormat {
     return true;
   }
 
+  Future<bool?> printQuote(
+      String pathImage, Map<dynamic, dynamic>? printData) async {
+    await bluetooth.isConnected.then((isConnected) async {
+      if (isConnected!) {
+        final _innerPrinter =
+            (printerBloc.getPrinterDevice?.name == 'InnerPrinter');
+        final profile = await CapabilityProfile.load();
+        final generator = Generator(
+            chrLen == 32 ? PaperSize.mm58 : PaperSize.mm80, profile,
+            spaceBetweenRows: 1);
+        // delete print buffer
+
+        await bluetooth.writeBytes(Uint8List.fromList(await ticketHeader(
+            generator, _innerPrinter, pathImage, printData, chrLen,
+            type: 'Cotización')));
+        await bluetooth.writeBytes(
+            Uint8List.fromList(await ticketProducts(generator, _innerPrinter)));
+        await bluetooth.writeBytes(Uint8List.fromList(
+            await ticketOrderValue(generator, _innerPrinter, printData)));
+        await bluetooth.writeBytes(Uint8List.fromList(
+            await ticketTax(generator, _innerPrinter, printData)));
+
+        await bluetooth.writeBytes(Uint8List.fromList(
+            await ticketFooter(generator, _innerPrinter, printData)));
+      }
+    });
+
+    return true;
+  }
+
   /// To test printer
   Future<bool?> printTest() async {
     await bluetooth.isConnected.then((isConnected) async {

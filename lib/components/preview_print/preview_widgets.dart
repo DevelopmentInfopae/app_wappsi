@@ -97,6 +97,22 @@ Widget orderRef(TextTheme textTheme, Map<dynamic, dynamic> printData) {
     ],
   );
 }
+Widget quoteRef(TextTheme textTheme, Map<dynamic, dynamic> printData) {
+  final data = printData['quote_data'];
+  return Column(
+    children: [
+      Text(
+        'Cotización',
+        style: textTheme.bodyText1,
+      ),
+      Text(
+        data['reference_no'] ?? '',
+        style:
+            textTheme.bodyText1!.apply(fontWeightDelta: 5, fontSizeFactor: 1.2),
+      ),
+    ],
+  );
+}
 
 Widget billerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
   final customer = printData['customer'];
@@ -153,7 +169,7 @@ Widget billerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
                 style: textTheme.bodyText1)
           ])),
       Text(
-        customer['email'],
+        customer['email']??'',
         style: textTheme.bodyText1,
       ),
       RichText(
@@ -286,14 +302,14 @@ List<DataRow> _productsWUnit(List<Map<dynamic, dynamic>> products) {
     ));
     if (p['base_unit'] != null) {
       final bUnit = p['base_unit'];
-      final bUnitValue = value / bUnit['operation_value'];
+      final bUnitValue = value / unit['operation_value'];
       final bUnitValueS = getFormatedCurrency(bUnitValue);
       rows.add(DataRow(
         cells: <DataCell>[
           const DataCell(Text('')),
           const DataCell(Text('')),
           DataCell(Text(
-            capitalizeText(unit['code'] + ' x ' + bUnitValueS),
+            capitalizeText((bUnit['code']??unit['code']) + ' x ' + bUnitValueS),
             maxLines: 3,
           )),
           const DataCell(Text('')),
@@ -422,7 +438,7 @@ Widget paymentDetails(TextTheme textTheme, Map<dynamic, dynamic> printData) {
   );
 }
 
-Widget orderValueDetails(TextTheme textTheme, Map<dynamic, dynamic> printData) {
+Widget ordQuotValueDetails(TextTheme textTheme, Map<dynamic, dynamic> printData) {
   final total = getFormatedCurrency(printData['total']);
   final discount = getFormatedCurrency(printData['total_discount']);
   final grandTotal = getFormatedCurrency(printData['grand_total']);

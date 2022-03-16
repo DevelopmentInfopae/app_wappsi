@@ -79,6 +79,9 @@ class DBProvider {
       // orders tables
       await db.execute(orderSaleItems);
       await db.execute(orderSales);
+      // quotes tables
+      await db.execute(quotesTable);
+      await db.execute(quoteItemsTable);
 
       // index creation
       Batch batch = db.batch();
@@ -447,13 +450,18 @@ class DBProvider {
   // --------------------------------------------------------------------
 
   /// Get last_sync date of a given id
-  Future<String> getUpdateDate(int idSync) async {
+  Future<String?> getUpdateDate(int idSync) async {
     final db = await database;
 
-    final res =
+    try{
+      final res =
         await db!.rawQuery("SELECT last_update FROM sync WHERE id='$idSync'");
 
     return res.first['last_update'].toString();
+    }catch(e){
+      printConsole(e);
+      return null;
+    }
   }
 
   /// Update last_sync date of a given id with a value

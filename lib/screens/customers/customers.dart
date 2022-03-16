@@ -113,7 +113,7 @@ class _ProductsState extends State<Customers> {
           // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
           // alwaysOpened: true,
           titleStyle: buttonsSmallTextStyle(context),
-          hintStyle:buttonsSmallTextStyle(context),
+          hintStyle: buttonsSmallTextStyle(context),
           hideKeyboardOnDownScroll: true,
           onQueryChanged: _onQueryChanged,
           // height: _size.height * 0.078 < 55 ? 55 : _size.height * 0.078,
@@ -137,9 +137,15 @@ class _ProductsState extends State<Customers> {
                   builder:
                       (context, AsyncSnapshot<List<CompanyModel>?> snapshot2) {
                     if (snapshot2.hasData) {
-                      return CustomerCardList(
-                          customer: snapshot2.data!,
-                          searchParams: _searchParams,
+                      return RefreshIndicator(
+                          onRefresh: ()async{
+                            final res = await CompaniesProvider.getAllCustomers(limit: 50);
+                            _customersStream.sink.add(CompanyModel.fromJsonList(res!));
+                          },
+                          child: CustomerCardList(
+                            customer: snapshot2.data!,
+                            searchParams: _searchParams,
+                          ),
                         );
                     } else {
                       _customersStream.sink

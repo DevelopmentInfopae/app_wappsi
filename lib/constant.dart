@@ -11,7 +11,7 @@ const pColor = Color.fromRGBO(0, 125, 204, 1);
 const okColor = Color.fromRGBO(21, 178, 106, 1);
 const cancelColor = Color.fromRGBO(237, 50, 55, 1);
 const loveColor = Color.fromRGBO(237, 50, 55, 1);
-const favColor = Color.fromRGBO(248, 214, 78, 1);
+const favColor = Colors.red;
 const okColorWappsi = Color.fromRGBO(0, 176, 82, 1);
 
 const kIconSize = 19.0;
@@ -123,7 +123,7 @@ double searchHeight = 55;
 double leadingWidgetSize = 50;
 
 /// Default height of icon of leading widget of appBar
-double leadingIconSize = 30;
+double leadingIconSize = 27;
 
 /// Color to subtitles
 Color greyColor = Colors.grey[700]!;
@@ -173,7 +173,7 @@ Size imageIconSize() => const Size(60, 60);
 /// Home grid elements size
 Size gridItemSize(BuildContext context) {
   final _size = MediaQuery.of(context).size;
-  double width = _size.width > 500 ? 120 : 95;
+  double width = _size.width > 500 ? 120 : 108;
   double height = width * 1.253;
   return Size(width, height);
 }

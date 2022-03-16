@@ -6,7 +6,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/bloc/orders_bloc.dart';
+import 'package:pos_wappsi/bloc/quotes_bloc.dart';
 // import 'package:pos_wappsi/bloc/sync_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/input_decoration.dart';
@@ -17,13 +17,13 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/global_form_const.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/providers/document_types_provider.dart';
-import 'package:pos_wappsi/providers/orders_provider.dart';
+import 'package:pos_wappsi/providers/quotes_provider.dart';
+import 'package:pos_wappsi/screens/Quotes/print_quotes.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';
-import 'package:pos_wappsi/screens/orders/print_order.dart';
 // import 'package:pos_wappsi/screens/db_sync/components/sync_popup.dart';
 // import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
@@ -32,14 +32,14 @@ import 'package:pos_wappsi/utils/sale_functions/percent_formating.dart';
 import 'package:pos_wappsi/utils/text_formating/currency_formater.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-class OrderOtherDetails extends StatefulWidget {
-  const OrderOtherDetails({Key? key}) : super(key: key);
+class QuoteOtherData extends StatefulWidget {
+  const QuoteOtherData({Key? key}) : super(key: key);
 
   @override
-  _OrderOtherDetailsState createState() => _OrderOtherDetailsState();
+  _QuoteOtherDataState createState() => _QuoteOtherDataState();
 }
 
-class _OrderOtherDetailsState extends State<OrderOtherDetails> {
+class _QuoteOtherDataState extends State<QuoteOtherData> {
   // to disable paybutton when awaiting for response
   bool _sending = false;
   // TextEditingController _paymentDocumentController =
@@ -59,15 +59,15 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
   final TextEditingController _orderDController = TextEditingController();
   @override
   void initState() {
-    final discountVal = getFormatedCurrency(orderBloc.getOrderDiscount);
-    _orderDController.text = orderBloc.getOrderDiscount != 0.0
+    final discountVal = getFormatedCurrency(quoteBloc.getQuoteDiscount);
+    _orderDController.text = quoteBloc.getQuoteDiscount != 0.0
         ? discountVal.substring(0, discountVal.length)
         : '';
-    if (orderBloc.getInternalNote != null) {
-      _internalNController.text = orderBloc.getInternalNote!;
+    if (quoteBloc.getInternalNote != null) {
+      _internalNController.text = quoteBloc.getInternalNote!;
     }
-    if (orderBloc.getOrderNote != null) {
-      _orderNController.text = orderBloc.getOrderNote!;
+    if (quoteBloc.getNote != null) {
+      _orderNController.text = quoteBloc.getNote!;
     }
     super.initState();
   }
@@ -85,7 +85,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
 
     return Scaffold(
       appBar:
-          appBar(context, 'Agregar pedido', image: 'assets/images/cargo.png'),
+          appBar(context, 'Agregar cotización', image: 'assets/images/quotation.png'),
       body: _body(),
     );
   }
@@ -110,7 +110,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
           dataBloc.userData!.allowDiscount == 1
               ? _orderDiscount().paddingSymmetric(vertical: 6)
               : Container(),
-          _invoiceNote().paddingSymmetric(vertical: 6),
+          _note().paddingSymmetric(vertical: 6),
           _dispatchNote().paddingSymmetric(vertical: 6)
         ],
       ).paddingOnly(left: 16, right: 16, top: 6),
@@ -119,7 +119,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
 
   Widget _productsInfo() {
     final totalBeforeDisc = getFormatedCurrency(
-        orderBloc.getSubTotalWithoutDiscount(),
+        quoteBloc.getSubTotalWithoutDiscount(),
         decimals: 1);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,7 +130,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
             style: buttonsTextStyle(context, color: pColor),
           ),
           const Spacer(),
-          Text('${orderBloc.getItemsCount()}', style: numbersTextStyle())
+          Text('${quoteBloc.getItemsCount()}', style: numbersTextStyle())
         ]
             // style: textTheme,
             ),
@@ -143,7 +143,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
           Text(totalBeforeDisc, style: numbersTextStyle())
         ]),
         StreamBuilder<double?>(
-            stream: orderBloc.orderDiscountStream,
+            stream: quoteBloc.quoteDiscountStream,
             builder: (context, snapshot) {
               return Row(
                 children: [
@@ -160,8 +160,8 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
               );
             }),
         StreamBuilder<double?>(
-            stream: orderBloc.subTotalStream,
-            initialData: orderBloc.getSubTotalWithoutDiscount(),
+            stream: quoteBloc.subTotalStream,
+            initialData: quoteBloc.getSubTotalWithoutDiscount(),
             builder: (context, snapshot) {
               return Row(
                 children: [
@@ -184,7 +184,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
         //       style: buttonsTextStyle(context, color: pColor),
         //       children: [
         //         TextSpan(
-        //             text: '${orderBloc.getProductsCount()}',
+        //             text: '${quoteBloc.getProductsCount()}',
         //             style: numbersTextStyle())
         //       ]),
         //   // style: textTheme,
@@ -195,12 +195,12 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
 
   Widget _orderDocumentType() {
     return FutureBuilder(
-      future: DocumentsTypesProvider.loadFromDB(module: orderModule),
+      future: DocumentsTypesProvider.loadFromDB(module: quoteModule),
       builder:
           (BuildContext context, AsyncSnapshot<List<DocumentsTypes>> snapshot) {
-        if (snapshot.hasData && snapshot.data!.isNotEmpty&&!orderBloc.isDisposed) {
-          orderBloc.setOrderDocumentType(snapshot.data?.first);
-          if (snapshot.data!.length > 1) {
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          quoteBloc.setQuoteDocumentType(snapshot.data?.first);
+          if (snapshot.data!.length > 1&&!quoteBloc.isDisposed) {
             return _documentType(items: snapshot.data!);
           } else {
             return Container();
@@ -245,11 +245,11 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
         // Environment().env!='DEV'?null:print(data);
 
         setState(() {
-          orderBloc.setOrderDocumentType(data);
+          quoteBloc.setQuoteDocumentType(data);
         });
       },
       // selectedItem: ,
-      selectedItem: orderBloc.getOrderDocumentType,
+      selectedItem: quoteBloc.getQuoteDocumentType,
       popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
@@ -310,21 +310,21 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
           if (value != '') {
             if (value == '\$') {
               _orderDController.text = '';
-              orderBloc.setOrderDiscount(0);
+              quoteBloc.setQuoteDiscount(0);
             }
             try {
               final valueD = double.parse((value == '' ? '0' : value)
                   .replaceAll('\$', '')
                   .replaceAll(',', '')
                   .replaceAll('.', ''));
-              orderBloc.setOrderDiscount(valueD);
+              quoteBloc.setQuoteDiscount(valueD);
             } catch (e) {
-              // orderBloc.setOrderDiscount(0);
+              // quoteBloc.setQuoteDiscount(0);
             }
           } else {
             _orderDController.text = '';
-            orderBloc.setOrderDiscount(0);
-            orderBloc.getSubTotal();
+            quoteBloc.setQuoteDiscount(0);
+            quoteBloc.getSubTotal();
           }
           // });
         } else if (_discountTSelected == '2') {
@@ -332,15 +332,15 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
           if (percent != null) {
             percent = getFormatedPercent(percent);
 
-            final oDiscount = orderBloc.getTotalWithNoIVA() * percent;
+            final oDiscount = quoteBloc.getTotalWithNoIVA() * percent;
 
-            orderBloc.setOrderDiscount(oDiscount);
+            quoteBloc.setQuoteDiscount(oDiscount);
 
             // ubdate subtotal
 
           }
         }
-        orderBloc.getSubTotal();
+        quoteBloc.getSubTotal();
       },
     );
   }
@@ -373,12 +373,12 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
           setState(() {
             _discountTSelected = data.value;
             _orderDController.text = '';
-            orderBloc.setOrderDiscount(0);
-            orderBloc.getSubTotal();
+            quoteBloc.setQuoteDiscount(0);
+            quoteBloc.getSubTotal();
           });
         }
       },
-      // selectedItem: orderBloc.getCustomer,
+      // selectedItem: quoteBloc.getCustomer,
       popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
@@ -387,15 +387,15 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
     );
   }
 
-  Widget _invoiceNote() {
-    return textFormField(context, 'Nota de venta', (String value) {
-      orderBloc.setOrderNote(value);
+  Widget _note() {
+    return textFormField(context, 'Nota', (String value) {
+      quoteBloc.setNote(value);
     }, (String value) {}, () {}, controller: _internalNController, maxLines: 4);
   }
 
   Widget _dispatchNote() {
     return textFormField(context, 'Nota interna', (String value) {
-      orderBloc.setInternalNote(value);
+      quoteBloc.setInternalNote(value);
     }, (String value) {}, () {}, controller: _orderNController, maxLines: 4);
   }
 
@@ -404,10 +404,10 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         subTotal(
-                stream: orderBloc.subTotalStream,
+                stream: quoteBloc.subTotalStream,
                 large: true,
                 color: Colors.white,
-                defaultValue: orderBloc.getSubTotal())
+                defaultValue: quoteBloc.getSubTotal())
             .paddingLeft(8)
             .expand(),
         sendButton().flexible(),
@@ -426,7 +426,10 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
           ? null
           : () async {
               if (_inputsKey.currentState?.validate() ?? false) {
-                final res = await OrdersProvider.sendOrderData(context);
+                setState(() {
+                  _sending = true;
+                });
+                final res = await QuotesProvider.sendQuoteData(context);
 
                 if (res) {
                   /// update JWT token
@@ -439,9 +442,9 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
                       ),
                       (route) => false,
                     );
-                    final printData = orderBloc.getPrintData!;
-                    orderBloc.dispose();
-                    await PrintOrder(
+                    final printData = quoteBloc.getPrintData!;
+                    quoteBloc.dispose();
+                    await PrintQuote(
                       printData: printData,
                     ).launch(context);
                   });
@@ -455,7 +458,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
                 }
               }
             },
-      child: Text('Finalizar pedido',
+      child: Text('Finalizar cotización',
           style: buttonsSmallTextStyle(context,
               color: !_sending ? pColor : greyColor)),
     );

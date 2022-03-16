@@ -16,17 +16,18 @@ import 'package:rxdart/subjects.dart';
 class CustomerBloc {
   // to save data of user
   // final _tokenController = BehaviorSubject<String>();
+  bool disposed = false;
 
-  final _customerController = BehaviorSubject<CompanyModel?>();
 
-  // to manage addresses creation data
-  final _addressController = BehaviorSubject<CustomerAddressesModel?>();
 
-  final _favoritesController = BehaviorSubject<Map<String, ProductModel>>();
-  final _userNameController = BehaviorSubject<String?>();
-  final _passwordController = BehaviorSubject<String?>();
-  final _imageController = BehaviorSubject<String?>();
-  final _locationController = BehaviorSubject<GeoPoint?>();
+  BehaviorSubject<CompanyModel?> _customerController = BehaviorSubject<CompanyModel?>();
+         // to manage addresses creation data
+  BehaviorSubject<CustomerAddressesModel?> _addressController = BehaviorSubject<CustomerAddressesModel?>();
+  BehaviorSubject<Map<String,ProductModel>> _favoritesController = BehaviorSubject<Map<String, ProductModel>>();
+  BehaviorSubject<String?> _userNameController = BehaviorSubject<String?>();
+  BehaviorSubject<String?> _passwordController = BehaviorSubject<String?>();
+  BehaviorSubject<String?> _imageController = BehaviorSubject<String?>();
+  BehaviorSubject<GeoPoint?> _locationController = BehaviorSubject<GeoPoint?>();
 
   //-----------------------------------------------------------------------------
   //                                Streams
@@ -132,6 +133,7 @@ class CustomerBloc {
   Function(String) get setPassword => _passwordController.sink.add;
 
   dispose() {
+    disposed=true;
     _customerController.close();
     _userNameController.close();
     _passwordController.close();
@@ -141,13 +143,15 @@ class CustomerBloc {
     _addressController.close();
   }
 
-  clear() {
-    _customerController.value = CompanyModel();
-    _userNameController.value = null;
-    _passwordController.value = null;
-    _favoritesController.value = {};
-    _imageController.value = null;
-    _locationController.value = null;
+  reload() {
+    disposed=false;
+    _customerController =  BehaviorSubject<CompanyModel?>();
+    _addressController =   BehaviorSubject<CustomerAddressesModel?>();
+    _favoritesController = BehaviorSubject<Map<String, ProductModel>>();
+    _userNameController =  BehaviorSubject<String?>();
+    _passwordController =  BehaviorSubject<String?>();
+    _imageController =     BehaviorSubject<String?>();
+    _locationController =  BehaviorSubject<GeoPoint?>();
   }
 
   clearAdressCreationData() {

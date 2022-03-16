@@ -33,13 +33,13 @@ class _CustomerCardListState extends State<CustomerCardList> {
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
-    return Stack(
+    return Column(
       children: [
         ListView.separated(
           controller: _controller,
           padding: EdgeInsets.zero,
           itemCount: widget.customer.length + (_allLoaded ? 1 : 0),
-          physics: const ClampingScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           separatorBuilder: (context, index) => const Divider(
             height: 5,
           ),
@@ -58,7 +58,7 @@ class _CustomerCardListState extends State<CustomerCardList> {
             }
             // return Container();
           },
-        ),
+        ).expand(),
         if (_loading) ...[loadingIndicator(_size.width)]
       ],
     );

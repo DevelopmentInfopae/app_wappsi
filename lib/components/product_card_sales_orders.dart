@@ -6,6 +6,7 @@ import 'package:pos_wappsi/bloc/orders_bloc.dart';
 // ignore: implementation_imports
 // import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/bloc/quotes_bloc.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
@@ -27,9 +28,11 @@ class ProductCard extends StatefulWidget {
       required this.formKey,
       required this.quantityFocusNode,
       this.fromOder = false,
+      this.fromQuote = false,
       this.requestFocus = false})
       : super(key: key);
   final bool fromOder;
+  final bool fromQuote;
   final bool requestFocus;
   final FocusNode quantityFocusNode;
   final GlobalObjectKey<FormState> formKey;
@@ -63,7 +66,10 @@ class _ProductCardState extends State<ProductCard> {
       if (widget.fromOder) {
         orderBloc.getProductData(widget.productKey)?.quantity =
             orderBloc.getProductData(widget.productKey)!.quantity;
-      } else {
+      } else if (widget.fromQuote) {
+        quoteBloc.getProductData(widget.productKey)?.quantity =
+            quoteBloc.getProductData(widget.productKey)!.quantity;
+      } else{
         posBloc.getProductData(widget.productKey)?.quantity =
             posBloc.getProductData(widget.productKey)!.quantity;
       }
@@ -76,6 +82,10 @@ class _ProductCardState extends State<ProductCard> {
       product = orderBloc.getProducts?[widget.productKey];
       // firstProduct = orderBloc.getProducts?.values.first;
       firstKey = orderBloc.getProducts?.keys.first;
+    } else if (widget.fromQuote) {
+      unit = quoteBloc.getProductUnits?[widget.productKey];
+      product = quoteBloc.getProducts?[widget.productKey];
+      firstKey = quoteBloc.getProducts?.keys.first;
     } else {
       unit = posBloc.getProductUnits?[widget.productKey];
       product = posBloc.getProducts?[widget.productKey];
@@ -229,7 +239,11 @@ class _ProductCardState extends State<ProductCard> {
                     if (widget.fromOder) {
                       res = await orderBloc.addProductQuantity(
                           widget.productKey, 1);
-                    } else {
+                    } else 
+                     if (widget.fromQuote) {
+                      res = await quoteBloc.addProductQuantity(
+                          widget.productKey, 1);
+                    } else{
                       res = await posBloc.addProductQuantity(
                           widget.productKey, 1);
                     }
@@ -253,6 +267,9 @@ class _ProductCardState extends State<ProductCard> {
                   bool res;
                   if (widget.fromOder) {
                     res = await orderBloc.addProductQuantity(
+                        widget.productKey, productInt);
+                  } else if (widget.fromQuote) {
+                    res = await quoteBloc.addProductQuantity(
                         widget.productKey, productInt);
                   } else {
                     res = await posBloc.addProductQuantity(
@@ -305,7 +322,22 @@ class _ProductCardState extends State<ProductCard> {
             //     orderBloc.getProductData(widget.productKey)!.quantity);
             // });
           }
-        } else {
+        } else if (widget.fromQuote) {
+          // final uOperator =
+          //     orderBloc.getProductUnits?[widget.productKey]?.operationValue ??
+          //         1;
+          if (quoteBloc.getProductData(widget.productKey)!.quantity >
+              uOperator) {
+            // setState(() {
+            quoteBloc.getProductData(widget.productKey)!.quantity -= uOperator;
+            setState(() {
+              _updateQuantityValue();
+            });
+            // orderBloc.addProductQuantity(widget.productKey,
+            //     orderBloc.getProductData(widget.productKey)!.quantity);
+            // });
+          }
+        } else{
           if (posBloc.getProductData(widget.productKey)!.quantity > uOperator) {
             // setState(() {
             posBloc.getProductData(widget.productKey)!.quantity -= uOperator;
@@ -340,6 +372,10 @@ class _ProductCardState extends State<ProductCard> {
         if (widget.fromOder) {
           final pQtty = orderBloc.getProductData(widget.productKey)!.quantity;
           res = await orderBloc.addProductQuantity(
+              widget.productKey, pQtty + (uOperator));
+        } else if (widget.fromQuote) {
+          final pQtty = quoteBloc.getProductData(widget.productKey)!.quantity;
+          res = await quoteBloc.addProductQuantity(
               widget.productKey, pQtty + (uOperator));
         } else {
           final pQtty = posBloc.getProductData(widget.productKey)!.quantity;
@@ -379,6 +415,8 @@ class _ProductCardState extends State<ProductCard> {
       onTap: () {
         if (widget.fromOder) {
           orderBloc.removeProduct(widget.productKey);
+        } else if (widget.fromQuote) {
+          quoteBloc.removeProduct(widget.productKey);
         } else {
           posBloc.removeProduct(widget.productKey);
         }
@@ -441,6 +479,9 @@ class _ProductCardState extends State<ProductCard> {
       if (widget.fromOder) {
         orderBloc.getProductData(widget.productKey)?.quantity =
             orderBloc.getProductData(widget.productKey)!.quantity;
+      } else  if (widget.fromQuote) {
+        quoteBloc.getProductData(widget.productKey)?.quantity =
+            quoteBloc.getProductData(widget.productKey)!.quantity;
       } else {
         posBloc.getProductData(widget.productKey)?.quantity =
             posBloc.getProductData(widget.productKey)!.quantity;
@@ -465,7 +506,10 @@ class _ProductCardState extends State<ProductCard> {
       if (widget.fromOder) {
         value = orderBloc.getProductData(widget.productKey)?.quantity ?? 1;
         // operator = orderBloc.getProductUnits?[widget.productKey]!.operationValue;
-      } else {
+      } else if (widget.fromQuote) {
+        value = quoteBloc.getProductData(widget.productKey)?.quantity ?? 1;
+        // operator = orderBloc.getProductUnits?[widget.productKey]!.operationValue;
+      } else{
         value = posBloc.getProductData(widget.productKey)?.quantity ?? 1;
         // operator = posBloc.getProductUnits?[widget.productKey]!.operationValue;
       }

@@ -2,32 +2,31 @@ import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/constant.dart';
-import 'package:pos_wappsi/models/order_model.dart';
-import 'package:pos_wappsi/providers/local_orders_provider.dart';
-import 'package:pos_wappsi/screens/orders/print_order.dart';
+// import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/models/quotes_model.dart';
+import 'package:pos_wappsi/providers/quotes_provider.dart';
+import 'package:pos_wappsi/screens/Quotes/print_quotes.dart';
 
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/text_formating/date_to_text.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
-import 'package:pos_wappsi/utils/text_formating/order_status_mapping.dart';
 
-class OrdersCardList extends StatefulWidget {
-  const OrdersCardList(
+class QuotesCardList extends StatefulWidget {
+  const QuotesCardList(
       {Key? key,
-      required this.orders,
+      required this.quotes,
       required this.searchParams,
       this.filters = const []})
       : super(key: key);
-  final List<OrderModel> orders;
+  final List<QuoteModel> quotes;
   final List<String> filters;
   final Map searchParams;
 
   @override
-  State<OrdersCardList> createState() => _OrdersCardListState();
+  State<QuotesCardList> createState() => _QuotesCardListState();
 }
 
-class _OrdersCardListState extends State<OrdersCardList> {
+class _QuotesCardListState extends State<QuotesCardList> {
   late ScrollController _controller;
   late Size _size;
   bool _loading = false;
@@ -47,15 +46,15 @@ class _OrdersCardListState extends State<OrdersCardList> {
         ListView.separated(
           controller: _controller,
           padding: EdgeInsets.zero,
-          itemCount: widget.orders.length + (_allLoaded ? 1 : 0),
+          itemCount: widget.quotes.length + (_allLoaded ? 1 : 0),
           physics: const AlwaysScrollableScrollPhysics(),
           separatorBuilder: (context, index) => const Divider(
             height: 5,
           ),
           itemBuilder: (context, index) {
-            if (index < widget.orders.length) {
-              return OrdersCard(
-                order: widget.orders[index],
+            if (index < widget.quotes.length) {
+              return QuotesCard(
+                order: widget.quotes[index],
                 action: 'customer_details',
               );
             } else {
@@ -82,7 +81,7 @@ class _OrdersCardListState extends State<OrdersCardList> {
       });
 
       _loading = true;
-      final res = await LocalOrdersProvider.listLocalOrders(
+      final res = await QuotesProvider.listLocalQuotes(
           search: widget.searchParams['search'] ?? '',
           filters: widget.filters,
           offset: true,
@@ -92,7 +91,7 @@ class _OrdersCardListState extends State<OrdersCardList> {
         if (res.isNotEmpty) {
           setState(() {
             // widget.products.clear();
-            widget.orders.addAll(res);
+            widget.quotes.addAll(res);
             _page += 1;
             _loading = false;
           });
@@ -115,27 +114,27 @@ class _OrdersCardListState extends State<OrdersCardList> {
 
 // class to show customer indormation in form of a card
 
-class OrdersCard extends StatefulWidget {
-  final OrderModel order;
+class QuotesCard extends StatefulWidget {
+  final QuoteModel order;
 
   final String action;
-  const OrdersCard({Key? key, required this.order, required this.action})
+  const QuotesCard({Key? key, required this.order, required this.action})
       : super(key: key);
 
   @override
-  _OrdersCardState createState() => _OrdersCardState();
+  _QuotesCardState createState() => _QuotesCardState();
 }
 
-class _OrdersCardState extends State<OrdersCard> {
+class _QuotesCardState extends State<QuotesCard> {
   // late Size _size;
   Map<String, Color> cardColors = {};
   @override
   Widget build(BuildContext context) {
-    cardColors = mapOrderStatusColor(widget.order.saleStatus);
+    // cardColors = mapquotestatusColor(widget.order.saleStatus);
     // _size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () async {
-        PrintOrder(
+        PrintQuote(
           printData: await widget.order.buildPrintDataMap(),
           back: true,
           exitToNewOrder: false,
@@ -157,7 +156,7 @@ class _OrdersCardState extends State<OrdersCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _status().paddingSymmetric(horizontal: 8),
+          // _status().paddingSymmetric(horizontal: 8),
           _customer(),
           _date(),
           _reference(),
@@ -176,7 +175,6 @@ class _OrdersCardState extends State<OrdersCard> {
                 // ),
                 // _total(),
                 // _discount(),
-                _items(),
                 _grandTotal()
               ],
             ),
@@ -192,7 +190,7 @@ class _OrdersCardState extends State<OrdersCard> {
 
   Widget _customer() {
     return labelContentH(
-        'Cliente:', capitalizeText(widget.order.customer), context,
+        'Cliente:', capitalizeText(widget.order.customer.toString()), context,
         withInnerPading: false,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
@@ -200,9 +198,9 @@ class _OrdersCardState extends State<OrdersCard> {
   Widget _date() {
     return labelContentH(
         'Fecha:',
-        capitalizeText(parseDateStrES(widget.order.registrationDate ?? '') +
+        capitalizeText(parseDateStrES(widget.order.date ?? '') +
             ' ' +
-            parseTimeStrES(widget.order.registrationDate ?? '')),
+            parseTimeStrES(widget.order.date ?? '')),
         context,
         withInnerPading: false,
         flexCol1: 1,
@@ -217,38 +215,10 @@ class _OrdersCardState extends State<OrdersCard> {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 
-  Widget _items() {
-    return labelContentH(
-        'Items:', (widget.order.totalItems).toString(), context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
 
-  Widget _status() {
-    return Row(
-      children: [
-        Text(
-          'Estado:',
-          style: normalTextStyle(context, fontWeightDelta: 2),
-        ),
-        const Spacer(),
-        Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(vertical: 6),
-          width: 110,
-          decoration: BoxDecoration(
-              color: cardColors['background'],
-              borderRadius: BorderRadius.circular(10)),
-          child: Text(
-            mapOrderStatus(widget.order.saleStatus),
-            textAlign: TextAlign.center,
-            style: normalTextStyle(context,
-                fontWeightDelta: 2, color: cardColors['text']),
-          ),
-        ),
-      ],
-    );
-  }
+
+  
+  
 
   // Widget _total() {
   //   final value = getFormatedCurrency(

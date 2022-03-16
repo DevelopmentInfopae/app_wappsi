@@ -124,6 +124,16 @@ Map<String, GridItems> gridItemsMap = {
     route: "register",
     icon: 'assets/images/cash-register.png',
   ),
+  'quotes-add':GridItems(
+    title: 'Agregar cotización',
+    route: "quotes",
+    icon: 'assets/images/quotation.png',
+  ),
+  'quotes-index':GridItems(
+    title: 'Listado de cotizaciones',
+    route: "quotes_index",
+    icon: 'assets/images/quotation.png',
+  ),
 
 };
 
@@ -136,8 +146,14 @@ List<GridItems> gridItemsForPermissions(){
   if(dataBloc.permissions?.salesAddOrder==1){
     gridItems.add(gridItemsMap['sales-add_order']!);
   }
+  if(dataBloc.permissions?.quotesAdd==1){
+    gridItems.add(gridItemsMap['quotes-add']!);
+  }
   if(dataBloc.permissions?.salesOrders==1){
     gridItems.add(gridItemsMap['sales-orders']!);
+  }
+  if(dataBloc.permissions?.quotesIndex==1){
+    gridItems.add(gridItemsMap['quotes-index']!);
   }
   if(dataBloc.permissions?.posSales==1){
     gridItems.add(gridItemsMap['pos-sales']!);
@@ -148,12 +164,16 @@ List<GridItems> gridItemsForPermissions(){
   if(dataBloc.permissions?.customersIndex==1){
     gridItems.add(gridItemsMap['customers-index']!);
   }
+  if(dataBloc.permissions?.productsIndex==1){
+    gridItems.add(gridItemsMap['products-index']!);
+  }
   if(dataBloc.permissions?.productsPrice==1){
     gridItems.add(gridItemsMap['products-price']!);
   }
   if(dataBloc.permissions?.posPosRegisterAddMovement==1){
     gridItems.add(gridItemsMap['pos-pos_register_add_movement']!);
   }
+  
 
   gridItems.addAll(basePermissions);
 

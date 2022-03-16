@@ -3,6 +3,7 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/bloc/quotes_bloc.dart';
 import 'package:pos_wappsi/components/product_card.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
@@ -49,8 +50,8 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
       action = 'add_to_cart';
     }
     if (widget.toQuote) {
-      // customer = orderBloc.getCustomer!;
-      // action = 'add_to_cart';
+      customer = quoteBloc.getCustomer!;
+      action = 'add_to_quote';
     }
     super.initState();
   }
@@ -66,8 +67,8 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
       action = 'add_to_cart';
     }
     if (widget.toQuote) {
-      // customer = orderBloc.getCustomer!;
-      // action = 'add_to_cart';
+      customer = quoteBloc.getCustomer!;
+      action = 'add_to_quote';
     }
     return Column(
       children: [

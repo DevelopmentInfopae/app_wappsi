@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/bloc/orders_bloc.dart';
+import 'package:pos_wappsi/bloc/quotes_bloc.dart';
 // import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/basic_widgets.dart';
@@ -17,7 +17,7 @@ import 'package:pos_wappsi/models/companies_model.dart';
 // import 'package:pos_wappsi/components/app_bar_leading.dart';
 import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
-import 'package:pos_wappsi/screens/orders/order_products.dart';
+import 'package:pos_wappsi/screens/Quotes/quote_products.dart';
 // import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 
@@ -26,14 +26,14 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
-class NewOrder extends StatefulWidget {
-  const NewOrder({Key? key}) : super(key: key);
+class NewQuote extends StatefulWidget {
+  const NewQuote({Key? key}) : super(key: key);
 
   @override
-  _NewOrderState createState() => _NewOrderState();
+  _NewQuoteState createState() => _NewQuoteState();
 }
 
-class _NewOrderState extends State<NewOrder> {
+class _NewQuoteState extends State<NewQuote> {
   late Size _size;
   late Color _pc;
   final TextEditingController _customerController = TextEditingController();
@@ -44,11 +44,10 @@ class _NewOrderState extends State<NewOrder> {
   // final _customerDropDownKey = GlobalKey<DropdownSearchState<CompanyModel?>>();
 
   // final _customerFocusNode = FocusNode();
-
   @override
   void initState() {
-    if (orderBloc.isDisposed) {
-      orderBloc.reload();
+    if(quoteBloc.isDisposed){
+      quoteBloc.reload();
     }
     super.initState();
   }
@@ -73,7 +72,7 @@ class _NewOrderState extends State<NewOrder> {
           return true;
         },
         child: Scaffold(
-            floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+            // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
             appBar: _appBar(),
             body: _body()));
   }
@@ -102,7 +101,8 @@ class _NewOrderState extends State<NewOrder> {
           _warehouse(),
           _sellerInfo(),
           _customers(),
-          _customerAddressesDropDown()
+
+          _customerAddresses()
         ],
       ),
     );
@@ -127,8 +127,8 @@ class _NewOrderState extends State<NewOrder> {
   PreferredSize _appBar() {
     return appBar(
       context,
-      'Agregar pedido',
-      image: 'assets/images/cargo.png',
+      'Agregar cotización',
+      image: 'assets/images/quotation.png',
       // leading: _appBarLeading(),
       onPop: () {
         dataBloc.homeKey.currentState?.changeBottomIndex(1);
@@ -195,7 +195,7 @@ class _NewOrderState extends State<NewOrder> {
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onFind: (String? filter) => CompaniesProvider.getCustomers(filter),
       onChanged: _customerSelection,
-      selectedItem: orderBloc.getCustomer,
+      selectedItem: quoteBloc.getCustomer,
       popupItemBuilder: customPopupCustomerItemBuilder,
       popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
@@ -208,8 +208,8 @@ class _NewOrderState extends State<NewOrder> {
   void _customerSelection(data) async {
     printConsole(data);
     if (data != null) {
-      orderBloc.setCustomer(data);
-      if (orderBloc.productsAdded.isNotEmpty) {
+      quoteBloc.setCustomer(data);
+      if (quoteBloc.productsAdded.isNotEmpty) {
         final choice = await choiceAlert(
             context,
             'Se ha encontrado una lista de productos para el pedido existente,¿Que desea hacer?',
@@ -218,22 +218,23 @@ class _NewOrderState extends State<NewOrder> {
             confirm: 'Recalcular precios',
             skipeable: false);
         if (choice) {
-          final status = await orderBloc.reloadProducts();
+          final status = await quoteBloc.reloadProducts();
           if (!status) {
             confirmDialog(context, 'Error al recalcular precios',
                 'assets/images/warning.png');
           }
         } else {
-          orderBloc.emptyProductsAdded();
+          quoteBloc.emptyProductsAdded();
         }
       }
-      orderBloc.setCustomerAddresses(null);
+      quoteBloc.setCustomerAddresses(null);
       _addressesDropDownKey.currentState?.changeSelectedItem(null);
       await Future.delayed(const Duration(milliseconds: 500));
+      setState(() {});
       _addressesDropDownKey.currentState?.openDropDownSearch();
     } else {
-      orderBloc.setCustomer(null);
-      orderBloc.setCustomerAddresses(null);
+      quoteBloc.setCustomer(null);
+      quoteBloc.setCustomerAddresses(null);
 
       _addressesDropDownKey.currentState?.changeSelectedItem(null);
 
@@ -242,18 +243,19 @@ class _NewOrderState extends State<NewOrder> {
     }
   }
 
-  // Widget _customerAddresses() {
-  //   return FutureBuilder(
-  //     future: CustomerAddressesProvider.selectDefaultAddrsToOrder(returnBool: true),
-  //     builder: (BuildContext context, AsyncSnapshot snapshot) {
-  //       if (snapshot.hasData) {
-  //         return _customerAddressesDropDown();
-  //       } else {
-  //         return _customerAddressesDropDown();
-  //       }
-  //     },
-  //   );
-  // }
+  Widget _customerAddresses() {
+    return FutureBuilder(
+      future:
+          CustomerAddressesProvider.selectDefaultAddrsToQuote(returnBool: true),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          return _customerAddressesDropDown();
+        } else {
+          return _customerAddressesDropDown();
+        }
+      },
+    );
+  }
 
   Widget _customerAddressesDropDown() {
     return DropdownSearch<CustomerAddressesModel>(
@@ -293,9 +295,9 @@ class _NewOrderState extends State<NewOrder> {
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onFind: (String? filter) =>
-          CustomerAddressesProvider.getDataAdrresesToOrder(filter),
+          CustomerAddressesProvider.getDataAdrresesToQuote(filter),
       onChanged: _customerAddrSelection,
-      selectedItem: orderBloc.getCustomerAddresses,
+      selectedItem: quoteBloc.getCustomerAddresses,
       popupItemBuilder: popupCustomerAddressesItemBuilder,
       popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
@@ -308,7 +310,7 @@ class _NewOrderState extends State<NewOrder> {
   void _customerAddrSelection(data) {
     printConsole(data);
 
-    orderBloc.setCustomerAddresses(data);
+    quoteBloc.setCustomerAddresses(data);
   }
 
   Widget _button() {
@@ -346,9 +348,9 @@ class _NewOrderState extends State<NewOrder> {
             //     fromOrderCreation: true);
             // await CustomerAddressesProvider.selectDefaultAddrs(
             //     fromOrderCreation: true);
-            if (orderBloc.getCustomer != null &&
-                orderBloc.getCustomerAddresses != null) {
-              const OrderProducts().launch(context);
+            if (quoteBloc.getCustomer != null &&
+                quoteBloc.getCustomerAddresses != null) {
+              const QuoteProducts().launch(context);
             }
           },
           child: Text(

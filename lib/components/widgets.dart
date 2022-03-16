@@ -151,7 +151,7 @@ Widget vDivider(
         EdgeInsets.only(left: pleft, right: prigth, top: ptop, bottom: pbottom),
     height: heigh,
     width: width,
-    color: Colors.black,
+    color: greyMediumLight,
   );
 }
 

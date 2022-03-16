@@ -17,7 +17,7 @@ import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 // import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';
-import 'package:pos_wappsi/screens/orders/components/favorites_search_selection.dart';
+import 'package:pos_wappsi/components/favorites_search_selection.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 // import 'package:pos_wappsi/screens/sales/components/sale_product_list_widget.dart';
 

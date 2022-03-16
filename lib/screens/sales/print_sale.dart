@@ -59,15 +59,10 @@ class _PrintSaleState extends State<PrintSale> {
     _pc = pColor;
     return WillPopScope(
       onWillPop: () async {
-        // To control pop from nav keys on device
-
-        // final syncDB = SyncDBProvider();
-        // await Future.wait([
-        //   syncDB.syncOption(context, 'Precios de Productos'),
-        //   syncDB.syncOption(context, 'Productos de Sucursales'),
-        // ]);
-        return true;
-      },
+          dataBloc.homeKey.currentState?.changeBottomIndex(1);
+          // printConsole('here i am');
+          return true;
+        },
       child: Scaffold(
         appBar: appBar(
           context,

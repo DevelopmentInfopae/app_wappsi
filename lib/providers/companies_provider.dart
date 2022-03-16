@@ -413,14 +413,14 @@ class CompaniesProvider {
     } else if (res['error']) {
       confirmDialog(
           context, res['body']['message'], 'assets/images/dizzy-robot.png');
-    } else {
+    } else if(!res['error']){
       // update local DB with company info
       bool dbUpdated =
           await WishlistProvider.reloadCustomerFavs(context, customer);
 
       // if fails we force DB sync
       if (!dbUpdated) {
-        customerBloc.clear();
+        customerBloc.dispose();
         // DBSyncElements(
         //   options: {'Terceros': true, 'Sucursales': true},
         // ).launch(context);
@@ -430,7 +430,7 @@ class CompaniesProvider {
       } else {
         // if local db update success, go to home
 
-        customerBloc.clear();
+        customerBloc.dispose();
         // dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
         confirmDialog(
             context, res['body']['message'], 'assets/images/success.png');

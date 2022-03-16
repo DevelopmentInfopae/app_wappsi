@@ -10,6 +10,7 @@ import 'package:pos_wappsi/components/preview_print/preview_widgets.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/img_dir.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/screens/Quotes/new_quote.dart';
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/orders/new_order.dart';
@@ -20,12 +21,12 @@ import 'package:pos_wappsi/utils/blue_print/blue_print.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/local_files.dart';
 
-class PrintOrder extends StatefulWidget {
+class PrintQuote extends StatefulWidget {
   final bool back;
   final String image;
   final bool exitToNewOrder;
   final Map<dynamic, dynamic> printData;
-  const PrintOrder(
+  const PrintQuote(
       {Key? key,
       required this.printData,
       this.back = false,
@@ -33,10 +34,10 @@ class PrintOrder extends StatefulWidget {
       this.image = 'assets/images/printer.png'})
       : super(key: key);
   @override
-  _PrintOrderState createState() => _PrintOrderState();
+  _PrintQuoteState createState() => _PrintQuoteState();
 }
 
-class _PrintOrderState extends State<PrintOrder> {
+class _PrintQuoteState extends State<PrintQuote> {
   late Color _pc;
   late Size _size;
   bool _printing = false;
@@ -66,7 +67,7 @@ class _PrintOrderState extends State<PrintOrder> {
       child: Scaffold(
         appBar: appBar(
           context,
-          'Imprimir pedido',
+          'Imprimir cotización',
           back: widget.back,
           image: widget.image,
         ),
@@ -76,13 +77,20 @@ class _PrintOrderState extends State<PrintOrder> {
   }
 
   Widget _body() {
-    return Column(
+    // try {
+      return Column(
       // mainAxisAlignment: ,
       children: <Widget>[
         _preview().expand(),
         bottom(_buttons(), _pc, _size),
       ],
     );
+    // } catch (e) {
+    //   printConsole(e);
+    //   return Center(
+    //     child: Text('No se pudo cargar esta vista', style: buttonsSmallTextStyle(context),),
+    //   );
+    // }
   }
 
   Widget _preview() {
@@ -100,7 +108,7 @@ class _PrintOrderState extends State<PrintOrder> {
                       _size.height * 0.09 > 60 ? _size.height * 0.09 : 60),
               legalInformation(textTheme, widget.printData),
               emptyLine(),
-              orderRef(textTheme, widget.printData),
+              quoteRef(textTheme, widget.printData),
               emptyLine(),
               billerData(textTheme, widget.printData)
                   .withWidth(_size.width * 0.85)
@@ -173,7 +181,7 @@ class _PrintOrderState extends State<PrintOrder> {
             companyLogo =
                 companyLogo.substring(0, companyLogo.length - 4) + '.jpg';
           }
-          final result = await printFormat.printOrder(
+          final result = await printFormat.printQuote(
               dataBloc.dirPath! + billerImgDir + companyLogo, widget.printData);
           if (result ?? false) {
             await Future.delayed(const Duration(seconds: 1));
@@ -187,7 +195,7 @@ class _PrintOrderState extends State<PrintOrder> {
           }
         } else {
           PrintSettings(
-            print: 'order',
+            print: 'quote',
             posPrintData: widget.printData,
           ).launch(context);
         }
@@ -227,7 +235,7 @@ class _PrintOrderState extends State<PrintOrder> {
             ),
             (route) => false,
           );
-          const NewOrder().launch(context);
+          const NewQuote().launch(context);
         } else {
           Navigator.pop(context);
         }

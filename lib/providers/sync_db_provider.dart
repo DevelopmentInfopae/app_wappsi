@@ -21,7 +21,7 @@ class SyncDBProvider {
   bool firstTime = false;
 
   _getUpdates(Map<String, dynamic> options, {bool isPost = true}) async {
-    // String updateDate = '';
+    String? updateDate;
     DataProvider api = DataProvider();
 
     Map<String, dynamic> res;

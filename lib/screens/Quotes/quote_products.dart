@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/bloc/orders_bloc.dart';
+import 'package:pos_wappsi/bloc/quotes_bloc.dart';
 import 'package:pos_wappsi/components/appbar_leading.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/widgets.dart';
@@ -12,8 +12,9 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/components/product_list.dart';
+import 'package:pos_wappsi/screens/Quotes/quote_other_data.dart';
 import 'package:pos_wappsi/components/favorites_search_selection.dart';
-import 'package:pos_wappsi/screens/orders/order_other_details.dart';
+// import 'package:pos_wappsi/screens/orders/order_other_details.dart';
 // import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 
@@ -28,14 +29,14 @@ import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
-class OrderProducts extends StatefulWidget {
-  const OrderProducts({Key? key}) : super(key: key);
+class QuoteProducts extends StatefulWidget {
+  const QuoteProducts({Key? key}) : super(key: key);
 
   @override
-  _OrderProductsState createState() => _OrderProductsState();
+  _QuoteProductsState createState() => _QuoteProductsState();
 }
 
-class _OrderProductsState extends State<OrderProducts> {
+class _QuoteProductsState extends State<QuoteProducts> {
   int index = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ScrollController _scrollController = ScrollController();
@@ -79,7 +80,7 @@ class _OrderProductsState extends State<OrderProducts> {
               children: [
                 _searchbar(),
                 Hero(
-                    tag: 'order_favorite_search',
+                    tag: 'favorite_search',
                     child: buildFloatingSearchBar())
               ],
             )),
@@ -104,10 +105,10 @@ class _OrderProductsState extends State<OrderProducts> {
   PreferredSize buildAppBar(BuildContext context) {
     return appBar(
       context,
-      'Agregar pedido',
+      'Agregar cotización',
       elevation: false,
       radius: 0,
-      image: 'assets/images/cargo.png',
+      image: 'assets/images/quotation.png',
       onPop: () {
         setState(() {
           if (index == 1) {
@@ -128,7 +129,7 @@ class _OrderProductsState extends State<OrderProducts> {
             child: AppBarLeading(
                 widget: Icon(
                   Icons.favorite,
-                  size: 27,
+                  size: leadingIconSize,
                   color: index == 1 ? Colors.white : favColor,
                 ),
                 backgroundColor: index == 0 ? Colors.white : favColor,
@@ -168,7 +169,8 @@ class _OrderProductsState extends State<OrderProducts> {
 
     return FavoritesOrderSelection(
         isPortrait: isPortrait,
-        toOrder: true,
+        // toOrder: false,
+        toQuote: true,
         context: _scaffoldKey.currentContext ?? context);
   }
 
@@ -234,7 +236,7 @@ class _OrderProductsState extends State<OrderProducts> {
       transition: CircularFloatingSearchBarTransition(),
       physics: const BouncingScrollPhysics(),
       builder: (context, _) => buildBody(
-          stream: orderBloc.productSearchStream, action: 'add_to_order'),
+          stream: quoteBloc.productSearchStream, action: 'add_to_order'),
       title: Text(
         'Buscar producto',
         style: buttonsSmallTextStyle(context),
@@ -263,16 +265,16 @@ class _OrderProductsState extends State<OrderProducts> {
 
   StreamBuilder<Map<String, ProductModel>> _productsStream() {
     return StreamBuilder<Map<String, ProductModel>>(
-        stream: orderBloc.productsStream,
+        stream: quoteBloc.productsStream,
         builder: (context, snapshot) {
           // _searchBarFocusManagement();
           if (_productsCount + 1 == snapshot.data?.length) {
             _productsCount += 1;
             _searchBarFocusManagement();
           }
-          if (snapshot.hasData && _searchController.isClosed&& _productsCount!=(orderBloc.getProducts?.length??0)) {
+          if (snapshot.hasData && _searchController.isClosed&& _productsCount!=(quoteBloc.getProducts?.length??0)) {
             bool productRequestFocus = false;
-            if (orderBloc.getItemsCount() == 0) {
+            if (quoteBloc.getItemsCount() == 0) {
               _productsCount = 0;
               // _itemsCount = 0;
               return Container();
@@ -286,7 +288,7 @@ class _OrderProductsState extends State<OrderProducts> {
                   _scrollController
                       .jumpTo(_scrollController.position.minScrollExtent);
                 }
-                // final xd = orderBloc.settings['set_focus'];
+                // final xd = quoteBloc.settings['set_focus'];
                 // printConsole();
 
                 productRequestFocus = _productFocus();
@@ -295,7 +297,7 @@ class _OrderProductsState extends State<OrderProducts> {
               } else {
                 // _searchBarFocusManagement();
                 _productsCount = snapshot.data!.length;
-                // _itemsCount = orderBloc.getItemsCount();
+                // _itemsCount = quoteBloc.getItemsCount();
               }
             }
             Map<String, ProductModel> saleProductsList = snapshot.data!;
@@ -304,15 +306,15 @@ class _OrderProductsState extends State<OrderProducts> {
               productList: saleProductsList,
               scrollController: _scrollController,
               productRequestFocus: productRequestFocus,
-              fromOrder: true,
+              fromQuote: true,
             );
-          } else if (orderBloc.getProducts?.isNotEmpty ?? false) {
+          } else if (quoteBloc.getProducts?.isNotEmpty ?? false) {
             return ProductsList(
               key:pListKey,
-              productList: orderBloc.getProducts!,
+              productList: quoteBloc.getProducts!,
               scrollController: _scrollController,
               productRequestFocus: false,
-              fromOrder: true,
+              fromQuote: true,
             );
           } else if (snapshot.hasData && _searchController.isOpen) {
             return Container();
@@ -344,7 +346,7 @@ class _OrderProductsState extends State<OrderProducts> {
 
   _productFocus() {
     if (dataBloc.settings!['set_focus'] == 1 && index == 0) {
-      if ((orderBloc.getProducts ?? {}).isEmpty) {
+      if ((quoteBloc.getProducts ?? {}).isEmpty) {
         return true;
       } else {
         _searchController.close();
@@ -384,8 +386,8 @@ class _OrderProductsState extends State<OrderProducts> {
       children: [
         subTotal(
             large: true,
-            stream: orderBloc.subTotalStream,
-            defaultValue: orderBloc.getSubTotal(),
+            stream: quoteBloc.subTotalStream,
+            defaultValue: quoteBloc.getSubTotal(),
             color: Colors.white),
         _sendOrder(),
       ],
@@ -450,7 +452,7 @@ class _OrderProductsState extends State<OrderProducts> {
             final productReq =
                 await ProductsProvider.getProductRequirements(context, temp);
             if (productReq != {}) {
-              final result = await orderBloc.addProduct(productReq);
+              final result = await quoteBloc.addProduct(productReq);
               if (result) {
                 scaffoldAlert(context, 'Producto ${temp.name} añadido',
                     const Duration(seconds: 1));
@@ -470,14 +472,13 @@ class _OrderProductsState extends State<OrderProducts> {
       } else {
         products = [];
       }
-      orderBloc.setProductSearchData(products);
+      quoteBloc.setProductSearchData(products);
     }
   }
 
   void _send() {
-    if ((orderBloc.getProducts?.keys.length ?? 0) > 0) {
-      // SalePayment().launch(context);
-      const OrderOtherDetails().launch(context);
+    if ((quoteBloc.getProducts?.keys.length ?? 0) > 0) {
+      const QuoteOtherData().launch(context);
     } else {
       confirmDialog(context, "Debe seleccionar productos antes de continuar",
           "assets/images/alert.png");

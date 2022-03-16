@@ -60,6 +60,10 @@ class _NewCustomerState extends State<NewCustomer> {
 
   @override
   void initState() {
+    if(customerBloc.disposed){
+      customerBloc.reload();    
+    }
+
     super.initState();
     customerBloc.getCustomer.typePerson =
         customerBloc.getCustomer.typePerson ?? "1";
