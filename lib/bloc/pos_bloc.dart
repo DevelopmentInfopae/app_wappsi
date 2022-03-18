@@ -17,6 +17,7 @@ import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
 // import 'package:pos_wappsi/utils/local_storage/local_db.dart';
@@ -281,7 +282,8 @@ class POSBloc {
 
         return true;
       } catch (e) {
-        printConsole(e);
+        // printConsole(e);
+        await logError(e, from: 'Reload pos products');
         return false;
       }
     } else {

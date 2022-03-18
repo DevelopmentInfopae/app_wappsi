@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 50,
         ),
         billerThumbNail(company.logo ?? '')
-            .paddingOnly(top: 5, bottom: 8, right: 2, left: 8),
+            .paddingOnly(top: 3, bottom: 4, right: 2, left: 8),
         // AutoSizeText(
         //   capitalizeText(company.company ??company.name ??  ''),
         //   style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w900,color: greyDarkerColor),

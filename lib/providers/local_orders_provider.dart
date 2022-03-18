@@ -2,6 +2,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 
 import 'package:pos_wappsi/models/order_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/local_storage/local_db.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
@@ -19,7 +20,9 @@ class LocalOrdersProvider {
         filter = "AND os.sale_status IN ('" + filters.join("','") + "') ";
       }
     }
-    final onlyCreatedByUser = dataBloc.userData?.viewRight == 0?'AND os.created_by=${dataBloc.userData!.id}':'';
+    final onlyCreatedByUser = dataBloc.userData?.viewRight == 0
+        ? 'AND os.created_by=${dataBloc.userData!.id}'
+        : '';
 
     final pagination = offset ? " LIMIT 30 OFFSET $offsetValue" : "";
     final currentBiller = dataBloc.userData!.billerId;
@@ -33,7 +36,8 @@ class LocalOrdersProvider {
       try {
         orders = OrderModel.fromJsonList(res);
       } catch (e) {
-        printConsole(e);
+        // printConsole(e);
+        await logError(e, from: 'Loading orders list');
       }
       return orders;
     } else {
@@ -42,7 +46,8 @@ class LocalOrdersProvider {
   }
 
   static Future<List<String>> orderStatus() async {
-    const sql = '''SELECT DISTINCT sale_status FROM sma_order_sales WHERE sale_status!="cancelled"''';
+    const sql =
+        '''SELECT DISTINCT sale_status FROM sma_order_sales WHERE sale_status!="cancelled"''';
     final res = await DBProvider.db.sqlRawQuery(sql);
     List<String> status = [];
     if (res != null) {

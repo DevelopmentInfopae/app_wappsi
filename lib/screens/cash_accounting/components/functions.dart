@@ -5,6 +5,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/models/register_model.dart';
 import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 
 sendRegisterAction(BuildContext context, RegisterFormProvider registerProvider,
     FocusNode valueFocus,
@@ -42,7 +43,8 @@ _executeAction(String action, BuildContext context,
 _movement(BuildContext context, RegisterFormProvider registerProvider,
     bool syncDB) async {
   // loading(context);
-  scaffoldAlert(context, 'Realizando movimiento...', const Duration(seconds: 10));
+  scaffoldAlert(
+      context, 'Realizando movimiento...', const Duration(seconds: 10));
 
   // diable login button
   registerProvider.isLoading = true;
@@ -145,6 +147,8 @@ _open(BuildContext context, RegisterFormProvider registerProvider,
           // }
         }
       } catch (e) {
+        await logError(e, from: 'Function _open');
+
         strMessage = res['body']['message'].toString();
       }
     } else {

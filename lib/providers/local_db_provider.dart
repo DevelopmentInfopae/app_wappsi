@@ -83,6 +83,9 @@ class DBProvider {
       await db.execute(quotesTable);
       await db.execute(quoteItemsTable);
 
+      ///Errors log
+      await db.execute(errorsData);
+
       // index creation
       Batch batch = db.batch();
 
@@ -123,10 +126,10 @@ class DBProvider {
     Batch batch = db!.batch();
     for (var element in query) {
       try {
-
-        batch.insert(table,element, conflictAlgorithm: ConflictAlgorithm.replace);
+        batch.insert(table, element,
+            conflictAlgorithm: ConflictAlgorithm.replace);
       } catch (e) {
-      printConsole(e);
+        printConsole(e);
         if (element is List) {
           if (element.isNotEmpty) {
             result =
@@ -149,6 +152,7 @@ class DBProvider {
       return await insertOrUpdateQuerys2(table, query);
     }
   }
+
   ///-----------------------------------------------------------------------------
   ///                                UPDATE QUERYS
   ///              With '' as field separator in query used with json
@@ -159,18 +163,19 @@ class DBProvider {
     final db = await database;
     bool result = true;
 
-  try {
-    await db!.delete(table, where: where);
-    
-    // disable ientity writing
-    // await db.execute('SET IDENTITY_INSERT $table ON');
-    // debugprintConsole(res.toString());
-    return result;
-  } catch (e) {
-    printConsole(e);
-    return false;
+    try {
+      await db!.delete(table, where: where);
+
+      // disable ientity writing
+      // await db.execute('SET IDENTITY_INSERT $table ON');
+      // debugprintConsole(res.toString());
+      return result;
+    } catch (e) {
+      // printConsole(e);
+      await printAndSaveError(e);
+      return false;
+    }
   }
-}
 
   ///-----------------------------------------------------------------------------
   ///                                UPDATE QUERYS
@@ -182,25 +187,28 @@ class DBProvider {
     final db = await database;
     // final enc = jsonEncode(query);
     // final queryF = jsonDecode(enc.replaceAll("'", replace));
-    Batch batch = db!.batch();
+    // Batch batch = db!.batch();
     for (var element in query) {
-      String values = getStringFromValues(element.values);
-      String sql =
-          'INSERT OR REPLACE INTO $table ("${element.keys.join('","')}") VALUES ($values);';
-      batch.rawQuery(sql);
+      try {
+        await db!.insert(table, element,
+            conflictAlgorithm: ConflictAlgorithm.replace);
+      } catch (e) {
+        printConsole(e);
+        await insertQuery(table, {'error': e.toString()});
+        String values = getStringFromValues(element.values);
+        String sql =
+            'INSERT OR REPLACE INTO $table ("${element.keys.join('","')}") VALUES ($values);';
+        try {
+          await db!.rawQuery(sql);
+        } catch (e) {
+          await printAndSaveError(e);
+        }
+      }
+
       // printConsole(sql);
     }
 
-    try {
-      await batch.commit();
-      // disable ientity writing
-      // await db.execute('SET IDENTITY_INSERT $table ON');
-      // debugprintConsole(res.toString());
-      return true;
-    } catch (e) {
-      printConsole(e);
-      return false;
-    }
+    return true;
   }
 
   //______________________________________________________________________________________________________________
@@ -219,7 +227,8 @@ class DBProvider {
       // id of query inserted
       return returnId ? res : true;
     } catch (e) {
-      printConsole(e);
+      // printConsole(e);
+      await printAndSaveError(e);
       return returnId ? 0 : false;
     }
   }
@@ -247,7 +256,8 @@ class DBProvider {
 
       return true;
     } catch (e) {
-      printConsole(e);
+      // printConsole(e);
+      await printAndSaveError(e);
       return false;
     }
   }
@@ -265,9 +275,15 @@ class DBProvider {
       final res = await db!.query(table, where: 'id_cloud = $id');
       return res.first;
     } catch (e) {
-      printConsole(e);
+      await printAndSaveError(e);
       return null;
     }
+  }
+
+  Future<void> printAndSaveError(Object e,
+      {String table = 'errors_log',String from='local db operations'}) async {
+    printConsole(e);
+    await insertQuery(table, {'error': e.toString(),'from':from});
   }
 
   Future<Map<String, dynamic>?> sqlFirstQuery(String table,
@@ -278,7 +294,7 @@ class DBProvider {
       final res = await db!.query(table, where: where, columns: columns);
       return res.first;
     } catch (e) {
-      printConsole(e);
+      await printAndSaveError(e);
       return null;
     }
   }
@@ -291,7 +307,7 @@ class DBProvider {
       final res = await db!.update(table, values, where: where);
       return res;
     } catch (e) {
-      printConsole(e);
+      await printAndSaveError(e);
       return null;
     }
   }
@@ -314,7 +330,7 @@ class DBProvider {
           columns: columns);
       return res;
     } catch (e) {
-      printConsole(e);
+      await printAndSaveError(e);
       return null;
     }
   }
@@ -327,20 +343,23 @@ class DBProvider {
       final res = await db!.rawQuery(sql);
       return res;
     } catch (e) {
-      printConsole(e);
+      // printConsole(e);
+      await printAndSaveError(e);
+      
       return null;
     }
   }
 
   /// Execute a given raw query in a try catch
-  Future<bool> sqlDelete(String table, String where) async {
+  Future<bool> sqlDelete(String table, String? where) async {
     final db = await database;
 
     try {
       await db!.delete(table, where: where);
       return true;
     } catch (e) {
-      printConsole(e);
+      await printAndSaveError(e);
+
       return false;
     }
   }
@@ -353,7 +372,8 @@ class DBProvider {
       final res = await db!.rawQuery(sql);
       return res.first;
     } catch (e) {
-      printConsole(e);
+      await printAndSaveError(e);
+
       return null;
     }
   }
@@ -368,7 +388,8 @@ class DBProvider {
 
       return res;
     } catch (e) {
-      printConsole(e);
+      await printAndSaveError(e);
+
       return null;
     }
   }
@@ -453,12 +474,12 @@ class DBProvider {
   Future<String?> getUpdateDate(int idSync) async {
     final db = await database;
 
-    try{
+    try {
       final res =
-        await db!.rawQuery("SELECT last_update FROM sync WHERE id='$idSync'");
+          await db!.rawQuery("SELECT last_update FROM sync WHERE id='$idSync'");
 
-    return res.first['last_update'].toString();
-    }catch(e){
+      return res.first['last_update'].toString();
+    } catch (e) {
       printConsole(e);
       return null;
     }
@@ -474,7 +495,8 @@ class DBProvider {
       // printConsole(res);
       return true;
     } catch (e) {
-      printConsole(e);
+      await printAndSaveError(e);
+
       return false;
     }
 

@@ -13,6 +13,7 @@ import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/quote_items_provider.dart';
 
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
@@ -91,7 +92,8 @@ class QuotesProvider {
         }
       }
     } catch (e) {
-      printConsole(e);
+      // printConsole(e);
+      await logError(e, from: 'Send quote data');
       hideCurrentScaffoldAlert(context);
       confirmDialog(context, e.toString(), 'assets/images/browser.png');
     }
@@ -144,6 +146,7 @@ class QuotesProvider {
       try {
         orders = QuoteModel.fromJsonList(res);
       } catch (e) {
+        await logError(e, from: 'Listing quotes');
         printConsole(e);
       }
       return orders;

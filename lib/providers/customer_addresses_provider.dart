@@ -11,6 +11,7 @@ import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/nav_utils.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
@@ -108,7 +109,9 @@ class CustomerAddressesProvider {
       try {
         return CustomerAddressesModel.fromJsonList(data);
       } catch (e) {
-        printConsole(e);
+        // printConsole(e);
+            await logError(e, from: 'Loading customer addresses');
+
         return [];
       }
     } else {

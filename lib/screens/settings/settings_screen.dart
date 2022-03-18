@@ -3,6 +3,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
+import 'package:pos_wappsi/screens/settings/errors_report.dart';
 import 'package:pos_wappsi/screens/settings/print_settings.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -40,6 +41,16 @@ class SettingsScreen extends StatelessWidget {
               color: context.dividerColor),
           onTap: () {
             const PrintSettings().launch(context);
+          }),
+      SettingItemWidget(
+          title: 'Reportar errores',
+          subTitle: 'Reporta los errores que has tenido hasta la fecha',
+          decoration: BoxDecoration(borderRadius: radius()),
+          trailing: Icon(Icons.keyboard_arrow_right_rounded,
+              color: context.dividerColor),
+          onTap: () {
+            const ReportErrorScreen().launch(context);
+
           }),
       // SettingItemWidget(
       //   title: 'Close account',

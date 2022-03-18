@@ -18,7 +18,7 @@ import 'package:pos_wappsi/providers/local_sale_items_provider.dart';
 import 'package:pos_wappsi/providers/payment_methods_provider.dart';
 import 'package:pos_wappsi/providers/payment_provider.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
-import 'package:pos_wappsi/utils/print_errors.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class SalesModel {
@@ -815,7 +815,8 @@ class SalesModel {
           'base_unit': baseUnit?.toJson()
         };
         productsMap.add(tItempMap);
-        final taxRate = roundDouble((item.unitPrice / item.netUnitPrice) - 1,2);
+        final taxRate =
+            roundDouble((item.unitPrice / item.netUnitPrice) - 1, 2);
         if (ivasMap.containsKey(taxRate)) {
           ivasMap[taxRate]['value'] =
               ivasMap[taxRate]['value'] + (item.priceBeforeTax * item.quantity);
@@ -827,7 +828,9 @@ class SalesModel {
         }
       }
     } catch (e) {
-      printConsole(e);
+      await logError(e, from: 'Loading products info for local stored sale');
+
+      // printConsole(e);
       return {};
     }
     return {

@@ -150,6 +150,7 @@ class ProductModel {
       try {
         temp['promo_price'] = _promoPrice(temp);
       } catch (e) {
+        
         printConsole(e);
 
         temp['promo_price'] = null;
@@ -190,6 +191,8 @@ class ProductModel {
             promoPrice = double.parse(temp['promo_price'].toString());
           } catch (e) {
             printConsole(e);
+            // await logError(e, from: 'ProductModel,_promoPrice');
+
             promoPrice = null;
           }
         }

@@ -11,7 +11,7 @@ import 'package:pos_wappsi/providers/local_sale_items_provider.dart';
 import 'package:pos_wappsi/providers/payment_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/print_errors.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class SalesProvider {
@@ -54,8 +54,8 @@ class SalesProvider {
               res['body']['data'] != null &&
               res['body']['sync']) {
             scaffoldAlert(context, 'Recargando datos de venta POS',
-                  const Duration(seconds: 2),
-                  backGroundColor: Colors.red);
+                const Duration(seconds: 2),
+                backGroundColor: Colors.red);
 
             final Map<String, dynamic> changes = res['body']['data'];
             // to show changes in costumer or products
@@ -119,6 +119,8 @@ class SalesProvider {
               }
             }
           } catch (e) {
+            await logError(e, from: 'Writing sale data from local info');
+
             hideCurrentScaffoldAlert(context);
             confirmDialog(context, e.toString(), 'assets/images/browser.png');
           }
@@ -126,7 +128,9 @@ class SalesProvider {
         }
       }
     } catch (e) {
-      printConsole(e);
+      // printConsole(e);
+      await logError(e, from: 'Sending sale data');
+
       hideCurrentScaffoldAlert(context);
       confirmDialog(context, e.toString(), 'assets/images/browser.png');
     }

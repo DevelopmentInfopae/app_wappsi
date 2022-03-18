@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 // import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/countries_dart.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
 class CountriesProvider {
@@ -86,7 +87,9 @@ class CountriesProvider {
     try {
       data = temp.map((e) => CountriesModel.fromJson(e).toJson()).toList();
     } catch (e) {
-      printConsole(e);
+      await logError(e, from: 'Writing coutries from JSON file to DB');
+
+      // printConsole(e);
     }
 
     return await DBProvider.db.insertOrUpdateQuerys('sma_countries', data);

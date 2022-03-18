@@ -158,6 +158,7 @@ class _PrintSaleState extends State<PrintSale> {
           // final xd = await bluetooth.isOn;
           isConnected = await bluetooth.isConnected ?? false;
         } catch (e) {
+          
           printConsole(e);
           isConnected = false;
         }

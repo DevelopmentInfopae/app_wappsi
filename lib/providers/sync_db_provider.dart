@@ -11,6 +11,7 @@ import 'package:pos_wappsi/providers/countries_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/states_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
 import 'biller_data_provider.dart';
@@ -206,6 +207,8 @@ class SyncDBProvider {
     try {
       dataBloc.setBillerCompany(companyData!);
     } catch (e) {
+      await logError(e, from: '_updateBillerDataInBloc');
+
       printConsole(e);
     }
 
@@ -214,6 +217,8 @@ class SyncDBProvider {
     try {
       dataBloc.setBillerData(billerData!);
     } catch (e) {
+      await logError(e, from: '_updateBillerDataInBloc');
+
       printConsole(e);
     }
   }
@@ -254,9 +259,8 @@ class SyncDBProvider {
               for (var i = 0; i < data[key]!.length; i++) {
                 idValue = data[key][i][idKey];
                 if (idValue != null) {
-                  final res = await DBProvider.db.deleteQuerys(
-                      dependentTable!,
-                      '$columnName=$idValue');
+                  final res = await DBProvider.db
+                      .deleteQuerys(dependentTable!, '$columnName=$idValue');
                   printConsole(res);
                 }
               }

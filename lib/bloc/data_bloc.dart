@@ -11,7 +11,7 @@ import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/providers/user_provider.dart';
 import 'package:pos_wappsi/screens/home/home.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/print_errors.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:rxdart/rxdart.dart';
 
 class DataBloc {
@@ -129,7 +129,8 @@ class DataBloc {
     try {
       res = await UserProvider.refreshToken();
     } catch (e) {
-      printConsole(e);
+      // printConsole(e);
+      await logError(e, from: 'Refresh token');
     }
     dataBloc.homeKey.currentState?.syncLoader(false);
     if (res != null) {

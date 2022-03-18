@@ -15,6 +15,7 @@ import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/price_groups_provider.dart';
 import 'package:pos_wappsi/providers/wishlist_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/validation_encoding/encode_pass.dart';
 import 'package:pos_wappsi/utils/nav_utils.dart';
@@ -91,7 +92,8 @@ class CompaniesProvider {
       body.remove('geo_location');
       body.remove('favorites');
     } catch (e) {
-      printConsole(e);
+      await logError(e, from: 'Removing unsused info on writing customer on localDB from local customer creation data');
+      // printConsole(e);
     }
 
     body['id_cloud'] = res['body']['company_id'];
@@ -128,7 +130,8 @@ class CompaniesProvider {
         printConsole(favRes);
         // }
       } catch (e) {
-        printConsole(e);
+        await logError(e, from: 'Writing customer in localDB');
+        // printConsole(e);
       }
     }
 
@@ -154,8 +157,7 @@ class CompaniesProvider {
         : '';
     return await DBProvider.db.sqlQuery(
       'sma_companies',
-      where:
-          'group_id = 3 AND status=1$sellerIdFilter',
+      where: 'group_id = 3 AND status=1$sellerIdFilter',
       limit: limit,
       orderBy: orderBy,
       offset: offsetValue,
@@ -258,7 +260,9 @@ class CompaniesProvider {
         return customerId;
       }
     } catch (e) {
-      printConsole(e);
+      await logError(e, from: 'Loading default customer');
+
+      // printConsole(e);
       return null;
     }
     return null;
@@ -325,7 +329,9 @@ class CompaniesProvider {
       scaffoldAlert(context, 'Registrando cliente', const Duration(seconds: 10),
           key: UniqueKey());
     } catch (e) {
-      printConsole(e);
+      // printConsole(e);
+      await logError(e, from: 'SendCustomerInfo');
+
       // closeLoading = true;
       // loading(context);
     }
@@ -413,7 +419,7 @@ class CompaniesProvider {
     } else if (res['error']) {
       confirmDialog(
           context, res['body']['message'], 'assets/images/dizzy-robot.png');
-    } else if(!res['error']){
+    } else if (!res['error']) {
       // update local DB with company info
       bool dbUpdated =
           await WishlistProvider.reloadCustomerFavs(context, customer);

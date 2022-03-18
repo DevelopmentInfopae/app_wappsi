@@ -6,7 +6,7 @@ import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/companies_provider.dart';
-import 'package:pos_wappsi/utils/print_errors.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 
 class PricePoliciesProvider {
   /// Checks what else is required to add product price correctly
@@ -78,7 +78,7 @@ class PricePoliciesProvider {
   }
 
   /// Return ProductModel object with prices calculatd by price_policy
-  static Future<bool> policyCasesFromPos(
+  static Future<bool> policyCasesPrice(
       String? productKey, int? policy, CompanyModel? customer,
       {bool defaultPrice = false, bool toOrder = false, bool toQuote=false}) async {
     //tax rate for IVA
@@ -160,13 +160,14 @@ class PricePoliciesProvider {
       }
       return true;
     } catch (e) {
-      printConsole(e);
+      await logError(e, from: 'policyCasesPrice');
+      // printConsole(e);
       return false;
     }
   }
 
   /// Return ProductModel object with prices calculatd by price_policy
-  static Future<bool> policyCasesFromPosOrder(
+  static Future<bool> policyCasesPriceOrder(
       String? productKey, int? policy, CompanyModel? customer,
       {bool defaultPrice = false}) async {
     //tax rate for IVA
@@ -223,7 +224,8 @@ class PricePoliciesProvider {
       }
       return true;
     } catch (e) {
-      printConsole(e);
+      // printConsole(e);
+      await logError(e, from: 'Price policys fromPosOrder');
       return false;
     }
   }

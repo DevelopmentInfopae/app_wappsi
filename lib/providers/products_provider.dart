@@ -357,7 +357,7 @@ class ProductsProvider {
       bool defaultPrice = false,
       bool toOrder = false, bool toQuote = false}) async {
     if (dataBloc.settings != null) {
-      final result = await PricePoliciesProvider.policyCasesFromPos(productKey,
+      final result = await PricePoliciesProvider.policyCasesPrice(productKey,
           dataBloc.settings!['prioridad_precios_producto'], posBloc.getCustomer,
           defaultPrice: defaultPrice, toOrder: toOrder, toQuote: toQuote);
 
@@ -374,7 +374,7 @@ class ProductsProvider {
   static Future<bool> getPOSOrderProductPrices(String productKey,
       {String? customerId, bool defaultPrice = false}) async {
     if (dataBloc.settings != null) {
-      final result = await PricePoliciesProvider.policyCasesFromPosOrder(
+      final result = await PricePoliciesProvider.policyCasesPriceOrder(
           productKey,
           dataBloc.settings!['prioridad_precios_producto'],
           posBloc.getCustomer,

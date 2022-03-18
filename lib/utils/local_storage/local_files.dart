@@ -3,7 +3,7 @@ import 'dart:io' as io;
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/utils/print_errors.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 
 // function to save files into local storage form a url in a desired folder
 initSavetoPath(String file, String folder, String url) async {
@@ -27,10 +27,12 @@ initSavetoPath(String file, String folder, String url) async {
   }
   if (!(await io.File('$dir/$folder/$filename').exists())) {
     try {
+      
       var bytes = await NetworkAssetBundle(Uri.parse(imgURL)).load("");
       writeToFile(bytes, '$dir/$folder/$filename');
     } catch (e) {
-      printConsole(e);
+      // printConsole(e);
+      await logError(e, from: 'initToSavePath');
     }
 
     pathImage = '$dir/$folder/$filename';
@@ -46,7 +48,8 @@ Future<void> writeToFile(ByteData data, String path) async{
     await io.File(path).writeAsBytes(
         buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
   } catch (e) {
-    printConsole(e);
+    await logError(e, from: 'writeToFile');
+    // printConsole(e);
     // return null;
   }
 }

@@ -54,7 +54,7 @@ class _QuotesCardListState extends State<QuotesCardList> {
           itemBuilder: (context, index) {
             if (index < widget.quotes.length) {
               return QuotesCard(
-                order: widget.quotes[index],
+                quote: widget.quotes[index],
                 action: 'customer_details',
               );
             } else {
@@ -115,10 +115,10 @@ class _QuotesCardListState extends State<QuotesCardList> {
 // class to show customer indormation in form of a card
 
 class QuotesCard extends StatefulWidget {
-  final QuoteModel order;
+  final QuoteModel quote;
 
   final String action;
-  const QuotesCard({Key? key, required this.order, required this.action})
+  const QuotesCard({Key? key, required this.quote, required this.action})
       : super(key: key);
 
   @override
@@ -130,14 +130,14 @@ class _QuotesCardState extends State<QuotesCard> {
   Map<String, Color> cardColors = {};
   @override
   Widget build(BuildContext context) {
-    // cardColors = mapquotestatusColor(widget.order.saleStatus);
+    // cardColors = mapquotestatusColor(widget.quote.saleStatus);
     // _size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () async {
         PrintQuote(
-          printData: await widget.order.buildPrintDataMap(),
+          printData: await widget.quote.buildPrintDataMap(),
           back: true,
-          exitToNewOrder: false,
+          exitToNewQuote: false,
         ).launch(context);
       },
       child: Card(
@@ -190,7 +190,7 @@ class _QuotesCardState extends State<QuotesCard> {
 
   Widget _customer() {
     return labelContentH(
-        'Cliente:', capitalizeText(widget.order.customer.toString()), context,
+        'Cliente:', capitalizeText(widget.quote.customer.toString()), context,
         withInnerPading: false,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
@@ -198,9 +198,9 @@ class _QuotesCardState extends State<QuotesCard> {
   Widget _date() {
     return labelContentH(
         'Fecha:',
-        capitalizeText(parseDateStrES(widget.order.date ?? '') +
+        capitalizeText(parseDateStrES(widget.quote.date ?? '') +
             ' ' +
-            parseTimeStrES(widget.order.date ?? '')),
+            parseTimeStrES(widget.quote.date ?? '')),
         context,
         withInnerPading: false,
         flexCol1: 1,
@@ -210,7 +210,7 @@ class _QuotesCardState extends State<QuotesCard> {
 
   Widget _reference() {
     return labelContentH(
-        'Referencia No:', widget.order.referenceNo ?? '', context,
+        'Referencia No:', widget.quote.referenceNo ?? '', context,
         withInnerPading: false,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
@@ -222,7 +222,7 @@ class _QuotesCardState extends State<QuotesCard> {
 
   // Widget _total() {
   //   final value = getFormatedCurrency(
-  //       widget.order.total ?? widget.order.grandTotal,
+  //       widget.quote.total ?? widget.quote.grandTotal,
   //       decimals: 1);
   //   return labelContentH(
   //       'Subtotal:', value.substring(0, value.length - 1), context,
@@ -231,7 +231,7 @@ class _QuotesCardState extends State<QuotesCard> {
   // }
 
   // Widget _discount() {
-  //   final value = getFormatedCurrency(widget.order.orderDiscount);
+  //   final value = getFormatedCurrency(widget.quote.orderDiscount);
   //   return labelContentH(
   //       'Descuento:', value.substring(0, value.length - 1), context,
   //       withInnerPading: false,
@@ -239,7 +239,7 @@ class _QuotesCardState extends State<QuotesCard> {
   // }
 
   Widget _grandTotal() {
-    final value = getFormatedCurrency(widget.order.grandTotal);
+    final value = getFormatedCurrency(widget.quote.grandTotal);
     return labelContentH(
         'Total:', value.substring(0, value.length - 1), context,
         withInnerPading: false,

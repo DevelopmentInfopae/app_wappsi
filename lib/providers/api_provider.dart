@@ -1,11 +1,12 @@
 // ignore_for_file: implementation_imports
 
-import 'dart:convert';
+// import 'dart:convert';
 
 import 'package:dio/dio.dart';
 
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/environment/environment.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 
 import 'dart:async';
 import 'dart:io';
@@ -32,7 +33,7 @@ class DataProvider {
     // to seconds to milliseconds, seconds * 1000
     dio.options.receiveTimeout = awaitTime * 1000;
     dio.options.method = 'POST';
-    final data2 = jsonEncode(data);
+    // final data2 = jsonEncode(data);
 
     try {
       resp = await dio
@@ -104,7 +105,7 @@ class DataProvider {
         }
       };
     } catch (e) {
-      printConsole(e);
+      await logError(e, from: 'Api provider, http.post');
       return {
         'status': 0,
         'error': true,
@@ -154,6 +155,7 @@ class DataProvider {
         message = messages.values.toList().join(' ');
       } catch (e) {
         printConsole(e);
+        // await logError(e, from: 'Api provider, http.post');
         message = decodedRespBody['message'].toString();
       }
       decodedRespBody['message'] = message;
@@ -200,6 +202,7 @@ class DataProvider {
         }
       };
     } catch (e) {
+      await logError(e, from: 'Api provider, http.get');
       return {
         'status': 0,
         'error': true,

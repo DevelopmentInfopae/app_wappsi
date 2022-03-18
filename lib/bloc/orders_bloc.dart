@@ -19,6 +19,7 @@ import 'package:pos_wappsi/providers/local_db_provider.dart';
 
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 
@@ -283,7 +284,9 @@ class OrderBloc {
 
         return true;
       } catch (e) {
-        printConsole(e);
+        // printConsole(e);
+        await logError(e, from: 'Reload order products');
+
         return false;
       }
     } else {

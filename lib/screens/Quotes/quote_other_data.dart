@@ -446,6 +446,7 @@ class _QuoteOtherDataState extends State<QuoteOtherData> {
                     quoteBloc.dispose();
                     await PrintQuote(
                       printData: printData,
+                      exitToNewQuote: true,
                     ).launch(context);
                   });
                   setState(() {

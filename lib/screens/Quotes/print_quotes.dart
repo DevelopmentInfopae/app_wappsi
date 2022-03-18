@@ -13,7 +13,6 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/screens/Quotes/new_quote.dart';
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';
-import 'package:pos_wappsi/screens/orders/new_order.dart';
 import 'package:pos_wappsi/screens/settings/print_settings.dart';
 // import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
@@ -24,13 +23,13 @@ import 'package:pos_wappsi/utils/print_errors.dart';
 class PrintQuote extends StatefulWidget {
   final bool back;
   final String image;
-  final bool exitToNewOrder;
+  final bool exitToNewQuote;
   final Map<dynamic, dynamic> printData;
   const PrintQuote(
       {Key? key,
       required this.printData,
       this.back = false,
-      this.exitToNewOrder = true,
+      this.exitToNewQuote = true,
       this.image = 'assets/images/printer.png'})
       : super(key: key);
   @override
@@ -60,10 +59,14 @@ class _PrintQuoteState extends State<PrintQuote> {
     _pc = pColor;
     return WillPopScope(
       onWillPop: () async {
+        if (widget.exitToNewQuote) {
           dataBloc.homeKey.currentState?.changeBottomIndex(1);
           // printConsole('here i am');
           return true;
-        },
+        } else {
+          return true;
+        }
+      },
       child: Scaffold(
         appBar: appBar(
           context,
@@ -78,7 +81,7 @@ class _PrintQuoteState extends State<PrintQuote> {
 
   Widget _body() {
     // try {
-      return Column(
+    return Column(
       // mainAxisAlignment: ,
       children: <Widget>[
         _preview().expand(),
@@ -125,7 +128,8 @@ class _PrintQuoteState extends State<PrintQuote> {
               emptyLine(),
               // hDivider(),
               posNote(textTheme, widget.printData)
-                  .paddingSymmetric(vertical: 8).withWidth(_size.width * 0.85),
+                  .paddingSymmetric(vertical: 8)
+                  .withWidth(_size.width * 0.85),
               // hDivider(),
               ordQuotValueDetails(textTheme, widget.printData)
                   .paddingSymmetric(horizontal: 6, vertical: 8),
@@ -227,7 +231,7 @@ class _PrintQuoteState extends State<PrintQuote> {
 
         // printConsole(res);
 
-        if (widget.exitToNewOrder) {
+        if (widget.exitToNewQuote) {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(

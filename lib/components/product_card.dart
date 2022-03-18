@@ -14,7 +14,7 @@ import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/products/product_details.dart';
 import 'package:pos_wappsi/screens/products/product_price_verifier.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/print_errors.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 // class to show product indormation in form of a card
@@ -67,77 +67,80 @@ class _ProductCardState extends State<ProductCard> {
           ],
         ),
         onTap: () async {
-          if (widget.action == 'add_to_cart') {
-            final productReq = await ProductsProvider.getProductRequirements(
-                context, widget.product,
-                showAllwaysUnitAlert: widget.showAllwaysUnitAlert);
-            if (productReq != {}) {
-              final result = await posBloc.addProduct(productReq);
-              // printConsole(result);
-              if (result) {
-                try {
+          try {
+            if (widget.action == 'add_to_cart') {
+              final productReq = await ProductsProvider.getProductRequirements(
+                  context, widget.product,
+                  showAllwaysUnitAlert: widget.showAllwaysUnitAlert);
+              if (productReq != {}) {
+                final result = await posBloc.addProduct(productReq);
+                // printConsole(result);
+                if (result ?? false) {
                   scaffoldAlert(
                       context,
                       "Producto ${widget.product.name} añadido",
                       const Duration(seconds: 1));
-                } catch (e) {
-                  printConsole(e);
                 }
               }
-            }
 
-            // Navigator.pop(context);
-          } else if (widget.action == 'add_to_order') {
-            final productReq = await ProductsProvider.getProductRequirements(
-                context, widget.product,
-                showAllwaysUnitAlert: widget.showAllwaysUnitAlert, fromOrder: true);
-            if (productReq != {}) {
-              final result = await orderBloc.addProduct(productReq);
-
-              // printConsole(result);
-              if (result) {
-                scaffoldAlert(
-                    context,
-                    "Producto ${widget.product.name} añadido",
-                    const Duration(seconds: 1));
-                // to avoid :
-                // await Future.delayed(Duration(seconds:1));
-              }
               // Navigator.pop(context);
-            }
+            } else if (widget.action == 'add_to_order') {
+              final productReq = await ProductsProvider.getProductRequirements(
+                  context, widget.product,
+                  showAllwaysUnitAlert: widget.showAllwaysUnitAlert,
+                  fromOrder: true);
+              if (productReq != {}) {
+                final result = await orderBloc.addProduct(productReq);
 
-            // Navigator.pop(context);
-          } else if (widget.action == 'add_to_quote') {
-            final productReq = await ProductsProvider.getProductRequirements(
-                context, widget.product,
-                showAllwaysUnitAlert: widget.showAllwaysUnitAlert, fromQuote: true);
-            if (productReq != {}) {
-              final result = await quoteBloc.addProduct(productReq);
-
-              // printConsole(result);
-              if (result) {
-                scaffoldAlert(
-                    context,
-                    "Producto ${widget.product.name} añadido",
-                    const Duration(seconds: 1));
-                // to avoid :
-                // await Future.delayed(Duration(seconds:1));
+                // printConsole(result);
+                if (result ?? false) {
+                  scaffoldAlert(
+                      context,
+                      "Producto ${widget.product.name} añadido",
+                      const Duration(seconds: 1));
+                  // to avoid :
+                  // await Future.delayed(Duration(seconds:1));
+                }
+                // Navigator.pop(context);
               }
-              // Navigator.pop(context);
-            }
 
-            // Navigator.pop(context);
-          }else if (widget.action == 'price_verifier') {
-            ProductPriceVerifier(product: widget.product).launch(context);
-          } else if (widget.action == 'add_to_favorites') {
-            customerBloc.addProductToFav(
-                widget.product, widget.product.idCloud.toString());
-          } else {
-            // null;
-            ProductDetails(
-              product: widget.product,
-              searchPrice: widget.searchPrice,
-            ).launch(context);
+              // Navigator.pop(context);
+            } else if (widget.action == 'add_to_quote') {
+              final productReq = await ProductsProvider.getProductRequirements(
+                  context, widget.product,
+                  showAllwaysUnitAlert: widget.showAllwaysUnitAlert,
+                  fromQuote: true);
+              if (productReq != {}) {
+                final result = await quoteBloc.addProduct(productReq);
+
+                // printConsole(result);
+                if (result) {
+                  scaffoldAlert(
+                      context,
+                      "Producto ${widget.product.name} añadido",
+                      const Duration(seconds: 1));
+                  // to avoid :
+                  // await Future.delayed(Duration(seconds:1));
+                }
+                // Navigator.pop(context);
+              }
+
+              // Navigator.pop(context);
+            } else if (widget.action == 'price_verifier') {
+              ProductPriceVerifier(product: widget.product).launch(context);
+            } else if (widget.action == 'add_to_favorites') {
+              customerBloc.addProductToFav(
+                  widget.product, widget.product.idCloud.toString());
+            } else {
+              // null;
+              ProductDetails(
+                product: widget.product,
+                searchPrice: widget.searchPrice,
+              ).launch(context);
+            }
+          } catch (e) {
+            // printConsole(e);
+            await logError(e, from: 'On adding product to order, quote or sale');
           }
         });
   }

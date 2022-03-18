@@ -20,6 +20,7 @@ import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 // import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/blue_print/blue_print.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
 class PrintSettings extends StatefulWidget {
@@ -67,6 +68,11 @@ class _PrintSettingsState extends State<PrintSettings> {
           movementInfo: widget.movementInfo);
       initSavetoPath(widget.posPrintData?['company_data'].logo);
     } else if (widget.print == 'order') {
+      printFormat = PrintFormat(
+          productsList: widget.posPrintData?['products'] ?? [],
+          movementInfo: widget.movementInfo);
+      initSavetoPath(widget.posPrintData?['company_data'].logo);
+    } else if (widget.print == 'quote') {
       printFormat = PrintFormat(
           productsList: widget.posPrintData?['products'] ?? [],
           movementInfo: widget.movementInfo);
@@ -123,7 +129,9 @@ class _PrintSettingsState extends State<PrintSettings> {
     try {
       isConnected = await bluetooth.isConnected;
     } catch (e) {
-      printConsole(e);
+      // printConsole(e);
+      await logError(e, from: 'Print initPlatformState');
+
       isConnected = false;
     }
     List<BluetoothDevice> devices = [];
@@ -153,7 +161,9 @@ class _PrintSettingsState extends State<PrintSettings> {
         }
       });
     } catch (e) {
-      printConsole(e);
+      await logError(e, from: 'Bluetooth listener');
+
+      // printConsole(e);
     }
 
     if (!mounted) return;
@@ -229,6 +239,8 @@ class _PrintSettingsState extends State<PrintSettings> {
                 'assets/images/warning.png');
           }
         } catch (e) {
+          await logError(e, from: 'Conecting to printing device');
+
           setState(() {
             _connected = false;
             _conecting = false;
@@ -249,7 +261,9 @@ class _PrintSettingsState extends State<PrintSettings> {
       printConsole(res);
       setState(() => _connected = false);
     } catch (e) {
-      printConsole(e);
+      await logError(e, from: 'Disconect printer');
+
+      // printConsole(e);
     }
   }
 
@@ -453,122 +467,125 @@ class _PrintSettingsState extends State<PrintSettings> {
           // setState(() async {
           _connected = await bluetooth.isConnected ?? false;
           // });
-        } catch (e) {
-          printConsole(e);
-        }
-        if ((_connected)) {
-          try {
-            // just to get an error if pathimage is not initialized
-            pathImage += '';
-          } catch (e) {
+
+          if ((_connected)) {
             try {
-              await initSavetoPath(widget.posPrintData?['company_data'].logo);
+              // just to get an error if pathimage is not initialized
+              pathImage += '';
             } catch (e) {
-              printConsole(e);
+              try {
+                await initSavetoPath(widget.posPrintData?['company_data'].logo);
+              } catch (e) {
+                printConsole(e);
+                // await logError(e, from: 'init');
+              }
             }
-          }
-          setState(() {
-            // posBloc.setPrintState(true);
-            _printing = true;
-          });
-          if (widget.print == 'settings') {
-            printFormat = PrintFormat(productsList: []);
-            scaffoldAlert(
-                context, 'Impresión de prueba', const Duration(seconds: 2));
-            printFormat!.printTest();
-            await Future.delayed(const Duration(seconds: 3));
-            hideCurrentScaffoldAlert(context);
             setState(() {
-              _printing = false;
+              // posBloc.setPrintState(true);
+              _printing = true;
             });
-            // to print movement info
-          } else if (widget.print == 'movement' &&
-              widget.movementInfo != null) {
-            scaffoldAlert(context, 'Imprimiendo comprobante de movimiento',
-                const Duration(seconds: 10));
-
-            final result =
-                await printFormat!.printMovement(widget.imagePath ?? pathImage);
-            if (result ?? false) {
+            if (widget.print == 'settings') {
+              printFormat = PrintFormat(productsList: []);
+              scaffoldAlert(
+                  context, 'Impresión de prueba', const Duration(seconds: 2));
+              printFormat!.printTest();
               await Future.delayed(const Duration(seconds: 3));
               hideCurrentScaffoldAlert(context);
               setState(() {
                 _printing = false;
               });
-            } else {
-              scaffoldAlert(
-                  context, 'Error al imprimir', const Duration(seconds: 3));
-            }
-          } else if (widget.print == 'pos') {
-            scaffoldAlert(
-                context, 'Imprimiendo comprobante', const Duration(seconds: 2));
+              // to print movement info
+            } else if (widget.print == 'movement' &&
+                widget.movementInfo != null) {
+              scaffoldAlert(context, 'Imprimiendo comprobante de movimiento',
+                  const Duration(seconds: 10));
 
-            final result = await printFormat!
-                .printPOS(widget.imagePath ?? pathImage, widget.posPrintData);
-            if (result ?? false) {
-              await Future.delayed(const Duration(seconds: 3));
-              hideCurrentScaffoldAlert(context);
-              setState(() {
-                _printing = false;
-              });
-            } else {
-              scaffoldAlert(
-                  context, 'Error al imprimir', const Duration(seconds: 3));
-            }
-          } else if (widget.print == 'order') {
-            scaffoldAlert(
-                context, 'Imprimiendo comprobante', const Duration(seconds: 2));
+              final result = await printFormat!
+                  .printMovement(widget.imagePath ?? pathImage);
+              if (result ?? false) {
+                await Future.delayed(const Duration(seconds: 3));
+                hideCurrentScaffoldAlert(context);
+                setState(() {
+                  _printing = false;
+                });
+              } else {
+                scaffoldAlert(
+                    context, 'Error al imprimir', const Duration(seconds: 3));
+              }
+            } else if (widget.print == 'pos') {
+              scaffoldAlert(context, 'Imprimiendo comprobante',
+                  const Duration(seconds: 2));
 
-            final result = await printFormat!
-                .printOrder(widget.imagePath ?? pathImage, widget.posPrintData);
-            if (result ?? false) {
-              await Future.delayed(const Duration(seconds: 3));
-              hideCurrentScaffoldAlert(context);
-              setState(() {
-                _printing = false;
-              });
-            } else {
-              scaffoldAlert(
-                  context, 'Error al imprimir', const Duration(seconds: 3));
-            }
-          } else if (widget.print == 'quote') {
-            scaffoldAlert(
-                context, 'Imprimiendo comprobante', const Duration(seconds: 2));
+              final result = await printFormat!
+                  .printPOS(widget.imagePath ?? pathImage, widget.posPrintData);
+              if (result ?? false) {
+                await Future.delayed(const Duration(seconds: 3));
+                hideCurrentScaffoldAlert(context);
+                setState(() {
+                  _printing = false;
+                });
+              } else {
+                scaffoldAlert(
+                    context, 'Error al imprimir', const Duration(seconds: 3));
+              }
+            } else if (widget.print == 'order') {
+              scaffoldAlert(context, 'Imprimiendo comprobante',
+                  const Duration(seconds: 2));
 
-            final result = await printFormat!
-                .printQuote(widget.imagePath ?? pathImage, widget.posPrintData);
-            if (result ?? false) {
-              await Future.delayed(const Duration(seconds: 3));
-              hideCurrentScaffoldAlert(context);
-              setState(() {
-                _printing = false;
-              });
-            } else {
-              scaffoldAlert(
-                  context, 'Error al imprimir', const Duration(seconds: 3));
-            }
-          }else if (widget.print == 'favorites') {
-            scaffoldAlert(
-                context, 'Imprimiendo favoritos', const Duration(seconds: 2));
+              final result = await printFormat!.printOrder(
+                  widget.imagePath ?? pathImage, widget.posPrintData);
+              if (result ?? false) {
+                await Future.delayed(const Duration(seconds: 3));
+                hideCurrentScaffoldAlert(context);
+                setState(() {
+                  _printing = false;
+                });
+              } else {
+                scaffoldAlert(
+                    context, 'Error al imprimir', const Duration(seconds: 3));
+              }
+            } else if (widget.print == 'quote') {
+              scaffoldAlert(context, 'Imprimiendo comprobante',
+                  const Duration(seconds: 2));
 
-            final result = await printFormat!.printFavOrder(
-                widget.imagePath ?? pathImage, widget.posPrintData);
-            if (result ?? false) {
-              await Future.delayed(const Duration(seconds: 3));
-              hideCurrentScaffoldAlert(context);
-              setState(() {
-                _printing = false;
-              });
-            } else {
+              final result = await printFormat!.printQuote(
+                  widget.imagePath ?? pathImage, widget.posPrintData);
+              if (result ?? false) {
+                await Future.delayed(const Duration(seconds: 3));
+                hideCurrentScaffoldAlert(context);
+                setState(() {
+                  _printing = false;
+                });
+              } else {
+                scaffoldAlert(
+                    context, 'Error al imprimir', const Duration(seconds: 3));
+              }
+            } else if (widget.print == 'favorites') {
               scaffoldAlert(
-                  context, 'Error al imprimir', const Duration(seconds: 3));
+                  context, 'Imprimiendo favoritos', const Duration(seconds: 2));
+
+              final result = await printFormat!.printFavOrder(
+                  widget.imagePath ?? pathImage, widget.posPrintData);
+              if (result ?? false) {
+                await Future.delayed(const Duration(seconds: 3));
+                hideCurrentScaffoldAlert(context);
+                setState(() {
+                  _printing = false;
+                });
+              } else {
+                scaffoldAlert(
+                    context, 'Error al imprimir', const Duration(seconds: 3));
+              }
             }
+          } else {
+            confirmDialog(
+                context,
+                'Impresora no conectada, seleccione una y intente nuevamente',
+                'assets/images/alert.png');
           }
-        } else {
-          confirmDialog(
-              context,
-              'Impresora no conectada, seleccione una y intente nuevamente',
-              'assets/images/alert.png');
+        } catch (e) {
+          // printConsole(e);
+          await logError(e, from: 'Printing ${widget.print}');
         }
       },
       child: Row(

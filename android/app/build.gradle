@@ -39,13 +39,12 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.wappsi.wappsi_pos_app"
         minSdkVersion 20
         targetSdkVersion 30
         // lapappaya
-        versionCode 4
-        versionName "1.0.4"
+        versionCode 5
+        versionName "1.0.5"
         // dulcelandia
         // versionCode 2
         // versionName "1.0.2"

@@ -74,7 +74,7 @@ class PrintFormat {
         await bluetooth.writeBytes(
             Uint8List.fromList(await ticketProducts(generator, _innerPrinter)));
         await bluetooth.writeBytes(Uint8List.fromList(
-            await ticketOrderValue(generator, _innerPrinter, printData)));
+            await ticketOrdQuotValue(generator, _innerPrinter, printData)));
         await bluetooth.writeBytes(Uint8List.fromList(
             await ticketTax(generator, _innerPrinter, printData)));
 
@@ -104,7 +104,7 @@ class PrintFormat {
         await bluetooth.writeBytes(
             Uint8List.fromList(await ticketProducts(generator, _innerPrinter)));
         await bluetooth.writeBytes(Uint8List.fromList(
-            await ticketOrderValue(generator, _innerPrinter, printData)));
+            await ticketOrdQuotValue(generator, _innerPrinter, printData)));
         await bluetooth.writeBytes(Uint8List.fromList(
             await ticketTax(generator, _innerPrinter, printData)));
 
@@ -253,7 +253,8 @@ class PrintFormat {
     final settings = printData?['settings'];
     final data = printData?['sale_data']?['data'] ??
         printData?['sale_data'] ??
-        printData?['order_data'];
+        printData?['order_data'] ??
+        printData?['quote_data'];
     final customer = printData?['customer'];
     final customerAddres =
         printData?['customer_address'] ?? printData?['customer'];
@@ -359,7 +360,7 @@ class PrintFormat {
     return bytes;
   }
 
-  Future<List<int>> ticketOrderValue(Generator generator, bool innerPrinter,
+  Future<List<int>> ticketOrdQuotValue(Generator generator, bool innerPrinter,
       Map<dynamic, dynamic>? printData) async {
     List<int> bytes = [];
     // delete print buffer
@@ -601,7 +602,7 @@ class PrintFormat {
         if (str == formatedS.first) {
           final namePart = innerPrinter ? replaceSpecialCharacters(str) : str;
 
-          text = getRoundedQtty(qttyDouble / (unitOpertor ?? 1)) +
+          text += getRoundedQtty(qttyDouble / (unitOpertor ?? 1)) +
               getEmptySpaces((qttyLenght + 1) - qtty.length) +
               unitCode +
               getEmptySpaces(((umdLenght + 1) - unitCode.length).toInt()) +
@@ -625,7 +626,7 @@ class PrintFormat {
 
       if (element['base_unit'] != null) {
         final bUnit = element['base_unit'];
-        final bUnitValue = price / bUnit['operation_value'];
+        final bUnitValue = price / element['unit']['operation_value'];
         final bUnitValueS = getFormatedCurrency(bUnitValue);
         final unitP = bUnit['code'].toString() + ' x ' + bUnitValueS;
         text += getEmptySpaces(qttyLenght + umdLenght + 2) +
@@ -723,6 +724,11 @@ class PrintFormat {
       Map<dynamic, dynamic>? printData) async {
     //init print format values
     List<int> bytes = [];
+    final header = 'Tarifa' +
+        getEmptySpaces(((chrLen - 18) / 2).floor()) +
+        'Base' +
+        getEmptySpaces(((chrLen - 18) / 2).ceil()) +
+        'Impuesto';
     // delete print buffer
     generator.reset();
     generator.spaceBetweenRows = 1;
@@ -732,7 +738,7 @@ class PrintFormat {
     bytes += generator.emptyLines(1);
     bytes += generator.text('Resumen de impuestos',
         styles: const PosStyles(bold: true, align: PosAlign.center));
-    bytes += generator.text('Tarifa      Base     Impuesto',
+    bytes += generator.text(header,
         styles: const PosStyles(bold: true, align: PosAlign.center));
     bytes += generator.hr(len: chrLen, ch: '-');
 
@@ -742,13 +748,14 @@ class PrintFormat {
       String name = itemp['name'];
       String temp = getFormatedCurrency(itemp['value']).substring(1);
       String temp2 = getFormatedCurrency(itemp['value'] * iva).substring(1);
+      final tEmptySps = chrLen-(name.length+temp.length+temp2.length);
       String textToPrint = (name +
-          getEmptySpaces(11 - temp.length) +
+          getEmptySpaces((tEmptySps/2).floor()) +
           temp +
-          getEmptySpaces(11 - temp2.length) +
+          getEmptySpaces((tEmptySps/2).ceil()) +
           temp2);
       bytes += generator.text(
-          (chrLen == 32 ? '' : getEmptySpaces(9)) + (textToPrint),
+          (textToPrint),
           styles: const PosStyles(bold: false, align: PosAlign.center));
     });
     return bytes;

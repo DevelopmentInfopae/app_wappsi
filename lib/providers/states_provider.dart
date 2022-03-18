@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:pos_wappsi/models/states_model.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 
 import 'local_db_provider.dart';
 
@@ -30,6 +31,8 @@ class StatesProvider {
       final List temp = await json.decode(response);
       data = temp.map((e) => StatesModel.fromJson(e).toJson()).toList();
     } catch (e) {
+      await logError(e, from: 'write states from JSON to db');
+
       // printConsole(e);
     }
 

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 // import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/cities_model.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
 import 'local_db_provider.dart';
@@ -24,7 +25,9 @@ class CitiesProvider {
       final List temp = await json.decode(response);
       data = temp.map((e) => CitiesModel.fromJson(e).toJson()).toList();
     } catch (e) {
-      printConsole(e);
+            await logError(e, from: 'Loading cities from Map');
+
+      // printConsole(e);
     }
 
     return fromJsonFileList(data);
@@ -39,6 +42,8 @@ class CitiesProvider {
       // data = queryResultToMapList(temp);
       data = temp.map((e) => e as Map<String, dynamic>).toList();
     } catch (e) {
+      await logError(e, from: 'Writing scities from JSON to local DB');
+
       printConsole(e);
     }
 

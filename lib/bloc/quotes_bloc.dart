@@ -19,6 +19,7 @@ import 'package:pos_wappsi/providers/local_db_provider.dart';
 
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 
@@ -225,7 +226,7 @@ class QuoteBloc {
       await dataBloc.getSettings();
       res = await addProductQuantity(key, value);
     }
-    
+
     return res;
   }
 
@@ -283,6 +284,8 @@ class QuoteBloc {
 
         return true;
       } catch (e) {
+        await logError(e, from: 'Reloading quote products');
+
         printConsole(e);
         return false;
       }
@@ -488,9 +491,9 @@ class QuoteBloc {
   Map? get getPrintData => _printDataController.valueOrNull;
 
   double get getQuoteDiscount => _discountController.valueOrNull ?? 0;
-  double getTotalDiscount(){
+  double getTotalDiscount() {
     return _discountController.valueOrNull ?? 0;
-  } 
+  }
 
   String? get getInternalNote => _internalNoteController.valueOrNull;
   String? get getNote => _quoteNoteController.valueOrNull;
