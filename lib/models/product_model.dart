@@ -30,6 +30,7 @@ class ProductModel {
       required this.code,
       required this.image,
       required this.price,
+      required this.cost,
       this.priceWithoutDiscount,
       this.pricePolicyPrices,
       required this.promoStart,
@@ -64,6 +65,7 @@ class ProductModel {
   int taxMethod;
   double? promoPrice;
   double quantity;
+  double cost;
   int brand;
   int taxRateId;
   String taxRateName;
@@ -114,6 +116,7 @@ class ProductModel {
                   json["price_without_discount"]?.toString() ?? '0') ??
               0.0,
           discount: double.tryParse(json["discount"]?.toString() ?? '0') ?? 0.0,
+          cost: double.tryParse(json["cost"]?.toString() ?? '0') ?? 0.0,
           promoStart: json["start_date"] ?? '',
           promoEnd: json["end_date"] ?? '',
           taxMethod: int.tryParse(json["tax_method"]?.toString() ?? '0') ?? 0,
@@ -215,6 +218,9 @@ class ProductModel {
 
   String getFormatedPriceIVA({int? decimals}) {
     return getFormatedCurrency(getPriceWithIVA(), decimals: decimals);
+  }
+  String getFormatedCost({int? decimals}) {
+    return getFormatedCurrency(cost, decimals: decimals);
   }
 
   String getFormatedPriceNoIva() {

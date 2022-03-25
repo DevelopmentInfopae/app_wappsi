@@ -1,6 +1,6 @@
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
-import 'package:pos_wappsi/config/pos_params.dart';
+import 'package:pos_wappsi/params/pos_params.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 

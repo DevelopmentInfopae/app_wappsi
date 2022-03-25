@@ -57,21 +57,14 @@ class _PrintOrderState extends State<PrintOrder> {
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
     _pc = pColor;
-    return WillPopScope(
-      onWillPop: () async {
-          dataBloc.homeKey.currentState?.changeBottomIndex(1);
-          // printConsole('here i am');
-          return true;
-        },
-      child: Scaffold(
-        appBar: appBar(
-          context,
-          'Imprimir pedido',
-          back: widget.back,
-          image: widget.image,
-        ),
-        body: _body(),
+    return Scaffold(
+      appBar: appBar(
+        context,
+        'Imprimir pedido',
+        back: widget.back,
+        image: widget.image,
       ),
+      body: _body(),
     );
   }
 
@@ -117,7 +110,8 @@ class _PrintOrderState extends State<PrintOrder> {
               emptyLine(),
               // hDivider(),
               posNote(textTheme, widget.printData)
-                  .paddingSymmetric(vertical: 8).withWidth(_size.width * 0.85),
+                  .paddingSymmetric(vertical: 8)
+                  .withWidth(_size.width * 0.85),
               // hDivider(),
               ordQuotValueDetails(textTheme, widget.printData)
                   .paddingSymmetric(horizontal: 6, vertical: 8),

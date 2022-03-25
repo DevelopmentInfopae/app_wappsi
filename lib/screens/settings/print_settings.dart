@@ -12,7 +12,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/printer_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/config/print_settings_options.dart';
+import 'package:pos_wappsi/params/print_settings_options.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';

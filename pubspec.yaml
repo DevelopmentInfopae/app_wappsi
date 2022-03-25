@@ -57,12 +57,16 @@ dependencies:
   flutter_osm_plugin: ^0.31.0
   package_info_plus: ^1.4.0
   flutter_html: ^2.2.1
+  date_time_picker: ^2.1.0
+  # syncfusion_flutter_datepicker: ^19.4.56
   # place_picker: 0.9.20-nullsafety
   # whatsapp_unilink: ^2.0.1+1
   # liquid_progress_indicator: ^0.4.0
   
   # image: ^3.1.0
   # image_downloader:
+  flutter_localizations: # Add this line
+    sdk: flutter         # Add this line
 
 dev_dependencies:
   flutter_test:

@@ -36,7 +36,7 @@ class DBProvider {
     // printConsole(path);
 
     // creation of db
-    return await openDatabase(path, version: 1, onOpen: (db) {},
+    return await openDatabase(path, version: 3, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       // table creation
 
@@ -193,12 +193,12 @@ class DBProvider {
         await db!.insert(table, element,
             conflictAlgorithm: ConflictAlgorithm.replace);
       } catch (e) {
-        printConsole(e);
-        await insertQuery(table, {'error': e.toString()});
-        String values = getStringFromValues(element.values);
-        String sql =
-            'INSERT OR REPLACE INTO $table ("${element.keys.join('","')}") VALUES ($values);';
+        await printAndSaveError(e);
+        
         try {
+          String values = getStringFromValues(element.values);
+          String sql =
+              'INSERT OR REPLACE INTO $table ("${element.keys.join('","')}") VALUES ($values);';
           await db!.rawQuery(sql);
         } catch (e) {
           await printAndSaveError(e);
@@ -281,9 +281,10 @@ class DBProvider {
   }
 
   Future<void> printAndSaveError(Object e,
-      {String table = 'errors_log',String from='local db operations'}) async {
+      {String table = 'errors_log',
+      String from = 'local db operations'}) async {
     printConsole(e);
-    await insertQuery(table, {'error': e.toString(),'from':from});
+    await insertQuery(table, {'error': e.toString(), 'from': from});
   }
 
   Future<Map<String, dynamic>?> sqlFirstQuery(String table,
@@ -345,7 +346,7 @@ class DBProvider {
     } catch (e) {
       // printConsole(e);
       await printAndSaveError(e);
-      
+
       return null;
     }
   }

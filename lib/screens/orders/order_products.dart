@@ -11,7 +11,7 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
-import 'package:pos_wappsi/components/product_list.dart';
+import 'package:pos_wappsi/components/products/product_list.dart';
 import 'package:pos_wappsi/components/favorites_search_selection.dart';
 import 'package:pos_wappsi/screens/orders/order_other_details.dart';
 // import 'package:pos_wappsi/providers/units_provider.dart';
@@ -24,7 +24,7 @@ import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
+import 'package:pos_wappsi/services/barcode_camera_scan.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
@@ -107,7 +107,7 @@ class _OrderProductsState extends State<OrderProducts> {
       'Agregar pedido',
       elevation: false,
       radius: 0,
-      image: 'assets/images/cargo.png',
+      image: 'assets/images/add-order.png',
       onPop: () {
         setState(() {
           if (index == 1) {
@@ -270,7 +270,7 @@ class _OrderProductsState extends State<OrderProducts> {
             _productsCount += 1;
             _searchBarFocusManagement();
           }
-          if (snapshot.hasData && _searchController.isClosed&& _productsCount!=(orderBloc.getProducts?.length??0)) {
+          if (snapshot.hasData && _searchController.isClosed&& _productsCount==(orderBloc.getProducts?.length??0)) {
             bool productRequestFocus = false;
             if (orderBloc.getItemsCount() == 0) {
               _productsCount = 0;

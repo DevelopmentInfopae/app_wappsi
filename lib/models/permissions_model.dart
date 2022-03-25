@@ -22,6 +22,7 @@ class PermissionsModel {
     @required this.customersEdit,
     @required this.suppliersAdd,
     @required this.suppliersEdit,
+    @required this.suppliersIndex,
     @required this.salesDeliveries,
     @required this.salesAddDelivery,
     @required this.salesEditDelivery,
@@ -49,6 +50,7 @@ class PermissionsModel {
   final int? customersAdd;
   final int? customersEdit;
   final int? suppliersAdd;
+  final int? suppliersIndex;
   final int? suppliersEdit;
   final int? salesDeliveries;
   final int? salesAddDelivery;
@@ -87,6 +89,7 @@ class PermissionsModel {
         customersEdit: int.tryParse((json["customers-edit"] ?? '0').toString()),
         suppliersAdd: int.tryParse((json["suppliers-add"] ?? '0').toString()),
         suppliersEdit: int.tryParse((json["suppliers-edit"] ?? '0').toString()),
+        suppliersIndex: int.tryParse((json["suppliers-index"] ?? '0').toString()),
         salesDeliveries:
             int.tryParse((json["sales-deliveries"] ?? '0').toString()),
         salesAddDelivery:

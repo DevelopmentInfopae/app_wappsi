@@ -20,6 +20,7 @@ class ProductsProvider {
         'id_cloud',
         'image',
         'price',
+        'cost',
         'code',
         'start_date',
         'type',
@@ -45,7 +46,7 @@ class ProductsProvider {
     final temp = ProductModel.fromJsonList([res]);
     final prodP =
         await getProductPrices(temp.first, customer: customer, unit: unit);
-    if (prodP.price != res['sp_price']) {
+    if (prodP.price != temp.first.price) {
       dif = {
         'product_name': res['name'],
         'price': prodP.price,
@@ -135,7 +136,7 @@ class ProductsProvider {
     final res = await loadSuspendedSProducts(suspSaleId);
     List<Map<String, dynamic>> dif = [];
     List<ProductModel> products = [];
-    List<UnitsModel> units = [];
+    List<UnitsModel?> units = [];
     if (res != null) {
       await Future.forEach(res, (Map p) async {
         products.add(ProductModel.fromJsonList([p],
@@ -299,25 +300,29 @@ class ProductsProvider {
   /// Returns map with product and its requirementes based on pricePolicy
   static Future<Map<String, dynamic>> getProductRequirements(
       BuildContext context, ProductModel product,
-      {bool showAllwaysUnitAlert = false, bool fromOrder=false,bool fromQuote=false}) async {
+      {bool showAllwaysUnitAlert = false,
+      bool fromOrder = false,
+      bool fromPurchase = false,
+      bool fromQuote = false}) async {
     final policyReq = PricePoliciesProvider.checkProductSelectionRequirements();
     Map<String, dynamic> req = {"product": product, "product_unit": null};
     Map<String, dynamic>? unitInfo;
     if (policyReq['product_unit']) {
-      String priceGroupId='';
+      String priceGroupId = '';
 
-      if(fromOrder){
+      if (fromOrder) {
         priceGroupId = orderBloc.getCustomer!.priceGroupId!;
-      }else if(fromQuote){
+      } else if (fromQuote) {
         priceGroupId = quoteBloc.getCustomer!.priceGroupId!;
-      }else{
+      } else if (fromPurchase) {
+        //nothing to do
+      }else {
         priceGroupId = posBloc.getCustomer!.priceGroupId!;
       }
 
       unitInfo = await UnitsProvider.getProductUnit(
           context, product, priceGroupId,
-          showAllwaysUnitAlert: showAllwaysUnitAlert
-      );
+          showAllwaysUnitAlert: showAllwaysUnitAlert);
       if (unitInfo != null) {
         final unit = unitInfo['unit'];
         req['product_unit'] = unitInfo['unit'];
@@ -355,10 +360,19 @@ class ProductsProvider {
   static Future<bool> getPOSProductPrices(String productKey,
       {String? customerId,
       bool defaultPrice = false,
-      bool toOrder = false, bool toQuote = false}) async {
+      bool toOrder = false,
+      bool toQuote = false}) async {
     if (dataBloc.settings != null) {
+      CompanyModel? customer;
+      if (toOrder) {
+        customer = orderBloc.getCustomer;
+      } else if (toQuote) {
+        customer = quoteBloc.getCustomer;
+      } else {
+        customer = posBloc.getCustomer;
+      }
       final result = await PricePoliciesProvider.policyCasesPrice(productKey,
-          dataBloc.settings!['prioridad_precios_producto'], posBloc.getCustomer,
+          dataBloc.settings!['prioridad_precios_producto'], customer,
           defaultPrice: defaultPrice, toOrder: toOrder, toQuote: toQuote);
 
       return result;

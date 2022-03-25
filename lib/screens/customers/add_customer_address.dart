@@ -104,7 +104,7 @@ class _NewAddressState extends State<NewAddress> {
       context,
       'Crear sucursal',
       back: true,
-      image: 'assets/images/add-location.png',
+      image: 'assets/images/locations.png',
     );
   }
 
@@ -234,6 +234,11 @@ class _NewAddressState extends State<NewAddress> {
             ],
           ),
           onTap: () async {
+            _phoneFocus.unfocus();
+            _direccionFocus.unfocus();
+            _emailFocus.unfocus();
+            _sucursalFocus.unfocus();
+            await Future.delayed(const Duration(milliseconds: 500));
             await _getLocation();
           },
         ).paddingRight(10).expand(),
@@ -558,7 +563,7 @@ class _NewAddressState extends State<NewAddress> {
       customerBloc.getAddress.sucursal = value;
     }, (value) {
       if (value == null || value == '') {
-        _direccionFocus.requestFocus();
+        _sucursalFocus.requestFocus();
         return 'El campo es necesario';
       }
     }, () {
@@ -576,7 +581,7 @@ class _NewAddressState extends State<NewAddress> {
             },
             (String? value) {},
             () {
-              // _phoneFocus.requestFocus();
+              _phoneFocus.unfocus();
             },
             focus: _phoneFocus,
             controller: _phoneController,

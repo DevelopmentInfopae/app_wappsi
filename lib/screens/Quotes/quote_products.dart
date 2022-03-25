@@ -11,7 +11,7 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
-import 'package:pos_wappsi/components/product_list.dart';
+import 'package:pos_wappsi/components/products/product_list.dart';
 import 'package:pos_wappsi/screens/Quotes/quote_other_data.dart';
 import 'package:pos_wappsi/components/favorites_search_selection.dart';
 // import 'package:pos_wappsi/screens/orders/order_other_details.dart';
@@ -25,7 +25,7 @@ import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
+import 'package:pos_wappsi/services/barcode_camera_scan.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
@@ -108,7 +108,7 @@ class _QuoteProductsState extends State<QuoteProducts> {
       'Agregar cotización',
       elevation: false,
       radius: 0,
-      image: 'assets/images/quotation.png',
+      image: 'assets/images/add-quote.png',
       onPop: () {
         setState(() {
           if (index == 1) {
@@ -236,7 +236,7 @@ class _QuoteProductsState extends State<QuoteProducts> {
       transition: CircularFloatingSearchBarTransition(),
       physics: const BouncingScrollPhysics(),
       builder: (context, _) => buildBody(
-          stream: quoteBloc.productSearchStream, action: 'add_to_order'),
+          stream: quoteBloc.productSearchStream, action: 'add_to_quote'),
       title: Text(
         'Buscar producto',
         style: buttonsSmallTextStyle(context),
@@ -272,7 +272,7 @@ class _QuoteProductsState extends State<QuoteProducts> {
             _productsCount += 1;
             _searchBarFocusManagement();
           }
-          if (snapshot.hasData && _searchController.isClosed&& _productsCount!=(quoteBloc.getProducts?.length??0)) {
+          if (snapshot.hasData && _searchController.isClosed&& _productsCount==(quoteBloc.getProducts?.length??0)) {
             bool productRequestFocus = false;
             if (quoteBloc.getItemsCount() == 0) {
               _productsCount = 0;

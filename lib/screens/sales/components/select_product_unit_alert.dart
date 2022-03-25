@@ -8,6 +8,7 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
+import 'package:provider/single_child_widget.dart';
 
 /// Custom alert dialog to manage open and close operations on Register, to open action = 'open'
 /// to close action = 'close'
@@ -49,61 +50,89 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoAlertDialog(
-      title: Column(
-        children: [
-          Text(
-            'Seleccione la unidad de producto para:',
-            style: buttonsSmallTextStyle(context).apply(fontSizeDelta: 1.2),
-          ),
-          Text(
-            capitalizeText(widget.product.name),
-            style: normalTextStyle(context, fontSizeFactor: 1.1),
-          ).paddingTop(8)
-        ],
-      ),
-      content: Column(
-        children: [
-          qttyControl(context).paddingTop(8),
-          _select(context),
-        ],
-      ),
-      actions: <Widget>[
-        Container(
-          color: Colors.red.withOpacity(0.8),
-          child: CupertinoDialogAction(
-            child: const Text(
-              "Cancelar",
-              style: TextStyle(color: Colors.white),
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    double hInsetPadding = 10.0;
+    double vInsetPadding = kBottomNavigationBarHeight;
+    if(width>400){
+      hInsetPadding = width*0.1;
+    }
+    if(height>800){
+      vInsetPadding = height*0.1;
+    }
+    return SafeArea(
+      child: AlertDialog(
+        backgroundColor: alertBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(alertBorderRadius),
+        ),
+        // insetPadding: EdgeInsets.zero,
+        // contentPadding: EdgeInsets.zero,
+        insetPadding: EdgeInsets.symmetric(horizontal: hInsetPadding, vertical: vInsetPadding),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        title: Column(
+          children: [
+            Text(
+              'Seleccione la unidad de producto para:',
+              style: buttonsSmallTextStyle(context).apply(fontSizeDelta: 1.2),
               textAlign: TextAlign.center,
             ),
-            onPressed: () async {
-              Navigator.of(context).pop(null);
-              // return widget.product;
-            },
-          ),
+            Text(
+              capitalizeText(widget.product.name),
+              style: normalTextStyle(context, fontSizeFactor: 1.1),
+            ).paddingTop(8)
+          ],
         ),
-        Container(
-          color: pColor.withOpacity(0.8),
-          child: CupertinoDialogAction(
-            child: const Text(
-              "Aceptar",
-              style: TextStyle(color: Colors.white),
-              textAlign: TextAlign.center,
-            ),
-            onPressed: () async {
-              if (_selection != 0) {
-                Navigator.of(context).pop({
-                  "unit":
-                      widget.units.where((u) => u.idCloud == _selection).first,
-                  "quantity": qtty == 0 ? 1.0 : qtty
-                });
-              }
-              // return widget.product;
-            },
-          ),
+        content: Column(
+          children: [
+            _select(context).expand(),
+            qttyControl(context).paddingTop(8),
+          ],
         ),
-      ],
+        actionsPadding: EdgeInsets.zero,
+        buttonPadding: EdgeInsets.zero,
+        actions: <Widget>[
+          Row(
+            children: [
+              Container(
+                color: Colors.red.withOpacity(0.8),
+                child: CupertinoDialogAction(
+                  child: const Text(
+                    "Cancelar",
+                    style: TextStyle(color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                  onPressed: () async {
+                    Navigator.of(context).pop(null);
+                    // return widget.product;
+                  },
+                ),
+              ).flexible(flex: 1),
+              Container(
+                color: pColor.withOpacity(0.8),
+                child: CupertinoDialogAction(
+                  child: const Text(
+                    "Aceptar",
+                    style: TextStyle(color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                  onPressed: () async {
+                    if (_selection != 0) {
+                      Navigator.of(context).pop({
+                        "unit": widget.units
+                            .where((u) => u.idCloud == _selection)
+                            .first,
+                        "quantity": qtty == 0 ? 1.0 : qtty
+                      });
+                    }
+                    // return widget.product;
+                  },
+                ),
+              ).flexible(flex: 1),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -120,7 +149,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                 // padding: kButtonPadding,
                 decoration: BoxDecoration(
                     // color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(15),
                     boxShadow: const [
                       BoxShadow(
                         color: Colors.grey,
@@ -156,34 +185,36 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
     // final _textTheme = Theme.of(context).textTheme;
     return Material(
       color: Colors.transparent,
-      child: Column(
-        children: widget.units.map((UnitsModel u) {
-          return AppButton(
-            onTap: () {
-              setState(() {
-                _selection = u.idCloud;
-              });
-            },
-            color: greyLight,
-            shapeBorder: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-                side: BorderSide(
-                    color: u.idCloud == _selection ? pColor : Colors.white,
-                    width: 3)),
-            padding: EdgeInsets.zero,
-            child: ListTile(
-              title: Row(
-                children: [
-                  Text(
-                    u.name,
-                    maxLines: 2,
-                  ).expand(),
-                  unitValue(u),
-                ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: widget.units.map((UnitsModel u) {
+            return AppButton(
+              onTap: () {
+                setState(() {
+                  _selection = u.idCloud;
+                });
+              },
+              color: greyLight,
+              shapeBorder: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  side: BorderSide(
+                      color: u.idCloud == _selection ? pColor : Colors.white,
+                      width: 3)),
+              padding: EdgeInsets.zero,
+              child: ListTile(
+                title: Row(
+                  children: [
+                    Text(
+                      u.name,
+                      maxLines: 2,
+                    ).expand(),
+                    unitValue(u),
+                  ],
+                ),
               ),
-            ),
-          ).paddingSymmetric(vertical: 2);
-        }).toList(),
+            ).paddingSymmetric(vertical: 2);
+          }).toList(),
+        ),
       ),
     );
   }

@@ -10,7 +10,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/appbar_leading.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/product_list.dart';
+import 'package:pos_wappsi/components/products/product_list.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
@@ -30,7 +30,7 @@ import 'package:pos_wappsi/screens/sales/new_sale.dart';
 import 'package:pos_wappsi/screens/sales/sale_payment.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
+import 'package:pos_wappsi/services/barcode_camera_scan.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
@@ -96,7 +96,7 @@ class _SaleCartState extends State<SaleCart> {
             children: [
               _searchbar(),
               Hero(
-                  tag: 'order_favorite_search', child: buildFloatingSearchBar())
+                  tag: 'sale_favorite_search', child: buildFloatingSearchBar())
             ],
           )),
     );
@@ -107,12 +107,12 @@ class _SaleCartState extends State<SaleCart> {
         elevation: false,
         radius: 0,
         leading: Hero(
-          tag: 'order_favorite_search',
+          tag: 'sale_favorite_search',
           child: Tooltip(
               message: "Favoritos",
               child: AppBarLeading(
                   widget: Icon(
-                    Icons.star,
+                    Icons.favorite,
                     size: leadingIconSize,
                     color: index == 1 ? Colors.white : favColor,
                   ),
@@ -265,7 +265,7 @@ class _SaleCartState extends State<SaleCart> {
                 _searchBarFocusManagement();
               }
 
-              if (snapshot.hasData && _searchController.isClosed && _productsCount!=(posBloc.getProducts?.length??0)) {
+              if (snapshot.hasData && _searchController.isClosed && _productsCount==(posBloc.getProducts?.length??0)) {
                 // _searchController.close();
                 bool productRequestFocus = false;
 

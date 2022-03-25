@@ -128,7 +128,7 @@ class _NewOrderState extends State<NewOrder> {
     return appBar(
       context,
       'Agregar pedido',
-      image: 'assets/images/cargo.png',
+      image: 'assets/images/add-order.png',
       // leading: _appBarLeading(),
       onPop: () {
         dataBloc.homeKey.currentState?.changeBottomIndex(1);

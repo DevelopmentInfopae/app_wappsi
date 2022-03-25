@@ -85,7 +85,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
 
     return Scaffold(
       appBar:
-          appBar(context, 'Agregar pedido', image: 'assets/images/cargo.png'),
+          appBar(context, 'Agregar pedido', image: 'assets/images/add-order.png'),
       body: _body(),
     );
   }

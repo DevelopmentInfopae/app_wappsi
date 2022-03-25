@@ -76,6 +76,19 @@ class SuspendedSales {
         "created_date": items,
         'seller_name':sellerName
       };
+   static List<SuspendedSales> fromJsonList(List<Map> list) {
+    List<SuspendedSales> suspSales = [];
+    Map<String, dynamic> temp = {};
+    for (var item in list) {
+      for (var i = 0; i < item.keys.length; i++) {
+        temp[item.keys.toList()[i]] = item.values.toList()[i];
+      }
+      suspSales.add(SuspendedSales.fromJson(temp));
+    }
 
+    return suspSales;
+
+    // prString(temp);
+  }
   
 }

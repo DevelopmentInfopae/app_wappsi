@@ -3,7 +3,7 @@ import 'package:flutter_html/flutter_html.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
+import 'package:pos_wappsi/params/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';

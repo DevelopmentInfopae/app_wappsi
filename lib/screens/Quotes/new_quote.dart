@@ -100,7 +100,7 @@ class _NewQuoteState extends State<NewQuote> {
           // _document(),
           _warehouse(),
           _sellerInfo(),
-          _customers(),
+          _customers().paddingBottom(8),
 
           _customerAddresses()
         ],
@@ -128,7 +128,7 @@ class _NewQuoteState extends State<NewQuote> {
     return appBar(
       context,
       'Agregar cotización',
-      image: 'assets/images/quotation.png',
+      image: 'assets/images/add-quote.png',
       // leading: _appBarLeading(),
       onPop: () {
         dataBloc.homeKey.currentState?.changeBottomIndex(1);
@@ -138,15 +138,18 @@ class _NewQuoteState extends State<NewQuote> {
   }
 
   Widget _customers() {
-    return FutureBuilder(
-      future: CompaniesProvider.selectDefaultCustomer(returnBool: true),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          return _customersDropDown();
-        } else {
-          return _customersDropDown();
-        }
-      },
+    return SizedBox(
+      height: dropDownHeight,
+      child: FutureBuilder(
+        future: CompaniesProvider.selectDefaultCustomer(returnBool: true),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            return _customersDropDown();
+          } else {
+            return _customersDropDown();
+          }
+        },
+      ),
     );
   }
 
@@ -244,16 +247,19 @@ class _NewQuoteState extends State<NewQuote> {
   }
 
   Widget _customerAddresses() {
-    return FutureBuilder(
-      future:
-          CustomerAddressesProvider.selectDefaultAddrsToQuote(returnBool: true),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          return _customerAddressesDropDown();
-        } else {
-          return _customerAddressesDropDown();
-        }
-      },
+    return SizedBox(
+      height: dropDownHeight,
+      child: FutureBuilder(
+        future:
+            CustomerAddressesProvider.selectDefaultAddrsToQuote(returnBool: true),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            return _customerAddressesDropDown();
+          } else {
+            return _customerAddressesDropDown();
+          }
+        },
+      ),
     );
   }
 

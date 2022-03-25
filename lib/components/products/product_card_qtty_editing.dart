@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 // import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:pos_wappsi/bloc/orders_bloc.dart';
+
 // ignore: implementation_imports
 // import 'package:nb_utils/src/extensions/widget_extensions.dart';
-import 'package:pos_wappsi/bloc/pos_bloc.dart';
-import 'package:pos_wappsi/bloc/quotes_bloc.dart';
+
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
@@ -24,19 +23,27 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 class ProductCard extends StatefulWidget {
   const ProductCard(
       {Key? key,
-      required this.productKey,
       required this.formKey,
       required this.quantityFocusNode,
-      this.fromOder = false,
-      this.fromQuote = false,
+      required this.unit,
+      required this.product,
+      required this.getQtty,
+      required this.editQtty,
+      required this.addQtty,
+      required this.rmQtty,
+      required this.delete,
       this.requestFocus = false})
       : super(key: key);
-  final bool fromOder;
-  final bool fromQuote;
+  final Function getQtty;
+  final Function(double) editQtty;
+  final Function addQtty;
+  final Function rmQtty;
+  final Function delete;
   final bool requestFocus;
+  final ProductModel? product;
+  final UnitsModel? unit;
   final FocusNode quantityFocusNode;
   final GlobalObjectKey<FormState> formKey;
-  final String productKey;
 
   @override
   _ProductCardState createState() => _ProductCardState();
@@ -48,7 +55,7 @@ class _ProductCardState extends State<ProductCard> {
   // final widget.formKey = GlobalKey<FormState>();
 
   final _quantityController = TextEditingController();
-  UnitsModel? unit;
+
   ProductModel? product;
   String unitInfo = '';
 
@@ -61,48 +68,17 @@ class _ProductCardState extends State<ProductCard> {
 
   @override
   void initState() {
-    // _updateQuantityValue();
-    try {
-      if (widget.fromOder) {
-        orderBloc.getProductData(widget.productKey)?.quantity =
-            orderBloc.getProductData(widget.productKey)!.quantity;
-      } else if (widget.fromQuote) {
-        quoteBloc.getProductData(widget.productKey)?.quantity =
-            quoteBloc.getProductData(widget.productKey)!.quantity;
-      } else{
-        posBloc.getProductData(widget.productKey)?.quantity =
-            posBloc.getProductData(widget.productKey)!.quantity;
-      }
-    } catch (e) {
-      printConsole(e);
-    }
-    String? firstKey;
-    if (widget.fromOder) {
-      unit = orderBloc.getProductUnits?[widget.productKey];
-      product = orderBloc.getProducts?[widget.productKey];
-      // firstProduct = orderBloc.getProducts?.values.first;
-      firstKey = orderBloc.getProducts?.keys.first;
-    } else if (widget.fromQuote) {
-      unit = quoteBloc.getProductUnits?[widget.productKey];
-      product = quoteBloc.getProducts?[widget.productKey];
-      firstKey = quoteBloc.getProducts?.keys.first;
-    } else {
-      unit = posBloc.getProductUnits?[widget.productKey];
-      product = posBloc.getProducts?[widget.productKey];
-      // firstProduct = posBloc.getProducts?.values.first;
-      firstKey = posBloc.getProducts?.keys.first;
-    }
-    if (unit != null) {
-      final unitQtty = product!.quantity / (unit!.operationValue);
+    product = widget.product;
+
+    if (widget.unit != null) {
+      final unitQtty = product!.quantity / (widget.unit!.operationValue);
       if (unitInfo == '') {
         unitInfo += getRoundedQtty(unitQtty) + ' ';
       }
     }
     if (widget.requestFocus) {
-      if (widget.productKey == firstKey) {
-        widget.quantityFocusNode.requestFocus();
-      }
-    }else{
+      widget.quantityFocusNode.requestFocus();
+    } else {
       widget.quantityFocusNode.unfocus();
     }
 
@@ -112,28 +88,15 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _productTile() {
-    if (unit != null) {
-      final unitQtty = product!.quantity / (unit?.operationValue ?? 1);
+    if (widget.unit != null) {
+      final unitQtty = product!.quantity / (widget.unit?.operationValue ?? 1);
       unitInfo = getRoundedQtty(unitQtty) + ' ';
     }
 
-    unitInfo += unit?.name ?? '';
+    unitInfo += widget.unit?.name ?? '';
     return Column(
       verticalDirection: VerticalDirection.down,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _productDesc().paddingOnly(top: 5, left: 10).expand(),
-            _delete().paddingOnly(right: 5)
-          ],
-        ),
-        const Divider(
-          height: 1,
-          color: Colors.black12,
-          thickness: 1,
-        ).paddingSymmetric(horizontal: 10),
         Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -141,11 +104,23 @@ class _ProductCardState extends State<ProductCard> {
               productPhoto((product?.image ?? '') == ''
                       ? 'no_image.png'
                       : product!.image)
-                  .withSize(width: 90, height: 92),
+                  .withSize(width: 92, height: 95),
+              vDivider(width: 1, heigh: 85),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 // mainAxisAlignment: ,
-                children: [_unitInfo(unit, unitInfo), _baseUnitQtty(unit)],
+                children: [
+                  _productDesc()
+                      .paddingSymmetric(horizontal: 8, vertical: 2)
+                      ,
+                  Divider(
+                    height: 1,
+                    color: greyMediumLight,
+                    thickness: 1,
+                  ).paddingSymmetric(horizontal: 10),
+                  _unitInfo(widget.unit, unitInfo),
+                  _baseUnitQtty(widget.unit)
+                ],
               ).paddingTop(4).expand(),
             ]),
       ],
@@ -184,7 +159,7 @@ class _ProductCardState extends State<ProductCard> {
 
   Widget _productDesc() {
     return descText(product?.name ?? '', context,
-        maxLines: 2, fontSizeFactor: 1, fweigth: 2);
+        maxLines: 2, fontSizeFactor: 0.9, fweigth: 2);
   }
 
   Widget _qty() {
@@ -231,22 +206,11 @@ class _ProductCardState extends State<ProductCard> {
           // quantityFocusNode.requestFocus();
           if (!value.endsWith('.')) {
             if (!value.endsWith('.0')) {
-              double productInt = double.tryParse(value) ?? 0.0;
-              if (productInt != product!.quantity) {
-                if (productInt == 0) {
+              double productQtty = double.tryParse(value) ?? 0.0;
+              if (productQtty != product!.quantity) {
+                if (productQtty == 0.0) {
                   if (value == '') {
-                    bool res;
-                    if (widget.fromOder) {
-                      res = await orderBloc.addProductQuantity(
-                          widget.productKey, 1);
-                    } else 
-                     if (widget.fromQuote) {
-                      res = await quoteBloc.addProductQuantity(
-                          widget.productKey, 1);
-                    } else{
-                      res = await posBloc.addProductQuantity(
-                          widget.productKey, 1);
-                    }
+                    bool res = await widget.editQtty(1);
                     if (!res) {
                       _stockAlert();
 
@@ -258,23 +222,12 @@ class _ProductCardState extends State<ProductCard> {
                         _updateQuantityValue();
                       });
                     }
-                  } else if (value == '0') {
                   } else {
                     confirmDialog(context, 'Cantidad de producto no valida',
                         'assets/images/alert.png');
                   }
                 } else {
-                  bool res;
-                  if (widget.fromOder) {
-                    res = await orderBloc.addProductQuantity(
-                        widget.productKey, productInt);
-                  } else if (widget.fromQuote) {
-                    res = await quoteBloc.addProductQuantity(
-                        widget.productKey, productInt);
-                  } else {
-                    res = await posBloc.addProductQuantity(
-                        widget.productKey, productInt);
-                  }
+                  bool res = await widget.editQtty(productQtty);
                   // printConsole(res);
                   if (!res) {
                     _stockAlert();
@@ -306,47 +259,10 @@ class _ProductCardState extends State<ProductCard> {
         borderRadius: BorderRadius.circular(30),
       ),
       onTap: () {
-        final uOperator = unit?.operationValue ?? 1;
-        if (widget.fromOder) {
-          // final uOperator =
-          //     orderBloc.getProductUnits?[widget.productKey]?.operationValue ??
-          //         1;
-          if (orderBloc.getProductData(widget.productKey)!.quantity >
-              uOperator) {
-            // setState(() {
-            orderBloc.getProductData(widget.productKey)!.quantity -= uOperator;
-            setState(() {
-              _updateQuantityValue();
-            });
-            // orderBloc.addProductQuantity(widget.productKey,
-            //     orderBloc.getProductData(widget.productKey)!.quantity);
-            // });
-          }
-        } else if (widget.fromQuote) {
-          // final uOperator =
-          //     orderBloc.getProductUnits?[widget.productKey]?.operationValue ??
-          //         1;
-          if (quoteBloc.getProductData(widget.productKey)!.quantity >
-              uOperator) {
-            // setState(() {
-            quoteBloc.getProductData(widget.productKey)!.quantity -= uOperator;
-            setState(() {
-              _updateQuantityValue();
-            });
-            // orderBloc.addProductQuantity(widget.productKey,
-            //     orderBloc.getProductData(widget.productKey)!.quantity);
-            // });
-          }
-        } else{
-          if (posBloc.getProductData(widget.productKey)!.quantity > uOperator) {
-            // setState(() {
-            posBloc.getProductData(widget.productKey)!.quantity -= uOperator;
-            setState(() {
-              _updateQuantityValue();
-            });
-            // });
-          }
-        }
+        widget.rmQtty();
+        setState(() {
+          _updateQuantityValue();
+        });
         // quantityFocusNode.requestFocus();
       },
       child: const Icon(
@@ -367,22 +283,7 @@ class _ProductCardState extends State<ProductCard> {
       ),
       onTap: () async {
         // posBloc.getProductData(widget.productKey)!.quantity += 1;
-        bool res;
-        final uOperator = unit?.operationValue ?? 1;
-        if (widget.fromOder) {
-          final pQtty = orderBloc.getProductData(widget.productKey)!.quantity;
-          res = await orderBloc.addProductQuantity(
-              widget.productKey, pQtty + (uOperator));
-        } else if (widget.fromQuote) {
-          final pQtty = quoteBloc.getProductData(widget.productKey)!.quantity;
-          res = await quoteBloc.addProductQuantity(
-              widget.productKey, pQtty + (uOperator));
-        } else {
-          final pQtty = posBloc.getProductData(widget.productKey)!.quantity;
-
-          res = await posBloc.addProductQuantity(
-              widget.productKey, pQtty + (uOperator));
-        }
+        bool res = await widget.addQtty();
 
         setState(() {
           _updateQuantityValue();
@@ -413,13 +314,7 @@ class _ProductCardState extends State<ProductCard> {
           side: const BorderSide(color: Colors.black26)),
       width: 30,
       onTap: () {
-        if (widget.fromOder) {
-          orderBloc.removeProduct(widget.productKey);
-        } else if (widget.fromQuote) {
-          quoteBloc.removeProduct(widget.productKey);
-        } else {
-          posBloc.removeProduct(widget.productKey);
-        }
+        widget.delete();
       },
       child: const Icon(
         Icons.delete,
@@ -474,21 +369,6 @@ class _ProductCardState extends State<ProductCard> {
         context,
         'El producto ${product?.name} no tiene suficiente stock. Stock actual ${product?.inventory}',
         'assets/images/out-of-stock.png');
-
-    try {
-      if (widget.fromOder) {
-        orderBloc.getProductData(widget.productKey)?.quantity =
-            orderBloc.getProductData(widget.productKey)!.quantity;
-      } else  if (widget.fromQuote) {
-        quoteBloc.getProductData(widget.productKey)?.quantity =
-            quoteBloc.getProductData(widget.productKey)!.quantity;
-      } else {
-        posBloc.getProductData(widget.productKey)?.quantity =
-            posBloc.getProductData(widget.productKey)!.quantity;
-      }
-    } catch (e) {
-      printConsole(e);
-    }
   }
 
   Widget _productPriceTotal() {
@@ -501,19 +381,8 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   _updateQuantityValue({double? value, String? query}) {
-    // double? operator;
-    if (value == null) {
-      if (widget.fromOder) {
-        value = orderBloc.getProductData(widget.productKey)?.quantity ?? 1;
-        // operator = orderBloc.getProductUnits?[widget.productKey]!.operationValue;
-      } else if (widget.fromQuote) {
-        value = quoteBloc.getProductData(widget.productKey)?.quantity ?? 1;
-        // operator = orderBloc.getProductUnits?[widget.productKey]!.operationValue;
-      } else{
-        value = posBloc.getProductData(widget.productKey)?.quantity ?? 1;
-        // operator = posBloc.getProductUnits?[widget.productKey]!.operationValue;
-      }
-    }
+    value ??= widget.getQtty();
+    value ??= 1;
     if (query != null) {
       if (query.endsWith('.')) {
         _quantityController.text = query;
@@ -529,18 +398,6 @@ class _ProductCardState extends State<ProductCard> {
     }
 
     printConsole(_quantityController.text);
-    // if (query == null) {
-    //   if (value.toString().endsWith('.0')) {
-    //     _quantityController.text = (value).toInt().toString();
-
-    //     // to show product unit in terms of base unit 1
-    //   } else {
-    //     // to show product unit in terms of base unit 1
-    //     _quantityController.text = (value).toString();
-    //   }
-    // }else{
-    //   _quantityController.text = (value).toString();
-    // }
 
     if (value == 1.0) {
       _quantityController.selection = TextSelection(

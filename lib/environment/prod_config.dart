@@ -4,12 +4,12 @@ import 'base_config_class.dart';
 
 class ProdConfig implements BaseConfig {
   @override
-  String get apiHost => 'http://lapappaya.com';
-  // String get apiHost => 'http://wappsi281.com';
+  // String get apiHost => 'http://lapappaya.com';
+  String get apiHost => 'http://wappsi281.com';
 
   @override
-  String get cFolder => '/erp/';
-  // String get cFolder => '/dulcelandia_prueba/';
+  // String get cFolder => '/erp/';
+  String get cFolder => '/dulcelandia/';
 
   @override
   String get hostFolder => '/wappsi_apis/';

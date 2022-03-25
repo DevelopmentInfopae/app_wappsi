@@ -58,7 +58,7 @@ class _ProductsState extends State<Customers> {
     return appBar(context, 'Clientes',
         elevation: false,
         radius: 0,
-        image: 'assets/images/enterprise.png', onPop: () {
+        image: 'assets/images/people.png', onPop: () {
       dataBloc.homeKey.currentState?.selectTab(TabItem.home);
       _searchController.close();
     },

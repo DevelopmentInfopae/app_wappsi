@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
-import 'package:pos_wappsi/components/product_card.dart';
+import 'package:pos_wappsi/components/products/product_card_info.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 

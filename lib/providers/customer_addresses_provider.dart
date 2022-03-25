@@ -225,7 +225,7 @@ class CustomerAddressesProvider {
   static Future<List<Map<String, dynamic>>?> loadCustomerAddressesFromDB(
       String customerId) async {
     return await DBProvider.db
-        .sqlQuery('sma_addresses', where: "company_id = $customerId");
+        .sqlQuery('sma_addresses', where: "company_id = $customerId",orderBy:"last_update DESC" );
   }
 
   static createAddress(BuildContext context, CompanyModel customer) async {
@@ -281,8 +281,7 @@ class CustomerAddressesProvider {
       if (!dbUpdated) {
         customerBloc.clearAdressCreationData();
         // goHome(context);
-        Navigator.pop(context);
-        Navigator.pop(context);
+        Navigator.pop(context, true);
         // DBSyncElements(
         //   options: {'Terceros': true, 'Sucursales': true},
         // ).launch(context);
@@ -291,7 +290,7 @@ class CustomerAddressesProvider {
             context, res['body']['message'], 'assets/images/success.png');
       } else {
         customerBloc.clearAdressCreationData();
-        goHome(context);
+        Navigator.pop(context, true);
         // dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
         confirmDialog(
             context, res['body']['message'], 'assets/images/success.png');

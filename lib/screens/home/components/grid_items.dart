@@ -87,7 +87,7 @@ Map<String, GridItems> gridItemsMap = {
   'sales-add_order':GridItems(
     title: 'Agregar pedido',
     route: "orders",
-    icon: 'assets/images/cargo.png',
+    icon: 'assets/images/add-order.png',
   ),
   'pos-sales':GridItems(
     title: 'Listado de ventas',
@@ -97,7 +97,7 @@ Map<String, GridItems> gridItemsMap = {
   'sales-orders':GridItems(
     title: 'Listado de pedidos',
     route: "list_orders",
-    icon: 'assets/images/order-list.png',
+    icon: 'assets/images/order.png',
   ),
   'customers-add':GridItems(
     title: 'Agregar cliente',
@@ -107,7 +107,7 @@ Map<String, GridItems> gridItemsMap = {
   'customers-index':GridItems(
     title: 'Lista de clientes',
     route: "customers",
-    icon: 'assets/images/enterprise.png',
+    icon: 'assets/images/people.png',
   ),
   'products-index':GridItems(
     title: 'Lista de productos',
@@ -127,12 +127,32 @@ Map<String, GridItems> gridItemsMap = {
   'quotes-add':GridItems(
     title: 'Agregar cotización',
     route: "quotes",
-    icon: 'assets/images/quotation.png',
+    icon: 'assets/images/add-quote.png',
   ),
   'quotes-index':GridItems(
     title: 'Listado de cotizaciones',
     route: "quotes_index",
+    icon: 'assets/images/order-list.png',
+  ),
+  'suppliers-index':GridItems(
+    title: 'Lista de proveedores',
+    route: "suppliers-index",
     icon: 'assets/images/quotation.png',
+  ),
+  'suppliers-add':GridItems(
+    title: 'Agregar proveedor',
+    route: "suppliers-add",
+    icon: 'assets/images/add-user.png',
+  ),
+  'purchases-add':GridItems(
+    title: 'Agregar compra',
+    route: "purchases-add",
+    icon: 'assets/images/cargo.png',
+  ),
+  'purchases-index':GridItems(
+    title: 'Listar compras',
+    route: "purchases-index",
+    icon: 'assets/images/cargo.png',
   ),
 
 };
@@ -149,20 +169,33 @@ List<GridItems> gridItemsForPermissions(){
   if(dataBloc.permissions?.quotesAdd==1){
     gridItems.add(gridItemsMap['quotes-add']!);
   }
+  if(dataBloc.permissions?.purchasesAdd==1){
+    gridItems.add(gridItemsMap['purchases-add']!);
+  }
   if(dataBloc.permissions?.salesOrders==1){
     gridItems.add(gridItemsMap['sales-orders']!);
-  }
-  if(dataBloc.permissions?.quotesIndex==1){
-    gridItems.add(gridItemsMap['quotes-index']!);
   }
   if(dataBloc.permissions?.posSales==1){
     gridItems.add(gridItemsMap['pos-sales']!);
   }
+  if(dataBloc.permissions?.quotesIndex==1){
+    gridItems.add(gridItemsMap['quotes-index']!);
+  }
+  if(dataBloc.permissions?.purchasesIndex==1){
+    gridItems.add(gridItemsMap['purchases-index']!);
+  }
+  
   if(dataBloc.permissions?.customersAdd==1){
     gridItems.add(gridItemsMap['customers-add']!);
   }
+  if(dataBloc.permissions?.suppliersAdd==1){
+    gridItems.add(gridItemsMap['suppliers-add']!);
+  }
   if(dataBloc.permissions?.customersIndex==1){
     gridItems.add(gridItemsMap['customers-index']!);
+  }
+  if(dataBloc.permissions?.suppliersIndex==1){
+    gridItems.add(gridItemsMap['suppliers-index']!);
   }
   if(dataBloc.permissions?.productsIndex==1){
     gridItems.add(gridItemsMap['products-index']!);

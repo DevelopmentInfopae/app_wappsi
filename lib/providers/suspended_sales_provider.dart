@@ -10,7 +10,7 @@ import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/payment_methods_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 
-class SuspendedSalesProvider{
+class SuspendedSalesProvider {
   /// Load sale into SuspendedSale model given an SuspendedSale id
   static Future<SuspendedSales?> loadFromDB(String id) async {
     // Map<String, dynamic> data = await DBProvider.db.findBrand(0);
@@ -27,6 +27,28 @@ class SuspendedSalesProvider{
   static Future<List<SuspendedSales>> loadAllSSales() async {
     List<Map<String, dynamic>>? data =
         await DBProvider.db.sqlQuery('suspended_sales', where: 'status=1');
+
+    List<SuspendedSales> list = [];
+    if (data != null) {
+      Map<String, dynamic> temp = {};
+      for (var item in data) {
+        for (var i = 0; i < item.keys.length; i++) {
+          temp[item.keys.toList()[i]] = item.values.toList()[i];
+        }
+        list.add(SuspendedSales.fromJson(temp));
+      }
+    }
+
+    return list;
+  }
+
+  //. Given search query return a result
+  static Future<List<SuspendedSales>> findSuspSale(String query) async {
+    final String where = '''status=1 AND (key_word LIKE "%$query%" 
+    OR customer_name LIKE "%$query%" OR seller_name LIKE "%$query%")
+    ''';
+    List<Map<String, dynamic>>? data =
+        await DBProvider.db.sqlQuery('suspended_sales', where: where);
 
     List<SuspendedSales> list = [];
     if (data != null) {
@@ -60,7 +82,7 @@ class SuspendedSalesProvider{
         'dispatch_note': posBloc.getDispatchNote ?? '',
         'items': posBloc.getItemsCount(),
         'total_value': posBloc.getSubTotal(),
-        'seller_name':dataBloc.userData?.sellerName??'',
+        'seller_name': dataBloc.userData?.sellerName ?? '',
         'customer_name':
             posBloc.getCustomer!.name ?? posBloc.getCustomer!.company,
         'status': 1
@@ -111,9 +133,16 @@ class SuspendedSalesProvider{
     await Future.forEach(products, (ProductModel p) async {
       final index = products.indexOf(p);
       // here we send getQttys = false to not get product inital qttys
-      final res = await posBloc.addProduct(
-          {'product': p, 'product_unit': units[index]},
-          getPrices: getPrices, getQttys: false);
+      bool res = false;
+      try {
+        res = await posBloc.addProduct({
+          'product': p,
+          'product_unit': units.isNotEmpty ? units[index] : null
+        }, getPrices: getPrices, getQttys: false);
+      } catch (e) {
+        res = await posBloc
+            .addProduct({'product': p}, getPrices: getPrices, getQttys: false);
+      }
       if (!res) {
         errors.add(p.toJson());
       }

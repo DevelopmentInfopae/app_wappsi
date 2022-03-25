@@ -85,7 +85,7 @@ class _QuoteOtherDataState extends State<QuoteOtherData> {
 
     return Scaffold(
       appBar:
-          appBar(context, 'Agregar cotización', image: 'assets/images/quotation.png'),
+          appBar(context, 'Agregar cotización', image: 'assets/images/add-quote.png'),
       body: _body(),
     );
   }

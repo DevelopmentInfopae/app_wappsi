@@ -9,7 +9,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/go_back_bottom.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
+import 'package:pos_wappsi/params/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/documentypes_model.dart';
 import 'package:pos_wappsi/providers/companies_provider.dart';
@@ -60,8 +60,8 @@ class _NewCustomerState extends State<NewCustomer> {
 
   @override
   void initState() {
-    if(customerBloc.disposed){
-      customerBloc.reload();    
+    if (customerBloc.disposed) {
+      customerBloc.reload();
     }
 
     super.initState();
@@ -134,13 +134,32 @@ class _NewCustomerState extends State<NewCustomer> {
           children: [
             _personTypeDropdown().paddingSymmetric(vertical: 3),
             _documents().paddingSymmetric(vertical: 3),
-            _docNum().paddingSymmetric(vertical: 3),
-            _doc?.nombre == 'NIT' ? _verificationCode() : Container(),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _docNum().paddingRight(_doc?.nombre == 'NIT' ? 10 : 0).expand(),
+                _doc?.nombre == 'NIT'
+                    ? _verificationCode().withWidth(130)
+                    : Container(),
+              ],
+            ).paddingSymmetric(vertical: 3),
+            // _docNum().paddingSymmetric(vertical: 3),
+            // _doc?.nombre == 'NIT' ? _verificationCode() : Container(),
             _comercialName(),
-            _nameFirst().paddingSymmetric(vertical: 3),
-            _nameSecond().paddingSymmetric(vertical: 3),
-            _lastNm1().paddingSymmetric(vertical: 3),
-            _lastNm2().paddingSymmetric(vertical: 3),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _nameFirst().paddingRight(10).flexible(flex: 1),
+                _nameSecond().flexible(flex: 1),
+              ],
+            ).paddingSymmetric(vertical: 3),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _lastNm1().paddingRight(10).flexible(flex: 1),
+                _lastNm2().flexible(flex: 1),
+              ],
+            ).paddingSymmetric(vertical: 3),
           ],
         ),
       ),
@@ -429,13 +448,13 @@ class _NewCustomerState extends State<NewCustomer> {
       onFind: (String? filter) =>
           DocumenttypesProvider.loadFromDB(search: filter),
       onChanged: (data) async {
-        if (data != null) {
-          setState(() {
-            _doc = data;
-            customerBloc.getCustomer.tipoDocumento = data.idCloud.toString();
-            customerBloc.getCustomer.documentCode = data.codigoDoc.toString();
-          });
-        }
+        customerBloc.getCustomer.tipoDocumento = data?.idCloud.toString();
+        customerBloc.getCustomer.documentCode = data?.codigoDoc.toString();
+        setState(() {
+          _doc = data;
+
+          _doc = null;
+        });
       },
       popupItemBuilder: _customPopupCustomerItemBuilder,
       popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),

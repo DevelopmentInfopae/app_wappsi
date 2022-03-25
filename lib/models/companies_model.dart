@@ -339,10 +339,10 @@ class CompanyModel {
         "last_update": lastUpdate,
       };
 
-  Map<String, dynamic> customerToJson() => {
+  Map<String, dynamic> customerToJson({int? defaultCustGroup=1}) => {
         "group_id": groupId,
         "group_name": groupName,
-        "customer_group_id": customerGroupId ?? 1,
+        "customer_group_id": customerGroupId ?? defaultCustGroup,
         "customer_group_name": customerGroupName,
         "type_person": typePerson,
         "name": (firstName  ?? '') +

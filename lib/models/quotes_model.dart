@@ -16,7 +16,7 @@ import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-// import 'package:pos_wappsi/bloc/orders_bloc.dart';
+// import 'package:pos_wappsi/bloc/quotes_bloc.dart';
 // import 'package:pos_wappsi/models/user_model.dart';
 
 class QuoteModel {
@@ -332,16 +332,16 @@ class QuoteModel {
   }
 
   static List<QuoteModel> fromJsonList(List<Map> list) {
-    List<QuoteModel> orders = [];
+    List<QuoteModel> quotes = [];
     Map<String, dynamic> temp = {};
     for (var item in list) {
       for (var i = 0; i < item.keys.length; i++) {
         temp[item.keys.toList()[i]] = item.values.toList()[i];
       }
-      orders.add(QuoteModel.fromJson(temp));
+      quotes.add(QuoteModel.fromJson(temp));
     }
 
-    return orders;
+    return quotes;
 
     // prString(temp);
   }

@@ -17,7 +17,7 @@ class PrintFormat {
   List<Map>? productsList;
   Map<String, String>? movementInfo;
   // int chrLen = 48;
-  int chrLen = Environment().printerPaperSize == '1' ? 32 : 48;
+  int chrLen = 32;
 
   int valueMaxCharLen = 12;
 
@@ -26,6 +26,7 @@ class PrintFormat {
   Future<bool?> printPOS(
       String pathImage, Map<dynamic, dynamic>? printData) async {
     await bluetooth.isConnected.then((isConnected) async {
+      chrLen = Environment().printerPaperSize == '1' ? 32 : 48;
       if (isConnected!) {
         final _innerPrinter = ((printerBloc.getPrinterDevice?.name ??
                 // ignore: unrelated_type_equality_checks
@@ -59,6 +60,7 @@ class PrintFormat {
   Future<bool?> printOrder(
       String pathImage, Map<dynamic, dynamic>? printData) async {
     await bluetooth.isConnected.then((isConnected) async {
+      chrLen = Environment().printerPaperSize == '1' ? 32 : 48;
       if (isConnected!) {
         final _innerPrinter =
             (printerBloc.getPrinterDevice?.name == 'InnerPrinter');
@@ -89,6 +91,7 @@ class PrintFormat {
   Future<bool?> printQuote(
       String pathImage, Map<dynamic, dynamic>? printData) async {
     await bluetooth.isConnected.then((isConnected) async {
+      chrLen = Environment().printerPaperSize == '1' ? 32 : 48;
       if (isConnected!) {
         final _innerPrinter =
             (printerBloc.getPrinterDevice?.name == 'InnerPrinter');
@@ -119,6 +122,7 @@ class PrintFormat {
   /// To test printer
   Future<bool?> printTest() async {
     await bluetooth.isConnected.then((isConnected) async {
+      chrLen = Environment().printerPaperSize == '1' ? 32 : 48;
       if (isConnected!) {
         final _innerPrinter =
             (printerBloc.getPrinterDevice?.name == 'InnerPrinter');
@@ -152,6 +156,7 @@ class PrintFormat {
   Future<bool?> printFavOrder(
       String pathImage, Map<dynamic, dynamic>? printData) async {
     await bluetooth.isConnected.then((isConnected) async {
+      chrLen = Environment().printerPaperSize == '1' ? 32 : 48;
       final customer = printData?['customer'];
       if (isConnected!) {
         final _innerPrinter =
@@ -177,6 +182,7 @@ class PrintFormat {
   }
 
   Future<bool?> printMovement(String pathImage) async {
+    chrLen = Environment().printerPaperSize == '1' ? 32 : 48;
     await bluetooth.isConnected.then((isConnected) async {
       if (isConnected!) {
         final _innerPrinter =
@@ -193,12 +199,12 @@ class PrintFormat {
         final value = getFormatedCurrency(
             double.tryParse(movementInfo!['value'].toString()) ?? 0.0);
         final Map<String, String> keyValues2 = {
-          'Usuario: ': movementInfo!['user_name'].toString(),
-          'Fecha: ': movementInfo!['date'].toString(),
-          'Referencia: ': movementInfo!['reference_no'].toString(),
+          'Usuario:   ': movementInfo!['user_name'].toString(),
+          'Fecha:     ': movementInfo!['date'].toString(),
+          'Referencia:': movementInfo!['reference_no'].toString(),
           'Sucursal: ': movementInfo!['biller_name'].toString(),
           'Tipo movimiento:': movementInfo!['movement_type'].toString(),
-          'Valor: ': value.substring(0, value.length),
+          'Valor:    ': value.substring(0, value.length),
           // 'Nota de movimiento: ': movementInfo!['biller_name'].toString(),
           // 'Tipo de movimiento: ': movementInfo!['movement_type'],
         };
@@ -215,9 +221,16 @@ class PrintFormat {
             styles: const PosStyles(bold: true, align: PosAlign.center));
         generator.reset();
         bytes += generator.emptyLines(1);
-        bytes = printLabelValues(generator, bytes, keyValues2.keys.toList(),
-            keyValues2.values.toList(), _innerPrinter,
-            col1: PosAlign.left, col2: PosAlign.left);
+        bytes = printLabeledValues(
+          generator,
+          bytes,
+          keyValues2.keys.toList(),
+          keyValues2.values.toList(),
+          _innerPrinter,
+          chrLen,
+          col2: PosAlign.left,
+          col1: PosAlign.left,
+        );
 
         bytes += generator.emptyLines(3);
         bytes += generator.hr(len: chrLen, ch: '_');
@@ -748,14 +761,13 @@ class PrintFormat {
       String name = itemp['name'];
       String temp = getFormatedCurrency(itemp['value']).substring(1);
       String temp2 = getFormatedCurrency(itemp['value'] * iva).substring(1);
-      final tEmptySps = chrLen-(name.length+temp.length+temp2.length);
+      final tEmptySps = chrLen - (name.length + temp.length + temp2.length);
       String textToPrint = (name +
-          getEmptySpaces((tEmptySps/2).floor()) +
+          getEmptySpaces((tEmptySps / 2).floor()) +
           temp +
-          getEmptySpaces((tEmptySps/2).ceil()) +
+          getEmptySpaces((tEmptySps / 2).ceil()) +
           temp2);
-      bytes += generator.text(
-          (textToPrint),
+      bytes += generator.text((textToPrint),
           styles: const PosStyles(bold: false, align: PosAlign.center));
     });
     return bytes;

@@ -6,6 +6,7 @@ import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/bloc/suplier_bloc.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/biller_data_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
@@ -76,6 +77,23 @@ class CompaniesProvider {
     return [];
   }
 
+  static Future<List<CompanyModel>> getSuppliers(filter) async {
+    List<Map<String, dynamic>>? data;
+
+    if (filter == '' || filter == null) {
+      data = await getAllSuppliers(limit: 20);
+    } else {
+      data = await findSupplier(filter, limit: 20);
+    }
+
+    // ignore: unnecessary_null_comparison
+    if (data != null) {
+      return CompanyModel.fromJsonList(data);
+    }
+
+    return [];
+  }
+
   /// Write customer and his address created locally into local DB with ids comming from cloud
   /// DB
   static Future<bool> writeCustomerInLDB(
@@ -92,7 +110,9 @@ class CompaniesProvider {
       body.remove('geo_location');
       body.remove('favorites');
     } catch (e) {
-      await logError(e, from: 'Removing unsused info on writing customer on localDB from local customer creation data');
+      await logError(e,
+          from:
+              'Removing unsused info on writing customer on localDB from local customer creation data');
       // printConsole(e);
     }
 
@@ -195,11 +215,75 @@ class CompaniesProvider {
       bool offset = false,
       int offsetValue = 1}) async {
     final sellerIdFilter = dataBloc.userData?.viewRight == 0
-        ? 'AND customer_seller_id_assigned=${dataBloc.userData!.sellerId} '
+        ? ' AND customer_seller_id_assigned=${dataBloc.userData!.sellerId}'
         : '';
     return await DBProvider.db.sqlQuery('sma_companies',
         where:
-            '''group_id = 3 AND status=1 AND $sellerIdFilter(name LIKE "%$searchs%" OR company 
+            '''group_id = 3 AND status=1$sellerIdFilter AND (name LIKE "%$searchs%" OR company 
+            LIKE "%$searchs%" OR vat_no LIKE "%$searchs%" OR first_name LIKE "%$searchs%" 
+            OR second_name LIKE "%$searchs%" OR first_lastname LIKE "%$searchs%"
+            OR second_lastname LIKE "%$searchs%") ${offset ? "LIMIT 50 offset " + offsetValue.toString() : ""}''',
+        limit: limit,
+        orderBy: orderBy);
+  }
+
+  //-----------------------------------------------------------------------------
+  //                                Suppliers
+  //
+  //-----------------------------------------------------------------------------
+
+  /// Return all rows in sma_companies with group_id=3 (customers) and status = 1
+  static Future<List<Map<String, dynamic>>?> getAllSuppliers(
+      {int? limit,
+      String orderBy = 'name',
+      bool offset = false,
+      int? offsetValue}) async {
+    if (offset) {
+      limit = 50;
+    }
+
+    return await DBProvider.db.sqlQuery(
+      'sma_companies',
+      where: 'group_name = "supplier" AND status=1',
+      limit: limit,
+      orderBy: orderBy,
+      offset: offsetValue,
+    );
+  }
+
+  /// Find costumers from sma_companies, with and withoud search params.
+  static Future<List<Map<String, dynamic>>?> findSupplier(String? searchs,
+      {int? limit,
+      String orderBy = 'name',
+      bool offset = false,
+      int offsetValue = 1}) async {
+    if (searchs == null || searchs == '') {
+      return await getAllSuppliers(
+          limit: limit,
+          orderBy: orderBy,
+          offset: true,
+          offsetValue: offsetValue);
+    } else {
+      return (await findSupplierBySearch(searchs,
+              limit: limit,
+              orderBy: orderBy,
+              offset: offset,
+              offsetValue: offsetValue)) ??
+          [];
+    }
+  }
+
+  /// Return all rows in sma_companies with group_id=3 (customers) and fields
+  /// (name,company,vat_no ) LIKE given string
+  static Future<List<Map<String, dynamic>>?> findSupplierBySearch(
+      String searchs,
+      {int? limit,
+      String orderBy = 'name',
+      bool offset = false,
+      int offsetValue = 1}) async {
+    return await DBProvider.db.sqlQuery('sma_companies',
+        where:
+            '''group_name = "supplier" AND status=1 AND (name LIKE "%$searchs%" OR company 
             LIKE "%$searchs%" OR vat_no LIKE "%$searchs%" OR first_name LIKE "%$searchs%" 
             OR second_name LIKE "%$searchs%" OR first_lastname LIKE "%$searchs%"
             OR second_lastname LIKE "%$searchs%") ${offset ? "LIMIT 50 offset " + offsetValue.toString() : ""}''',
@@ -366,6 +450,95 @@ class CompaniesProvider {
       } else {
         // if local db update success, go to home
         goHomeAndEmptyCustomerBloc(context);
+        // dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
+        confirmDialog(
+            context, res['body']['message'], 'assets/images/success.png');
+      }
+
+      // Navigator.pop(context);
+    }
+  }
+
+  static createSupplier(BuildContext context, {bool backToHome = true}) async {
+    final supplierGroup =
+        await GroupsProvider.loadCustomerGroup(name: 'supplier');
+    // bool closeLoading = false;
+
+    final apiProvider = DataProvider();
+    if (supplierGroup == null) {
+      return {
+        'error': true,
+        'body': {'message': 'No fue posible seleccionar grupo proveedor'}
+      };
+    } else {
+      supplierBloc.getCustomer.groupId = supplierGroup.idCloud.toString();
+      supplierBloc.getCustomer.groupName = supplierGroup.name;
+    }
+
+    final body =
+        supplierBloc.getCustomer.customerToJson(defaultCustGroup: null);
+    try {
+      scaffoldAlert(
+          context, 'Registrando proveedor', const Duration(seconds: 10),
+          key: UniqueKey());
+    } catch (e) {
+      // printConsole(e);
+      await logError(e, from: 'Creating provider');
+
+      // closeLoading = true;
+      // loading(context);
+    }
+
+    final res = await apiProvider.postPetition(
+        addSupplierEndP, body, dataBloc.getHeaders());
+
+    hideCurrentScaffoldAlert(context);
+    // if(closeLoading){
+    //     Navigator.pop(context);
+    //   }
+    if (res['status'] == -1) {
+      await reloadDialog(
+          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+    } else if (res['error']) {
+      confirmDialog(
+          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+    } else {
+      // update local DB with company info
+
+      bool dbUpdated = await CompaniesProvider.writeCustomerInLDB(body, res);
+
+      // if fails we force DB sync
+      if (!dbUpdated) {
+        supplierBloc.dispose();
+        if (backToHome) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/',
+            (route) => false,
+          );
+        } else {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        }
+        // DBSyncElements(
+        //   options: {'Terceros': true, 'Sucursales': true},
+        // ).launch(context);
+        await dataBloc.syncElements(['Terceros', 'Sucursales'], context);
+        confirmDialog(
+            context, res['body']['message'], 'assets/images/success.png');
+      } else {
+        // if local db update success, go to home
+        supplierBloc.dispose();
+        if (backToHome) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/',
+            (route) => false,
+          );
+        } else {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        }
         // dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
         confirmDialog(
             context, res['body']['message'], 'assets/images/success.png');

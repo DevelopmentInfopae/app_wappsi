@@ -59,6 +59,8 @@ double appBarHeight(Size size) {
       : 75;
 }
 
+double dropDownHeight = 70;
+
 OutlineInputBorder outlineFocusedInputBorder() {
   return OutlineInputBorder(
     borderRadius: BorderRadius.circular(5.0),
@@ -104,6 +106,14 @@ TextStyle normalTextStyle(BuildContext context,
       fontWeightDelta: fontWeightDelta);
 }
 
+TextStyle smallTextStyle(BuildContext context,
+    {fontSizeFactor = 1.28, int fontWeightDelta = 0, Color? color}) {
+  return Theme.of(context).primaryTextTheme.caption!.apply(
+      fontSizeFactor: fontSizeFactor,
+      color: color ?? greyDarkerColor,
+      fontWeightDelta: fontWeightDelta);
+}
+
 double bottomBarIconSize(BuildContext context) {
   final size = MediaQuery.of(context).size;
   return size.height * 0.1 > 66
@@ -130,7 +140,11 @@ Color greyColor = Colors.grey[700]!;
 
 Color greyLight = Colors.grey[100]!;
 
-Color greyMediumLight = Colors.grey[200]!;
+Color greyMediumLight = Colors.grey[300]!;
+
+Color alertBackground = const Color.fromRGBO(234, 234, 234, 1);
+
+double alertBorderRadius = 15;
 
 /// Color to subtitles
 Color blueTextColor = const Color.fromRGBO(0, 124, 209, 1);

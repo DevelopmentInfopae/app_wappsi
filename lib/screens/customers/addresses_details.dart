@@ -14,6 +14,7 @@ import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
 import '../../utils/location/custom_controller.dart';
@@ -43,20 +44,24 @@ class _AddressDetailsState extends State<AddressDetails> {
     super.initState();
     if (widget.address.geoLocation != null &&
         widget.address.geoLocation != {}) {
-      gLoc = GeoPoint.fromMap(
-        widget.address.geoLocation!,
-      );
-      controller = CustomController(
-        initMapWithUserPosition: false,
-        initPosition: gLoc,
+      try {
+        gLoc = GeoPoint.fromMap(
+          widget.address.geoLocation!,
+        );
+        controller = CustomController(
+          initMapWithUserPosition: false,
+          initPosition: gLoc,
 
-        // areaLimit: BoundingBox(
-        //   east: 10.4922941,
-        //   north: 47.8084648,
-        //   south: 45.817995,
-        //   west: 5.9559113,
-        // ),
-      );
+          // areaLimit: BoundingBox(
+          //   east: 10.4922941,
+          //   north: 47.8084648,
+          //   south: 45.817995,
+          //   west: 5.9559113,
+          // ),
+        );
+      } catch (e) {
+        logError(e);
+      }
 
       // controller!.;
       // controller!.changeLocation(gLoc!);
@@ -74,7 +79,7 @@ class _AddressDetailsState extends State<AddressDetails> {
 
     return Scaffold(
       appBar: appBar(context, 'Detalle de sucursal',
-          image: 'assets/images/enterprise.png'),
+          image: 'assets/images/locations.png'),
       body: _body(context),
     );
   }

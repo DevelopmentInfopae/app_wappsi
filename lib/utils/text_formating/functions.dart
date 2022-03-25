@@ -26,6 +26,13 @@ bool isNumeric(String s) {
   }
   return double.tryParse(s) != null;
 }
+bool isNumericInt(String s) {
+  // ignore: unnecessary_null_comparison
+  if (s == null) {
+    return false;
+  }
+  return int.tryParse(s) != null;
+}
 
 List getKeyValuesOfListMap(List<Map> map, String key) {
   if (map.isNotEmpty) {

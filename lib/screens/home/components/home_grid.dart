@@ -6,6 +6,7 @@ import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
+import 'package:pos_wappsi/screens/Purchases/new_purchase.dart';
 import 'package:pos_wappsi/screens/Quotes/new_quote.dart';
 import 'package:pos_wappsi/screens/Quotes/quotes_list.dart';
 import 'package:pos_wappsi/screens/cash_accounting/components/open_register_alert.dart';
@@ -20,6 +21,8 @@ import 'package:pos_wappsi/screens/orders/orders_list.dart';
 import 'package:pos_wappsi/screens/products/products.dart';
 import 'package:pos_wappsi/screens/sales/new_sale.dart';
 import 'package:pos_wappsi/screens/sales/sales_screen.dart';
+import 'package:pos_wappsi/screens/suppliers/new_supplier.dart';
+import 'package:pos_wappsi/screens/suppliers/suppliers_list.dart';
 import 'package:pos_wappsi/screens/user/profile_sreen.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 // import 'package:pos_wappsi/utils/print_errors.dart';
@@ -100,11 +103,18 @@ class HomeGridCards extends StatelessWidget {
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
       const NewOrder().launch(context);
       await dataBloc.refreshToken(context);
-    } else if (gridItems.route == 'products') {
+    } else if (gridItems.route == 'purchases-add') {
+      const NewPurchase().launch(context);
+      await dataBloc.refreshToken(context);
+      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+    }else if (gridItems.route == 'products') {
       const Products().launch(context);
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'customers') {
       dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
+      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+    } else if (gridItems.route == 'suppliers-index') {
+      const Suppliers().launch(context);
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'syncElements') {
       const SyncElementsScreen().launch(context);
@@ -120,7 +130,14 @@ class HomeGridCards extends StatelessWidget {
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
       await dataBloc.refreshToken(context);
       // dataBloc.homeKey.currentState?.changeBottomIndex(0);
-    } else if (gridItems.route == 'register') {
+    } else if (gridItems.route == 'suppliers-add') {
+      // dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
+      // await Future.delayed(Duration(seconds: 1));
+      const NewSupplier().launch(context);
+      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      await dataBloc.refreshToken(context);
+      // dataBloc.homeKey.currentState?.changeBottomIndex(0);
+    }else if (gridItems.route == 'register') {
       dataBloc.homeKey.currentState?.changeBottomIndex(0);
       const RegisterOptions().launch(context);
     } else if (gridItems.route == 'list_sales') {

@@ -7,7 +7,7 @@ import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 // import 'package:pos_wappsi/bloc/printer_bloc.dart';
-import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
+import 'package:pos_wappsi/params/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 import 'blue_print_functions.dart';

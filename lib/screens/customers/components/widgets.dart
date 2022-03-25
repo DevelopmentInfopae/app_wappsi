@@ -136,15 +136,15 @@ Widget addressDesc(BuildContext context, CompanyModel customer,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // SizedBox(height: 8,),
-        descText(address.sucursal, context,
+        descText(address.sucursal??'', context,
                 maxLines: 2,
                 fontSizeFactor: 1.05,
                 fweigth: 2,
                 color: greyDarkerColor)
             .paddingSymmetric(vertical: 1),
-        descText(customer.name, context, fontSizeFactor: 0.75, maxLines: 1, )
+        descText(customer.name??'', context, fontSizeFactor: 0.75, maxLines: 1, )
             .paddingSymmetric(vertical: 1),
-        descText(address.direccion, context, fontSizeFactor: 0.75)
+        descText(address.direccion??'', context, fontSizeFactor: 0.75)
             .paddingSymmetric(vertical: 1),
         descText(stateCity, context, fontSizeFactor: 0.75)
             .paddingSymmetric(vertical: 1),

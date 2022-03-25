@@ -36,7 +36,7 @@ class InputDecorations {
         labelStyle: TextStyle(color: greyColor),
         alignLabelWithHint: true,
         filled: true,
-        fillColor: Colors.grey[200],
+        fillColor: Colors.grey[50],
         contentPadding: kTextFieldPadding,
         border: outlineInputBorder(),
         prefixIcon: prefixIcon != null

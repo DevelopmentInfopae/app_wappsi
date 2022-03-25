@@ -8,7 +8,7 @@ import 'package:pos_wappsi/components/widgets.dart';
 
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/screens/customers/adresses_list.dart';
+import 'package:pos_wappsi/screens/customers/addresses_list.dart';
 
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/favorites.dart';
@@ -32,7 +32,7 @@ class _CustomerDetailsState extends State<CustomerDetails> {
 
     return Scaffold(
       appBar: appBar(context, 'Detalle de cliente',
-          image: 'assets/images/enterprise.png'),
+          image: 'assets/images/people.png'),
       body: _body(context),
     );
   }

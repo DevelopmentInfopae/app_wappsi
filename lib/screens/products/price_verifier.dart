@@ -6,7 +6,7 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/product_card.dart';
+import 'package:pos_wappsi/components/products/product_card_info.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
@@ -14,7 +14,7 @@ import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/barcode_camera/barcode_camera_scan.dart';
+import 'package:pos_wappsi/services/barcode_camera_scan.dart';
 
 // import '../../constant.dart';
 

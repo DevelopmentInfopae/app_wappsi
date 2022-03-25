@@ -7,7 +7,7 @@ import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/components/appbar_leading.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/product_card.dart';
+import 'package:pos_wappsi/components/products/product_card_info.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';

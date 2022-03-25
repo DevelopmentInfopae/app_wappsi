@@ -12,7 +12,7 @@ import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/input_decoration.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/config/pos_params.dart';
+import 'package:pos_wappsi/params/pos_params.dart';
 import 'package:pos_wappsi/config/documents_types.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
@@ -248,6 +248,9 @@ class _SalePaymentState extends State<SalePayment> {
           }
         } else {
           posBloc.setPaymentValue(0);
+          setState(() {
+            _valueP = 0;
+          });
           _valuePController.text = '';
         }
       },
@@ -361,8 +364,12 @@ class _SalePaymentState extends State<SalePayment> {
       autoFocus: false,
       isValidationRequired: true,
       validator: (value) {
+        if (value == null || value == '') {
+          return 'Debe suministrar un valor valido';
+        }
+
         try {
-          int.parse(value!.replaceAll(',', ''));
+          int.parse(value.replaceAll(',', ''));
         } catch (e) {
           return 'El valor suministrado no es valido';
         }
@@ -386,13 +393,13 @@ class _SalePaymentState extends State<SalePayment> {
   Widget _invoiceNote() {
     return textFormField(context, 'Nota de despacho', (String value) {
       posBloc.setInvoiceNote(value);
-    }, () {}, () {}, controller: _invoiceNController);
+    }, (value) {}, () {}, controller: _invoiceNController);
   }
 
   Widget _dispatchNote() {
     return textFormField(context, 'Nota de despacho', (String value) {
       posBloc.setDispatchNote(value);
-    }, () {}, () {}, controller: _dispatchNController);
+    }, (value) {}, () {}, controller: _dispatchNController);
   }
 
   Widget _value() {
@@ -410,14 +417,22 @@ class _SalePaymentState extends State<SalePayment> {
           autoFocus: false,
           isValidationRequired: true,
           validator: (value) {
-            try {
-              int.parse(value!
-                  .replaceAll('\$', '')
-                  .replaceAll(',', '')
-                  .replaceAll('.', ''));
-            } catch (e) {
-              return 'El valor suministrado no es valido';
+            if (value == null || value == '') {
+              return 'Debe suministrar un valor';
+            } else {
+              try {
+                final val = double.parse(value
+                    .replaceAll('\$', '')
+                    .replaceAll(',', '')
+                    .replaceAll('.', ''));
+                if (val < posBloc.getSubTotal()) {
+                  return 'El valor suministrado no cubre el total de la venta';
+                }
+              } catch (e) {
+                return 'El valor suministrado no es valido';
+              }
             }
+
             return null;
           },
           // textStyle: const TextStyle(fontSize: 20),
@@ -598,21 +613,21 @@ class _SalePaymentState extends State<SalePayment> {
   }
 
   AppButton sendButton() {
-    bool enabled = false;
-    if ((posBloc.getPaymentMethod?.code != 'Credito' &&
-            posBloc.getPaymentMethod?.code != 'credito') &&
-        _valueP >= posBloc.getSubTotal()) {
-      enabled = true;
-    } else if ((posBloc.getPaymentMethod?.code == 'Credito' ||
-            posBloc.getPaymentMethod?.code == 'credito') &&
-        (posBloc.getPaymentTerm ?? 0) != 0) {
-      enabled = true;
-    }
+    // bool enabled = false;
+    // if ((posBloc.getPaymentMethod?.code != 'Credito' &&
+    //         posBloc.getPaymentMethod?.code != 'credito') &&
+    //     _valueP >= posBloc.getSubTotal()) {
+    //   enabled = true;
+    // } else if ((posBloc.getPaymentMethod?.code == 'Credito' ||
+    //         posBloc.getPaymentMethod?.code == 'credito') &&
+    //     (posBloc.getPaymentTerm ?? 0) != 0) {
+    //   enabled = true;
+    // }
     return AppButton(
       padding: kButtonPadding,
       color: Colors.white,
       disabledColor: Colors.grey[300],
-      enabled: enabled,
+      // enabled: enabled,
       onTap: _sending
           ? null
           : () async {
@@ -661,8 +676,7 @@ class _SalePaymentState extends State<SalePayment> {
               }
             },
       child: Text('Finalizar venta',
-          style: buttonsSmallTextStyle(context,
-              color: enabled ? pColor : greyColor)),
+          style: buttonsSmallTextStyle(context, color: pColor)),
     );
   }
 }

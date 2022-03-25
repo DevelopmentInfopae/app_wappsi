@@ -6,6 +6,7 @@ import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/bloc/purchases_bloc.dart';
 import 'package:pos_wappsi/bloc/quotes_bloc.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
@@ -112,6 +113,28 @@ class _ProductCardState extends State<ProductCard> {
                   fromQuote: true);
               if (productReq != {}) {
                 final result = await quoteBloc.addProduct(productReq);
+
+                // printConsole(result);
+                if (result) {
+                  scaffoldAlert(
+                      context,
+                      "Producto ${widget.product.name} añadido",
+                      const Duration(seconds: 1));
+                  // to avoid :
+                  // await Future.delayed(Duration(seconds:1));
+                }
+                // Navigator.pop(context);
+              }
+
+              // Navigator.pop(context);
+            }
+            else if (widget.action == 'add_to_purchase') {
+              final productReq = await ProductsProvider.getProductRequirements(
+                  context, widget.product,
+                  showAllwaysUnitAlert: widget.showAllwaysUnitAlert,
+                  fromPurchase: true);
+              if (productReq != {}) {
+                final result = await purchaseBloc.addProduct(productReq);
 
                 // printConsole(result);
                 if (result) {

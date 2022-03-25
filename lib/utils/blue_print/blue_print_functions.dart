@@ -5,8 +5,8 @@ import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter/services.dart';
 // import 'package:flutter/services.dart';
 import 'package:image/image.dart';
-import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
-import 'package:pos_wappsi/config/thermal_printer_params.dart';
+import 'package:pos_wappsi/params/regimen_person_type_form_params.dart';
+import 'package:pos_wappsi/params/thermal_printer_params.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 // return bytes of two columns labes : values

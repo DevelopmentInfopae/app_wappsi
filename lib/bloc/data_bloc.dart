@@ -47,7 +47,8 @@ class DataBloc {
 
   Function(UserModel) get setUserData => _userController.sink.add;
 
-  Function(PermissionsModel) get setPermissions => _permissionsController.sink.add;
+  Function(PermissionsModel) get setPermissions =>
+      _permissionsController.sink.add;
   Function(RegisterModel) get setRegisterData => _registerController.sink.add;
   Function(BillerDataModel) get setBillerData => _billerDataController.sink.add;
   Function(CompanyModel) get setBillerCompany =>
@@ -124,18 +125,20 @@ class DataBloc {
 
   /// update current JWT token to extend session time
   Future refreshToken(BuildContext context) async {
-    dataBloc.homeKey.currentState?.syncLoader(true);
-    Map<String, dynamic>? res;
-    try {
-      res = await UserProvider.refreshToken();
-    } catch (e) {
-      // printConsole(e);
-      await logError(e, from: 'Refresh token');
-    }
-    dataBloc.homeKey.currentState?.syncLoader(false);
-    if (res != null) {
-      reloadDialog(context, res['body']['message'] ?? '',
-          'assets/images/dizzy-robot.png');
+    if (!(dataBloc.homeKey.currentState?.syncing ?? true)) {
+      dataBloc.homeKey.currentState?.syncLoader(true);
+      Map<String, dynamic>? res;
+      try {
+        res = await UserProvider.refreshToken();
+      } catch (e) {
+        // printConsole(e);
+        await logError(e, from: 'Refresh token');
+      }
+      dataBloc.homeKey.currentState?.syncLoader(false);
+      if (res != null) {
+        reloadDialog(context, res['body']['message'] ?? '',
+            'assets/images/dizzy-robot.png');
+      }
     }
   }
 

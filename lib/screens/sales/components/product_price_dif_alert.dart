@@ -54,25 +54,7 @@ priceDiffAlert(
                   textAlign: TextAlign.center,
                 ),
                 onPressed: () async {
-                  final errors = await posBloc.loadSuspendedSale(saleId);
                   Navigator.pop(context);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                  if (errors.isNotEmpty) {
-                    //close alert
-
-                    confirmDialog(
-                        context,
-                        'Venta suspendida cargada correctamente',
-                        'assets/images/success.png');
-                  } else {
-                    listInfoDialog(context, errors, 'name', 'inventory',
-                        'Producto', 'Stock',
-                        flexCol1: 3,
-                        flexCol2: 1,
-                        title:
-                            'Error al cargar los siguientes productos de la venta:');
-                  }
                 },
               ),
             ),

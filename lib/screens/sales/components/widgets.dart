@@ -105,7 +105,7 @@ Widget customPopupCustomerItemBuilder(
       subtitle: Text(capitalizeText(item?.vatNo ?? '')),
       leading: ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
-              child: customerPhoto(item!.logoSquare!))
+              child: customerPhoto(item!.customerProfilePhoto))
           .withWidth(50),
     ),
   );

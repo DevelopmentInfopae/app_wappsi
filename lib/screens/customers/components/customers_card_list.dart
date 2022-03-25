@@ -33,7 +33,7 @@ class _CustomerCardListState extends State<CustomerCardList> {
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
-    return Column(
+    return Stack(
       children: [
         ListView.separated(
           controller: _controller,
@@ -58,7 +58,7 @@ class _CustomerCardListState extends State<CustomerCardList> {
             }
             // return Container();
           },
-        ).expand(),
+        ),
         if (_loading) ...[loadingIndicator(_size.width)]
       ],
     );

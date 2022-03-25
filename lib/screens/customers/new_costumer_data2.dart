@@ -10,7 +10,7 @@ import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/go_back_bottom.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/config/regimen_person_type_form_params.dart';
+import 'package:pos_wappsi/params/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/cities_model.dart';

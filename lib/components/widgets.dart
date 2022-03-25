@@ -188,9 +188,9 @@ Positioned loadingIndicator(double width) {
       ));
 }
 
-Widget customerPhoto(String img, {fit = BoxFit.contain}) {
+Widget customerPhoto(String? img, {fit = BoxFit.contain}) {
   String url;
-  if (img == '') {
+  if (img == '' || img==null) {
     img = defaultCustomersImage;
     url = dataBloc.userData!.hostUrl +
         dataBloc.userData!.companyFolder +
@@ -305,6 +305,9 @@ Widget productPhoto(String img) {
             );
           } catch (e) {
             printConsole(e);
+            return Image.asset(
+              'assets/images/no_image.png',
+            );
           }
         }
         return Image.asset(

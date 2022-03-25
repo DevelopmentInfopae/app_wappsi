@@ -2,9 +2,10 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/components/go_back_bottom.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/documents_types.dart';
-import 'package:pos_wappsi/config/register_movements.dart';
+import 'package:pos_wappsi/params/register_movements.dart';
 
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
@@ -395,8 +396,9 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
 
   Widget _bottom() => bottom(
       Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          const GoBackBottom(),
           AppButton(
             child: Row(
               children: [

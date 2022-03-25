@@ -9,8 +9,8 @@ import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/appbar_leading.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/product_card.dart';
-import 'package:pos_wappsi/components/product_card_w_unit.dart';
+import 'package:pos_wappsi/components/products/product_card_info.dart';
+import 'package:pos_wappsi/components/products/product_card_w_unit.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
@@ -185,10 +185,11 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
           const Icon(
             Icons.arrow_back_ios,
             size: kIconSize,
+            color: pColor,
           ),
           Text(
             'Regresar ',
-            style: buttonsSmallTextStyle(context),
+            style: buttonsSmallTextStyle(context, color: pColor),
           ),
         ],
       ),
@@ -233,8 +234,10 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
                   title:
                       'Error al cargar los siguientes productos de la venta:');
             } else {
-              confirmDialog(context, 'Venta suspendida cargada correctamente',
-                  'assets/images/success.png');
+              // confirmDialog(context, 'Venta suspendida cargada correctamente',
+              //     'assets/images/success.png');
+              scaffoldAlert(context, 'Venta suspendida cargada correctamente',
+                  const Duration(milliseconds: 500));
             }
           }
         }
@@ -243,7 +246,7 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
         children: [
           Text(
             'Reanudar venta',
-            style: buttonsSmallTextStyle(context),
+            style: buttonsSmallTextStyle(context, color: pColor),
           ),
           // Icon(Icons.load),
         ],

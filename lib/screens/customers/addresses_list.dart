@@ -33,6 +33,8 @@ class _ListAddressesState extends State<ListAddresses> {
   List<CustomerAddressesModel> address = [];
   List<ProductModel> favoritesToDelete = [];
 
+  final _addressesListController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +42,7 @@ class _ListAddressesState extends State<ListAddresses> {
 
   @override
   void dispose() {
+    _addressesListController.dispose();
     super.dispose();
   }
 
@@ -58,7 +61,7 @@ class _ListAddressesState extends State<ListAddresses> {
       'Sucursales',
       elevation: true,
       radius: 0,
-      image: 'assets/images/enterprise.png',
+      image: 'assets/images/locations.png',
     );
   }
 
@@ -97,13 +100,12 @@ class _ListAddressesState extends State<ListAddresses> {
         onRefresh: () async {
           await _reload(context);
         },
-        child: ListView.builder(
-            itemCount: address.length,
-            itemBuilder: (BuildContext context, int index) {
-              return AddressCard(
-                      customer: widget.customer, address: address[index])
-                  .paddingSymmetric(horizontal: 4, vertical: 4);
-            }));
+        child: ListView(
+            controller: _addressesListController,
+            children: address
+                .map((e) => AddressCard(customer: widget.customer, address: e)
+                    .paddingSymmetric(horizontal: 4, vertical: 4))
+                .toList()));
   }
 
   Widget _bottom() {
@@ -122,10 +124,15 @@ class _ListAddressesState extends State<ListAddresses> {
 
   AppButton addAddress(BuildContext context) {
     return AppButton(
-      onTap: () {
-        NewAddress(
+      onTap: () async {
+        final res = await NewAddress(
           customer: widget.customer,
         ).launch(context);
+        if (res == true) {
+          await _reload(context);
+          _addressesListController
+              .jumpTo(_addressesListController.position.minScrollExtent);
+        }
       },
       color: Colors.white,
       padding: kButtonPadding,
