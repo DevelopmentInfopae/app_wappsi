@@ -156,3 +156,109 @@ Widget movementDetails(
     ],
   );
 }
+
+/// Close register info
+Widget closeRegisterDetails(
+    BuildContext context, Map<String, dynamic> closeRegisterInfo) {
+  // final _size = MediaQuery.of(context).size;
+  String value = getFormatedCurrency(
+      double.tryParse(closeRegisterInfo['value'] ?? '') ?? 0.0, decimals: 0);
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Usuario: ',
+            style: normalTextStyle(context, fontWeightDelta: 5),
+          ),
+          Text(
+            closeRegisterInfo['user_name']??'',
+            style: normalTextStyle(context),
+            textAlign: TextAlign.end,
+          ).expand()
+        ],
+      ),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Fecha: ',
+            style: normalTextStyle(context, fontWeightDelta: 5),
+          ),
+          Text(
+            closeRegisterInfo['date'] ?? '',
+            style: normalTextStyle(context),
+            textAlign: TextAlign.end,
+          ).expand()
+        ],
+      ),
+      // Row(
+      //   children: [
+      //     Text(
+      //       'Referencia: ',
+      //       style: normalTextStyle(context, fontWeightDelta: 5),
+      //     ),
+      //     Text(
+      //       movementInfo['reference_no'] ?? '',
+      //       style: normalTextStyle(context),
+      //       textAlign: TextAlign.end,
+      //     ).expand()
+      //   ],
+      // ),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Sucursal: ',
+            style: normalTextStyle(context, fontWeightDelta: 5),
+          ),
+          Text(
+            capitalizeText(closeRegisterInfo['biller_name'] ?? ''),
+            style: normalTextStyle(context),
+            textAlign: TextAlign.end,
+          ).expand()
+        ],
+      ),
+      // Row(
+      //   children: [
+      //     Text(
+      //       'Tipo de movimiento: ',
+      //       style: normalTextStyle(context, fontWeightDelta: 5),
+      //     ),
+      //     Text(
+      //       movementInfo['movement_type'] ?? '',
+      //       style: normalTextStyle(context),
+      //       textAlign: TextAlign.end,
+      //     ).expand()
+      //   ],
+      // ),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Efectivo entregado: ',
+            style: normalTextStyle(context, fontWeightDelta: 5),
+          ),
+          Text(
+            value,
+            style: normalTextStyle(context),
+            textAlign: TextAlign.end,
+          ).expand()
+        ],
+      ),
+
+      // RichText(
+      //     text: TextSpan(
+      //         text: 'Nota de movimiento: ',
+      //         style: normalTextStyle(context, fontWeightDelta: 5),
+      //         children: [
+      //       TextSpan(
+      //           text: movementInfo['movement_note'] ?? '',
+      //           style: normalTextStyle(context))
+      //     ])),
+    ],
+  );
+}

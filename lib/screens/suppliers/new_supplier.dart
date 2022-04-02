@@ -121,7 +121,7 @@ class _NewSupplierState extends State<NewSupplier> {
     return appBar(context, 'Agregar Proveedor',
         back: true, image: 'assets/images/add-user.png', onPop: () {
       if (widget.backToHome) {
-        dataBloc.homeKey.currentState?.changeBottomIndex(1);
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
       }
       Navigator.pop(context);
     });

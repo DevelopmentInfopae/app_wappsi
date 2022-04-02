@@ -41,6 +41,9 @@ class _NewOrderState extends State<NewOrder> {
 
   final _addressesDropDownKey =
       GlobalKey<DropdownSearchState<CustomerAddressesModel?>>();
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   // final _customerDropDownKey = GlobalKey<DropdownSearchState<CompanyModel?>>();
 
   // final _customerFocusNode = FocusNode();
@@ -68,7 +71,7 @@ class _NewOrderState extends State<NewOrder> {
     _size = MediaQuery.of(context).size;
     return WillPopScope(
         onWillPop: () async {
-          dataBloc.homeKey.currentState?.changeBottomIndex(1);
+          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           // printConsole('here i am');
           return true;
         },
@@ -95,15 +98,18 @@ class _NewOrderState extends State<NewOrder> {
   Widget _userInfo() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: ListView(
-        children: [
-          _branchOffice(),
-          // _document(),
-          _warehouse(),
-          _sellerInfo(),
-          _customers(),
-          _customerAddressesDropDown()
-        ],
+      child: Form(
+        key: _formKey,
+        child: ListView(
+          children: [
+            _branchOffice(),
+            // _document(),
+            _warehouse(),
+            _sellerInfo(),
+            _customersDropDown(),
+            _customerAddressesDropDown()
+          ],
+        ),
       ),
     );
   }
@@ -131,24 +137,13 @@ class _NewOrderState extends State<NewOrder> {
       image: 'assets/images/add-order.png',
       // leading: _appBarLeading(),
       onPop: () {
-        dataBloc.homeKey.currentState?.changeBottomIndex(1);
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
         Navigator.pop(context);
       },
     );
   }
 
-  Widget _customers() {
-    return FutureBuilder(
-      future: CompaniesProvider.selectDefaultCustomer(returnBool: true),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          return _customersDropDown();
-        } else {
-          return _customersDropDown();
-        }
-      },
-    );
-  }
+
 
   Widget _customersDropDown() {
     return DropdownSearch<CompanyModel>(
@@ -321,7 +316,7 @@ class _NewOrderState extends State<NewOrder> {
           // width: _size.width,
           onTap: () async {
             Navigator.pop(context);
-            dataBloc.homeKey.currentState?.changeBottomIndex(1);
+            dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           },
           child: Row(
             children: [
@@ -346,9 +341,27 @@ class _NewOrderState extends State<NewOrder> {
             //     fromOrderCreation: true);
             // await CustomerAddressesProvider.selectDefaultAddrs(
             //     fromOrderCreation: true);
-            if (orderBloc.getCustomer != null &&
-                orderBloc.getCustomerAddresses != null) {
+            // if (orderBloc.getCustomer != null &&
+            //     orderBloc.getCustomerAddresses != null) {
+            //   const OrderProducts().launch(context);
+            // }
+            if (_formKey.currentState?.validate() ?? false) {
               const OrderProducts().launch(context);
+            } else {
+              if (orderBloc.getCustomer == null) {
+                final customer =
+                    await CompaniesProvider.selectDefaultCustomer();
+                orderBloc.setCustomer(customer);
+              }
+              if (orderBloc.getCustomer != null) {
+                orderBloc.setCustomerAddresses(
+                    await CustomerAddressesProvider.selectDefaultAddrs(
+                        orderBloc.getCustomer?.idCloud));
+              }
+              setState(() {});
+              // if (_formKey.currentState?.validate() ?? false) {
+              //   const SaleCart().launch(context);
+              // }
             }
           },
           child: Text(

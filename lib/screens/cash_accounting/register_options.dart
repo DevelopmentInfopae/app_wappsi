@@ -22,7 +22,7 @@ class _RegisterOptionsState extends State<RegisterOptions> {
 
   @override
   void initState() {
-    registerStatus = dataBloc.registerData.status == 'open';
+    registerStatus = dataBloc.registerData?.status == 'open';
     super.initState();
   }
 
@@ -30,14 +30,14 @@ class _RegisterOptionsState extends State<RegisterOptions> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        dataBloc.homeKey.currentState?.changeBottomIndex(1);
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
         // printConsole('here i am');
         return true;
       },
       child: Scaffold(
         appBar: appBar(context, 'Caja',
             image: 'assets/images/cash-register.png', onPop: () {
-          dataBloc.homeKey.currentState?.changeBottomIndex(1);
+          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           Navigator.pop(context);
         }),
         body: _body(context),
@@ -85,10 +85,11 @@ class _RegisterOptionsState extends State<RegisterOptions> {
         onTap: () async {
           await _controlRegister(registerStatus ? 'close' : 'open');
 
+          
           /// update JWT token
           await dataBloc.refreshToken(context);
           setState(() {
-            registerStatus = dataBloc.registerData.status == 'open';
+            registerStatus = dataBloc.registerData?.status == 'open';
           });
         });
   }
@@ -110,8 +111,9 @@ class _RegisterOptionsState extends State<RegisterOptions> {
   }
 
   _controlRegister(String action) async {
-    await showCupertinoDialog(
+    return await showCupertinoDialog(
         barrierDismissible: true,
+        useRootNavigator: false,
         context: context,
         builder: (context) {
           return ChangeNotifierProvider(

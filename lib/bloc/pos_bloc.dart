@@ -470,9 +470,9 @@ class POSBloc {
   //
   //-----------------------------------------------------------------------------
 
-  String getCustomerId() {
+  String? getCustomerId() {
     if (_customerController.hasValue) {
-      return _customerController.value!.idCloud!;
+      return _customerController.value?.idCloud;
     } else {
       return '0';
     }

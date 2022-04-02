@@ -4,6 +4,7 @@
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:pos_wappsi/bloc/data_bloc.dart';
@@ -42,7 +43,12 @@ class _NewPurchaseState extends State<NewPurchase> {
   late Size _size;
   late Color _pc;
   final TextEditingController _customerController = TextEditingController();
+  final TextEditingController _consecutiveController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _referenceController = TextEditingController();
   final TextEditingController _customerAddrController = TextEditingController();
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // final _customerDropDownKey = GlobalKey<DropdownSearchState<CompanyModel?>>();
 
@@ -52,17 +58,31 @@ class _NewPurchaseState extends State<NewPurchase> {
     if (purchaseBloc.isDisposed) {
       purchaseBloc.reload();
     }
+
+    if (purchaseBloc.getDate() != null) {
+      _dateController.text = purchaseBloc.getDate()!;
+    } else {
+      String now = DateFormat("yyyy-MM-dd").format(DateTime.now());
+      purchaseBloc.setDate(now);
+      printConsole(purchaseBloc.getDate());
+      _dateController.text = purchaseBloc.getDate() ?? now;
+    }
+
     super.initState();
   }
 
   @override
   void dispose() {
     _customerController.dispose();
+    _dateController.dispose();
     _customerAddrController.dispose();
+    _consecutiveController.dispose();
+    _referenceController.dispose();
     super.dispose();
   }
 
   bool refIsVal = false;
+  bool cosSupIsVal = false;
   Map user = dataBloc.userDataMap;
 
   @override
@@ -71,7 +91,7 @@ class _NewPurchaseState extends State<NewPurchase> {
     _size = MediaQuery.of(context).size;
     return WillPopScope(
         onWillPop: () async {
-          dataBloc.homeKey.currentState?.changeBottomIndex(1);
+          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           // printConsole('here i am');
           return true;
         },
@@ -98,16 +118,19 @@ class _NewPurchaseState extends State<NewPurchase> {
   Widget _userInfo() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: ListView(
-        children: [
-          _branchOffice(),
-          // _document(),
-          _warehouse(),
-          _dateTimePicker().paddingSymmetric(vertical: 4),
-          _supplierSelection().paddingSymmetric(vertical: 4),
-          _document().paddingSymmetric(vertical: 4),
-          _consecutive().paddingSymmetric(vertical: 4)
-        ],
+      child: Form(
+        key: _formKey,
+        child: ListView(
+          children: [
+            _branchOffice(),
+            // _document(),
+            _warehouse(),
+            _dateTimePicker().paddingSymmetric(vertical: 4),
+            _supplierSelection().paddingSymmetric(vertical: 4),
+            _document().paddingSymmetric(vertical: 4),
+            _consecutive().paddingSymmetric(vertical: 4)
+          ],
+        ),
       ),
     );
   }
@@ -117,9 +140,10 @@ class _NewPurchaseState extends State<NewPurchase> {
     return DateTimePicker(
       firstDate: DateTime(2000),
       style: normalTextStyle(context),
+      controller: _dateController,
       lastDate: DateTime(now.year + 1),
       dateLabelText: 'Fecha:',
-      initialValue: purchaseBloc.getDate(),
+      initialValue: null,
       onChanged: (value) {
         purchaseBloc.setDate(value);
       },
@@ -235,32 +259,60 @@ class _NewPurchaseState extends State<NewPurchase> {
 
   Widget _consecutive() {
     if (dataBloc.settings?['management_consecutive_suppliers'] == 0) {
-      return textFormField(context, 'Numero', (value) async {
-        if (isNumericInt(value)) {
-          if (purchaseBloc.getSupplier?.idCloud != null && value != null) {
-            final valRef = await PurchaseProvider.valitateReference(
-                purchaseBloc.getDocumentType!.salesPrefix + '-' + value,
-                int.parse(purchaseBloc.getSupplier!.idCloud!));
-            setState(() {
-              refIsVal = valRef;
-            });
-            if (refIsVal) {
-              purchaseBloc.getPurchase?.referenceNo = value;
+      return textFormField(context, 'Numero de referencia', (value) async {
+        if (value != null && value != '') {
+          if (isNumericInt(value)) {
+            if (purchaseBloc.getSupplier?.idCloud != null && value != null) {
+              final valRef = await PurchaseProvider.valitateReference(
+                  purchaseBloc.getDocumentType!.salesPrefix + '-' + value,
+                  int.parse(purchaseBloc.getSupplier!.idCloud!));
+              setState(() {
+                refIsVal = valRef;
+              });
+              if (refIsVal) {
+                purchaseBloc.getPurchase?.referenceNo = value;
+              }
             }
+          } else {
+            return 'Valor no valido';
           }
         }
       }, (value) {
-        if (!isNumericInt(value)) {
-          return 'El numero ingresado no es valido';
+        if (value != null && value != '' && !isNumericInt(value)) {
+          return 'El numero de referencia ingresado no es valido';
         }
-        if (!refIsVal) {
-          return 'El numero ya se encuentra uso';
+        if (!refIsVal &&
+            value != null &&
+            value != '' &&
+            purchaseBloc.getSupplier?.idCloud != null) {
+          return 'El numero de referencia ya se encuentra uso';
         }
-      }, (value) {}, keyBType: TextInputType.number);
+      }, (value) {});
     } else {
-      return textFormField(context, 'Consecutivo de proveedor', (value) {
-        purchaseBloc.getPurchase?.consecutiveSupplier = value;
-      }, (value) {}, () {});
+      return textFormField(context, 'Consecutivo de proveedor', (value) async {
+        if (value != null && value != '') {
+          if (purchaseBloc.getSupplier?.idCloud != null) {
+            final valRef = await PurchaseProvider.valitateConsecutive(
+                value,
+                int.parse(purchaseBloc.getSupplier!.idCloud!));
+            setState(() {
+              cosSupIsVal = valRef;
+            });
+            if (cosSupIsVal) {
+              purchaseBloc.getPurchase?.consecutiveSupplier = value;
+            }
+          }
+        } else {
+          return 'Debe suministrar un valor valido';
+        }
+      }, (value) {
+        if (value == null || value == '') {
+          return 'Debe ingresar el consecutivo del proveedor';
+        }
+        if (!cosSupIsVal && purchaseBloc.getSupplier?.idCloud != null) {
+          return 'El consecutivo de proveedor ya se encuentra uso';
+        }
+      }, (value) {});
     }
   }
 
@@ -271,7 +323,7 @@ class _NewPurchaseState extends State<NewPurchase> {
       image: 'assets/images/cargo.png',
       // leading: _appBarLeading(),
       onPop: () {
-        dataBloc.homeKey.currentState?.changeBottomIndex(1);
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
         Navigator.pop(context);
       },
     );
@@ -353,7 +405,7 @@ class _NewPurchaseState extends State<NewPurchase> {
           // width: _size.width,
           onTap: () async {
             Navigator.pop(context);
-            dataBloc.homeKey.currentState?.changeBottomIndex(1);
+            dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           },
           child: Row(
             children: [
@@ -374,13 +426,16 @@ class _NewPurchaseState extends State<NewPurchase> {
           // width: _size.width,
           padding: kButtonPadding,
           onTap: () async {
+            if (_formKey.currentState?.validate() ?? false) {
+              const PurchaseProducts().launch(context);
+            }
+
             // await CompaniesProvider.selectDefaultCustomer(
             //     fromOrderCreation: true);
             // await CustomerAddressesProvider.selectDefaultAddrs(
             //     fromOrderCreation: true);
-            if (purchaseBloc.getSupplier != null) {
-              const PurchaseProducts().launch(context);
-            }
+            // if (purchaseBloc.getSupplier != null) {
+            // }
           },
           child: Text(
             'Añadir productos',

@@ -8,7 +8,7 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
-import 'package:restart_app/restart_app.dart';
+// import 'package:restart_app/restart_app.dart';
 
 void simpleAlert(BuildContext context, String msj) {
   showConfirmDialogCustom(
@@ -58,6 +58,7 @@ confirmDialog(BuildContext context, String msg, String img) async {
   final size = MediaQuery.of(context).size;
   await showCupertinoDialog(
       barrierDismissible: true,
+      useRootNavigator: false,
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
@@ -184,6 +185,7 @@ reloadDialog(BuildContext context, String msg, String img) async {
   final size = MediaQuery.of(context).size;
   showCupertinoDialog(
       context: context,
+      useRootNavigator: true,
       builder: (context) {
         return CupertinoAlertDialog(
           title: Padding(
@@ -211,7 +213,9 @@ reloadDialog(BuildContext context, String msg, String img) async {
                   if ((posBloc.getProducts?.length ?? 0) > 0) {
                     await posBloc.suspendSale();
                   }
-                  Restart.restartApp(webOrigin: '/loginForm');
+                  dataBloc.reload();
+                  Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                  // Restart.restartApp(webOrigin: '/loginForm');
                 },
               ),
             ),
@@ -225,6 +229,7 @@ choiceAlert(BuildContext context, String msj, String img,
     {String cancel = 'Cancelar',
     String confirm = 'Aceptar',
     bool skipeable = true,
+    bool useRootNav = false,
     customWidget = false,
     Widget? widget}) async {
   final size = MediaQuery.of(context).size;
@@ -232,8 +237,10 @@ choiceAlert(BuildContext context, String msj, String img,
   final result = await showCupertinoDialog(
       barrierDismissible: skipeable,
       context: context,
+      useRootNavigator: useRootNav,
       builder: (context) {
         return CupertinoAlertDialog(
+          
           title: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Image.asset(

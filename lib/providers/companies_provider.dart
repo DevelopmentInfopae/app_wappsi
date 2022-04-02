@@ -4,8 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/bloc/orders_bloc.dart';
-import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/bloc/suplier_bloc.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/biller_data_model.dart';
@@ -23,40 +21,21 @@ import 'package:pos_wappsi/utils/nav_utils.dart';
 
 class CompaniesProvider {
   /// Load default customer from db to posBloc
-  static selectDefaultCustomer(
-      {bool returnBool = false, bool fromOrderCreation = false}) async {
+  static Future<CompanyModel?> selectDefaultCustomer() async {
     if (dataBloc.getBIllerData == null) {
       final billerData = await DBProvider.db.getBillerData();
       if (billerData != null) {
         dataBloc.setBillerData(BillerDataModel.fromJson(billerData));
       }
     }
-    if (fromOrderCreation) {
-      if (orderBloc.getCustomer == null) {
-        String? idCustomer = dataBloc.getBIllerData!.defaultCustomerId;
-        if (idCustomer != null) {
-          Map<String, dynamic>? customer = await findCompanyById(idCustomer);
-          if (customer != null) {
-            orderBloc.setCustomer(CompanyModel.fromJson(customer));
-            if (returnBool) {
-              return true;
-            }
-          }
-        }
-      }
-    } else {
-      if (posBloc.getCustomer == null) {
-        String? idCustomer = dataBloc.getBIllerData!.defaultCustomerId;
-        if (idCustomer != null) {
-          Map<String, dynamic>? customer = await findCompanyById(idCustomer);
-          if (customer != null) {
-            posBloc.setCustomer(CompanyModel.fromJson(customer));
-            if (returnBool) {
-              return true;
-            }
-          }
-        }
-      }
+    String? idCustomer = dataBloc.getBIllerData!.defaultCustomerId;
+        
+    Map<String, dynamic>? customer = await findCompanyById(idCustomer??'0');
+
+    if(customer!=null){
+      return CompanyModel.fromJson(customer);
+    }else{
+      return null;
     }
   }
 
@@ -450,7 +429,7 @@ class CompaniesProvider {
       } else {
         // if local db update success, go to home
         goHomeAndEmptyCustomerBloc(context);
-        // dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
+        // dataBloc.homeKey?.currentState?.selectTab(TabItem.clients);
         confirmDialog(
             context, res['body']['message'], 'assets/images/success.png');
       }
@@ -539,7 +518,7 @@ class CompaniesProvider {
           Navigator.pop(context);
           Navigator.pop(context);
         }
-        // dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
+        // dataBloc.homeKey?.currentState?.selectTab(TabItem.clients);
         confirmDialog(
             context, res['body']['message'], 'assets/images/success.png');
       }
@@ -610,7 +589,7 @@ class CompaniesProvider {
         // if local db update success, go to home
 
         customerBloc.dispose();
-        // dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
+        // dataBloc.homeKey?.currentState?.selectTab(TabItem.clients);
         confirmDialog(
             context, res['body']['message'], 'assets/images/success.png');
       }

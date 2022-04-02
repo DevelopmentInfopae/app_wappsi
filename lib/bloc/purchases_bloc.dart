@@ -16,11 +16,8 @@ import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/purchase_model.dart';
 // import 'package:pos_wappsi/models/suspended_sale_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
-import 'package:pos_wappsi/providers/local_db_provider.dart';
 
-import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
-import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 
@@ -51,7 +48,7 @@ class PurchaseBloc {
   // final _productsViewController =
   // StreamController<Map<String, ProductModel>>.broadcast();
 
-  StreamController<double> _subtotalController =
+  StreamController<double> _subtotalCostController =
       StreamController<double>.broadcast();
 
   StreamController<List<ProductModel>> _productSearchController =
@@ -73,7 +70,7 @@ class PurchaseBloc {
   Stream<Map<String, ProductModel>> get productsStream =>
       _productsController.stream.asBroadcastStream();
 
-  Stream<double?> get orderDiscountStream =>
+  Stream<double?> get discountStream =>
       _discountController.stream.asBroadcastStream();
 
   Stream<List<ProductModel>> get productSearchStream =>
@@ -85,8 +82,8 @@ class PurchaseBloc {
   Stream<Map<String, UnitsModel>> get productsUnitStream =>
       _productUnitController.stream;
 
-  Stream<double> get subTotalStream =>
-      _subtotalController.stream.asBroadcastStream();
+  Stream<double> get subTotalCostStream =>
+      _subtotalCostController.stream.asBroadcastStream();
 
   //______________________________________
   //
@@ -105,7 +102,7 @@ class PurchaseBloc {
     }
       res = await _addProductToProductMap(productReq['product'],
           unit: productReq['product_unit']);
-    getSubTotal();
+    getSubTotalCost();
     return res;
   }
 
@@ -167,8 +164,8 @@ class PurchaseBloc {
   }
 
   ///Returns a Map<String,dynamic>, where the keys are the same of
-  ///SaleModel.fromJson(), it could be usefull to build an instance of
-  ///SaleModel to send to an endpoint of API's service.
+  ///PurchaseModel.fromJson(), it could be usefull to build an instance of
+  ///PurchaseModel to send to an endpoint of API's service.
   Map<String, dynamic> getProductDetailMapLists() {
     return ProductModel.getProductDetailMapLists(_productsController.value,
         dataBloc.userData!.warehouseId, _productUnitController.valueOrNull);
@@ -183,7 +180,7 @@ class PurchaseBloc {
 
     _productsController.value[key]!.quantity = value;
     // setProductView(_productsController.value);
-    _subtotalController.sink.add(getSubTotal());
+    getSubTotalCost();
 
     res = true;
 
@@ -255,7 +252,7 @@ class PurchaseBloc {
   removeProduct(String key) {
     _productsController.value.remove(key);
     reloadProductStream();
-    _subtotalController.sink.add(getSubTotal());
+    _subtotalCostController.sink.add(getSubTotalCost());
 
     if (_productUnitController.hasValue) {
       try {
@@ -290,25 +287,25 @@ class PurchaseBloc {
   }
 
   /// Returns sum of products.getPriceWithIVA() * products.quantity
-  double getSubTotal() {
-    double subTotal = getSubTotalWithoutDiscount();
+  double getSubTotalCost() {
+    double subTotal = getSubTotalCostWithoutDiscount();
 
     double total = subTotal - getDiscount;
     if (total < 0) {
       total = 0;
     }
-    _subtotalController.sink.add(total);
+    _subtotalCostController.sink.add(total);
 
     return total;
   }
 
   /// Returns sum of products.getPriceWithIVA() * products.quantity
-  double getSubTotalWithoutDiscount() {
+  double getSubTotalCostWithoutDiscount() {
     double subTotal = 0;
     // ignore: unnecessary_null_comparison
     if (_productsController.hasValue) {
       for (var element in _productsController.value.values) {
-        double temp = element.getPriceWithIVA() * element.quantity;
+        double temp = element.getCostWithIVA() * element.quantity;
         subTotal = subTotal + temp;
       }
     }
@@ -426,6 +423,10 @@ class PurchaseBloc {
   Map<String, UnitsModel>? get getProductUnits =>
       _productUnitController.valueOrNull;
 
+  UnitsModel? getUnitDetails(String key){
+    _productUnitController.valueOrNull?[key];
+  }
+
   DocumentsTypes? get getDocumentType => _documentController.valueOrNull;
 
   // Map<String, dynamic> get settings => _settingsController.value;
@@ -526,7 +527,7 @@ class PurchaseBloc {
     // _productsViewController.close();
     _productsController.close();
     _productSearchController.close();
-    _subtotalController.close();
+    _subtotalCostController.close();
     _supplierController.close();
     _customerAddressesController.close();
     _paymentMthdController.close();
@@ -556,7 +557,7 @@ class PurchaseBloc {
     _documentController = BehaviorSubject<DocumentsTypes?>();
     _customerAddressesController = BehaviorSubject<CustomerAddressesModel?>();
 
-    _subtotalController = StreamController<double>.broadcast();
+    _subtotalCostController = StreamController<double>.broadcast();
     _productSearchController = StreamController<List<ProductModel>>.broadcast();
     _discountController = BehaviorSubject<double?>();
   }

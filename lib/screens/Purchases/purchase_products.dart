@@ -11,7 +11,7 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/components/products/product_list.dart';
-import 'package:pos_wappsi/screens/Quotes/quote_other_data.dart';
+import 'package:pos_wappsi/screens/Purchases/purchase_other_data.dart';
 import 'package:pos_wappsi/components/favorites_search_selection.dart';
 // import 'package:pos_wappsi/screens/orders/order_other_details.dart';
 // import 'package:pos_wappsi/providers/units_provider.dart';
@@ -53,6 +53,9 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
 
   @override
   void initState() {
+    if (purchaseBloc.getProducts?.isNotEmpty ?? false) {
+      _productsCount = purchaseBloc.getProducts!.length;
+    }
     super.initState();
   }
 
@@ -73,7 +76,9 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
         child: Scaffold(
           key: _scaffoldKey,
           appBar: buildAppBar(context),
-          body: _searchbar(),
+          body: Column(
+            children: [_searchbar().expand(), bottom(_bottom(), pColor, _size)],
+          ),
         ),
         onWillPop: () async {
           bool pop = false;
@@ -95,7 +100,7 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
       'Agregar compra',
       elevation: false,
       radius: 0,
-      image: 'assets/images/add-quote.png',
+      image: 'assets/images/cargo.png',
       onPop: () {
         setState(() {
           if (_searchController.isOpen) {
@@ -186,7 +191,7 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
       hintStyle: buttonsSmallTextStyle(context),
       automaticallyImplyBackButton: false,
       controller: _searchController,
-      body: _body(),
+      body: _products(),
       onSubmitted: (_) {
         _searchController.close();
       },
@@ -207,13 +212,6 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
     );
   }
 
-  Widget _body() {
-    // ignore: unnecessary_null_comparison
-    return Column(
-      children: [_products().expand(), bottom(_bottom(), pColor, _size)],
-    );
-  }
-
   Widget _products() {
     return Container(
         // height:_size.height*0.78,
@@ -228,6 +226,7 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
         stream: purchaseBloc.productsStream,
         builder: (context, snapshot) {
           // _searchBarFocusManagement();
+          bool productRequestFocus = _productFocus();
           if (_productsCount + 1 == snapshot.data?.length) {
             _productsCount += 1;
             _searchBarFocusManagement();
@@ -235,7 +234,6 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
           if (snapshot.hasData &&
               _searchController.isClosed &&
               _productsCount == (purchaseBloc.getProducts?.length ?? 0)) {
-            bool productRequestFocus = false;
             if (purchaseBloc.getItemsCount() == 0) {
               _productsCount = 0;
               // _itemsCount = 0;
@@ -250,10 +248,6 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
                   _scrollController
                       .jumpTo(_scrollController.position.minScrollExtent);
                 }
-                // final xd = purchaseBloc.settings['set_focus'];
-                // printConsole();
-
-                productRequestFocus = _productFocus();
               } else if (_productsCount - 2 == snapshot.data!.length) {
                 // Nothing to do when items are removed from cart
               } else {
@@ -282,6 +276,8 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
             return Container();
           } else {
             // ignore: unnecessary_null_comparison
+            //reset product count if empty
+            _productsCount = 0;
             return Container();
 
             // return _empty(context).center();
@@ -305,7 +301,8 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
   }
 
   _productFocus() {
-    if (dataBloc.settings!['set_focus'] == 1) {
+    if (dataBloc.settings!['set_focus'] == 1 &&
+        (_productsCount + 1) == purchaseBloc.getProducts?.length) {
       if ((purchaseBloc.getProducts ?? {}).isEmpty) {
         return true;
       } else {
@@ -346,8 +343,8 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
       children: [
         subTotal(
             large: true,
-            stream: purchaseBloc.subTotalStream,
-            defaultValue: purchaseBloc.getSubTotal(),
+            stream: purchaseBloc.subTotalCostStream,
+            defaultValue: purchaseBloc.getSubTotalCost(),
             color: Colors.white),
         _sendOrder(),
       ],
@@ -370,13 +367,14 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
       // child: Icon(FontAwesomeIcons.pause),
       child: Row(
         children: [
+          Text('Siguiente',
+              style: buttonsSmallTextStyle(context, color: pColor)),
           const Icon(
             Icons.arrow_forward_ios_rounded,
             size: kIconSize,
             color: pColor,
           ),
-          Text('Siguiente',
-              style: buttonsSmallTextStyle(context, color: pColor)),
+          
         ],
       ),
     );
@@ -438,7 +436,7 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
 
   void _send() {
     if ((purchaseBloc.getProducts?.keys.length ?? 0) > 0) {
-      const QuoteOtherData().launch(context);
+      const PurchaseOtherData().launch(context);
     } else {
       confirmDialog(context, "Debe seleccionar productos antes de continuar",
           "assets/images/alert.png");

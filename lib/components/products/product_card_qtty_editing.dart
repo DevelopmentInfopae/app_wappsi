@@ -94,35 +94,58 @@ class _ProductCardState extends State<ProductCard> {
     }
 
     unitInfo += widget.unit?.name ?? '';
-    return Column(
-      verticalDirection: VerticalDirection.down,
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      productPhoto(
+              (product?.image ?? '') == '' ? 'no_image.png' : product!.image)
+          .withSize(width: 94, height: 100),
+      vDivider(width: 1, heigh: 90),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        // mainAxisAlignment: MainAxisAlignment.spaceAround,
+        // mainAxisAlignment: ,
+        children: [
+          _productDesc().paddingSymmetric(horizontal: 8, vertical: 2),
+          Divider(
+            height: 1,
+            color: greyMediumLight,
+            thickness: 1,
+          ).paddingSymmetric(horizontal: 10),
+          // _unitInfo(widget.unit, unitInfo).paddingOnly(
+          //   left: 10,
+          // ),
+          widget.unit != null
+              ? _unitDetails().paddingOnly(left: 10, right: 14, top: 4)
+              : _productWoutInfoPrice()
+                  .paddingOnly(left: 10, right: 14, top: 4),
+          _baseUnitQtty(widget.unit)
+        ],
+      ).paddingTop(4).expand(),
+    ]);
+  }
+
+  Row _productWoutInfoPrice() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              productPhoto((product?.image ?? '') == ''
-                      ? 'no_image.png'
-                      : product!.image)
-                  .withSize(width: 92, height: 95),
-              vDivider(width: 1, heigh: 85),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                // mainAxisAlignment: ,
-                children: [
-                  _productDesc()
-                      .paddingSymmetric(horizontal: 8, vertical: 2)
-                      ,
-                  Divider(
-                    height: 1,
-                    color: greyMediumLight,
-                    thickness: 1,
-                  ).paddingSymmetric(horizontal: 10),
-                  _unitInfo(widget.unit, unitInfo),
-                  _baseUnitQtty(widget.unit)
-                ],
-              ).paddingTop(4).expand(),
-            ]),
+        Text(
+          'Precio Unitario ',
+          maxLines: 1,
+          style: normalTextStyle(context),
+        ),
+        _productPrice(),
+      ],
+    );
+  }
+
+  Row _unitDetails() {
+    return Row(
+      children: [
+        Text(capitalizeText(widget.unit!.name),
+                style: normalTextStyle(context),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis)
+            .expand(),
+        _baseUnitPrice(widget.unit!)
       ],
     );
   }
@@ -130,35 +153,45 @@ class _ProductCardState extends State<ProductCard> {
   Row _baseUnitQtty(UnitsModel? unit) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      // crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _qty().paddingOnly(bottom: 4),
-        (unit != null ? _baseUnitPrice(unit) : _prices())
-            .paddingOnly(right: 8, bottom: 4)
+        _qty().paddingOnly(bottom: 4, right: 4),
+        Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: greyMediumLight),
+                child: _productPriceTotal())
+            .paddingOnly(right: 10)
             .expand()
       ],
     );
   }
 
-  Widget _unitInfo(UnitsModel? unit, String unitInfo) {
-    return unit != null
-        ? Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                unitInfo,
-                // textAlign: TextAlign.,
-                style: normalTextStyle(context,
-                    fontWeightDelta: 2, fontSizeFactor: 1.2),
-              ).flexible(flex: 3),
-              _productPriceTotal().flexible(flex: 3)
-            ],
-          ).paddingOnly(right: 8, top: 4)
-        : Container();
-  }
+  // Widget _unitInfo(UnitsModel? unit, String unitInfo) {
+  //   return unit != null
+  //       ? Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           crossAxisAlignment: CrossAxisAlignment.center,
+  //           children: [
+  //             // Text(
+  //             //   capitalizeText(unitInfo),
+  //             //   // textAlign: TextAlign.,
+  //             //   maxLines: 1,
+  //             //   style: normalTextStyle(context,
+  //             //       fontWeightDelta: 2, fontSizeFactor: 1.1),
+  //             // ).flexible(flex: 3),
+  //             // (widget.unit != null ? _baseUnitPrice(unit) : _prices())
+  //             //     .paddingOnly(right: 8, bottom: 4)
+  //             //     .expand()
+  //           ],
+  //         ).paddingOnly(right: 8, top: 4)
+  //       : Container();
+  // }
 
   Widget _productDesc() {
-    return descText(product?.name ?? '', context,
+    return descText(capitalizeText(product?.name ?? ''), context,
         maxLines: 2, fontSizeFactor: 0.9, fweigth: 2);
   }
 
@@ -173,7 +206,7 @@ class _ProductCardState extends State<ProductCard> {
   Widget _textQty() {
     return SizedBox(
       width: 55,
-      height: 40,
+      height: 35,
       child: TextFormField(
         onEditingComplete: () {
           widget.quantityFocusNode.unfocus();
@@ -265,9 +298,9 @@ class _ProductCardState extends State<ProductCard> {
         });
         // quantityFocusNode.requestFocus();
       },
-      child: const Icon(
+      child: Icon(
         Icons.remove,
-        color: Colors.black,
+        color: greyColor,
       ),
     );
   }
@@ -298,70 +331,65 @@ class _ProductCardState extends State<ProductCard> {
       },
       child: const Icon(
         Icons.add,
-        color: Colors.red,
+        color: Colors.green,
       ),
     );
   }
 
-  Widget _delete() {
-    // Delete a prodcut from sales's cart (bloc_sale)
-    return AppButton(
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      margin: EdgeInsets.zero,
-      elevation: 0,
-      shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-          side: const BorderSide(color: Colors.black26)),
-      width: 30,
-      onTap: () {
-        widget.delete();
-      },
-      child: const Icon(
-        Icons.delete,
-        size: 30,
-        color: Colors.redAccent,
-      ),
-    );
-  }
-
-  Widget _prices() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [_productPrice(), _productPriceTotal()],
-    );
-  }
+  // Widget _delete() {
+  //   // Delete a prodcut from sales's cart (bloc_sale)
+  //   return AppButton(
+  //     padding: const EdgeInsets.symmetric(horizontal: 5),
+  //     margin: EdgeInsets.zero,
+  //     elevation: 0,
+  //     shapeBorder: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(5),
+  //         side: const BorderSide(color: Colors.black26)),
+  //     width: 30,
+  //     onTap: () {
+  //       widget.delete();
+  //     },
+  //     child: const Icon(
+  //       Icons.delete,
+  //       size: 30,
+  //       color: Colors.redAccent,
+  //     ),
+  //   );
+  // }
 
   Widget _baseUnitPrice(UnitsModel unit) {
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
         // if selected unit is base unit
-        unit.baseUnit == null
-            ? Text(
-                unit.code,
-                style: normalTextStyle(context,
-                    fontWeightDelta: 2, fontSizeFactor: 1.2),
-              )
-            : FutureBuilder<UnitsModel?>(
-                future: UnitsProvider.getUnitInfo(unit.baseUnit!),
-                builder: (BuildContext context,
-                    AsyncSnapshot<UnitsModel?> snapshot) {
-                  return Text(
-                    snapshot.data?.code ?? '',
-                    style: normalTextStyle(context,
-                        fontWeightDelta: 2, fontSizeFactor: 1.2),
-                  );
-                },
-              ),
+        (unit.baseUnit == null
+                ? Text(
+                    capitalizeText(unit.code),
+                    style: normalTextStyle(context, fontWeightDelta: 2),
+                  )
+                : FutureBuilder<UnitsModel?>(
+                    future: UnitsProvider.getUnitInfo(unit.baseUnit!),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<UnitsModel?> snapshot) {
+                      return Text(
+                        capitalizeText(snapshot.data?.code ?? ''),
+                        style: normalTextStyle(context, fontWeightDelta: 2),
+                      );
+                    },
+                  ))
+            .paddingRight(4),
         _productPrice()
       ],
     );
   }
 
   Widget _productPrice() {
-    return Text(product?.getFormatedPriceIVA(decimals: 1) ?? '',
-        style: numbersTextStyle(fontWeight: FontWeight.normal));
+    return Text(
+      product?.getFormatedPriceIVA(decimals: 1) ?? '',
+      style: normalTextStyle(context),
+      overflow: TextOverflow.ellipsis,
+    );
   }
 
   void _stockAlert() {
@@ -376,7 +404,9 @@ class _ProductCardState extends State<ProductCard> {
       (getFormatedCurrency(
         (product?.getPriceWithIVA() ?? 1) * (product?.quantity ?? 1),
       )).toString(),
-      style: numbersTextStyle(fontWeight: FontWeight.bold),
+      style:
+          numbersTextStyle(fontWeight: FontWeight.bold, color: greyDarkerColor),
+      overflow: TextOverflow.ellipsis,
     );
   }
 

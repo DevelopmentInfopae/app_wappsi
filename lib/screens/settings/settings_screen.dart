@@ -14,7 +14,7 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: appBar(context, 'Ajustes', image: 'assets/images/settings.png',
           onPop: () {
-        dataBloc.homeKey.currentState?.selectTab(TabItem.home);
+        dataBloc.homeKey?.currentState?.selectTab(TabItem.home);
       }),
       body: _body(context),
     );

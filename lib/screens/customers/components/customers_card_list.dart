@@ -36,6 +36,7 @@ class _CustomerCardListState extends State<CustomerCardList> {
     return Stack(
       children: [
         ListView.separated(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           controller: _controller,
           padding: EdgeInsets.zero,
           itemCount: widget.customer.length + (_allLoaded ? 1 : 0),

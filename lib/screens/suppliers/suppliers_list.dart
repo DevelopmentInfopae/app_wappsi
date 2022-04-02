@@ -11,7 +11,6 @@ import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/providers/companies_provider.dart';
-import 'package:pos_wappsi/screens/customers/components/customers_card_list.dart';
 
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 import 'package:pos_wappsi/components/appbar_leading.dart';
@@ -61,7 +60,7 @@ class _ProductsState extends State<Suppliers> {
         elevation: false,
         radius: 0,
         image: 'assets/images/enterprise.png', onPop: () {
-      dataBloc.homeKey.currentState?.selectTab(TabItem.home);
+      dataBloc.homeKey?.currentState?.selectTab(TabItem.home);
       _searchController.close();
     },
         leading: AppBarLeading(

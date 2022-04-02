@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -53,7 +55,7 @@ class _ProductsState extends State<OrdersList> {
 
     return WillPopScope(
       onWillPop: () async {
-        dataBloc.homeKey.currentState?.changeBottomIndex(1);
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
         // printConsole('here i am');
         return true;
       },
@@ -63,7 +65,7 @@ class _ProductsState extends State<OrdersList> {
             elevation: false,
             radius: 0,
             image: 'assets/images/order-list.png', onPop: () {
-          dataBloc.homeKey.currentState?.changeBottomIndex(1);
+          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           Navigator.pop(context);
         }),
         body: _body(),
@@ -75,8 +77,16 @@ class _ProductsState extends State<OrdersList> {
     return Column(
       children: [
         _searchBar(),
-        showFilters ? _filterList() : const SizedBox(),
+        AnimatedCrossFade(
+            firstChild: _filterList(),
+            secondChild: SizedBox(),
+            crossFadeState: showFilters
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            duration: Duration(milliseconds: 200)),
         // _ordersList(),
+
+        // showFilters ? _filterList() : const SizedBox(),
         GestureDetector(
           child: RefreshIndicator(
               displacement: 0,
@@ -112,8 +122,8 @@ class _ProductsState extends State<OrdersList> {
     );
   }
 
-  AnimatedContainer _filterList() {
-    return AnimatedContainer(
+  Widget _filterList() {
+    return Container(
       decoration: const BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
           color: Colors.grey,
@@ -122,9 +132,6 @@ class _ProductsState extends State<OrdersList> {
         )
       ]),
       width: double.infinity,
-      duration: const Duration(seconds: 2),
-      curve: Curves.fastOutSlowIn,
-      // height: 100,
       child: FutureBuilder(
         future: LocalOrdersProvider.orderStatus(),
         builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {

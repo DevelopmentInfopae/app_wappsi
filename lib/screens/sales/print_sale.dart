@@ -59,7 +59,7 @@ class _PrintSaleState extends State<PrintSale> {
     _pc = pColor;
     return WillPopScope(
       onWillPop: () async {
-          dataBloc.homeKey.currentState?.changeBottomIndex(1);
+          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           // printConsole('here i am');
           return true;
         },

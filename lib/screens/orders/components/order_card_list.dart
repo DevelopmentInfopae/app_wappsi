@@ -6,7 +6,6 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/order_model.dart';
 import 'package:pos_wappsi/providers/local_orders_provider.dart';
 import 'package:pos_wappsi/screens/orders/print_order.dart';
-
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/text_formating/date_to_text.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
@@ -45,6 +44,7 @@ class _OrdersCardListState extends State<OrdersCardList> {
     return Stack(
       children: [
         ListView.separated(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           controller: _controller,
           padding: EdgeInsets.zero,
           itemCount: widget.orders.length + (_allLoaded ? 1 : 0),
@@ -115,28 +115,23 @@ class _OrdersCardListState extends State<OrdersCardList> {
 
 // class to show customer indormation in form of a card
 
-class OrdersCard extends StatefulWidget {
+class OrdersCard extends StatelessWidget {
   final OrderModel order;
 
   final String action;
-  const OrdersCard({Key? key, required this.order, required this.action})
+  OrdersCard({Key? key, required this.order, required this.action})
       : super(key: key);
 
-  @override
-  _OrdersCardState createState() => _OrdersCardState();
-}
-
-class _OrdersCardState extends State<OrdersCard> {
   // late Size _size;
-  Map<String, Color> cardColors = {};
+  final Map<String, Color> cardColors = {};
   @override
   Widget build(BuildContext context) {
-    cardColors = mapOrderStatusColor(widget.order.saleStatus);
+    cardColors.addAll(mapOrderStatusColor(order.saleStatus));
     // _size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () async {
         PrintOrder(
-          printData: await widget.order.buildPrintDataMap(),
+          printData: await order.buildPrintDataMap(),
           back: true,
           exitToNewOrder: false,
         ).launch(context);
@@ -146,21 +141,36 @@ class _OrdersCardState extends State<OrdersCard> {
         shadowColor: cardColors['background'],
         margin: const EdgeInsets.symmetric(horizontal: 4),
         elevation: 5,
-        child: _description(),
+        child: _description(context),
       ),
     );
   }
 
-  Widget _description() {
+  Widget _description(var context) {
+    final value = getFormatedCurrency(order.grandTotal);
+
     return Padding(
       padding: const EdgeInsets.only(top: 6, bottom: 6, right: 8, left: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _status().paddingSymmetric(horizontal: 8),
-          _customer(),
-          _date(),
-          _reference(),
+          _status(context).paddingSymmetric(horizontal: 8),
+          labelContentH('Cliente:', capitalizeText(order.customer), context,
+              withInnerPading: false,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
+          labelContentH(
+              'Fecha:',
+              capitalizeText(parseDateStrES(order.registrationDate ?? '') +
+                  ' ' +
+                  parseTimeStrES(order.registrationDate ?? '')),
+              context,
+              withInnerPading: false,
+              flexCol1: 1,
+              flexCol2: 3,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
+          labelContentH('Referencia No:', order.referenceNo ?? '', context,
+              withInnerPading: false,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
           Container(
             decoration: BoxDecoration(
                 color: Colors.grey[200],
@@ -168,16 +178,15 @@ class _OrdersCardState extends State<OrdersCard> {
             padding: const EdgeInsets.all(4),
             child: Column(
               children: [
-                // Row(
-                //   children: [
-                //     _status().flexible(flex: 2),
-                //     _items().flexible(flex: 2),
-                //   ],
-                // ),
-                // _total(),
-                // _discount(),
-                _items(),
-                _grandTotal()
+                labelContentH('Items:', (order.totalItems).toString(), context,
+                    withInnerPading: false,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
+                labelContentH(
+                    'Total:', value.substring(0, value.length - 1), context,
+                    withInnerPading: false,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2))
               ],
             ),
           ),
@@ -190,41 +199,7 @@ class _OrdersCardState extends State<OrdersCard> {
     );
   }
 
-  Widget _customer() {
-    return labelContentH(
-        'Cliente:', capitalizeText(widget.order.customer), context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
-
-  Widget _date() {
-    return labelContentH(
-        'Fecha:',
-        capitalizeText(parseDateStrES(widget.order.registrationDate ?? '') +
-            ' ' +
-            parseTimeStrES(widget.order.registrationDate ?? '')),
-        context,
-        withInnerPading: false,
-        flexCol1: 1,
-        flexCol2: 3,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
-
-  Widget _reference() {
-    return labelContentH(
-        'Referencia No:', widget.order.referenceNo ?? '', context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
-
-  Widget _items() {
-    return labelContentH(
-        'Items:', (widget.order.totalItems).toString(), context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
-
-  Widget _status() {
+  Widget _status(var context) {
     return Row(
       children: [
         Text(
@@ -240,7 +215,7 @@ class _OrdersCardState extends State<OrdersCard> {
               color: cardColors['background'],
               borderRadius: BorderRadius.circular(10)),
           child: Text(
-            mapOrderStatus(widget.order.saleStatus),
+            mapOrderStatus(order.saleStatus),
             textAlign: TextAlign.center,
             style: normalTextStyle(context,
                 fontWeightDelta: 2, color: cardColors['text']),
@@ -248,31 +223,5 @@ class _OrdersCardState extends State<OrdersCard> {
         ),
       ],
     );
-  }
-
-  // Widget _total() {
-  //   final value = getFormatedCurrency(
-  //       widget.order.total ?? widget.order.grandTotal,
-  //       decimals: 1);
-  //   return labelContentH(
-  //       'Subtotal:', value.substring(0, value.length - 1), context,
-  //       withInnerPading: false,
-  //       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  // }
-
-  // Widget _discount() {
-  //   final value = getFormatedCurrency(widget.order.orderDiscount);
-  //   return labelContentH(
-  //       'Descuento:', value.substring(0, value.length - 1), context,
-  //       withInnerPading: false,
-  //       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  // }
-
-  Widget _grandTotal() {
-    final value = getFormatedCurrency(widget.order.grandTotal);
-    return labelContentH(
-        'Total:', value.substring(0, value.length - 1), context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 }

@@ -3,6 +3,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/purchases_bloc.dart';
 
 import 'package:pos_wappsi/config/endpoints.dart';
+import 'package:pos_wappsi/models/purchase_items_model.dart';
 
 // import 'package:pos_wappsi/models/sale_model.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
@@ -20,12 +21,12 @@ class PurchaseProvider {
     Map<String, dynamic> purchase = purchaseBloc.getPurchase!
         .buildPurchase(dataBloc.userData!, productsDetails);
 
-    // List<Map<String, dynamic>> purchaseItems =
-    //     purchaseSaleItemsModel.buildOderSaleItems(
-    //         purchaseBloc.getProducts!.keys.toList());
+    List<Map<String, dynamic>> purchaseItems =
+        PurchaseItemsModel.buildPurchaseSaleItems(
+            purchaseBloc.getProducts!.keys.toList(), dataBloc.userData!);
     // final debug = sale.toString();
 
-    final data = {'purchase_sales': purchase, 'purchase_sale_items': []};
+    final data = {'purchase': purchase, 'purchase_items': purchaseItems};
     final api = DataProvider();
 
     try {
@@ -100,7 +101,21 @@ class PurchaseProvider {
     if (res['error'] ?? true) {
       return false;
     } else {
-      return res['data']['valid_ref'];
+      return res['body']?['data']?['valid_ref']??false;
+    }
+  }
+
+  static Future<bool> valitateConsecutive(
+      String consecutiveSup, int supplierId) async {
+    final dProv = DataProvider();
+    final res = await dProv.postPetition(
+        checkPuSupConsEndP,
+        {"consecutive_supplier": consecutiveSup, "supplier_id": supplierId},
+        dataBloc.getHeaders());
+    if (res['error'] ?? true) {
+      return false;
+    } else {
+      return res['body']?['data']?['valid_consecutive']??false;
     }
   }
 }

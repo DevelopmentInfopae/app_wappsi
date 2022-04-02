@@ -58,7 +58,7 @@ class _ProductsState extends State<Products> {
 
     return WillPopScope(
       onWillPop: () async {
-        dataBloc.homeKey.currentState?.changeBottomIndex(1);
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
         // printConsole('here i am');
         return true;
       },
@@ -68,7 +68,7 @@ class _ProductsState extends State<Products> {
             elevation: false,
             radius: 0,
             image: 'assets/images/box.png', onPop: () {
-          dataBloc.homeKey.currentState?.changeBottomIndex(1);
+          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           Navigator.pop(context);
         }),
         body: _body(),

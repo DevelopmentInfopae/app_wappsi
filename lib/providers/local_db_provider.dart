@@ -1,5 +1,7 @@
 // import 'dart:convert';
 import 'dart:io';
+
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/bloc/printer_bloc.dart';
@@ -7,7 +9,6 @@ import 'package:pos_wappsi/config/bd_creation.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 
 class DBProvider {
   // ignore: avoid_init_to_null
@@ -36,7 +37,7 @@ class DBProvider {
     // printConsole(path);
 
     // creation of db
-    return await openDatabase(path, version: 3, onOpen: (db) {},
+    return await openDatabase(path, version: 4, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       // table creation
 
@@ -82,6 +83,8 @@ class DBProvider {
       // quotes tables
       await db.execute(quotesTable);
       await db.execute(quoteItemsTable);
+      await db.execute(purchasesSql);
+      await db.execute(purchaseItems);
 
       ///Errors log
       await db.execute(errorsData);
@@ -194,7 +197,7 @@ class DBProvider {
             conflictAlgorithm: ConflictAlgorithm.replace);
       } catch (e) {
         await printAndSaveError(e);
-        
+
         try {
           String values = getStringFromValues(element.values);
           String sql =

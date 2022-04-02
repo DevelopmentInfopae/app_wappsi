@@ -125,7 +125,9 @@ String capitalizeText(String value) {
     '"adis"'
   ];
   final specialLowerCases = ['de', 'la', 'el', 'los', 'las', 'y', 'o', 'con'];
-
+  if(value.endsWith(' ')){
+    value = value.substring(0,value.length-1);
+  }
   if (value.isNotEmpty) {
     List<String> words = value.split(' ');
     if (words.isEmpty) {

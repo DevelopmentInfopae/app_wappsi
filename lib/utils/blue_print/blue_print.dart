@@ -13,9 +13,10 @@ import 'package:pos_wappsi/utils/blue_print/blue_print_functions.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class PrintFormat {
-  PrintFormat({this.productsList, this.movementInfo});
+  PrintFormat({this.productsList, this.movementInfo,this.registerCloseInfo});
   List<Map>? productsList;
   Map<String, String>? movementInfo;
+  Map<String, String>? registerCloseInfo;
   // int chrLen = 48;
   int chrLen = 32;
 
@@ -199,12 +200,12 @@ class PrintFormat {
         final value = getFormatedCurrency(
             double.tryParse(movementInfo!['value'].toString()) ?? 0.0);
         final Map<String, String> keyValues2 = {
-          'Usuario:   ': movementInfo!['user_name'].toString(),
-          'Fecha:     ': movementInfo!['date'].toString(),
-          'Referencia:': movementInfo!['reference_no'].toString(),
-          'Sucursal: ': movementInfo!['biller_name'].toString(),
+          'Usuario:    ': movementInfo!['user_name'].toString(),
+          'Fecha:      ': movementInfo!['date'].toString(),
+          'Referencia: ': movementInfo!['reference_no'].toString(),
+          'Sucursal:   ': movementInfo!['biller_name'].toString(),
           'Tipo movimiento:': movementInfo!['movement_type'].toString(),
-          'Valor:    ': value.substring(0, value.length),
+          'Valor:      ': value.substring(0, value.length),
           // 'Nota de movimiento: ': movementInfo!['biller_name'].toString(),
           // 'Tipo de movimiento: ': movementInfo!['movement_type'],
         };
@@ -218,6 +219,77 @@ class PrintFormat {
                 ? replaceSpecialCharacters(
                     dataBloc.settings?['razon_social'] ?? '')
                 : dataBloc.settings?['razon_social'] ?? '',
+            styles: const PosStyles(bold: true, align: PosAlign.center));
+        generator.reset();
+        bytes += generator.emptyLines(1);
+        bytes = printLabeledValues(
+          generator,
+          bytes,
+          keyValues2.keys.toList(),
+          keyValues2.values.toList(),
+          _innerPrinter,
+          chrLen,
+          col2: PosAlign.left,
+          col1: PosAlign.left,
+        );
+
+        bytes += generator.emptyLines(3);
+        bytes += generator.hr(len: chrLen, ch: '_');
+        bytes += generator.text('Firma y sello',
+            styles: const PosStyles(align: PosAlign.center));
+        bytes += generator.emptyLines(1);
+        bytes = wappsiSpam(_innerPrinter, bytes, generator);
+
+        bytes += generator.feed(2);
+        // ignore: unnecessary_statements
+        _innerPrinter ? null : bytes += generator.cut();
+
+        await bluetooth.writeBytes(Uint8List.fromList(bytes));
+      }
+    });
+
+    return true;
+  }
+
+
+  Future<bool?> printRegisterClose(String pathImage) async {
+    chrLen = Environment().printerPaperSize == '1' ? 32 : 48;
+    await bluetooth.isConnected.then((isConnected) async {
+      if (isConnected!) {
+        final _innerPrinter =
+            (printerBloc.getPrinterDevice?.name == 'InnerPrinter');
+        final profile = await CapabilityProfile.load();
+        final generator = Generator(
+            chrLen == 32 ? PaperSize.mm58 : PaperSize.mm80, profile,
+            spaceBetweenRows: 1);
+        generator.spaceBetweenRows = 1;
+        // generator.
+        generator.setGlobalCodeTable('CP1252');
+        generator.setGlobalFont(PosFontType.fontB);
+
+        final value = getFormatedCurrency(
+            double.tryParse((registerCloseInfo?['value']??'').toString()) ?? 0.0, decimals: 0);
+        final Map<String, String> keyValues2 = {
+          'Usuario:  ': (registerCloseInfo?['user_name']??'').toString(),
+          'Fecha:    ': (registerCloseInfo?['date']??'').toString(),
+          'Sucursal: ': (registerCloseInfo?['biller_name']??'').toString(),
+          // 'Tipo movimiento:': (registerCloseInfo?['movement_type']??'').toString(),
+          'Valor:    ': value,
+        };
+
+        List<int> bytes = [];
+
+        // delete print buffer
+        bytes = await image(generator, pathImage, assetImage: false);
+        bytes += generator.text(
+            _innerPrinter
+                ? replaceSpecialCharacters(
+                    dataBloc.settings?['razon_social'] ?? '')
+                : dataBloc.settings?['razon_social'] ?? '',
+            styles: const PosStyles(bold: true, align: PosAlign.center));
+        bytes += generator.emptyLines(1);
+        bytes += generator.text(
+            'Cierre de caja',
             styles: const PosStyles(bold: true, align: PosAlign.center));
         generator.reset();
         bytes += generator.emptyLines(1);

@@ -97,7 +97,7 @@ class _DBSyncElementsState extends State<DBSyncElements> {
               '/',
               (route) => false,
             );
-            dataBloc.homeKey.currentState?.selectTab(TabItem.home);
+            dataBloc.homeKey?.currentState?.selectTab(TabItem.home);
           },
         ),
         _pc,

@@ -63,7 +63,7 @@ class UnitsProvider {
 
   static Future<Map<String, dynamic>?> getProductUnit(
       BuildContext context, ProductModel product, String priceGroupId,
-      {bool showAllwaysUnitAlert = false}) async {
+      {bool showAllwaysUnitAlert = false, bool showInvInstOfPrice=false}) async {
     final units = await UnitsProvider.getProductUnits(
         product.idCloud.toString(), priceGroupId);
     printConsole(units.first.name);
@@ -78,6 +78,7 @@ class UnitsProvider {
             return SelectProductUnitDialog(
               product: product,
               units: units,
+              showInvInstOfPrice: showInvInstOfPrice,
             );
           });
     } else {

@@ -59,7 +59,7 @@ class _ProductsState extends State<Customers> {
         elevation: false,
         radius: 0,
         image: 'assets/images/people.png', onPop: () {
-      dataBloc.homeKey.currentState?.selectTab(TabItem.home);
+      dataBloc.homeKey?.currentState?.selectTab(TabItem.home);
       _searchController.close();
     },
         leading: AppBarLeading(

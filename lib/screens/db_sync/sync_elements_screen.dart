@@ -44,7 +44,7 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
     _pc = pColor;
     return WillPopScope(
       onWillPop: () async {
-        dataBloc.homeKey.currentState?.changeBottomIndex(1);
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
         return true;
       },
       child: Scaffold(
@@ -57,7 +57,7 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
   PreferredSize _appBar(BuildContext context) =>
       appBar(context, 'Sincronización',
           image: 'assets/images/synchronization.png', onPop: () {
-        dataBloc.homeKey.currentState?.changeBottomIndex(1);
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
         Navigator.pop(context);
       });
 

@@ -43,6 +43,7 @@ class _ProductCardListState extends State<ProductCardList> {
     _size = MediaQuery.of(context).size;
     return Stack(children: [
       ListView.separated(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         controller: _controller,
         padding: EdgeInsets.zero,
         addAutomaticKeepAlives: false,

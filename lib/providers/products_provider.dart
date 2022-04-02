@@ -309,20 +309,21 @@ class ProductsProvider {
     Map<String, dynamic>? unitInfo;
     if (policyReq['product_unit']) {
       String priceGroupId = '';
-
+      bool showInvInstOfPrice = false;
       if (fromOrder) {
         priceGroupId = orderBloc.getCustomer!.priceGroupId!;
       } else if (fromQuote) {
         priceGroupId = quoteBloc.getCustomer!.priceGroupId!;
       } else if (fromPurchase) {
-        //nothing to do
-      }else {
+        showInvInstOfPrice = true;
+      } else {
         priceGroupId = posBloc.getCustomer!.priceGroupId!;
       }
 
       unitInfo = await UnitsProvider.getProductUnit(
           context, product, priceGroupId,
-          showAllwaysUnitAlert: showAllwaysUnitAlert);
+          showAllwaysUnitAlert: showAllwaysUnitAlert,
+          showInvInstOfPrice: showInvInstOfPrice);
       if (unitInfo != null) {
         final unit = unitInfo['unit'];
         req['product_unit'] = unitInfo['unit'];

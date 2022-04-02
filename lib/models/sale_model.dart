@@ -87,6 +87,7 @@ class SaleModel {
       required this.costCenterId,
       this.saleTipAmount,
       this.restobarModeModule,
+      this.orderSaleOrigin=2,
       this.shippingInGrandTotal,
       this.paymentDocumentTypeId,
       this.restobarTable,
@@ -136,6 +137,7 @@ class SaleModel {
   int seller;
   String customer;
   int customerBranch;
+  int orderSaleOrigin;
   dynamic addItem;
   List<int>? productOrderedProductId;
   List<int>? underCostAuthorized;
@@ -410,6 +412,7 @@ class SaleModel {
         "unit_price": unitPrice,
         "real_unit_price": realUnitPrice,
         "quantity": quantity,
+        "order_sale_origin": orderSaleOrigin,
         "product_unit": productUnit,
         "product_unit_id_selected": productUnitIdSelected,
         "product_base_quantity": productBaseQuantity,

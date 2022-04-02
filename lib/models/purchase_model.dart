@@ -22,9 +22,9 @@ class PurchaseModel {
     this.orderDiscountId,
     this.orderDiscount,
     this.totalDiscount,
-    this.productTax,
+    this.productTax=0.0,
     this.orderTaxId,
-    this.orderTax,
+    this.orderTax=0.0,
     this.totalTax = 0.0,
     this.shipping= 0.0,
     this.grandTotal,
@@ -526,9 +526,9 @@ class PurchaseModel {
     totalTax= productsDetails['product_total_tax'];
     status= 'pending';
     orderTax= 0;
-    total= purchaseBloc.getSubTotalWithoutDiscount();
-    grandTotal= purchaseBloc.getSubTotal();
-    orderDiscount= purchaseBloc.getDiscount;
+    total= purchaseBloc.getSubTotalCostWithoutDiscount();
+    grandTotal= purchaseBloc.getSubTotalCost();
+    // orderDiscount= purchaseBloc.getDiscount;
     supplier= supp.name ?? supp.company ?? '';
     supplierId= int.parse(supp.idCloud ?? '0');
     billerId= user.billerId;
@@ -539,7 +539,8 @@ class PurchaseModel {
     productTax= productsDetails['product_total_tax'];
     documentTypeId= purchaseBloc.getDocumentType?.idCloud ?? '';
     productDiscount= productsDetails['product_total_discount'];
-    totalDiscount= productsDetails['product_total_discount'] + purchaseBloc.getTotalDiscount();
+    // to manage discounts
+    // totalDiscount= productsDetails['product_total_discount'] + purchaseBloc.getTotalDiscount();
     
     return toJsonToSend();
       // here we add order tax if needed

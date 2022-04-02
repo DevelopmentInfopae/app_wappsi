@@ -60,7 +60,7 @@ class _PrintQuoteState extends State<PrintQuote> {
     return WillPopScope(
       onWillPop: () async {
         if (widget.exitToNewQuote) {
-          dataBloc.homeKey.currentState?.changeBottomIndex(1);
+          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           // printConsole('here i am');
           return true;
         } else {

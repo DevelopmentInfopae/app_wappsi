@@ -215,6 +215,17 @@ class ProductModel {
 
     return pwoutIVA;
   }
+  double getCOstWithoutIVA() {
+    double pwoutIVA = cost;
+
+    if (taxMethod == 0) {
+      pwoutIVA = cost / ((100 + taxRate!) / 100);
+    } else {
+      pwoutIVA = cost;
+    }
+
+    return pwoutIVA;
+  }
 
   String getFormatedPriceIVA({int? decimals}) {
     return getFormatedCurrency(getPriceWithIVA(), decimals: decimals);
@@ -234,6 +245,18 @@ class ProductModel {
       pwithIVA = price;
     } else {
       pwithIVA = price * (100 + taxRate!) / 100;
+    }
+
+    return pwithIVA;
+  }
+
+  double getCostWithIVA() {
+    double pwithIVA = price;
+
+    if (taxMethod == 0) {
+      pwithIVA = cost;
+    } else {
+      pwithIVA = cost * (100 + taxRate!) / 100;
     }
 
     return pwithIVA;
@@ -383,6 +406,117 @@ class ProductModel {
           "subtotal":
               products[key]!.getPriceWithIVA() * products[key]!.quantity,
           "price_before_tax": products[key]!.getPriceWithoutIVA(),
+          "unit_quantity": products[key]!.quantity
+        });
+      }
+    }
+    return {
+      'product_id': _ids,
+      'product_total_discount': totalDiscount,
+      'product_total_tax': totalTax,
+      'product_type': _types,
+      'product_code': _codes,
+      'product_name': _names,
+      'product_discount': _discounts,
+      'product_discount_val': _discountValues,
+      'product_tax': _taxRateIds,
+      'product_tax_rate': _taxRates,
+      'unit_product_tax': _taxValues,
+      'product_tax_val': _taxValues,
+      'net_price': _prices,
+      'unit_price': _pricesIVA,
+      'real_unit_price': _pricePPolicy,
+      'quantity': _quantitys,
+      'product_unit': _units,
+      'product_unit_id_selected': _unitsSelected,
+      'product_base_quantity': _quantitys,
+      "product_detail_list": productsDetails
+    };
+  }
+
+  ///Returns a Map<String,dynamic>, where the keys are the same of
+  ///SaleModel.fromJson(), it could be usefull to build an instance of
+  ///SaleModel to send to an endpoint of API's service. It also returns
+  ///key product_detail_list wich contains a list of product details
+  static Map<String, dynamic> getProductDetailsWithCost(
+      Map<String, ProductModel>? products,
+      int warehouseId,
+      Map<String, UnitsModel>? units) {
+    List<double> _quantitys = [];
+    List<int> _units = [];
+    List<int?> _unitsSelected = [];
+    List<int> _ids = [];
+    List<String> _types = [];
+    List<String> _codes = [];
+    List<String> _names = [];
+    List<int> _discounts = [];
+    List<double> _discountValues = [];
+    List<int> _taxRates = [];
+    List<double> _taxValues = [];
+    List<double> _prices = [];
+    List<double?> _pricePPolicy = [];
+    List<double> _pricesIVA = [];
+    List<double> _realPrices = [];
+    List<int> _taxRateIds = [];
+
+    // to order
+
+    double totalDiscount = 0.0;
+    double totalTax = 0.0;
+
+    /// To save product details to save into local db
+    List<Map<String, dynamic>> productsDetails = [];
+
+    if (products != null && products != {}) {
+      for (var key in products.keys) {
+        final pIVA = products[key]!.getCostWithIVA();
+        final pNoIVA = products[key]!.getCOstWithoutIVA();
+        final taxValue = pIVA - pNoIVA;
+        final discountVal =
+            (products[key]!.priceWithoutDiscount! - products[key]!.price);
+        _ids.add(products[key]!.idCloud);
+        _codes.add(products[key]!.code);
+        _quantitys.add(products[key]!.quantity);
+        _units.add(products[key]!.unit);
+        _unitsSelected.add(units?[key]?.idCloud);
+        _types.add(products[key]!.type);
+        _names.add(products[key]!.name);
+        totalDiscount += products[key]!.discount;
+        _discounts.add(products[key]!.discount.toInt());
+        _discountValues.add(discountVal < 0 ? 0 : discountVal);
+        totalTax += products[key]!.taxRate ?? 0;
+        _taxRates.add(products[key]!.taxRate!.toInt());
+        _taxValues.add(taxValue);
+        _prices.add(pNoIVA);
+        _pricePPolicy.add(products[key]!.pricePolicyPrices);
+        _pricesIVA.add(pIVA);
+        _realPrices.add(products[key]!.priceWithoutDiscount!);
+        _taxRateIds.add(products[key]!.taxRateId);
+
+        double discountPercent = 1 -
+            (products[key]!.price /
+                (products[key]!.priceWithoutDiscount ?? products[key]!.price));
+        discountPercent = discountPercent * 100;
+
+        productsDetails.add({
+          "product_id": products[key]!.idCloud,
+          "product_type": products[key]!.type,
+          "product_code": products[key]!.code,
+          "product_name": products[key]!.name,
+          "quantity": products[key]!.quantity,
+          "warehouse_id": warehouseId,
+          "tax_rate_id": products[key]!.taxRateId,
+          "unit_": products[key]!.taxRateId,
+          "product_unit_id": products[key]!.unit,
+          "product_unit_id_selected": units?[key]?.idCloud,
+          "tax": products[key]!.taxRateName,
+          "unit_price": pIVA,
+          "net_unit_price": pNoIVA,
+          "discount": discountPercent.toString() + '%',
+          "item_tax": taxValue,
+          "subtotal":
+              products[key]!.getPriceWithIVA() * products[key]!.quantity,
+          "price_before_tax": products[key]!.getCOstWithoutIVA(),
           "unit_quantity": products[key]!.quantity
         });
       }

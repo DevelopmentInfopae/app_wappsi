@@ -99,7 +99,7 @@ TextStyle appBarTextStyle({double fontSizeFactor = 1}) {
 }
 
 TextStyle normalTextStyle(BuildContext context,
-    {fontSizeFactor = 1.0, int fontWeightDelta = 0, Color? color}) {
+    {fontSizeFactor = 1.03, int fontWeightDelta = 0, Color? color}) {
   return Theme.of(context).primaryTextTheme.subtitle1!.apply(
       fontSizeFactor: fontSizeFactor,
       color: color ?? greyDarkerColor,

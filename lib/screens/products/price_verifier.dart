@@ -62,7 +62,7 @@ class _ProductPriceState extends State<ProductPrice> {
     return Scaffold(
       appBar: appBar(context, 'Verificador',
           elevation: false, image: 'assets/images/give-money.png', onPop: () {
-        dataBloc.homeKey.currentState?.selectTab(TabItem.home);
+        dataBloc.homeKey?.currentState?.selectTab(TabItem.home);
         // _searchFocusNode.unfocus();
         _searchController.close();
       }),

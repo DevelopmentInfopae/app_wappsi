@@ -16,21 +16,20 @@ import 'package:rxdart/rxdart.dart';
 
 class DataBloc {
   // to save data of user
-  // final _tokenController = BehaviorSubject<String>();
-  final _userController = BehaviorSubject<UserModel>();
-  final _permissionsController = BehaviorSubject<PermissionsModel>();
-  final _registerController = BehaviorSubject<RegisterModel>();
-  final _settingsController = BehaviorSubject<Map<String, dynamic>>();
+  // final _tokenController   = BehaviorSubject<String>();
+  final _userController = BehaviorSubject<UserModel?>();
+  final _permissionsController = BehaviorSubject<PermissionsModel?>();
+  final _registerController = BehaviorSubject<RegisterModel?>();
+  final _billerDataController = BehaviorSubject<BillerDataModel?>();
+  final _companiesBillerController = BehaviorSubject<CompanyModel?>();
+  final _settingsController = BehaviorSubject<Map<String, dynamic>?>();
 
-  final _billerDataController = BehaviorSubject<BillerDataModel>();
-  final _companiesBillerController = BehaviorSubject<CompanyModel>();
-
-  final _dirPathController = BehaviorSubject<String>();
+  final _dirPathController = BehaviorSubject<String?>();
 
   final _syncingController = StreamController<Map<String, bool>>.broadcast();
 
   /// To control HomeState and switch between offstages and update Home bottom widget
-  final _homeKeyController = BehaviorSubject<GlobalKey<HomeState>>();
+  final _homeKeyController = BehaviorSubject<GlobalKey<HomeState>?>();
 
   //______________________________________________________________________________________________________________
   //
@@ -85,13 +84,13 @@ class DataBloc {
   Map<String, dynamic>? get settings => _settingsController.valueOrNull;
 
   String getToken() {
-    return _userController.value.token;
+    return _userController.value!.token;
   }
 
   /// To control Home state, like selected tab item or current bottomBar
-  GlobalKey<HomeState> get homeKey => _homeKeyController.value;
+  GlobalKey<HomeState>? get homeKey => _homeKeyController.valueOrNull;
 
-  Map<String, dynamic> get userDataMap => _userController.value.toJson();
+  Map<String, dynamic> get userDataMap => _userController.value!.toJson();
 
   UserModel? get userData => _userController.valueOrNull;
 
@@ -104,11 +103,11 @@ class DataBloc {
   CompanyModel? get getBillerCompany => _companiesBillerController.valueOrNull;
 
   Map<String, dynamic> get registerDataMap =>
-      _registerController.value.toJson();
+      _registerController.value!.toJson();
 
   // Map<String, bool>? get getSyncStatus => _syncingController.valueOrNull;
 
-  RegisterModel get registerData => _registerController.value;
+  RegisterModel? get registerData => _registerController.valueOrNull;
 
   //______________________________________________________________________________________________________________
   //
@@ -117,16 +116,16 @@ class DataBloc {
 
   /// Request server logout
   Future<Map<String, dynamic>> logout() async {
-    dataBloc.homeKey.currentState?.syncLoader(true);
+    dataBloc.homeKey?.currentState?.syncLoader(true);
     final res = await UserProvider.logout();
-    dataBloc.homeKey.currentState?.syncLoader(false);
+    dataBloc.homeKey?.currentState?.syncLoader(false);
     return res;
   }
 
   /// update current JWT token to extend session time
   Future refreshToken(BuildContext context) async {
-    if (!(dataBloc.homeKey.currentState?.syncing ?? true)) {
-      dataBloc.homeKey.currentState?.syncLoader(true);
+    if (!(dataBloc.homeKey?.currentState?.syncing ?? true)) {
+      dataBloc.homeKey?.currentState?.syncLoader(true);
       Map<String, dynamic>? res;
       try {
         res = await UserProvider.refreshToken();
@@ -134,7 +133,7 @@ class DataBloc {
         // printConsole(e);
         await logError(e, from: 'Refresh token');
       }
-      dataBloc.homeKey.currentState?.syncLoader(false);
+      dataBloc.homeKey?.currentState?.syncLoader(false);
       if (res != null) {
         reloadDialog(context, res['body']['message'] ?? '',
             'assets/images/dizzy-robot.png');
@@ -143,7 +142,7 @@ class DataBloc {
   }
 
   Future<List> syncElements(List<String> elements, BuildContext context) async {
-    dataBloc.homeKey.currentState?.syncLoader(true);
+    dataBloc.homeKey?.currentState?.syncLoader(true);
     final syncDB = SyncDBProvider();
     final res = await Future.wait(
       elements.map((element) {
@@ -151,7 +150,7 @@ class DataBloc {
       }).toList(),
     );
 
-    dataBloc.homeKey.currentState?.syncLoader(false);
+    dataBloc.homeKey?.currentState?.syncLoader(false);
     return res;
   }
 
@@ -160,6 +159,17 @@ class DataBloc {
       'content-Type': 'application/json',
       'Authorization': dataBloc.getToken()
     };
+  }
+
+  reload() {
+    _userController.value = null;
+    _registerController.value = null;
+    _billerDataController.value = null;
+    _companiesBillerController.value = null;
+    _dirPathController.value = null;
+    _permissionsController.value = null;
+    _homeKeyController.value = null;
+    _settingsController.value = null;
   }
 
   dispose() {

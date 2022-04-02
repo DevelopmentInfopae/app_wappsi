@@ -15,7 +15,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        dataBloc.homeKey.currentState?.changeBottomIndex(1);
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
         // printConsole('here i am');
         return true;
       },
@@ -23,7 +23,7 @@ class ProfileScreen extends StatelessWidget {
         // backgroundColor: Colors.white,
         appBar: appBar(context, 'Perfil', image: 'assets/images/user.png',
             onPop: () {
-          dataBloc.homeKey.currentState?.changeBottomIndex(1);
+          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           Navigator.pop(context);
         }),
         body: _body(context).paddingOnly(bottom: 5),

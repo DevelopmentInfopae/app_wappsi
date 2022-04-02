@@ -4,6 +4,9 @@
 
 import 'dart:convert';
 
+import 'package:pos_wappsi/bloc/purchases_bloc.dart';
+import 'package:pos_wappsi/models/user_model.dart';
+
 class PurchaseItemsModel {
   PurchaseItemsModel({
     this.id,
@@ -50,7 +53,7 @@ class PurchaseItemsModel {
     this.returnedQuantity=0.0,
     this.registrationDate,
     this.expenseCategoryCreditorLedgerId,
-    this.calculatedAvgCost,
+    // this.calculatedAvgCost,
   });
 
   int? id;
@@ -97,7 +100,7 @@ class PurchaseItemsModel {
   double? returnedQuantity;
   String? registrationDate;
   dynamic expenseCategoryCreditorLedgerId;
-  dynamic calculatedAvgCost;
+  // dynamic calculatedAvgCost;
 
   factory PurchaseItemsModel.fromRawJson(String str) =>
       PurchaseItemsModel.fromJson(json.decode(str));
@@ -150,7 +153,7 @@ class PurchaseItemsModel {
         registrationDate: json["registration_date"],
         expenseCategoryCreditorLedgerId:
             json["expense_category_creditor_ledger_id"],
-        calculatedAvgCost: json["calculated_avg_cost"],
+        // calculatedAvgCost: json["calculated_avg_cost"],
       );
 
   Map<String, dynamic> toJson({bool toSend = false}) {
@@ -196,7 +199,7 @@ class PurchaseItemsModel {
         "returned_quantity": returnedQuantity,
         "registration_date": registrationDate,
         "expense_category_creditor_ledger_id": expenseCategoryCreditorLedgerId,
-        "calculated_avg_cost": calculatedAvgCost,
+        // "calculated_avg_cost": calculatedAvgCost,
       };
     } else {
       return {
@@ -244,7 +247,7 @@ class PurchaseItemsModel {
         "returned_quantity": returnedQuantity,
         "registration_date": registrationDate,
         "expense_category_creditor_ledger_id": expenseCategoryCreditorLedgerId,
-        "calculated_avg_cost": calculatedAvgCost,
+        // "calculated_avg_cost": calculatedAvgCost,
       };
     }
   }
@@ -263,5 +266,39 @@ class PurchaseItemsModel {
 
     // prString(temp);
   }
- 
+  
+
+  /// Build a list of PurchaseItemsModel given a keys set to get products and units from
+  /// purchase bloc and returns a List of Maped PurchaseItemsModel
+  static List<Map<String, dynamic>> buildPurchaseSaleItems(List<String> keys, UserModel user) {
+    List<Map<String, dynamic>> orderSaleItems = [];
+    for (String key in keys) {
+      final product = purchaseBloc.getProducts![key]!;
+      final unit = purchaseBloc.getProductUnits?[key]!;
+
+      final pIVA = product.getCostWithIVA();
+      final pNoIVA = product.getCOstWithoutIVA();
+      final taxValue = pIVA - pNoIVA;
+
+      final orderSaleItem = PurchaseItemsModel(
+          productId: product.idCloud,
+          productCode: product.code,
+          productName: product.name,
+          quantity: product.quantity,
+          warehouseId: user.warehouseId,
+          unitCost: product.getCostWithIVA(),
+          realUnitCost: product.getCostWithIVA(),
+          netUnitCost: product.getCOstWithoutIVA(),
+          itemTax: taxValue,
+          taxRateId: product.taxRateId,
+          productUnitCode: unit?.code,
+          unitQuantity: product.quantity / (unit?.operationValue ?? 1),
+          productUnitId: unit?.idCloud ?? product.unit,
+          productUnitIdSelected: unit?.idCloud ?? product.unit,
+          tax: product.taxRateName,
+          subtotal: pIVA * product.quantity);
+      orderSaleItems.add(orderSaleItem.toJson(toSend: true));
+    }
+    return orderSaleItems;
+  }
 }

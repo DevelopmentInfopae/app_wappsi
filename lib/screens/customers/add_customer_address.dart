@@ -69,6 +69,10 @@ class _NewAddressState extends State<NewAddress> {
 
   @override
   void initState() {
+    if (customerBloc.disposed) {
+      customerBloc.reload();
+    }
+
     _sucursalController.text = customerBloc.getAddress.sucursal ?? '';
     _direccionController.text = customerBloc.getAddress.direccion ?? '';
     _emailController.text = customerBloc.getAddress.email ?? '';

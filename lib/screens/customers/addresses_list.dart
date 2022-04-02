@@ -129,9 +129,10 @@ class _ListAddressesState extends State<ListAddresses> {
           customer: widget.customer,
         ).launch(context);
         if (res == true) {
+          await Future.delayed(const Duration(milliseconds: 500));
           await _reload(context);
-          _addressesListController
-              .jumpTo(_addressesListController.position.minScrollExtent);
+          // _addressesListController
+          //     .jumpTo(_addressesListController.position.minScrollExtent);
         }
       },
       color: Colors.white,

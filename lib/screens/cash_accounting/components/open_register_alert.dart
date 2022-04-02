@@ -24,7 +24,7 @@ class RegisterAlertDialog extends StatefulWidget {
 
 class RegisterAlertDialogState extends State<RegisterAlertDialog> {
   late FocusNode _valueFocus;
-
+  bool sending = false;
   @override
   void initState() {
     super.initState();
@@ -72,17 +72,26 @@ class RegisterAlertDialogState extends State<RegisterAlertDialog> {
           ),
         ),
         Container(
-          color: pColor.withOpacity(0.8),
+          color: !sending?pColor.withOpacity(0.8):greyColor,
           child: CupertinoDialogAction(
+            
             child: const Text(
               "Aceptar",
               style: TextStyle(color: Colors.white),
               textAlign: TextAlign.center,
             ),
-            onPressed: () async {
+            
+            onPressed: !sending?() async {
+              setState(() {
+                sending=true;
+              });
               await sendRegisterAction(context, registerForm, _valueFocus,
                   syncDB: false, action: widget.action);
-            },
+              setState(() {
+                sending=false;
+              });
+              
+            }:null,
           ),
         ),
       ],

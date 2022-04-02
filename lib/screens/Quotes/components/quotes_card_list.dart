@@ -6,7 +6,6 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/models/quotes_model.dart';
 import 'package:pos_wappsi/providers/quotes_provider.dart';
 import 'package:pos_wappsi/screens/Quotes/print_quotes.dart';
-
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/text_formating/date_to_text.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
@@ -45,6 +44,7 @@ class _QuotesCardListState extends State<QuotesCardList> {
       children: [
         ListView.separated(
           controller: _controller,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: EdgeInsets.zero,
           itemCount: widget.quotes.length + (_allLoaded ? 1 : 0),
           physics: const AlwaysScrollableScrollPhysics(),
@@ -114,18 +114,14 @@ class _QuotesCardListState extends State<QuotesCardList> {
 
 // class to show customer indormation in form of a card
 
-class QuotesCard extends StatefulWidget {
+// ignore: must_be_immutable
+class QuotesCard extends StatelessWidget {
   final QuoteModel quote;
 
   final String action;
-  const QuotesCard({Key? key, required this.quote, required this.action})
+  QuotesCard({Key? key, required this.quote, required this.action})
       : super(key: key);
 
-  @override
-  _QuotesCardState createState() => _QuotesCardState();
-}
-
-class _QuotesCardState extends State<QuotesCard> {
   // late Size _size;
   Map<String, Color> cardColors = {};
   @override
@@ -135,7 +131,7 @@ class _QuotesCardState extends State<QuotesCard> {
     return GestureDetector(
       onTap: () async {
         PrintQuote(
-          printData: await widget.quote.buildPrintDataMap(),
+          printData: await quote.buildPrintDataMap(),
           back: true,
           exitToNewQuote: false,
         ).launch(context);
@@ -145,21 +141,38 @@ class _QuotesCardState extends State<QuotesCard> {
         shadowColor: cardColors['background'],
         margin: const EdgeInsets.symmetric(horizontal: 4),
         elevation: 5,
-        child: _description(),
+        child: _description(context),
       ),
     );
   }
 
-  Widget _description() {
+  Widget _description(BuildContext context) {
+    final value = getFormatedCurrency(quote.grandTotal);
+
     return Padding(
       padding: const EdgeInsets.only(top: 6, bottom: 6, right: 8, left: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // _status().paddingSymmetric(horizontal: 8),
-          _customer(),
-          _date(),
-          _reference(),
+          labelContentH(
+              'Cliente:', capitalizeText(quote.customer.toString()), context,
+              withInnerPading: false,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
+
+          labelContentH(
+              'Fecha:',
+              capitalizeText(parseDateStrES(quote.date ?? '') +
+                  ' ' +
+                  parseTimeStrES(quote.date ?? '')),
+              context,
+              withInnerPading: false,
+              flexCol1: 1,
+              flexCol2: 3,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
+          labelContentH('Referencia No:', quote.referenceNo ?? '', context,
+              withInnerPading: false,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
           Container(
             decoration: BoxDecoration(
                 color: Colors.grey[200],
@@ -167,82 +180,16 @@ class _QuotesCardState extends State<QuotesCard> {
             padding: const EdgeInsets.all(4),
             child: Column(
               children: [
-                // Row(
-                //   children: [
-                //     _status().flexible(flex: 2),
-                //     _items().flexible(flex: 2),
-                //   ],
-                // ),
-                // _total(),
-                // _discount(),
-                _grandTotal()
+                labelContentH(
+                    'Total:', value.substring(0, value.length - 1), context,
+                    withInnerPading: false,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2))
               ],
             ),
           ),
-
-          // Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-
-          // ]),
         ],
       ),
     );
-  }
-
-  Widget _customer() {
-    return labelContentH(
-        'Cliente:', capitalizeText(widget.quote.customer.toString()), context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
-
-  Widget _date() {
-    return labelContentH(
-        'Fecha:',
-        capitalizeText(parseDateStrES(widget.quote.date ?? '') +
-            ' ' +
-            parseTimeStrES(widget.quote.date ?? '')),
-        context,
-        withInnerPading: false,
-        flexCol1: 1,
-        flexCol2: 3,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
-
-  Widget _reference() {
-    return labelContentH(
-        'Referencia No:', widget.quote.referenceNo ?? '', context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
-
-
-
-  
-  
-
-  // Widget _total() {
-  //   final value = getFormatedCurrency(
-  //       widget.quote.total ?? widget.quote.grandTotal,
-  //       decimals: 1);
-  //   return labelContentH(
-  //       'Subtotal:', value.substring(0, value.length - 1), context,
-  //       withInnerPading: false,
-  //       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  // }
-
-  // Widget _discount() {
-  //   final value = getFormatedCurrency(widget.quote.orderDiscount);
-  //   return labelContentH(
-  //       'Descuento:', value.substring(0, value.length - 1), context,
-  //       withInnerPading: false,
-  //       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  // }
-
-  Widget _grandTotal() {
-    final value = getFormatedCurrency(widget.quote.grandTotal);
-    return labelContentH(
-        'Total:', value.substring(0, value.length - 1), context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 }

@@ -18,14 +18,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        dataBloc.homeKey.currentState?.changeBottomIndex(1);
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
         // printConsole('here i am');
         return true;
       },
       child: Scaffold(
         appBar: appBar(context, 'Notificaciones',
             image: 'assets/images/notifications.png', onPop: () {
-          dataBloc.homeKey.currentState?.changeBottomIndex(1);
+          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           Navigator.pop(context);
         }),
         body: Padding(

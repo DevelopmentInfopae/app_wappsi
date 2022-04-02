@@ -8,7 +8,7 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
-import 'package:provider/single_child_widget.dart';
+// import 'package:provider/single_child_widget.dart';
 
 /// Custom alert dialog to manage open and close operations on Register, to open action = 'open'
 /// to close action = 'close'
@@ -16,9 +16,13 @@ import 'package:provider/single_child_widget.dart';
 class SelectProductUnitDialog extends StatefulWidget {
   final List<UnitsModel> units;
   const SelectProductUnitDialog(
-      {Key? key, required this.product, required this.units})
+      {Key? key,
+      required this.product,
+      this.showInvInstOfPrice = false,
+      required this.units})
       : super(key: key);
   final ProductModel product;
+  final bool showInvInstOfPrice;
   @override
   SelectProductUnitDialogState createState() {
     return SelectProductUnitDialogState();
@@ -28,7 +32,7 @@ class SelectProductUnitDialog extends StatefulWidget {
 class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
   final _valueController = TextEditingController();
 
-  int _selection = 0;
+  UnitsModel? _selection;
 
   double qtty = 1;
 
@@ -37,7 +41,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
     _valueController.text = qtty.toString();
     super.initState();
     if (widget.units.length == 1) {
-      _selection = widget.units.first.idCloud;
+      _selection = widget.units.first;
     }
   }
 
@@ -54,11 +58,11 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
     var width = MediaQuery.of(context).size.width;
     double hInsetPadding = 10.0;
     double vInsetPadding = kBottomNavigationBarHeight;
-    if(width>400){
-      hInsetPadding = width*0.1;
+    if (width > 400) {
+      hInsetPadding = width * 0.1;
     }
-    if(height>800){
-      vInsetPadding = height*0.1;
+    if (height > 800) {
+      vInsetPadding = height * 0.1;
     }
     return SafeArea(
       child: AlertDialog(
@@ -68,7 +72,8 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
         ),
         // insetPadding: EdgeInsets.zero,
         // contentPadding: EdgeInsets.zero,
-        insetPadding: EdgeInsets.symmetric(horizontal: hInsetPadding, vertical: vInsetPadding),
+        insetPadding: EdgeInsets.symmetric(
+            horizontal: hInsetPadding, vertical: vInsetPadding),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         title: Column(
           children: [
@@ -117,11 +122,9 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                     textAlign: TextAlign.center,
                   ),
                   onPressed: () async {
-                    if (_selection != 0) {
+                    if (_selection != null) {
                       Navigator.of(context).pop({
-                        "unit": widget.units
-                            .where((u) => u.idCloud == _selection)
-                            .first,
+                        "unit": _selection,
                         "quantity": qtty == 0 ? 1.0 : qtty
                       });
                     }
@@ -165,7 +168,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                         qtty = double.tryParse(value) ?? 1.0;
                       }
                     },
-                    enabled: _selection != 0,
+                    enabled: _selection != null,
                     controller: _valueController,
                     textStyle: buttonsSmallTextStyle(context),
                     textFieldType: TextFieldType.PHONE,
@@ -177,6 +180,12 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
             _addQty()
           ],
         ),
+        _selection != null
+            ? Text(
+                getRoundedQtty(qtty) + ' - ' + _selection!.name,
+                style: buttonsSmallTextStyle(context),
+              )
+            : Container()
       ],
     );
   }
@@ -191,14 +200,14 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
             return AppButton(
               onTap: () {
                 setState(() {
-                  _selection = u.idCloud;
+                  _selection = u;
                 });
               },
               color: greyLight,
               shapeBorder: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                   side: BorderSide(
-                      color: u.idCloud == _selection ? pColor : Colors.white,
+                      color: u == _selection ? pColor : Colors.white,
                       width: 3)),
               padding: EdgeInsets.zero,
               child: ListTile(
@@ -208,7 +217,9 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                       u.name,
                       maxLines: 2,
                     ).expand(),
-                    unitValue(u),
+                    widget.showInvInstOfPrice
+                        ? inventoryValue(u)
+                        : unitValue(u),
                   ],
                 ),
               ),
@@ -228,13 +239,22 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
     );
   }
 
+  Text inventoryValue(UnitsModel u) {
+    final value = getRoundedQtty(widget.product.inventory / u.operationValue);
+    return Text(
+      value.substring(0, value.length),
+      maxLines: 2,
+      style: normalTextStyle(context, fontWeightDelta: 2),
+    );
+  }
+
   Widget _rmQty() {
     return AppButton(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
       margin: EdgeInsets.zero,
       color: Colors.grey[100],
       width: 10,
-      enabled: _selection != 0,
+      enabled: _selection != null,
       shapeBorder: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
       ),
@@ -259,7 +279,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
       color: Colors.grey[100],
       margin: EdgeInsets.zero,
       width: 10,
-      enabled: _selection != 0,
+      enabled: _selection != null,
       shapeBorder: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
       ),

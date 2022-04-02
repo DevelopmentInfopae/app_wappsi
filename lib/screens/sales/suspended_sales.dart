@@ -195,7 +195,7 @@ class SuspendedSalesListCard extends StatelessWidget {
           final valueT = getFormatedCurrency(e.totalValue);
           return AppButton(
             elevation: 2,
-            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
             shapeBorder: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
                 side: BorderSide(color: pColor.withOpacity(0.5), width: 1)),

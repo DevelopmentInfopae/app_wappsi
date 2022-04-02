@@ -1,10 +1,15 @@
 // import 'package:dropdown_search/dropdown_search.dart';
+// ignore_for_file: implementation_imports
+
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
+import 'package:pos_wappsi/screens/cash_accounting/print_register_close.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 
 class RegisterFormProvider extends ChangeNotifier {
@@ -96,35 +101,58 @@ class RegisterFormProvider extends ChangeNotifier {
     return double.tryParse(s) != null;
   }
 
-  Future<void> closeRegister(BuildContext context) async {
-    final choice = await choiceAlert(
-        context, '¿Esta seguro de cerrar caja?', 'assets/images/alert.png');
-    if (choice) {
-      final apiProvider = DataProvider();
-      final headers = {
-        'content-Type': 'application/json',
-        'Authorization': dataBloc.getToken()
-      };
-      // ignore: unnecessary_null_comparison
-      if (value == '' || value == null) {
-        value = '0';
-      }
-      final body = _closeToJson();
-      final res = await apiProvider.postPetition(regCloseEndP, body, headers);
-      if (res['status'] == -1) {
-        await reloadDialog(
-            context, res['body']['message'], 'assets/images/dizzy-robot.png');
-      } else if (res['error']) {
-        confirmDialog(
-            context, res['body']['message'], 'assets/images/dizzy-robot.png');
-      } else {
-        Navigator.pop(context);
-        confirmDialog(
-            context, res['body']['message'], 'assets/images/success.png');
-        //set current register status = close
-        dataBloc.registerData.status = 'close';
-        // to update view
-      }
+  closeRegister(BuildContext context) async {
+    //close popup
+    // Navigator.of(context).pop();
+    // final choice = await choiceAlert(
+    //     context, '¿Esta seguro de cerrar caja?', 'assets/images/alert.png');
+    // if (choice) {
+    // loading(context);
+    // Navigator.pop(context);
+    final apiProvider = DataProvider();
+    final headers = {
+      'content-Type': 'application/json',
+      'Authorization': dataBloc.getToken()
+    };
+    // ignore: unnecessary_null_comparison
+    if (value == '' || value == null) {
+      value = '0';
     }
+    final body = _closeToJson();
+    // loading(context);
+    final res = await apiProvider.postPetition(regCloseEndP, body, headers);
+    if (res['status'] == -1) {
+      await reloadDialog(
+          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+    } else if (res['error']) {
+      scaffoldAlert(
+          context, res['body']['message'], const Duration(seconds: 1), backGroundColor: errorColor);
+    } else {
+      final Map<String, String> registerCloseData = {
+        'user_name': ((dataBloc.userData?.firstName ?? '') +
+                ' ' +
+                (dataBloc.userData?.lastName ?? ''))
+            .toString(),
+        'date': (res['body']['date'] ?? '').toString(),
+        'biller_name': (dataBloc.userData?.billerName ?? '').toString(),
+        'value': (body['total_cash_submitted'] ?? '')..toString()
+      };
+      Navigator.pop(context);
+      // Navigator.pop(context);
+
+      // to update view
+      PrintRegisterClose(
+        closeRegisterInfo: registerCloseData,
+      ).launch(context);
+      // return registerCloseData;
+      // confirmDialog(
+      //     context, res['body']['message'], 'assets/images/success.png');
+      scaffoldAlert(
+          context, res['body']['message'], const Duration(seconds: 1));
+      // hideCurrentScaffoldAlert(context);
+      //set current register status = close
+      dataBloc.registerData?.status = 'close';
+    }
+    // }
   }
 }

@@ -12,7 +12,6 @@ import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
-import 'package:pos_wappsi/utils/nav_utils.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
 class CustomerAddressesProvider {
@@ -32,24 +31,18 @@ class CustomerAddressesProvider {
       ];
 
   /// Load default customer address
-  static selectDefaultAddrs(
-      {bool returnBool = false, bool fromOrderCreation = false}) async {
-    if (posBloc.getCustomer != null && posBloc.getCustomerAddresses == null) {
-      final data = await findCustomerAddresses(
-          '', posBloc.getCustomer!.idCloud!.toString());
+  static Future<CustomerAddressesModel?> selectDefaultAddrs(
+      String? customerId) async {
+    if (customerId == null) {
+      return null;
+    } else {
+      final data = await findCustomerAddresses('', customerId);
       if (data != []) {
         final defaultAddrss = data.first;
-        if (fromOrderCreation) {
-          orderBloc.setCustomerAddresses(
-              CustomerAddressesModel.fromJson(defaultAddrss));
-        } else {
-          posBloc.setCustomerAddresses(
-              CustomerAddressesModel.fromJson(defaultAddrss));
-        }
 
-        if (returnBool) {
-          return true;
-        }
+        return CustomerAddressesModel.fromJson(defaultAddrss);
+      } else {
+        return null;
       }
     }
   }
@@ -71,6 +64,7 @@ class CustomerAddressesProvider {
       }
     }
   }
+
   /// Load default customer address
   static selectDefaultAddrsToQuote({bool returnBool = false}) async {
     if (quoteBloc.getCustomer != null &&
@@ -110,7 +104,7 @@ class CustomerAddressesProvider {
         return CustomerAddressesModel.fromJsonList(data);
       } catch (e) {
         // printConsole(e);
-            await logError(e, from: 'Loading customer addresses');
+        await logError(e, from: 'Loading customer addresses');
 
         return [];
       }
@@ -123,12 +117,16 @@ class CustomerAddressesProvider {
   static Future<List<CustomerAddressesModel>> getDataAdrreses(filter) async {
     List<Map> data;
 
-    String customerID = posBloc.getCustomerId();
+    String? customerID = posBloc.getCustomerId();
 
     if (customerID == '0') {
       data = [];
     } else {
-      data = await findCustomerAddresses(filter, customerID);
+      if (customerID != null) {
+        data = await findCustomerAddresses(filter, customerID);
+      } else {
+        data = [];
+      }
     }
 
     // ignore: unnecessary_null_comparison
@@ -159,6 +157,7 @@ class CustomerAddressesProvider {
 
     return [];
   }
+
   /// To load POS sale customer addresses
   static Future<List<CustomerAddressesModel>> getDataAdrresesToQuote(
       filter) async {
@@ -224,8 +223,8 @@ class CustomerAddressesProvider {
   /// Returns customer address info given an address id
   static Future<List<Map<String, dynamic>>?> loadCustomerAddressesFromDB(
       String customerId) async {
-    return await DBProvider.db
-        .sqlQuery('sma_addresses', where: "company_id = $customerId",orderBy:"last_update DESC" );
+    return await DBProvider.db.sqlQuery('sma_addresses',
+        where: "company_id = $customerId", orderBy: "last_update DESC");
   }
 
   static createAddress(BuildContext context, CompanyModel customer) async {
@@ -272,13 +271,13 @@ class CustomerAddressesProvider {
       confirmDialog(
           context, res['body']['message'], 'assets/images/dizzy-robot.png');
     } else {
-      // update local DB with company info
-      body['id_cloud'] = res['body']['address_id'];
-      body.remove('id');
-      bool dbUpdated = await CustomerAddressesProvider.writeAddressOnDB(body);
+      // // update local DB with company info
+      // body['id_cloud'] = res['body']['address_id'];
+      // body.remove('id');
+      // bool dbUpdated = await CustomerAddressesProvider.writeAddressOnDB(body);
 
-      // if fails we force DB sync
-      if (!dbUpdated) {
+      // // if fails we force DB sync
+      // if (!dbUpdated) {
         customerBloc.clearAdressCreationData();
         // goHome(context);
         Navigator.pop(context, true);
@@ -288,13 +287,13 @@ class CustomerAddressesProvider {
         await dataBloc.syncElements(['Sucursales'], context);
         confirmDialog(
             context, res['body']['message'], 'assets/images/success.png');
-      } else {
-        customerBloc.clearAdressCreationData();
-        Navigator.pop(context, true);
-        // dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
-        confirmDialog(
-            context, res['body']['message'], 'assets/images/success.png');
-      }
+      // } else {
+      //   customerBloc.clearAdressCreationData();
+      //   Navigator.pop(context, true);
+      //   // dataBloc.homeKey?.currentState?.selectTab(TabItem.clients);
+      //   confirmDialog(
+      //       context, res['body']['message'], 'assets/images/success.png');
+      // }
 
       // Navigator.pop(context);
     }

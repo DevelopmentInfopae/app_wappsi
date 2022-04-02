@@ -12,7 +12,7 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/img_dir.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/screens/cash_accounting/components/widgets.dart';
-import 'package:pos_wappsi/screens/home/home_screen.dart';
+// import 'package:pos_wappsi/screens/home/home_screen.dart';
 // import 'package:pos_wappsi/screens/sales/new_sale.dart';
 import 'package:pos_wappsi/screens/settings/print_settings.dart';
 // import 'package:pos_wappsi/screens/sales/components/widgets.dart';
@@ -21,14 +21,14 @@ import 'package:pos_wappsi/utils/blue_print/blue_print.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/local_files.dart';
 
-class PrintMovement extends StatefulWidget {
-  final Map<String, String> movementInfo;
-  const PrintMovement({Key? key, required this.movementInfo}) : super(key: key);
+class PrintRegisterClose extends StatefulWidget {
+  final Map<String, String> closeRegisterInfo;
+  const PrintRegisterClose({Key? key, required this.closeRegisterInfo}) : super(key: key);
   @override
-  _PrintMovementState createState() => _PrintMovementState();
+  _PrintRegisterCloseState createState() => _PrintRegisterCloseState();
 }
 
-class _PrintMovementState extends State<PrintMovement> {
+class _PrintRegisterCloseState extends State<PrintRegisterClose> {
   late Color _pc;
   late Size _size;
   // String pathImage = '';
@@ -40,7 +40,7 @@ class _PrintMovementState extends State<PrintMovement> {
 
   @override
   void initState() {
-    printFormat = PrintFormat(movementInfo: widget.movementInfo);
+    printFormat = PrintFormat(registerCloseInfo: widget.closeRegisterInfo);
     // initSavetoPath();
     // initPlatformState();
     super.initState();
@@ -52,14 +52,14 @@ class _PrintMovementState extends State<PrintMovement> {
     _pc = pColor;
     return WillPopScope(
       onWillPop: () async {
-        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+        // dataBloc.homeKey?.currentState?.changeBottomIndex(1);
         // printConsole('here i am');
         return true;
       },
       child: Scaffold(
         appBar: appBar(context, 'Movimientos',
             back: true, image: 'assets/images/cash-register.png', onPop: () {
-          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+          // dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           Navigator.pop(context);
         }),
         body: _body(),
@@ -72,7 +72,7 @@ class _PrintMovementState extends State<PrintMovement> {
       // mainAxisAlignment: ,
       children: <Widget>[
         _preview().expand(),
-        // movementDetails(context, widget.movementInfo),
+        // movementDetails(context, widget.closeRegisterInfo),
         bottom(_buttons(), _pc, _size),
       ],
     );
@@ -93,7 +93,11 @@ class _PrintMovementState extends State<PrintMovement> {
                       _size.height * 0.08 > 60 ? _size.height * 0.08 : 60),
               socialReason(dataBloc.settings?['razon_social'], textTheme),
               emptyLine(),
-              movementDetails(context, widget.movementInfo),
+              emptyLine(),
+              Text('Cierre de caja', style: normalTextStyle(context, color: greyDarkerColor),),
+              emptyLine(),
+              emptyLine(),
+              closeRegisterDetails(context, widget.closeRegisterInfo),
               emptyLine(),
               emptyLine(),
               emptyLine(),
@@ -150,7 +154,7 @@ class _PrintMovementState extends State<PrintMovement> {
                 companyLogo.substring(0, companyLogo.length - 4) + '.jpg';
           }
           final result = await printFormat
-              .printMovement(dataBloc.dirPath! + billerImgDir + companyLogo);
+              .printRegisterClose(dataBloc.dirPath! + billerImgDir + companyLogo);
           if (result ?? false) {
             await Future.delayed(const Duration(seconds: 3));
             hideCurrentScaffoldAlert(context);
@@ -163,8 +167,8 @@ class _PrintMovementState extends State<PrintMovement> {
           }
         } else {
           PrintSettings(
-            print: 'movement',
-            movementInfo: widget.movementInfo,
+            print: 'register_close',
+            registerCloseInfo: widget.closeRegisterInfo,
           ).launch(context);
         }
       },
@@ -172,9 +176,9 @@ class _PrintMovementState extends State<PrintMovement> {
         children: [
           Text(
             'Imprimir ',
-            style: buttonsSmallTextStyle(context),
+            style: buttonsSmallTextStyle(context, color: pColor),
           ),
-          const Icon(Icons.print)
+          const Icon(Icons.print, color: pColor,)
         ],
       ),
     );
@@ -187,22 +191,15 @@ class _PrintMovementState extends State<PrintMovement> {
       // disabledColor: Colors.white,
       width: _size.width * 0.1,
       onTap: () {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => const HomeScreen(),
-          ),
-          (route) => false,
-        );
-        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+        Navigator.pop(context);
       },
       child: Row(
         children: [
           Text(
             'Salir ',
-            style: buttonsSmallTextStyle(context),
+            style: buttonsSmallTextStyle(context, color: pColor),
           ),
-          const Icon(Icons.exit_to_app)
+          const Icon(Icons.exit_to_app, color: pColor,)
         ],
       ),
     );

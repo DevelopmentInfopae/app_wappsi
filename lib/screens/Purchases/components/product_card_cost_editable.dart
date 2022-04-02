@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 // import 'package:material_floating_search_bar/material_floating_search_bar.dart';
@@ -10,8 +11,8 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
+import 'package:pos_wappsi/screens/Purchases/components/edit_product_aler.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
-import 'package:pos_wappsi/screens/products/product_details.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/providers/register_form_provider.dart';
@@ -100,36 +101,58 @@ class _ProductCardCostEditableState extends State<ProductCardCostEditable> {
     }
 
     unitInfo += unit?.name ?? '';
-    return Column(
-      verticalDirection: VerticalDirection.down,
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      productPhoto(
+              (product?.image ?? '') == '' ? 'no_image.png' : product!.image)
+          .withSize(width: 94, height: 100),
+      vDivider(width: 1, heigh: 90),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        // mainAxisAlignment: MainAxisAlignment.spaceAround,
+        // mainAxisAlignment: ,
+        children: [
+          _productDesc().paddingSymmetric(horizontal: 8, vertical: 2),
+          Divider(
+            height: 1,
+            color: greyMediumLight,
+            thickness: 1,
+          ).paddingSymmetric(horizontal: 10),
+          // _unitInfo(unit, unitInfo).paddingOnly(
+          //   left: 10,
+          // ),
+          unit != null
+              ? _unitDetails().paddingOnly(left: 10, right: 14, top: 4)
+              : _productWoutInfoPrice()
+                  .paddingOnly(left: 10, right: 14, top: 4),
+          _baseUnitQtty(unit)
+        ],
+      ).paddingTop(4).expand(),
+    ]);
+  }
+
+  Row _productWoutInfoPrice() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _productDesc().paddingOnly(top: 5, left: 10).expand(),
-            _delete().paddingOnly(right: 5)
-          ],
+        Text(
+          'Precio Unitario ',
+          maxLines: 1,
+          style: normalTextStyle(context),
         ),
-        const Divider(
-          height: 1,
-          color: Colors.black12,
-          thickness: 1,
-        ).paddingSymmetric(horizontal: 10),
-        Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              productPhoto((product?.image ?? '') == ''
-                      ? 'no_image.png'
-                      : product!.image)
-                  .withSize(width: 90, height: 92),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                // mainAxisAlignment: ,
-                children: [_unitInfo(unit, unitInfo), _baseUnitQtty(unit)],
-              ).paddingTop(4).expand(),
-            ]),
+        _productPrice(),
+      ],
+    );
+  }
+
+  Row _unitDetails() {
+    return Row(
+      children: [
+        Text(capitalizeText(unit!.name),
+                style: normalTextStyle(context),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis)
+            .expand(),
+        _baseUnitPrice(unit!)
       ],
     );
   }
@@ -137,36 +160,55 @@ class _ProductCardCostEditableState extends State<ProductCardCostEditable> {
   Row _baseUnitQtty(UnitsModel? unit) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      // crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _qty().paddingOnly(bottom: 4),
-        (unit != null ? _baseUnitPrice(unit) : _prices())
-            .paddingOnly(right: 8, bottom: 4)
+        _qty().paddingOnly(bottom: 4, right: 4),
+        Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: greyMediumLight),
+                child: _productPriceTotal())
+            .paddingOnly(right: 10)
             .expand()
       ],
     );
   }
 
-  Widget _unitInfo(UnitsModel? unit, String unitInfo) {
-    return unit != null
-        ? Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                unitInfo,
-                // textAlign: TextAlign.,
-                style: normalTextStyle(context,
-                    fontWeightDelta: 2, fontSizeFactor: 1.2),
-              ).flexible(flex: 3),
-              _productPriceTotal().flexible(flex: 3)
-            ],
-          ).paddingOnly(right: 8, top: 4)
-        : Container();
-  }
+  // Row _baseUnitQtty(UnitsModel? unit) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     // crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       _qty().paddingOnly(bottom: 4),
+  //       (unit != null ? _baseUnitPrice(unit) : _prices())
+  //           .paddingOnly(right: 8, bottom: 4)
+  //           .expand()
+  //     ],
+  //   );
+  // }
+
+  // Widget _unitInfo(UnitsModel? unit, String unitInfo) {
+  //   return unit != null
+  //       ? Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Text(
+  //               unitInfo,
+  //               // textAlign: TextAlign.,
+  //               style: normalTextStyle(context,
+  //                   fontWeightDelta: 2, fontSizeFactor: 1.2),
+  //             ).flexible(flex: 3),
+  //             _productPriceTotal().flexible(flex: 3)
+  //           ],
+  //         ).paddingOnly(right: 8, top: 4)
+  //       : Container();
+  // }
 
   Widget _productDesc() {
-    return descText(product?.name ?? '', context,
-        maxLines: 2, fontSizeFactor: 1, fweigth: 2);
+    return descText(capitalizeText(product?.name ?? ''), context,
+        maxLines: 2, fontSizeFactor: 0.9, fweigth: 2);
   }
 
   Widget _qty() {
@@ -180,7 +222,7 @@ class _ProductCardCostEditableState extends State<ProductCardCostEditable> {
   Widget _textQty() {
     return SizedBox(
       width: 55,
-      height: 40,
+      height: 35,
       child: TextFormField(
         onEditingComplete: () {
           widget.quantityFocusNode.unfocus();
@@ -223,8 +265,6 @@ class _ProductCardCostEditableState extends State<ProductCardCostEditable> {
                           widget.productKey, 1);
                     }
                     if (!res) {
-                      _stockAlert();
-
                       setState(() {
                         _updateQuantityValue();
                       });
@@ -245,8 +285,6 @@ class _ProductCardCostEditableState extends State<ProductCardCostEditable> {
                   }
                   // printConsole(res);
                   if (!res) {
-                    _stockAlert();
-
                     setState(() {
                       _updateQuantityValue();
                     });
@@ -330,57 +368,29 @@ class _ProductCardCostEditableState extends State<ProductCardCostEditable> {
     );
   }
 
-  Widget _delete() {
-    // Delete a prodcut from sales's cart (bloc_sale)
-    return AppButton(
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      margin: EdgeInsets.zero,
-      elevation: 0,
-      shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-          side: const BorderSide(color: Colors.black26)),
-      width: 30,
-      onTap: () {
-        purchaseBloc.removeProduct(widget.productKey);
-      },
-      child: const Icon(
-        Icons.delete,
-        size: 30,
-        color: Colors.redAccent,
-      ),
-    );
-  }
-
-  Widget _prices() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [_productPrice(), _productPriceTotal()],
-    );
-  }
 
   Widget _baseUnitPrice(UnitsModel unit) {
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
         // if selected unit is base unit
-        unit.baseUnit == null
-            ? Text(
-                unit.code,
-                style: normalTextStyle(context,
-                    fontWeightDelta: 2, fontSizeFactor: 1.2),
-              )
-            : FutureBuilder<UnitsModel?>(
-                future: UnitsProvider.getUnitInfo(unit.baseUnit!),
-                builder: (BuildContext context,
-                    AsyncSnapshot<UnitsModel?> snapshot) {
-                  return Text(
-                    snapshot.data?.code ?? '',
-                    style: normalTextStyle(context,
-                        fontWeightDelta: 2, fontSizeFactor: 1.2),
-                  );
-                },
-              ),
+        (unit.baseUnit == null
+                ? Text(
+                    capitalizeText(unit.code),
+                    style: normalTextStyle(context, fontWeightDelta: 2),
+                  )
+                : FutureBuilder<UnitsModel?>(
+                    future: UnitsProvider.getUnitInfo(unit.baseUnit!),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<UnitsModel?> snapshot) {
+                      return Text(
+                        capitalizeText(snapshot.data?.code ?? ''),
+                        style: normalTextStyle(context, fontWeightDelta: 2),
+                      );
+                    },
+                  ))
+            .paddingRight(4),
         _productPrice()
       ],
     );
@@ -388,21 +398,7 @@ class _ProductCardCostEditableState extends State<ProductCardCostEditable> {
 
   Widget _productPrice() {
     return Text(product?.getFormatedCost(decimals: 1) ?? '',
-        style: numbersTextStyle(fontWeight: FontWeight.normal));
-  }
-
-  void _stockAlert() {
-    confirmDialog(
-        context,
-        'El producto ${product?.name} no tiene suficiente stock. Stock actual ${product?.inventory}',
-        'assets/images/out-of-stock.png');
-
-    try {
-      purchaseBloc.getProductData(widget.productKey)?.quantity =
-          purchaseBloc.getProductData(widget.productKey)!.quantity;
-    } catch (e) {
-      printConsole(e);
-    }
+        style: normalTextStyle(context));
   }
 
   Widget _productPriceTotal() {
@@ -452,8 +448,18 @@ class _ProductCardCostEditableState extends State<ProductCardCostEditable> {
     return Card(
       elevation: 10,
       child: GestureDetector(
-          onTap: () {
+          onTap: () async{
             widget.quantityFocusNode.unfocus();
+            await showCupertinoDialog<Map<String, dynamic>?>(
+              // to make selection of product unit required
+              barrierDismissible: false,
+              // useRootNavigator: false,
+              context: context,
+              builder: (context) {
+                return EditProductAlert(
+                  productKey: widget.productKey,
+                );
+              });
           },
           child: _productTile()),
     );

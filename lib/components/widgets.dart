@@ -293,9 +293,10 @@ Widget productPhoto(String img) {
         if (snapshot.hasData) {
           try {
             return AppButton(
-              child: imageFile(snapshot.data),
+              child: imageFile(snapshot.data, fit: BoxFit.fitHeight),
               elevation: 0,
               padding: EdgeInsets.zero,
+              margin: EdgeInsets.zero,
               onTap: () {
                 ImagePreview(
                   imagePath: snapshot.data,
@@ -307,11 +308,13 @@ Widget productPhoto(String img) {
             printConsole(e);
             return Image.asset(
               'assets/images/no_image.png',
+              fit: BoxFit.fitHeight,
             );
           }
         }
         return Image.asset(
           'assets/images/no_image.png',
+          fit: BoxFit.fitHeight,
         );
       },
     ),

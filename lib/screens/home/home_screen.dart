@@ -113,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return AppBarLeading(
         onTap: () {
           // select home bottomBar
-          // dataBloc.homeKey.currentState?.changeBottomIndex(0);
+          // dataBloc.homeKey?.currentState?.changeBottomIndex(0);
           // NotificationScreen().launch(context);
         },
         borderSideColor: Colors.white,
@@ -124,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
     //     elevation: 0,
     //     onTap: () {
     //       // select home bottomBar
-    //       // dataBloc.homeKey.currentState?.changeBottomIndex(0);
+    //       // dataBloc.homeKey?.currentState?.changeBottomIndex(0);
     //       // NotificationScreen().launch(context);
     //     },
     //     child: Container(

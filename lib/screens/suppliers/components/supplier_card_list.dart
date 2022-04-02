@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
-import 'package:pos_wappsi/components/customer_card.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';

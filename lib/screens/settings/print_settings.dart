@@ -26,6 +26,7 @@ import 'package:pos_wappsi/utils/print_errors.dart';
 class PrintSettings extends StatefulWidget {
   final String print;
   final Map<String, String>? movementInfo;
+  final Map<String, String>? registerCloseInfo;
   final Map<dynamic, dynamic>? posPrintData;
   final String? imagePath;
 
@@ -37,6 +38,7 @@ class PrintSettings extends StatefulWidget {
       {Key? key,
       this.print = 'settings',
       this.movementInfo,
+      this.registerCloseInfo,
       this.posPrintData,
       this.imagePath})
       : super(key: key);
@@ -90,7 +92,15 @@ class _PrintSettingsState extends State<PrintSettings> {
 
       initSavetoPath(companyLogo);
       printFormat = PrintFormat(movementInfo: widget.movementInfo);
-    } else {
+    } else if (widget.print == 'register_close') {
+      String companyLogo = dataBloc.getBillerCompany!.logo!;
+      if (companyLogo.substring(companyLogo.length - 4) == '.png') {
+        companyLogo = companyLogo.substring(0, companyLogo.length - 4) + '.jpg';
+      }
+
+      initSavetoPath(companyLogo);
+      printFormat = PrintFormat(registerCloseInfo: widget.registerCloseInfo);
+    }else {
       printFormat = PrintFormat();
     }
   }
@@ -512,7 +522,24 @@ class _PrintSettingsState extends State<PrintSettings> {
                 scaffoldAlert(
                     context, 'Error al imprimir', const Duration(seconds: 3));
               }
-            } else if (widget.print == 'pos') {
+            } else if (widget.print == 'register_close' &&
+                widget.registerCloseInfo != null) {
+              scaffoldAlert(context, 'Imprimiendo comprobante cierre de caja',
+                  const Duration(seconds: 10));
+
+              final result = await printFormat!
+                  .printRegisterClose(widget.imagePath ?? pathImage);
+              if (result ?? false) {
+                await Future.delayed(const Duration(seconds: 3));
+                hideCurrentScaffoldAlert(context);
+                setState(() {
+                  _printing = false;
+                });
+              } else {
+                scaffoldAlert(
+                    context, 'Error al imprimir', const Duration(seconds: 3));
+              }
+            }else if (widget.print == 'pos') {
               scaffoldAlert(context, 'Imprimiendo comprobante',
                   const Duration(seconds: 2));
 

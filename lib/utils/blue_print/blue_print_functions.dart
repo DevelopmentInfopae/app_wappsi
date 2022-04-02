@@ -38,7 +38,12 @@ List<int> printLabeledValues(Generator generator, List<int> bytes,
     int temp = (emptySpacesCol2Total - (valueCol2Len).toInt());
     final emptySpacesCol2 =
         temp>0?temp:0;
-        
+    String valueP1= ''; 
+    try {
+      valueP1 = emptySpacesCol2!=0?value:value.substring(0,emptySpacesCol2Total);
+    } catch (e) {
+      valueP1 = value;
+    }
 
     if (column1Width < 12) {
       bytes += generator.row([
@@ -48,7 +53,7 @@ List<int> printLabeledValues(Generator generator, List<int> bytes,
           styles: PosStyles(align: col1, bold: boldLabels),
         ),
         PosColumn(
-          text:getEmptySpaces(emptySpacesCol2)+ value,
+          text:getEmptySpaces(emptySpacesCol2)+ valueP1,
           width: column2Width,
           styles: PosStyles(align: col2),
         ),

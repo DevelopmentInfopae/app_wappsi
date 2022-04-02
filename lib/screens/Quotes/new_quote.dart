@@ -41,12 +41,15 @@ class _NewQuoteState extends State<NewQuote> {
 
   final _addressesDropDownKey =
       GlobalKey<DropdownSearchState<CustomerAddressesModel?>>();
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   // final _customerDropDownKey = GlobalKey<DropdownSearchState<CompanyModel?>>();
 
   // final _customerFocusNode = FocusNode();
   @override
   void initState() {
-    if(quoteBloc.isDisposed){
+    if (quoteBloc.isDisposed) {
       quoteBloc.reload();
     }
     super.initState();
@@ -67,7 +70,7 @@ class _NewQuoteState extends State<NewQuote> {
     _size = MediaQuery.of(context).size;
     return WillPopScope(
         onWillPop: () async {
-          dataBloc.homeKey.currentState?.changeBottomIndex(1);
+          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           // printConsole('here i am');
           return true;
         },
@@ -94,16 +97,19 @@ class _NewQuoteState extends State<NewQuote> {
   Widget _userInfo() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: ListView(
-        children: [
-          _branchOffice(),
-          // _document(),
-          _warehouse(),
-          _sellerInfo(),
-          _customers().paddingBottom(8),
+      child: Form(
+        key: _formKey,
+        child: ListView(
+          children: [
+            _branchOffice(),
+            // _document(),
+            _warehouse(),
+            _sellerInfo(),
+            _customers().paddingBottom(8),
 
-          _customerAddresses()
-        ],
+            _customerAddresses()
+          ],
+        ),
       ),
     );
   }
@@ -131,7 +137,7 @@ class _NewQuoteState extends State<NewQuote> {
       image: 'assets/images/add-quote.png',
       // leading: _appBarLeading(),
       onPop: () {
-        dataBloc.homeKey.currentState?.changeBottomIndex(1);
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
         Navigator.pop(context);
       },
     );
@@ -141,9 +147,12 @@ class _NewQuoteState extends State<NewQuote> {
     return SizedBox(
       height: dropDownHeight,
       child: FutureBuilder(
-        future: CompaniesProvider.selectDefaultCustomer(returnBool: true),
+        future: CompaniesProvider.selectDefaultCustomer(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
+            if (quoteBloc.getCustomer == null) {
+              quoteBloc.setCustomer(snapshot.data);
+            }
             return _customersDropDown();
           } else {
             return _customersDropDown();
@@ -250,10 +259,13 @@ class _NewQuoteState extends State<NewQuote> {
     return SizedBox(
       height: dropDownHeight,
       child: FutureBuilder(
-        future:
-            CustomerAddressesProvider.selectDefaultAddrsToQuote(returnBool: true),
+        future: CustomerAddressesProvider.selectDefaultAddrsToQuote(
+            returnBool: true),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
+            if (quoteBloc.getCustomerAddresses == null) {
+              quoteBloc.setCustomerAddresses(snapshot.data);
+            }
             return _customerAddressesDropDown();
           } else {
             return _customerAddressesDropDown();
@@ -329,7 +341,7 @@ class _NewQuoteState extends State<NewQuote> {
           // width: _size.width,
           onTap: () async {
             Navigator.pop(context);
-            dataBloc.homeKey.currentState?.changeBottomIndex(1);
+            dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           },
           child: Row(
             children: [
@@ -350,13 +362,23 @@ class _NewQuoteState extends State<NewQuote> {
           // width: _size.width,
           padding: kButtonPadding,
           onTap: () async {
-            // await CompaniesProvider.selectDefaultCustomer(
-            //     fromOrderCreation: true);
-            // await CustomerAddressesProvider.selectDefaultAddrs(
-            //     fromOrderCreation: true);
-            if (quoteBloc.getCustomer != null &&
-                quoteBloc.getCustomerAddresses != null) {
+            if (_formKey.currentState?.validate() ?? false) {
               const QuoteProducts().launch(context);
+            } else {
+              if (quoteBloc.getCustomer == null) {
+                final customer =
+                    await CompaniesProvider.selectDefaultCustomer();
+                quoteBloc.setCustomer(customer);
+              }
+              if (quoteBloc.getCustomer != null) {
+                quoteBloc.setCustomerAddresses(
+                    await CustomerAddressesProvider.selectDefaultAddrs(
+                        quoteBloc.getCustomer?.idCloud));
+              }
+              setState(() {});
+              // if (_formKey.currentState?.validate() ?? false) {
+              //   const SaleCart().launch(context);
+              // }
             }
           },
           child: Text(

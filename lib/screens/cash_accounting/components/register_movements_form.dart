@@ -402,14 +402,14 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
           AppButton(
             child: Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: kIconSize,
-                  color: greyColor,
+                  color: pColor,
                 ),
                 Text(
                   'Realizar movimiento',
-                  style: normalTextStyle(context),
+                  style: buttonsSmallTextStyle(context, color: pColor),
                 ),
               ],
             ),
@@ -434,8 +434,8 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
                   await dataBloc.refreshToken(context);
 
                   final Map<String, String> movementData = {
-                    'date': res['date'],
-                    'reference_no': res['reference_no'],
+                    'date': res['date']??'',
+                    'reference_no': res['reference_no']??'',
                     'biller_name': dataBloc.userData!.billerName,
                     'movement_type': registerMovements
                         .where((element) =>

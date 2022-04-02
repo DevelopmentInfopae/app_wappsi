@@ -14,7 +14,7 @@ import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/quotes_model.dart';
 import 'package:pos_wappsi/providers/quotes_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
-import 'package:pos_wappsi/screens/Quotes/components/orders_card_list.dart';
+import 'package:pos_wappsi/screens/Quotes/components/quotes_card_list.dart';
 
 class QuotesList extends StatefulWidget {
   const QuotesList({Key? key}) : super(key: key);
@@ -51,7 +51,7 @@ class _ProductsState extends State<QuotesList> {
 
     return WillPopScope(
       onWillPop: () async {
-        dataBloc.homeKey.currentState?.changeBottomIndex(1);
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
         // printConsole('here i am');
         return true;
       },
@@ -61,7 +61,7 @@ class _ProductsState extends State<QuotesList> {
             elevation: false,
             radius: 0,
             image: 'assets/images/quotation.png', onPop: () {
-          dataBloc.homeKey.currentState?.changeBottomIndex(1);
+          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           Navigator.pop(context);
         }),
         body: _body(),
@@ -93,8 +93,6 @@ class _ProductsState extends State<QuotesList> {
       ],
     );
   }
-
-
 
   Widget _searchBar() {
     return Stack(
@@ -141,7 +139,6 @@ class _ProductsState extends State<QuotesList> {
             FloatingSearchBarAction.searchToClear(
                 // showIfClosed: false,
                 ),
-            
           ],
           automaticallyImplyBackButton: false,
           color: Colors.grey[200],

@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_statements
 
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/models/register_model.dart';
 import 'package:pos_wappsi/providers/register_form_provider.dart';
@@ -36,7 +37,10 @@ _executeAction(String action, BuildContext context,
   } else if (action == 'movement') {
     return await _movement(context, registerProvider, syncDB);
   } else {
-    registerProvider.closeRegister(context);
+    // loading(context);
+    scaffoldAlert(context, 'Cerrando caja...', const Duration(seconds: 4));
+    await registerProvider.closeRegister(context);
+    hideCurrentScaffoldAlert(context);
   }
 }
 
@@ -60,7 +64,8 @@ _movement(BuildContext context, RegisterFormProvider registerProvider,
 
     hideCurrentScaffoldAlert(context);
     syncDB ? null : Navigator.pop(context);
-    confirmDialog(context, res['body']['message'], 'assets/images/success.png');
+    // confirmDialog(context, res['body']['message'], 'assets/images/success.png');
+    scaffoldAlert(context, res['body']['message'], const Duration(seconds: 1));
 
     return res['body'];
   } else {
@@ -76,8 +81,11 @@ _movement(BuildContext context, RegisterFormProvider registerProvider,
     if (res['body']['message'] != null) {
       // Navigator.pop(context);
       hideCurrentScaffoldAlert(context);
-      confirmDialog(
-          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+      // confirmDialog(
+      //     context, res['body']['message'], 'assets/images/dizzy-robot.png');
+
+      scaffoldAlert(context, res['body']['message'], const Duration(seconds: 1),
+          backGroundColor: errorColor);
     } else {
       // Navigator.pop(context);
       hideCurrentScaffoldAlert(context);
@@ -90,7 +98,9 @@ _movement(BuildContext context, RegisterFormProvider registerProvider,
 
 _open(BuildContext context, RegisterFormProvider registerProvider,
     bool syncDB) async {
-  loading(context);
+  // loading(context);
+
+  scaffoldAlert(context, 'Abriendo caja...', const Duration(seconds: 4));
 
   // diable login button
   registerProvider.isLoading = true;
@@ -98,21 +108,26 @@ _open(BuildContext context, RegisterFormProvider registerProvider,
   // await Future.delayed(Duration(seconds: 4));
 
   final res = await registerProvider.openRegister();
-
+  //
+  Navigator.of(context).pop();
   // hide loading snackbar
 
   if (!res['body']['error']) {
     // ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    Navigator.pop(context);
-    syncDB ? null : Navigator.pop(context);
-    confirmDialog(context, res['body']['message'], 'assets/images/success.png');
+    // Navigator.pop(context);
+    // syncDB ? null : Navigator.pop(context);
+    // confirmDialog(context, res['body']['message'], 'assets/images/success.png');
 
+    hideCurrentScaffoldAlert(context);
+
+    scaffoldAlert(
+          context, res['body']['message'], const Duration(seconds: 1));
     if (res['body']['register_data']['status'] == 'open') {
       dataBloc.setRegisterData(
           RegisterModel.fromJson(res['body']['register_data']));
     }
 
-    await Future.delayed(const Duration(seconds: 1));
+    // await Future.delayed(const Duration(milliseconds: 300));
     if (res['status'] == 1) {
       syncDB
           ? WidgetsBinding.instance!.addPostFrameCallback((_) {
@@ -123,7 +138,7 @@ _open(BuildContext context, RegisterFormProvider registerProvider,
     }
   } else {
     registerProvider.isLoading = false;
-    Navigator.pop(context);
+    // Navigator.pop(context);
     // to handle error first time usign token
 
     if (res['status'] == -1) {
@@ -152,8 +167,10 @@ _open(BuildContext context, RegisterFormProvider registerProvider,
         strMessage = res['body']['message'].toString();
       }
     } else {
-      confirmDialog(context, res['body']['message'].toString(),
-          'assets/images/dizzy-robot.png');
+      // confirmDialog(context, res['body']['message'].toString(),
+      //     'assets/images/dizzy-robot.png');
+      scaffoldAlert(
+          context, res['body']['message'], const Duration(seconds: 1), backGroundColor: errorColor);
     }
   }
 }

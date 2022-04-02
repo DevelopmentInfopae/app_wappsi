@@ -6,6 +6,7 @@ import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
+// import 'package:pos_wappsi/screens/Authentication/login_form.dart';
 import 'package:pos_wappsi/screens/Purchases/new_purchase.dart';
 import 'package:pos_wappsi/screens/Quotes/new_quote.dart';
 import 'package:pos_wappsi/screens/Quotes/quotes_list.dart';
@@ -92,7 +93,7 @@ class HomeGridCards extends StatelessWidget {
   Future<void> _navigation(BuildContext context) async {
     if (gridItems.route == 'sales') {
       // to show or hide home bottombar
-      
+
       await _newSale(context);
       await dataBloc.refreshToken(context);
     } else if (gridItems.route == 'orders') {
@@ -100,60 +101,60 @@ class HomeGridCards extends StatelessWidget {
       if (posBloc.isDisposed) {
         posBloc.reload();
       }
-      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
       const NewOrder().launch(context);
       await dataBloc.refreshToken(context);
     } else if (gridItems.route == 'purchases-add') {
       const NewPurchase().launch(context);
       await dataBloc.refreshToken(context);
-      dataBloc.homeKey.currentState?.changeBottomIndex(0);
-    }else if (gridItems.route == 'products') {
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
+    } else if (gridItems.route == 'products') {
       const Products().launch(context);
-      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'customers') {
-      dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
-      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      dataBloc.homeKey?.currentState?.selectTab(TabItem.clients);
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'suppliers-index') {
       const Suppliers().launch(context);
-      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'syncElements') {
       const SyncElementsScreen().launch(context);
-      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'logout') {
       await _logout(context);
     } else if (gridItems.route == 'priceVerifier') {
-      dataBloc.homeKey.currentState?.selectTab(TabItem.products);
+      dataBloc.homeKey?.currentState?.selectTab(TabItem.products);
     } else if (gridItems.route == 'addCustomer') {
-      // dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
+      // dataBloc.homeKey?.currentState?.selectTab(TabItem.clients);
       // await Future.delayed(Duration(seconds: 1));
       const NewCustomer().launch(context);
-      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
       await dataBloc.refreshToken(context);
-      // dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      // dataBloc.homeKey?.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'suppliers-add') {
-      // dataBloc.homeKey.currentState?.selectTab(TabItem.clients);
+      // dataBloc.homeKey?.currentState?.selectTab(TabItem.clients);
       // await Future.delayed(Duration(seconds: 1));
       const NewSupplier().launch(context);
-      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
       await dataBloc.refreshToken(context);
-      // dataBloc.homeKey.currentState?.changeBottomIndex(0);
-    }else if (gridItems.route == 'register') {
-      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      // dataBloc.homeKey?.currentState?.changeBottomIndex(0);
+    } else if (gridItems.route == 'register') {
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
       const RegisterOptions().launch(context);
     } else if (gridItems.route == 'list_sales') {
-      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
       const SalesList().launch(context);
     } else if (gridItems.route == 'settings') {
-      dataBloc.homeKey.currentState?.selectTab(TabItem.settings);
+      dataBloc.homeKey?.currentState?.selectTab(TabItem.settings);
     } else if (gridItems.route == 'quotes') {
-      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
       const NewQuote().launch(context);
-    }else if (gridItems.route == 'quotes_index') {
-      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+    } else if (gridItems.route == 'quotes_index') {
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
       const QuotesList().launch(context);
-    }else if (gridItems.route == 'list_orders') {
+    } else if (gridItems.route == 'list_orders') {
       final dbProvider = SyncDBProvider();
-      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
       await dbProvider.syncSpecialSelectedOption(
           tableNamesToSyncOpt['sma_order_sales']!, context);
 
@@ -161,14 +162,14 @@ class HomeGridCards extends StatelessWidget {
 
       const OrdersList().launch(context);
     } else if (gridItems.route == 'profile') {
-      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
       const ProfileScreen().launch(context);
     }
   }
 
   Future<void> _newSale(BuildContext context) async {
-    if (dataBloc.registerData.status == 'open') {
-      dataBloc.homeKey.currentState?.changeBottomIndex(0);
+    if (dataBloc.registerData?.status == 'open') {
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
       const NewSale().launch(context);
     } else {
       await showCupertinoDialog(
@@ -181,8 +182,8 @@ class HomeGridCards extends StatelessWidget {
                   action: 'open',
                 ));
           });
-      if (dataBloc.registerData.status == 'open') {
-        dataBloc.homeKey.currentState?.changeBottomIndex(0);
+      if (dataBloc.registerData?.status == 'open') {
+        dataBloc.homeKey?.currentState?.changeBottomIndex(0);
         const NewSale().launch(context);
       } else {
         confirmDialog(context, 'Error al abrir caja, intente nuevamente',
@@ -194,13 +195,18 @@ class HomeGridCards extends StatelessWidget {
   Future<void> _logout(BuildContext context) async {
     bool _close = false;
     _close = await choiceAlert(
-        context, '¿Desea cerrar sesión?', 'assets/images/logout.png');
+        context, 'Al cerrar sesión se perderan todos los datos que no se hallan guardado.\n,¿Desea cerrar sesión?', 'assets/images/logout.png');
     if (_close) {
       // with this we restart application
       await posBloc.suspendSale();
       final res = await dataBloc.logout();
       if (res['status'] ?? true) {
         Restart.restartApp(webOrigin: '/loginForm');
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute<void>(
+        //         builder: (BuildContext context) => const LoginForm()),
+        //     (route) => false);
       } else {
         simpleAlert(context, res['body']['message']);
       }

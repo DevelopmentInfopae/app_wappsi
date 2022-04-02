@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_import
+
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports

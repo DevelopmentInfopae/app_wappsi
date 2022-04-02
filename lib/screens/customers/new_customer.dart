@@ -113,7 +113,7 @@ class _NewCustomerState extends State<NewCustomer> {
   PreferredSize _appBar() {
     return appBar(context, 'Crear Cliente POS',
         back: true, image: 'assets/images/add-user.png', onPop: () {
-      dataBloc.homeKey.currentState?.changeBottomIndex(1);
+      dataBloc.homeKey?.currentState?.changeBottomIndex(1);
       Navigator.pop(context);
     });
   }

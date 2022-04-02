@@ -38,6 +38,7 @@ class _SalesCardListState extends State<SalesCardList> {
       children: [
         ListView.separated(
           controller: _controller,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: EdgeInsets.zero,
           itemCount: widget.sales.length + (_allLoaded ? 1 : 0),
           physics: const ClampingScrollPhysics(),
@@ -106,7 +107,7 @@ class _SalesCardListState extends State<SalesCardList> {
 
 // class to show customer indormation in form of a card
 
-class SalesCard extends StatefulWidget {
+class SalesCard extends StatelessWidget {
   final SalesModel sale;
 
   final String action;
@@ -114,19 +115,12 @@ class SalesCard extends StatefulWidget {
       : super(key: key);
 
   @override
-  _SalesCardState createState() => _SalesCardState();
-}
-
-class _SalesCardState extends State<SalesCard> {
-  // late Size _size;
-
-  @override
   Widget build(BuildContext context) {
     // _size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () async {
         PrintSale(
-          printData: await widget.sale.buildPrintDataMap(),
+          printData: await sale.buildPrintDataMap(),
           back: true,
           exitToNewSale: false,
         ).launch(context);
@@ -135,20 +129,28 @@ class _SalesCardState extends State<SalesCard> {
         // color: Color.fromRGBO(245, 245, 245, 1),
         margin: const EdgeInsets.symmetric(horizontal: 5),
         elevation: 5,
-        child: _description(),
+        child: _description(context),
       ),
     );
   }
 
-  Widget _description() {
+  Widget _description(var context) {
+    final value = getFormatedCurrency(sale.grandTotal);
+    final valuePaid = getFormatedCurrency(sale.paid);
     return Padding(
       padding: const EdgeInsets.only(top: 6, bottom: 6, right: 8, left: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _customer(),
-          _date(),
-          _reference(),
+          labelContentH('Cliente:', capitalizeText(sale.customer), context,
+              withInnerPading: false,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
+          labelContentH('Fecha:', sale.registrationDate ?? '', context,
+              withInnerPading: false,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
+          labelContentH('Numero:', sale.referenceNo ?? '', context,
+              withInnerPading: false,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
           Container(
             decoration: BoxDecoration(
                 color: Colors.grey[200],
@@ -158,14 +160,37 @@ class _SalesCardState extends State<SalesCard> {
               children: [
                 Row(
                   children: [
-                    _paymentTerm().flexible(flex: 2),
-                    _items().flexible(flex: 2),
+                    labelContentH(
+                            'Plazo de pagos:',
+                            (sale.paymentTerm == 0 ? '--' : sale.paymentTerm)
+                                .toString(),
+                            context,
+                            withInnerPading: false,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2))
+                        .flexible(flex: 2),
+                    labelContentH(
+                            'Items:', (sale.totalItems).toString(), context,
+                            withInnerPading: false,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2))
+                        .flexible(flex: 2),
                   ],
                 ),
                 Row(
                   children: [
-                    _total().flexible(flex: 2),
-                    _paid().flexible(flex: 2),
+                    labelContentH(
+                            'Total:', value.substring(0, value.length), context,
+                            withInnerPading: false,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2))
+                        .flexible(flex: 2),
+                    labelContentH('Pagado:', value.substring(0, value.length),
+                            context,
+                            withInnerPading: false,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2))
+                        .flexible(flex: 2),
                   ],
                 ),
               ],
@@ -178,54 +203,5 @@ class _SalesCardState extends State<SalesCard> {
         ],
       ),
     );
-  }
-
-  Widget _customer() {
-    return labelContentH(
-        'Cliente:', capitalizeText(widget.sale.customer), context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
-
-  Widget _date() {
-    return labelContentH('Fecha:', widget.sale.registrationDate ?? '', context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
-
-  Widget _reference() {
-    return labelContentH('Numero:', widget.sale.referenceNo ?? '', context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
-
-  Widget _items() {
-    return labelContentH('Items:', (widget.sale.totalItems).toString(), context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
-
-  Widget _paymentTerm() {
-    return labelContentH(
-        'Plazo de pagos:',
-        (widget.sale.paymentTerm == 0 ? '--' : widget.sale.paymentTerm)
-            .toString(),
-        context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
-
-  Widget _total() {
-    final value = getFormatedCurrency(widget.sale.grandTotal);
-    return labelContentH('Total:', value.substring(0, value.length), context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
-  }
-
-  Widget _paid() {
-    final value = getFormatedCurrency(widget.sale.paid);
-    return labelContentH('Pagado:', value.substring(0, value.length), context,
-        withInnerPading: false,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2));
   }
 }

@@ -20,6 +20,7 @@ class OpenForm extends StatefulWidget {
 class _OpenFormState extends State<OpenForm> {
   late FocusNode _value;
 
+  
   @override
   void initState() {
     super.initState();
@@ -60,11 +61,11 @@ class _OpenFormState extends State<OpenForm> {
       BuildContext context, RegisterFormProvider cashAccForm) {
     return ButtonGlobalWithoutIcon(
       buttontext: 'Abrir',
-      onPressed: () {
+      onPressed: () async{
         cashAccForm.loading
             // ignore: unnecessary_statements
             ? null
-            : sendRegisterAction(context, cashAccForm, _value);
+            : await sendRegisterAction(context, cashAccForm, _value);
       },
       buttonDecoration: kButtonDecoration.copyWith(color: pColor),
     );

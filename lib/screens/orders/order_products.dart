@@ -1,30 +1,26 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/components/appbar_leading.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/components/favorites_search_selection.dart';
+import 'package:pos_wappsi/components/products/product_list.dart';
+import 'package:pos_wappsi/components/search_products.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
-import 'package:pos_wappsi/components/products/product_list.dart';
-import 'package:pos_wappsi/components/favorites_search_selection.dart';
 import 'package:pos_wappsi/screens/orders/order_other_details.dart';
 // import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
-
-import 'package:pos_wappsi/components/search_products.dart';
-
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
-
-import 'package:nb_utils/nb_utils.dart';
-import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/services/barcode_camera_scan.dart';
+import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
@@ -36,7 +32,6 @@ class OrderProducts extends StatefulWidget {
 }
 
 class _OrderProductsState extends State<OrderProducts> {
-  int index = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ScrollController _scrollController = ScrollController();
   final _searchController = FloatingSearchBarController();
@@ -44,6 +39,9 @@ class _OrderProductsState extends State<OrderProducts> {
   late Size _size;
   int _queryLen = 0;
   final pListKey = UniqueKey();
+
+  int index = 0;
+  final pageController = PageController();
 
   // TO control changes in products and execute focus task
   int _productsCount = 0;
@@ -54,12 +52,47 @@ class _OrderProductsState extends State<OrderProducts> {
 
   @override
   void initState() {
+    if (orderBloc.getProducts?.isNotEmpty ?? false) {
+      _productsCount = orderBloc.getProducts!.length;
+    }
+
+    pageController.addListener(() {
+      if (pageController.hasClients) {
+        if (pageController.page?.round() != index) {
+          _updateIndex();
+        }
+      }
+    });
+
     super.initState();
+  }
+
+  void _goToPage(int page) {
+    if (pageController.hasClients) {
+      pageController.animateToPage(page,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.fastOutSlowIn);
+    }
+  }
+
+  double checkCurrentPage() {
+    if (pageController.hasClients) {
+      return pageController.page ?? 1;
+    } else {
+      return 1;
+    }
+  }
+
+  void _updateIndex() {
+    setState(() {
+      index = (pageController.page ?? 0).floor();
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
+    pageController.dispose();
     _searchController.dispose();
   }
 
@@ -72,33 +105,34 @@ class _OrderProductsState extends State<OrderProducts> {
 
     return WillPopScope(
         child: Scaffold(
-            key: _scaffoldKey,
-            appBar: buildAppBar(context),
-            body: IndexedStack(
-              index: index,
-              children: [
-                _searchbar(),
-                Hero(
-                    tag: 'order_favorite_search',
-                    child: buildFloatingSearchBar())
-              ],
-            )),
+            key: _scaffoldKey, appBar: buildAppBar(context), body: _body()),
         onWillPop: () async {
           bool pop = false;
-          setState(() {
-            if (index == 1) {
-              index = 0;
+
+          if (index == 1) {
+            _goToPage(0);
+          } else {
+            if (_searchController.isOpen) {
+              _searchController.close();
             } else {
-              if (_searchController.isOpen) {
-                _searchController.close();
-              } else {
-                pop = true;
-              }
+              pop = true;
             }
-          });
+          }
 
           return pop;
         });
+  }
+
+  Column _body() {
+    return Column(
+      children: [
+        PageView(
+          controller: pageController,
+          children: [_searchbar(), buildFloatingSearchBar()],
+        ).expand(),
+        bottom(_bottom(), pColor, _size)
+      ],
+    );
   }
 
   PreferredSize buildAppBar(BuildContext context) {
@@ -109,41 +143,35 @@ class _OrderProductsState extends State<OrderProducts> {
       radius: 0,
       image: 'assets/images/add-order.png',
       onPop: () {
-        setState(() {
-          if (index == 1) {
-            index = 0;
+        if (index == 1) {
+          _goToPage(0);
+        } else {
+          if (_searchController.isOpen) {
+            _searchController.close();
           } else {
-            if (_searchController.isOpen) {
-              _searchController.close();
-            } else {
-              Navigator.pop(context);
-            }
+            Navigator.pop(context);
           }
-        });
+          _updateIndex();
+        }
       },
-      leading: Hero(
-        tag: 'order_favorite_search',
-        child: Tooltip(
-            message: "Favoritos",
-            child: AppBarLeading(
-                widget: Icon(
-                  Icons.favorite,
-                  size: 27,
-                  color: index == 1 ? Colors.white : favColor,
-                ),
-                backgroundColor: index == 0 ? Colors.white : favColor,
-                onTap: () {
-                  FocusScope.of(context).unfocus();
-                  setState(() {
-                    if (index == 0) {
-                      _searchController.close();
-                      index = 1;
-                    } else {
-                      index = 0;
-                    }
-                  });
-                })),
-      ),
+      leading: Tooltip(
+          message: "Favoritos",
+          child: AppBarLeading(
+              widget: Icon(
+                Icons.favorite,
+                size: 27,
+                color: index == 1 ? Colors.white : favColor,
+              ),
+              backgroundColor: index == 0 ? Colors.white : favColor,
+              onTap: () {
+                if ((index) == 0) {
+                  _searchController.close();
+                  _goToPage(1);
+                } else {
+                  _goToPage(0);
+                }
+                _updateIndex();
+              })),
     );
   }
 
@@ -224,7 +252,7 @@ class _OrderProductsState extends State<OrderProducts> {
       hintStyle: buttonsSmallTextStyle(context),
       automaticallyImplyBackButton: false,
       controller: _searchController,
-      body: _body(),
+      body: _products(),
       onSubmitted: (_) {
         _searchController.close();
       },
@@ -245,19 +273,12 @@ class _OrderProductsState extends State<OrderProducts> {
     );
   }
 
-  Widget _body() {
-    // ignore: unnecessary_null_comparison
-    return Column(
-      children: [_products().expand(), bottom(_bottom(), pColor, _size)],
-    );
-  }
-
   Widget _products() {
     return Container(
         // height:_size.height*0.78,
         // to avoid overlap with floatingSearchBar
         margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
-        padding: const EdgeInsets.only(top: 15),
+        padding: const EdgeInsets.only(top: 10),
         child: _productsStream());
   }
 
@@ -266,12 +287,15 @@ class _OrderProductsState extends State<OrderProducts> {
         stream: orderBloc.productsStream,
         builder: (context, snapshot) {
           // _searchBarFocusManagement();
+          bool productRequestFocus = _productFocus();
+
           if (_productsCount + 1 == snapshot.data?.length) {
             _productsCount += 1;
             _searchBarFocusManagement();
           }
-          if (snapshot.hasData && _searchController.isClosed&& _productsCount==(orderBloc.getProducts?.length??0)) {
-            bool productRequestFocus = false;
+          if (snapshot.hasData &&
+              _searchController.isClosed &&
+              _productsCount == (orderBloc.getProducts?.length ?? 0)) {
             if (orderBloc.getItemsCount() == 0) {
               _productsCount = 0;
               // _itemsCount = 0;
@@ -289,7 +313,6 @@ class _OrderProductsState extends State<OrderProducts> {
                 // final xd = orderBloc.settings['set_focus'];
                 // printConsole();
 
-                productRequestFocus = _productFocus();
               } else if (_productsCount - 2 == snapshot.data!.length) {
                 // Nothing to do when items are removed from cart
               } else {
@@ -300,7 +323,7 @@ class _OrderProductsState extends State<OrderProducts> {
             }
             Map<String, ProductModel> saleProductsList = snapshot.data!;
             return ProductsList(
-              key:pListKey,
+              key: pListKey,
               productList: saleProductsList,
               scrollController: _scrollController,
               productRequestFocus: productRequestFocus,
@@ -308,7 +331,7 @@ class _OrderProductsState extends State<OrderProducts> {
             );
           } else if (orderBloc.getProducts?.isNotEmpty ?? false) {
             return ProductsList(
-              key:pListKey,
+              key: pListKey,
               productList: orderBloc.getProducts!,
               scrollController: _scrollController,
               productRequestFocus: false,
@@ -317,6 +340,8 @@ class _OrderProductsState extends State<OrderProducts> {
           } else if (snapshot.hasData && _searchController.isOpen) {
             return Container();
           } else {
+            //reset product count
+            _productsCount = 0;
             // ignore: unnecessary_null_comparison
             return Container();
 
@@ -343,7 +368,9 @@ class _OrderProductsState extends State<OrderProducts> {
   }
 
   _productFocus() {
-    if (dataBloc.settings!['set_focus'] == 1 && index == 0) {
+    if (dataBloc.settings!['set_focus'] == 1 &&
+        index == 0 &&
+        (_productsCount + 1) == orderBloc.getProducts?.length) {
       if ((orderBloc.getProducts ?? {}).isEmpty) {
         return true;
       } else {
@@ -408,13 +435,13 @@ class _OrderProductsState extends State<OrderProducts> {
       // child: Icon(FontAwesomeIcons.pause),
       child: Row(
         children: [
+          Text('Siguiente',
+              style: buttonsSmallTextStyle(context, color: pColor)),
           const Icon(
             Icons.arrow_forward_ios_rounded,
             size: kIconSize,
             color: pColor,
           ),
-          Text('Siguiente',
-              style: buttonsSmallTextStyle(context, color: pColor)),
         ],
       ),
     );

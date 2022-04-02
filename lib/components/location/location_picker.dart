@@ -26,7 +26,7 @@ class _SearchPageState extends State<SearchLocationPage> {
   void initState() {
     searchFocus.addListener(() {
       if (searchFocus.hasFocus) {
-        dataBloc.homeKey.currentState
+        dataBloc.homeKey?.currentState
             ?.changeResizeToAvoidBottomInset(value: false);
       }
     });
@@ -54,14 +54,14 @@ class _SearchPageState extends State<SearchLocationPage> {
 
     return WillPopScope(
       onWillPop: () async {
-        dataBloc.homeKey.currentState?.changeResizeToAvoidBottomInset();
+        dataBloc.homeKey?.currentState?.changeResizeToAvoidBottomInset();
         return true;
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: appBar(context, 'Seleccionar localización',
             elevation: false, image: 'assets/images/checklist.png', onPop: () {
-          dataBloc.homeKey.currentState?.changeResizeToAvoidBottomInset();
+          dataBloc.homeKey?.currentState?.changeResizeToAvoidBottomInset();
           Navigator.pop(context);
         }),
         body: _locationPicker(context, size),

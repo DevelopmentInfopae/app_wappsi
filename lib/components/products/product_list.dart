@@ -4,13 +4,14 @@ import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/bloc/purchases_bloc.dart';
 import 'package:pos_wappsi/bloc/quotes_bloc.dart';
-import 'package:pos_wappsi/screens/Purchases/components/product_card_cost_editable.dart';
+import 'package:pos_wappsi/components/products/product_card_qtty_editing.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
-import 'package:pos_wappsi/components/products/product_card_qtty_editing.dart';
 import 'package:pos_wappsi/models/units_model.dart';
-import 'package:pos_wappsi/utils/print_errors.dart';
+import 'package:pos_wappsi/screens/Purchases/components/product_card_cost_editable.dart';
+// import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/screens/sales/components/product_card.dart';
 
 class ProductsList extends StatelessWidget {
@@ -35,6 +36,7 @@ class ProductsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
         itemCount: productList.keys.length,
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         controller: _scrollController,
         itemBuilder: (context, index) {
           final k = productList.entries.elementAt(index).key;
@@ -180,6 +182,8 @@ class ProductsList extends StatelessWidget {
                   orderBloc.removeProduct(k);
                 } else if (fromQuote) {
                   quoteBloc.removeProduct(k);
+                } else if (fromPurchase) {
+                  purchaseBloc.removeProduct(k);
                 } else {
                   posBloc.removeProduct(k);
                 }
