@@ -3,8 +3,8 @@ import 'package:flutter_html/flutter_html.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/params/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/models/units_model.dart';
+import 'package:pos_wappsi/params/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/date_to_text.dart';
@@ -34,9 +34,9 @@ Widget legalInformation(TextTheme textTheme, Map<dynamic, dynamic> printData) {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Text(
-          capitalizeText((companyData!.address ?? '') +
+          capitalizeText((companyData?.address ?? '') +
               ' - ' +
-              (printData['company_data'].city ?? '')),
+              (printData['company_data']?.city ?? '')),
           textAlign: TextAlign.center,
         ),
       ),
@@ -45,7 +45,7 @@ Widget legalInformation(TextTheme textTheme, Map<dynamic, dynamic> printData) {
               text: 'Telefono: ',
               style: textTheme.bodyText1!.apply(fontWeightDelta: 2),
               children: [
-            TextSpan(text: companyData.phone ?? '', style: textTheme.bodyText1)
+            TextSpan(text: companyData?.phone ?? '', style: textTheme.bodyText1)
           ])),
     ],
   );
@@ -97,6 +97,7 @@ Widget orderRef(TextTheme textTheme, Map<dynamic, dynamic> printData) {
     ],
   );
 }
+
 Widget quoteRef(TextTheme textTheme, Map<dynamic, dynamic> printData) {
   final data = printData['quote_data'];
   return Column(
@@ -169,7 +170,7 @@ Widget billerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
                 style: textTheme.bodyText1)
           ])),
       Text(
-        customer['email']??'',
+        customer['email'] ?? '',
         style: textTheme.bodyText1,
       ),
       RichText(
@@ -309,7 +310,8 @@ List<DataRow> _productsWUnit(List<Map<dynamic, dynamic>> products) {
           const DataCell(Text('')),
           const DataCell(Text('')),
           DataCell(Text(
-            capitalizeText((bUnit['code']??unit['code']) + ' x ' + bUnitValueS),
+            capitalizeText(
+                (bUnit['code'] ?? unit['code']) + ' x ' + bUnitValueS),
             maxLines: 3,
           )),
           const DataCell(Text('')),
@@ -438,7 +440,8 @@ Widget paymentDetails(TextTheme textTheme, Map<dynamic, dynamic> printData) {
   );
 }
 
-Widget ordQuotValueDetails(TextTheme textTheme, Map<dynamic, dynamic> printData) {
+Widget ordQuotValueDetails(
+    TextTheme textTheme, Map<dynamic, dynamic> printData) {
   final total = getFormatedCurrency(printData['total']);
   final discount = getFormatedCurrency(printData['total_discount']);
   final grandTotal = getFormatedCurrency(printData['grand_total']);
@@ -567,7 +570,8 @@ Widget posNote(TextTheme textTheme, Map<dynamic, dynamic> printData) {
             Html(
               data: htmlFormating(posNote.toString()),
               style: {
-                'p': Style(textAlign: TextAlign.justify,fontSize: FontSize.medium)
+                'p': Style(
+                    textAlign: TextAlign.justify, fontSize: FontSize.medium)
               },
             ),
             emptyLine(),

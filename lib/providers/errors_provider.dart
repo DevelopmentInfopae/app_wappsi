@@ -28,14 +28,22 @@ class ErrorsProvider {
     temp = queryResultToMapList(temp);
 
     final body = {
-      'errors_info': temp.isNotEmpty?temp:[{'error':'No error','from':'sended report without error register','date':DateTime.now().toIso8601String()}],
+      'errors_info': temp.isNotEmpty
+          ? temp
+          : [
+              {
+                'error': 'No error',
+                'from': 'sended report without error register',
+                'date': DateTime.now().toIso8601String()
+              }
+            ],
       'message': message ?? '',
       'user_data':
           '${dataBloc.userData?.firstName} ${dataBloc.userData?.lastName} ${dataBloc.userData?.companyName}',
     };
 
     scaffoldAlert(
-        context, 'Enviando reporte de error', const Duration(seconds: 10),
+        context, 'Enviando reporte de error', const Duration(seconds: 1),
         key: UniqueKey());
     final apiProvider = DataProvider();
     final res = await apiProvider.postPetition(
@@ -49,8 +57,9 @@ class ErrorsProvider {
       confirmDialog(
           context, res['body']['message'], 'assets/images/dizzy-robot.png');
     } else if (!res['error']) {
-      confirmDialog(
-          context, res['body']['message'], 'assets/images/success.png');
+      scaffoldAlert(
+          context, 'Reporte de errores exitoso', const Duration(seconds: 10),
+          key: UniqueKey());
       sendOk = true;
       await deleteAllErrors();
       // Navigator.pop(context);

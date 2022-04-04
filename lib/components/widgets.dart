@@ -5,6 +5,7 @@ import 'package:pos_wappsi/components/image_file.dart';
 import 'package:pos_wappsi/components/image_preview.dart';
 import 'package:pos_wappsi/config/host_params.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/local_storage/local_files.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
@@ -190,7 +191,7 @@ Positioned loadingIndicator(double width) {
 
 Widget customerPhoto(String? img, {fit = BoxFit.contain}) {
   String url;
-  if (img == '' || img==null) {
+  if (img == '' || img == null) {
     img = defaultCustomersImage;
     url = dataBloc.userData!.hostUrl +
         dataBloc.userData!.companyFolder +
@@ -352,11 +353,15 @@ Widget billerImage(String image) {
 
   String img = image;
   // if img is png convert to png
-  if (img.substring(img.length - 4) == '.png') {
-    imgURL = dataBloc.userData!.hostUrl +
-        "/wappsi_apis/utils/pngToJpg?img=" +
-        imgURL;
-    img = img.substring(0, img.length - 4) + '.jpg';
+  try {
+    if (img.substring(img.length - 4) == '.png') {
+      imgURL = dataBloc.userData!.hostUrl +
+          "/wappsi_apis/utils/pngToJpg?img=" +
+          imgURL;
+      img = img.substring(0, img.length - 4) + '.jpg';
+    }
+  } catch (e) {
+    logError(e);
   }
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
@@ -366,24 +371,23 @@ Widget billerImage(String image) {
         if (snapshot.hasData) {
           try {
             return AppButton(
-            child: imageFile(snapshot.data),
-            elevation: 0,
-            padding: EdgeInsets.zero,
-            onTap: () {
-              ImagePreview(
-                imagePath: snapshot.data,
-                isFileImage: true,
-              ).launch(context);
-            },
-          );
+              child: imageFile(snapshot.data),
+              elevation: 0,
+              padding: EdgeInsets.zero,
+              onTap: () {
+                ImagePreview(
+                  imagePath: snapshot.data,
+                  isFileImage: true,
+                ).launch(context);
+              },
+            );
           } catch (e) {
             printConsole(e);
           }
         }
-          return Image.asset(
-            'assets/images/no_image.png',
-            
-          );
+        return Image.asset(
+          'assets/images/no_image.png',
+        );
       },
     ),
   );

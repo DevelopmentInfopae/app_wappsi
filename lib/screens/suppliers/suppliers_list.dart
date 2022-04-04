@@ -6,14 +6,13 @@ import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/components/appbar_leading.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/providers/companies_provider.dart';
-
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
-import 'package:pos_wappsi/components/appbar_leading.dart';
 import 'package:pos_wappsi/screens/suppliers/components/supplier_card_list.dart';
 import 'package:pos_wappsi/screens/suppliers/new_supplier.dart';
 
@@ -139,15 +138,17 @@ class _ProductsState extends State<Suppliers> {
                       (context, AsyncSnapshot<List<CompanyModel>?> snapshot2) {
                     if (snapshot2.hasData) {
                       return RefreshIndicator(
-                          onRefresh: ()async{
-                            final res = await CompaniesProvider.getAllSuppliers(limit: 50);
-                            _suppliersStream.sink.add(CompanyModel.fromJsonList(res!));
-                          },
-                          child: SuppliersCardList(
-                            customer: snapshot2.data!,
-                            searchParams: _searchParams,
-                          ),
-                        );
+                        onRefresh: () async {
+                          final res = await CompaniesProvider.getAllSuppliers(
+                              limit: 50);
+                          _suppliersStream.sink
+                              .add(CompanyModel.fromJsonList(res!));
+                        },
+                        child: SuppliersCardList(
+                          customer: snapshot2.data!,
+                          searchParams: _searchParams,
+                        ),
+                      );
                     } else {
                       _suppliersStream.sink
                           .add(CompanyModel.fromJsonList(snapshot.data!));
@@ -174,7 +175,7 @@ class _ProductsState extends State<Suppliers> {
         _suppliersStream.sink.add(CompanyModel.fromJsonList(res));
       }
     } else {
-      final res = await CompaniesProvider.findCustomer(query);
+      final res = await CompaniesProvider.findSupplier(query);
       if (res != null) {
         _suppliersStream.sink.add(CompanyModel.fromJsonList(res));
       }

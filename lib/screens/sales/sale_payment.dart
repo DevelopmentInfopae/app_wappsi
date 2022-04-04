@@ -12,15 +12,15 @@ import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/input_decoration.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/params/pos_params.dart';
 import 'package:pos_wappsi/config/documents_types.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
 // import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
-import 'package:pos_wappsi/providers/sale_provider.dart';
+import 'package:pos_wappsi/params/pos_params.dart';
 import 'package:pos_wappsi/providers/document_types_provider.dart';
 import 'package:pos_wappsi/providers/payment_methods_provider.dart';
+import 'package:pos_wappsi/providers/sale_provider.dart';
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 // import 'package:pos_wappsi/screens/db_sync/components/sync_popup.dart';
@@ -269,7 +269,7 @@ class _SalePaymentState extends State<SalePayment> {
       future: DocumentsTypesProvider.loadFromDB(module: posDocModule),
       builder:
           (BuildContext context, AsyncSnapshot<List<DocumentsTypes>> snapshot) {
-        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+        if (snapshot.hasData && (snapshot.data?.isNotEmpty ?? false)) {
           posBloc.setPaymentDocument(snapshot.data?.first);
           if (snapshot.data!.length > 1) {
             return _documentType(items: snapshot.data!);
@@ -660,7 +660,7 @@ class _SalePaymentState extends State<SalePayment> {
                     );
                     final printData = posBloc.getPrintData!;
                     posBloc.dispose();
-                    await PrintSale(
+                    PrintSale(
                       printData: printData,
                     ).launch(context);
                   });

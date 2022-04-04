@@ -1,6 +1,5 @@
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/material.dart';
-
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/bloc/data_bloc.dart';
@@ -59,10 +58,10 @@ class _PrintSaleState extends State<PrintSale> {
     _pc = pColor;
     return WillPopScope(
       onWillPop: () async {
-          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
-          // printConsole('here i am');
-          return true;
-        },
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+        // printConsole('here i am');
+        return true;
+      },
       child: Scaffold(
         appBar: appBar(
           context,
@@ -94,7 +93,7 @@ class _PrintSaleState extends State<PrintSale> {
         child: Card(
           child: Column(
             children: [
-              billerImage(widget.printData['company_data'].logo)
+              billerImage(widget.printData['company_data']?.logo ?? '')
                   .paddingSymmetric(horizontal: 40)
                   .withHeight(
                       _size.height * 0.09 > 60 ? _size.height * 0.09 : 60),
@@ -158,7 +157,6 @@ class _PrintSaleState extends State<PrintSale> {
           // final xd = await bluetooth.isOn;
           isConnected = await bluetooth.isConnected ?? false;
         } catch (e) {
-          
           printConsole(e);
           isConnected = false;
         }
@@ -171,13 +169,17 @@ class _PrintSaleState extends State<PrintSale> {
 
           scaffoldAlert(
               context, 'Imprimiendo comprobante', const Duration(seconds: 3));
-          String companyLogo = widget.printData['company_data'].logo;
-          if (companyLogo.substring(companyLogo.length - 4) == '.png') {
-            companyLogo =
-                companyLogo.substring(0, companyLogo.length - 4) + '.jpg';
+          String? companyLogo = widget.printData['company_data']?.logo;
+          bool? result;
+          if (companyLogo != null && companyLogo != '') {
+            if (companyLogo.substring(companyLogo.length - 4) == '.png') {
+              companyLogo =
+                  companyLogo.substring(0, companyLogo.length - 4) + '.jpg';
+              result = await printFormat.printPOS(
+                  dataBloc.dirPath! + billerImgDir + companyLogo,
+                  widget.printData);
+            }
           }
-          final result = await printFormat.printPOS(
-              dataBloc.dirPath! + billerImgDir + companyLogo, widget.printData);
           if (result ?? false) {
             await Future.delayed(const Duration(seconds: 3));
             hideCurrentScaffoldAlert(context);

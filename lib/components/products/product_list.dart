@@ -119,9 +119,9 @@ class ProductsList extends StatelessWidget {
             };
 
             rmQtty = () {
-              if (orderBloc.getProductData(product.key)!.quantity > uOperator) {
+              if (posBloc.getProductData(product.key)!.quantity > uOperator) {
                 // setState(() {
-                orderBloc.getProductData(product.key)!.quantity -= uOperator;
+                posBloc.getProductData(product.key)!.quantity -= uOperator;
               }
             };
           }
