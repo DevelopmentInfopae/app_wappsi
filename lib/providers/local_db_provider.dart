@@ -37,57 +37,57 @@ class DBProvider {
     // printConsole(path);
 
     // creation of db
-    return await openDatabase(path, version: 4, onOpen: (db) {},
+    return await openDatabase(path, version: 5, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       // table creation
 
-      await db.execute(dbProducts);
-      await db.execute(dbProductsPrice);
-      await db.execute(dbProductPhotos);
-      await db.execute(dbProductVariants);
-      await db.execute(dbCompanies);
-      await db.execute(dbBillerData);
-      await db.execute(dbCustomerGroups);
-      await db.execute(dbAddresses);
-      await db.execute(dbUpdates);
-      await db.execute(dbPriceGroups);
-      await db.execute(dbSettings);
-      await db.execute(warehouseProducts);
-      await db.execute(brands);
-      await db.execute(dbTaxRates);
-      await db.execute(paymentMethods);
-      await db.execute(dbPosSettings);
-      await db.execute(documenTypes);
-      await db.execute(countries);
-      await db.execute(states);
-      await db.execute(citys);
-      await db.execute(documentTypes);
-      await db.execute(pCategories);
-      await db.execute(pUnits);
-      await db.execute(unitPrices);
-      await db.execute(warehouses);
-      await db.execute(billerDocumentTypes);
+      await db.execute(DbProductsSql);
+      await db.execute(DbProductsPriceSql);
+      await db.execute(DbProductPhotosSql);
+      await db.execute(DbProductVariantsSql);
+      await db.execute(DbCompaniesSql);
+      await db.execute(DbBillerDataSql);
+      await db.execute(DbCustomerGroupsSql);
+      await db.execute(DbAddressesSql);
+      await db.execute(DbUpdatesSql);
+      await db.execute(DbPriceGroupsSql);
+      await db.execute(DbSettingsSql);
+      await db.execute(WarehouseProductsSql);
+      await db.execute(BrandsSql);
+      await db.execute(DbTaxRatesSql);
+      await db.execute(PaymentMethodsSql);
+      await db.execute(DbPosSettingsSql);
+      await db.execute(DocumenTypesSql);
+      await db.execute(CountriesSql);
+      await db.execute(StatesSql);
+      await db.execute(CitysSql);
+      await db.execute(DocumentTypesSql);
+      await db.execute(PCategoriesSql);
+      await db.execute(PUnitsSql);
+      await db.execute(UnitPricesSql);
+      await db.execute(WarehousesSql);
+      await db.execute(BillerDocumentTypesSql);
       //favorite products
-      await db.execute(favotites);
-      await db.execute(groups);
-      await db.execute(suspendedSales);
-      await db.execute(suspendedSaleProducts);
+      await db.execute(FavotitesSql);
+      await db.execute(GroupsSql);
+      await db.execute(SuspendedSalesSql);
+      await db.execute(SuspendedSaleProductsSql);
       // Create tables to save sales locally
-      await db.execute(sales);
-      await db.execute(saleItems);
-      await db.execute(payment);
+      await db.execute(SalesSql);
+      await db.execute(SaleItemsSql);
+      await db.execute(PaymentSql);
 
       // orders tables
-      await db.execute(orderSaleItems);
-      await db.execute(orderSales);
+      await db.execute(OrderSaleItemsSql);
+      await db.execute(OrderSalesSql);
       // quotes tables
-      await db.execute(quotesTable);
-      await db.execute(quoteItemsTable);
-      await db.execute(purchasesSql);
-      await db.execute(purchaseItems);
+      await db.execute(PurchasesSql);
+      await db.execute(QuotesTableSql);
+      await db.execute(QuoteItemsTableSql);
+      await db.execute(PurchaseItemsSql);
 
       ///Errors log
-      await db.execute(errorsData);
+      await db.execute(ErrorsDataSql);
 
       // index creation
       Batch batch = db.batch();

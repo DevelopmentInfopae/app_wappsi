@@ -15,20 +15,25 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/order_model.dart';
 import 'package:pos_wappsi/providers/local_orders_provider.dart';
+import 'package:pos_wappsi/providers/purchase_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
+import 'package:pos_wappsi/screens/Purchases/components/purchases_card_list.dart';
 import 'package:pos_wappsi/screens/orders/components/order_card_list.dart';
 import 'package:pos_wappsi/utils/text_formating/order_status_mapping.dart';
 
-class OrdersList extends StatefulWidget {
-  const OrdersList({Key? key}) : super(key: key);
+import '../../models/purchase_model.dart';
+
+class PurchasesList extends StatefulWidget {
+  const PurchasesList({Key? key}) : super(key: key);
 
   @override
   _ProductsState createState() => _ProductsState();
 }
 
-class _ProductsState extends State<OrdersList> {
+class _ProductsState extends State<PurchasesList> {
   List<CompanyModel> products = [];
-  final _ordersListStream = StreamController<List<OrderModel>>.broadcast();
+  final _purchasesListStream =
+      StreamController<List<PurchaseModel>>.broadcast();
 
   late Size _size;
   bool showFilters = false;
@@ -39,7 +44,7 @@ class _ProductsState extends State<OrdersList> {
 
   @override
   void dispose() {
-    _ordersListStream.close();
+    _purchasesListStream.close();
     super.dispose();
   }
 
@@ -61,10 +66,10 @@ class _ProductsState extends State<OrdersList> {
       },
       child: Scaffold(
         key: _scaffoldKey,
-        appBar: appBar(context, 'Listado de pedidos',
+        appBar: appBar(context, 'Listado de compras',
             elevation: false,
             radius: 0,
-            image: 'assets/images/order-list.png', onPop: () {
+            image: 'assets/images/quotation.png', onPop: () {
           dataBloc.homeKey?.currentState?.changeBottomIndex(1);
           Navigator.pop(context);
         }),
@@ -84,25 +89,25 @@ class _ProductsState extends State<OrdersList> {
                 ? CrossFadeState.showFirst
                 : CrossFadeState.showSecond,
             duration: Duration(milliseconds: 200)),
-        // _ordersList(),
+        // _PurchasesList(),
 
         // showFilters ? _filterList() : const SizedBox(),
         GestureDetector(
           child: RefreshIndicator(
               displacement: 0,
               onRefresh: () async {
-                /// sync sma_order_sales
+                /// sync sma_purchases
                 final dbProvider = SyncDBProvider();
 
                 final result = await dbProvider.syncOption(
-                    context, tableNamesToSyncOpt['sma_order_sales']!);
+                    context, tableNamesToSyncOpt['sma_purchases']!);
                 if (result['error'] == false) {
-                  final orders = await LocalOrdersProvider.listLocalOrders(
+                  final orders = await PurchaseProvider.listLocalPurchases(
                       search: _searchParams['search'] ?? '', filters: _filters);
-                  _ordersListStream.sink.add(orders ?? []);
+                  _purchasesListStream.sink.add(orders ?? []);
                 }
               },
-              child: _ordersList()),
+              child: _purchasesList()),
           onVerticalDragStart: (val) {
             if (showFilters) {
               setState(() {
@@ -133,7 +138,7 @@ class _ProductsState extends State<OrdersList> {
       ]),
       width: double.infinity,
       child: FutureBuilder(
-        future: LocalOrdersProvider.orderStatus(),
+        future: PurchaseProvider.status(),
         builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data!.length == 1) {
@@ -210,7 +215,7 @@ class _ProductsState extends State<OrdersList> {
           color: Colors.grey[200],
           borderRadius: const BorderRadius.all(Radius.circular(10))),
       child: FloatingSearchAppBar(
-          hint: 'Buscar pedido',
+          hint: 'Buscar compra',
           transitionDuration: const Duration(milliseconds: 800),
           clearQueryOnClose: true,
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
@@ -242,25 +247,25 @@ class _ProductsState extends State<OrdersList> {
     );
   }
 
-  Widget _ordersList() {
+  Widget _purchasesList() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 7),
-      child: FutureBuilder<List<OrderModel>?>(
-          future: LocalOrdersProvider.listLocalOrders(filters: _filters),
+      child: FutureBuilder<List<PurchaseModel>?>(
+          future: PurchaseProvider.listLocalPurchases(filters: _filters),
           builder: (BuildContext context,
-              AsyncSnapshot<List<OrderModel>?> snapshot) {
+              AsyncSnapshot<List<PurchaseModel>?> snapshot) {
             if (snapshot.hasData) {
-              return StreamBuilder<List<OrderModel>>(
-                  stream: _ordersListStream.stream,
+              return StreamBuilder<List<PurchaseModel>>(
+                  stream: _purchasesListStream.stream,
                   builder:
-                      (context, AsyncSnapshot<List<OrderModel>> snapshot2) {
+                      (context, AsyncSnapshot<List<PurchaseModel>> snapshot2) {
                     if (snapshot2.hasData) {
-                      return OrdersCardList(
-                          orders: snapshot2.data!,
+                      return PurchasesCardList(
+                          purchases: snapshot2.data!,
                           searchParams: _searchParams,
                           filters: _filters);
                     } else {
-                      _ordersListStream.sink.add(snapshot.data!);
+                      _purchasesListStream.sink.add(snapshot.data!);
 
                       return const Center(
                         child: CircularProgressIndicator(),
@@ -279,10 +284,10 @@ class _ProductsState extends State<OrdersList> {
   _onQueryChanged(String? query) async {
     _searchParams['search'] = query;
 
-    final res = await LocalOrdersProvider.listLocalOrders(
+    final res = await PurchaseProvider.listLocalPurchases(
         search: query ?? '', filters: _filters);
     if (res != null) {
-      _ordersListStream.sink.add(res);
+      _purchasesListStream.sink.add(res);
     }
   }
 }

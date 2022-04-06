@@ -495,6 +495,7 @@ class _SaleCartState extends State<SaleCart> {
               const Duration(seconds: 1, milliseconds: 500),
               backGroundColor: Colors.red);
           // _searchController.query='';
+          _searchController.open();
           _queryLen = 0;
         } else {
           _queryLen = query.length;

@@ -3,11 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/routes.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,20 +52,17 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       locale: _locale,
-       localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate
-        ],
-        supportedLocales: const[
-          Locale('es')
-        ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
+      ],
+      supportedLocales: const [Locale('es')],
       theme: ThemeData(
           primaryColor: const Color.fromRGBO(28, 122, 190, 1),
           scaffoldBackgroundColor: Colors.grey[100],
-          inputDecorationTheme:const InputDecorationTheme(
-            fillColor: Colors.white
-          ),
+          inputDecorationTheme:
+              const InputDecorationTheme(fillColor: Colors.white),
           appBarTheme: const AppBarTheme(
               backgroundColor: Colors.white,
               toolbarTextStyle: TextStyle(color: Colors.black, fontSize: 20)),
@@ -86,7 +81,6 @@ class _MyAppState extends State<MyApp> {
             Theme.of(context).textTheme,
           ),
           backgroundColor: Colors.white),
-
       title: 'WappsiPOSApp',
       initialRoute: '/',
       routes: Routes.getRoutes(),

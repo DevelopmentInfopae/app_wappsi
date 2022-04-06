@@ -108,9 +108,7 @@ class _QuoteProductsState extends State<QuoteProducts> {
 
     return WillPopScope(
         child: Scaffold(
-            key: _scaffoldKey,
-            appBar: buildAppBar(context),
-            body: _body()),
+            key: _scaffoldKey, appBar: buildAppBar(context), body: _body()),
         onWillPop: () async {
           bool pop = false;
 
@@ -130,14 +128,14 @@ class _QuoteProductsState extends State<QuoteProducts> {
 
   Column _body() {
     return Column(
-            children: [
-              PageView(
-                controller: pageController,
-                children: [_searchbar(), buildFloatingSearchBar()],
-              ).expand(),
-              bottom(_bottom(), pColor, _size)
-            ],
-          );
+      children: [
+        PageView(
+          controller: pageController,
+          children: [_searchbar(), buildFloatingSearchBar()],
+        ).expand(),
+        bottom(_bottom(), pColor, _size)
+      ],
+    );
   }
 
   PreferredSize buildAppBar(BuildContext context) {
@@ -279,8 +277,6 @@ class _QuoteProductsState extends State<QuoteProducts> {
       onQueryChanged: _onQueryChanged,
     );
   }
-
-
 
   Widget _products() {
     return Container(
@@ -469,6 +465,7 @@ class _QuoteProductsState extends State<QuoteProducts> {
             scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
                 const Duration(seconds: 1, milliseconds: 500),
                 backGroundColor: Colors.red);
+            _searchController.open();
 
             // _searchController.query='';
             _queryLen = 0;

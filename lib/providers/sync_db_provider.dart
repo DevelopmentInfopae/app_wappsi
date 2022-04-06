@@ -95,6 +95,7 @@ class SyncDBProvider {
               deleteBefore: optionInfo!['delete_before'],
               independentTable: optionInfo['independent_table'],
               dependentTable: optionInfo['dependent_table'],
+              dependentTable2: optionInfo['dependent_table2'],
               idKey: optionInfo['id_key'],
               columnName: optionInfo['column_name']);
         } else {
@@ -242,6 +243,7 @@ class SyncDBProvider {
       String? idKey,
       String? independentTable,
       String? dependentTable,
+      String? dependentTable2,
       String? columnName}) async {
     bool result = true;
     if ((res['body']['data'] != null) ||
@@ -259,9 +261,13 @@ class SyncDBProvider {
               for (var i = 0; i < data[key]!.length; i++) {
                 idValue = data[key][i][idKey];
                 if (idValue != null) {
-                  final res = await DBProvider.db
+                  await DBProvider.db
                       .deleteQuerys(dependentTable!, '$columnName=$idValue');
-                  printConsole(res);
+                  if (dependentTable2 != null) {
+                    await DBProvider.db
+                        .deleteQuerys(dependentTable2, '$columnName=$idValue');
+                  }
+                  // printConsole(res);
                 }
               }
             }
@@ -362,6 +368,7 @@ class SyncDBProvider {
             deleteBefore: optionInfo!['delete_before'],
             independentTable: optionInfo['independent_table'],
             dependentTable: optionInfo['dependent_table'],
+            dependentTable2: optionInfo['dependent_table2'],
             idKey: optionInfo['id_key'],
             columnName: optionInfo['column_name']);
       }

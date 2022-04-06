@@ -175,14 +175,18 @@ class _PrintSaleState extends State<PrintSale> {
             if (companyLogo.substring(companyLogo.length - 4) == '.png') {
               companyLogo =
                   companyLogo.substring(0, companyLogo.length - 4) + '.jpg';
-              result = await printFormat.printPOS(
-                  dataBloc.dirPath! + billerImgDir + companyLogo,
-                  widget.printData);
             }
+            result = await printFormat.printPOS(
+                dataBloc.dirPath! + billerImgDir + companyLogo,
+                widget.printData);
           }
           if (result ?? false) {
             await Future.delayed(const Duration(seconds: 3));
-            hideCurrentScaffoldAlert(context);
+            try {
+              hideCurrentScaffoldAlert(context);
+            } catch (e) {
+              printConsole(e);
+            }
             setState(() {
               _printing = false;
             });

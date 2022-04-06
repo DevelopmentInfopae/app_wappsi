@@ -307,7 +307,7 @@ class SalesModel {
         saleStatus: json["sale_status"],
         paymentStatus: json["payment_status"],
         paymentTerm: int.tryParse(json["payment_term"].toString()) ?? 0,
-        dueDate: DateTime.tryParse(json["due_date"]),
+        dueDate: DateTime.tryParse(json["due_date"] ?? ''),
         createdBy: json["created_by"],
         updatedBy: json["updated_by"],
         updatedAt: json["updated_at"],
@@ -370,7 +370,7 @@ class SalesModel {
         feXml: json["fe_xml"],
         feDebitCreditNoteConceptDianCode:
             json["fe_debit_credit_note_concept_dian_code"],
-        saleCurrency: json["sale_currency"],
+        saleCurrency: json["sale_currency"] ?? 'COP',
         saleCurrencyTrm: json["sale_currency_trm"],
         costCenterId: json["cost_center_id"],
         documentTypeId: json["document_type_id"],

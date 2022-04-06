@@ -12,11 +12,15 @@ class LocalSalesProvider {
       int offsetValue = 1}) async {
     final pagination = offset ? " LIMIT 30 OFFSET $offsetValue" : "";
     final currentBiller = dataBloc.userData!.billerId;
-    final uId = dataBloc.userData!.id;
+    String userCondition = '';
+    if (dataBloc.userData?.viewRight == 0) {
+      final uId = dataBloc.userData!.id;
+      userCondition = "AND s.created_by=$uId ";
+    }
     final sql = '''select * from sma_sales s 
         WHERE (s.customer LIKE "%$search%" OR s.note LIKE "%$search%" OR s.staff_note LIKE "%$search%" 
         OR s.reference_no LIKE "%$search%") 
-        AND s.biller_id=$currentBiller AND s.created_by=$uId$pagination ORDER BY registration_date DESC;
+        AND s.biller_id=$currentBiller $userCondition$pagination ORDER BY registration_date DESC;
     ''';
     final res = await DBProvider.db.sqlRawQuery(sql);
     if (res != null) {

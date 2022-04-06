@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/utils/parsing/to_double.dart';
 
 PaymentsModel paymentFromJson(String str) =>
     PaymentsModel.fromJson(json.decode(str));
@@ -222,14 +223,14 @@ class PaymentsModel {
         ccMonth: json["cc_month"],
         ccYear: json["cc_year"],
         ccType: json["cc_type"],
-        amount: json["amount"].toDouble(),
+        amount: parsingToDouble(json["amount"]),
         currency: json["currency"],
         createdBy: json["created_by"],
         attachment: json["attachment"],
         type: json["type"],
         note: json["note"],
-        posPaid: json["pos_paid"].toDouble(),
-        posBalance: json["pos_balance"].toDouble(),
+        posPaid: parsingToDouble(json["pos_paid"]),
+        posBalance: parsingToDouble(json["pos_balance"]),
         approvalCode: json["approval_code"],
         affect: json["affect"],
         trmDifference: double.tryParse(json["trm_difference"].toString()),

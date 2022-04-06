@@ -58,7 +58,7 @@ class ErrorsProvider {
           context, res['body']['message'], 'assets/images/dizzy-robot.png');
     } else if (!res['error']) {
       scaffoldAlert(
-          context, 'Reporte de errores exitoso', const Duration(seconds: 10),
+          context, 'Reporte de errores exitoso', const Duration(seconds: 1),
           key: UniqueKey());
       sendOk = true;
       await deleteAllErrors();

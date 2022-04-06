@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import 'package:pos_wappsi/bloc/purchases_bloc.dart';
 import 'package:pos_wappsi/models/user_model.dart';
+import 'package:pos_wappsi/utils/parsing/to_double.dart';
 
 class PurchaseModel {
   PurchaseModel({
@@ -18,19 +19,19 @@ class PurchaseModel {
     this.warehouseId,
     this.note,
     this.total,
-    this.productDiscount,
+    this.productDiscount = 0,
     this.orderDiscountId,
-    this.orderDiscount,
-    this.totalDiscount,
-    this.productTax=0.0,
+    this.orderDiscount = 0,
+    this.totalDiscount = 0,
+    this.productTax = 0.0,
     this.orderTaxId,
-    this.orderTax=0.0,
+    this.orderTax = 0.0,
     this.totalTax = 0.0,
-    this.shipping= 0.0,
+    this.shipping = 0.0,
     this.grandTotal,
-    this.paid= 0.0,
-    this.status='',
-    this.paymentStatus='pending',
+    this.paid = 0.0,
+    this.status = '',
+    this.paymentStatus = 'pending',
     this.createdBy,
     this.updatedBy,
     this.updatedAt,
@@ -38,36 +39,36 @@ class PurchaseModel {
     this.paymentTerm,
     this.dueDate,
     this.returnId,
-    this.surcharge= 0.0,
+    this.surcharge = 0.0,
     this.returnPurchaseRef,
     this.purchaseId,
-    this.returnPurchaseTotal= 0.0,
+    this.returnPurchaseTotal = 0.0,
     this.cgst,
     this.sgst,
     this.igst,
-    this.closedYear= 0,
-    this.reteFuentePercentage= 0.0,
-    this.reteFuenteTotal= 0.0,
-    this.reteFuenteAccount=0,
+    this.closedYear = 0,
+    this.reteFuentePercentage = 0.0,
+    this.reteFuenteTotal = 0.0,
+    this.reteFuenteAccount = 0,
     this.reteFuenteBase,
-    this.reteIvaPercentage= 0.0,
-    this.reteIvaTotal= 0.0,
-    this.reteIvaAccount=0,
+    this.reteIvaPercentage = 0.0,
+    this.reteIvaTotal = 0.0,
+    this.reteIvaAccount = 0,
     this.reteIvaBase,
-    this.reteIcaPercentage= 0.0,
-    this.reteIcaTotal= 0.0,
-    this.reteIcaAccount=0,
+    this.reteIcaPercentage = 0.0,
+    this.reteIcaTotal = 0.0,
+    this.reteIcaAccount = 0,
     this.reteIcaBase,
-    this.reteOtherPercentage= 0.0,
-    this.reteOtherTotal= 0.0,
-    this.reteOtherAccount=0,
+    this.reteOtherPercentage = 0.0,
+    this.reteOtherTotal = 0.0,
+    this.reteOtherAccount = 0,
     this.reteOtherBase,
-    this.orderDiscountMethod=2,
-    this.purchaseCurrency,
+    this.orderDiscountMethod = 2,
+    this.purchaseCurrency = 'COP',
     this.purchaseCurrencyTrm,
-    this.purchaseType=1,
+    this.purchaseType = 1,
     this.creditLedgerId,
-    this.paymentAffectsRegister,
+    this.paymentAffectsRegister = 0,
     this.costCenterId,
     this.billerId,
     this.consecutiveSupplier,
@@ -78,13 +79,13 @@ class PurchaseModel {
     this.reteOtherId,
     this.purchaseOrigin,
     this.purchaseOriginReferenceNo,
-    this.proratedShippingCost= 0.0,
-    this.consumptionPurchase,
+    this.proratedShippingCost = 0.0,
+    this.consumptionPurchase = 0.0,
     this.resolucion,
     this.duePaymentMethodId,
     this.registrationDate,
     this.expenseCausation,
-    this.returnOtherConcepts=0,
+    this.returnOtherConcepts = 0,
     this.reteFuenteAssumed,
     this.reteIvaAssumed,
     this.reteIcaAssumed,
@@ -93,13 +94,13 @@ class PurchaseModel {
     this.reteIvaAssumedAccount,
     this.reteIcaAssumedAccount,
     this.reteOtherAssumedAccount,
-    this.reteBomberilPercentage= 0.0,
-    this.reteBomberilTotal= 0.0,
-    this.reteBomberilAccount=0,
+    this.reteBomberilPercentage = 0.0,
+    this.reteBomberilTotal = 0.0,
+    this.reteBomberilAccount = 0,
     this.reteBomberilBase,
-    this.reteAutoavisoPercentage= 0.0,
-    this.reteAutoavisoTotal= 0.0,
-    this.reteAutoavisoAccount= 0,
+    this.reteAutoavisoPercentage = 0.0,
+    this.reteAutoavisoTotal = 0.0,
+    this.reteAutoavisoAccount = 0,
     this.reteAutoavisoBase,
     this.reteBomberilId,
     this.reteAutoavisoId,
@@ -218,18 +219,18 @@ class PurchaseModel {
         supplier: json["supplier"],
         warehouseId: json["warehouse_id"],
         note: json["note"],
-        total: json["total"],
-        productDiscount: json["product_discount"],
-        orderDiscountId: json["order_discount_id"],
-        orderDiscount: json["order_discount"],
-        totalDiscount: json["total_discount"],
-        productTax: json["product_tax"],
+        total: parsingToDouble(json["total"].toString()),
+        productDiscount: parsingToDouble(json["product_discount"].toString()),
+        orderDiscountId: (json["order_discount_id"] ?? '').toString(),
+        orderDiscount: parsingToDouble(json["order_discount"].toString()),
+        totalDiscount: parsingToDouble(json["total_discount"].toString()),
+        productTax: parsingToDouble(json["product_tax"].toString()),
         orderTaxId: json["order_tax_id"],
-        orderTax: json["order_tax"],
-        totalTax: json["total_tax"],
-        shipping: json["shipping"],
-        grandTotal: json["grand_total"],
-        paid: json["paid"],
+        orderTax: parsingToDouble(json["order_tax"]),
+        totalTax: parsingToDouble(json["total_tax"]),
+        shipping: parsingToDouble(json["shipping"]),
+        grandTotal: parsingToDouble(json["grand_total"]),
+        paid: parsingToDouble(json["paid"]),
         status: json["status"],
         paymentStatus: json["payment_status"],
         createdBy: json["created_by"],
@@ -239,28 +240,28 @@ class PurchaseModel {
         paymentTerm: json["payment_term"],
         dueDate: json["due_date"],
         returnId: json["return_id"],
-        surcharge: json["surcharge"],
+        surcharge: parsingToDouble(json["surcharge"]),
         returnPurchaseRef: json["return_purchase_ref"],
         purchaseId: json["purchase_id"],
-        returnPurchaseTotal: json["return_purchase_total"],
+        returnPurchaseTotal: parsingToDouble(json["return_purchase_total"]),
         cgst: json["cgst"],
         sgst: json["sgst"],
         igst: json["igst"],
         closedYear: json["closed_year"],
-        reteFuentePercentage: json["rete_fuente_percentage"],
-        reteFuenteTotal: json["rete_fuente_total"],
+        reteFuentePercentage: parsingToDouble(json["rete_fuente_percentage"]),
+        reteFuenteTotal: parsingToDouble(json["rete_fuente_total"]),
         reteFuenteAccount: json["rete_fuente_account"],
         reteFuenteBase: json["rete_fuente_base"],
-        reteIvaPercentage: json["rete_iva_percentage"],
-        reteIvaTotal: json["rete_iva_total"],
+        reteIvaPercentage: parsingToDouble(json["rete_iva_percentage"]),
+        reteIvaTotal: parsingToDouble(json["rete_iva_total"]),
         reteIvaAccount: json["rete_iva_account"],
         reteIvaBase: json["rete_iva_base"],
-        reteIcaPercentage: json["rete_ica_percentage"],
-        reteIcaTotal: json["rete_ica_total"],
+        reteIcaPercentage: parsingToDouble(json["rete_ica_percentage"]),
+        reteIcaTotal: parsingToDouble(json["rete_ica_total"]),
         reteIcaAccount: json["rete_ica_account"],
         reteIcaBase: json["rete_ica_base"],
-        reteOtherPercentage: json["rete_other_percentage"],
-        reteOtherTotal: json["rete_other_total"],
+        reteOtherPercentage: parsingToDouble(json["rete_other_percentage"]),
+        reteOtherTotal: parsingToDouble(json["rete_other_total"]),
         reteOtherAccount: json["rete_other_account"],
         reteOtherBase: json["rete_other_base"],
         orderDiscountMethod: json["order_discount_method"],
@@ -272,15 +273,15 @@ class PurchaseModel {
         costCenterId: json["cost_center_id"],
         billerId: json["biller_id"],
         consecutiveSupplier: json["consecutive_supplier"],
-        documentTypeId: json["document_type_id"],
+        documentTypeId: (json["document_type_id"] ?? '').toString(),
         reteFuenteId: json["rete_fuente_id"],
         reteIvaId: json["rete_iva_id"],
         reteIcaId: json["rete_ica_id"],
         reteOtherId: json["rete_other_id"],
         purchaseOrigin: json["purchase_origin"],
         purchaseOriginReferenceNo: json["purchase_origin_reference_no"],
-        proratedShippingCost: json["prorated_shipping_cost"],
-        consumptionPurchase: json["consumption_purchase"],
+        proratedShippingCost: parsingToDouble(json["prorated_shipping_cost"]),
+        consumptionPurchase: parsingToDouble(json["consumption_purchase"]),
         resolucion: json["resolucion"],
         duePaymentMethodId: json["due_payment_method_id"],
         registrationDate: json["registration_date"],
@@ -294,12 +295,14 @@ class PurchaseModel {
         reteIvaAssumedAccount: json["rete_iva_assumed_account"],
         reteIcaAssumedAccount: json["rete_ica_assumed_account"],
         reteOtherAssumedAccount: json["rete_other_assumed_account"],
-        reteBomberilPercentage: json["rete_bomberil_percentage"],
-        reteBomberilTotal: json["rete_bomberil_total"],
+        reteBomberilPercentage:
+            parsingToDouble(json["rete_bomberil_percentage"]),
+        reteBomberilTotal: parsingToDouble(json["rete_bomberil_total"]),
         reteBomberilAccount: json["rete_bomberil_account"],
         reteBomberilBase: json["rete_bomberil_base"],
-        reteAutoavisoPercentage: json["rete_autoaviso_percentage"],
-        reteAutoavisoTotal: json["rete_autoaviso_total"],
+        reteAutoavisoPercentage:
+            parsingToDouble(json["rete_autoaviso_percentage"]),
+        reteAutoavisoTotal: parsingToDouble(json["rete_autoaviso_total"]),
         reteAutoavisoAccount: json["rete_autoaviso_account"],
         reteAutoavisoBase: json["rete_autoaviso_base"],
         reteBomberilId: json["rete_bomberil_id"],
@@ -519,32 +522,30 @@ class PurchaseModel {
   }
 
   /// Build an instance of PurchaseModel given productDetails, user, customer
-  Map<String,dynamic> buildPurchase(
+  Map<String, dynamic> buildPurchase(
       UserModel user, Map<String, dynamic> productsDetails) {
     final supp = purchaseBloc.getSupplier!;
-      // referenceNo: purchaseBloc.get;
-    totalTax= productsDetails['product_total_tax'];
-    status= 'pending';
-    orderTax= 0;
-    total= purchaseBloc.getSubTotalCostWithoutDiscount();
-    grandTotal= purchaseBloc.getSubTotalCost();
+    // referenceNo: purchaseBloc.get;
+    totalTax = productsDetails['product_total_tax'];
+    status = 'pending';
+    orderTax = 0;
+    total = purchaseBloc.getSubTotalCostWithoutDiscount();
+    grandTotal = purchaseBloc.getSubTotalCost();
     // orderDiscount= purchaseBloc.getDiscount;
-    supplier= supp.name ?? supp.company ?? '';
-    supplierId= int.parse(supp.idCloud ?? '0');
-    billerId= user.billerId;
-    note= purchaseBloc.getPayNote ?? '';
-    warehouseId= user.warehouseId;
-    paymentTerm= 0;
-    createdBy= int.parse(user.id);
-    productTax= productsDetails['product_total_tax'];
-    documentTypeId= purchaseBloc.getDocumentType?.idCloud ?? '';
-    productDiscount= productsDetails['product_total_discount'];
+    supplier = supp.name ?? supp.company ?? '';
+    supplierId = int.parse(supp.idCloud ?? '0');
+    billerId = user.billerId;
+    note = purchaseBloc.getPayNote ?? '';
+    warehouseId = user.warehouseId;
+    paymentTerm = 0;
+    createdBy = int.parse(user.id);
+    productTax = productsDetails['product_total_tax'];
+    documentTypeId = purchaseBloc.getDocumentType?.idCloud ?? '';
+    productDiscount = productsDetails['product_total_discount'];
     // to manage discounts
     // totalDiscount= productsDetails['product_total_discount'] + purchaseBloc.getTotalDiscount();
-    
+
     return toJsonToSend();
-      // here we add order tax if needed
-      
-      
+    // here we add order tax if needed
   }
 }

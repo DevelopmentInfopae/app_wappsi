@@ -31,6 +31,7 @@ import 'package:pos_wappsi/screens/suppliers/new_supplier.dart';
 // import 'package:pos_wappsi/screens/sales/suspended_sales.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
+// import 'package:pos_wappsi/utils/time_date_pickers/time_picker.dart';
 
 class NewPurchase extends StatefulWidget {
   const NewPurchase({Key? key}) : super(key: key);
@@ -138,14 +139,25 @@ class _NewPurchaseState extends State<NewPurchase> {
   DateTimePicker _dateTimePicker() {
     final now = DateTime.now();
     return DateTimePicker(
+      type: DateTimePickerType.dateTime,
       firstDate: DateTime(2000),
       style: normalTextStyle(context),
       controller: _dateController,
-      lastDate: DateTime(now.year + 1),
+      lastDate: DateTime(
+        now.year + 1,
+      ),
       dateLabelText: 'Fecha:',
       initialValue: null,
-      onChanged: (value) {
-        purchaseBloc.setDate(value);
+      // validator: (value) {
+      //   if (value == null || value == '') {
+      //     return 'Campo necesario';
+      //   }
+      // },
+      onChanged: (String? value) async {
+        if (value != null) {
+          // final time = await selectTime(context);
+          purchaseBloc.setDate(value);
+        }
       },
     );
   }
@@ -293,8 +305,7 @@ class _NewPurchaseState extends State<NewPurchase> {
         if (value != null && value != '') {
           if (purchaseBloc.getSupplier?.idCloud != null) {
             final valRef = await PurchaseProvider.valitateConsecutive(
-                value,
-                int.parse(purchaseBloc.getSupplier!.idCloud!));
+                value, int.parse(purchaseBloc.getSupplier!.idCloud!));
             setState(() {
               cosSupIsVal = valRef;
             });

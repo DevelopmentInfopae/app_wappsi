@@ -23,16 +23,16 @@ class PurchaseItemsModel {
     this.itemTax,
     this.taxRateId,
     this.tax,
-    this.itemTax2,
-    this.taxRate2Id,
+    this.itemTax2 = 0,
+    this.taxRate2Id = 0,
     this.tax2,
-    this.discount,
-    this.itemDiscount,
+    this.discount = 0,
+    this.itemDiscount = 0,
     this.expiry,
     this.subtotal,
-    this.quantityBalance=0.0,
+    this.quantityBalance = 0.0,
     this.date,
-    this.status,
+    this.status = 'pending',
     this.unitCost,
     this.realUnitCost,
     this.quantityReceived,
@@ -47,10 +47,10 @@ class PurchaseItemsModel {
     this.sgst,
     this.igst,
     this.productUnitIdSelected,
-    this.shippingUnitCost=0.0,
-    this.profitabilityMargin=0.0,
-    this.consumptionPurchase,
-    this.returnedQuantity=0.0,
+    this.shippingUnitCost = 0.0,
+    this.profitabilityMargin = 0.0,
+    this.consumptionPurchase = 0,
+    this.returnedQuantity = 0.0,
     this.registrationDate,
     this.expenseCategoryCreditorLedgerId,
     // this.calculatedAvgCost,
@@ -266,11 +266,11 @@ class PurchaseItemsModel {
 
     // prString(temp);
   }
-  
 
   /// Build a list of PurchaseItemsModel given a keys set to get products and units from
   /// purchase bloc and returns a List of Maped PurchaseItemsModel
-  static List<Map<String, dynamic>> buildPurchaseSaleItems(List<String> keys, UserModel user) {
+  static List<Map<String, dynamic>> buildPurchaseSaleItems(
+      List<String> keys, UserModel user, String date) {
     List<Map<String, dynamic>> orderSaleItems = [];
     for (String key in keys) {
       final product = purchaseBloc.getProducts![key]!;
@@ -284,11 +284,14 @@ class PurchaseItemsModel {
           productId: product.idCloud,
           productCode: product.code,
           productName: product.name,
+          date: date,
           quantity: product.quantity,
+          quantityBalance: product.quantity,
+          quantityReceived: product.quantity,
           warehouseId: user.warehouseId,
-          unitCost: product.getCostWithIVA(),
-          realUnitCost: product.getCostWithIVA(),
-          netUnitCost: product.getCOstWithoutIVA(),
+          unitCost: pIVA,
+          realUnitCost: pIVA,
+          netUnitCost: pNoIVA,
           itemTax: taxValue,
           taxRateId: product.taxRateId,
           productUnitCode: unit?.code,

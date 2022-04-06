@@ -89,8 +89,9 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
           ],
         ),
         content: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            _select(context).expand(),
+            _select(context),
             qttyControl(context).paddingTop(8),
           ],
         ),

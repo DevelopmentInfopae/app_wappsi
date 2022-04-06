@@ -467,6 +467,7 @@ class _OrderProductsState extends State<OrderProducts> {
                 backGroundColor: Colors.red);
 
             // _searchController.query='';
+            _searchController.open();
             _queryLen = 0;
           } else {
             _queryLen = query.length;

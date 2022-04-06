@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
-import 'package:pos_wappsi/screens/sales/components/select_product_unit_alert.dart';
+import 'package:pos_wappsi/screens/sales/components/select_unit_prefs_alert.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
 class UnitsProvider {
@@ -63,7 +63,8 @@ class UnitsProvider {
 
   static Future<Map<String, dynamic>?> getProductUnit(
       BuildContext context, ProductModel product, String priceGroupId,
-      {bool showAllwaysUnitAlert = false, bool showInvInstOfPrice=false}) async {
+      {bool showAllwaysUnitAlert = false,
+      bool showInvInstOfPrice = false}) async {
     final units = await UnitsProvider.getProductUnits(
         product.idCloud.toString(), priceGroupId);
     printConsole(units.first.name);

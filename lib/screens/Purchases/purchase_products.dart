@@ -374,7 +374,6 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
             size: kIconSize,
             color: pColor,
           ),
-          
         ],
       ),
     );
@@ -398,6 +397,7 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
             scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
                 const Duration(seconds: 1, milliseconds: 500),
                 backGroundColor: Colors.red);
+            _searchController.open();
 
             // _searchController.query='';
             _queryLen = 0;

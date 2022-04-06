@@ -146,11 +146,11 @@ Map<String, GridItems> gridItemsMap = {
     route: "purchases-add",
     icon: 'assets/images/cargo.png',
   ),
-  // 'purchases-index':GridItems(
-  //   title: 'Listar compras',
-  //   route: "purchases-index",
-  //   icon: 'assets/images/cargo.png',
-  // ),
+  'purchases-index': GridItems(
+    title: 'Listar compras',
+    route: "purchases-index",
+    icon: 'assets/images/cargo.png',
+  ),
 };
 
 List<GridItems> gridItemsForPermissions() {
@@ -177,10 +177,9 @@ List<GridItems> gridItemsForPermissions() {
   if (dataBloc.permissions?.quotesIndex == 1) {
     gridItems.add(gridItemsMap['quotes-index']!);
   }
-  // if (dataBloc.permissions?.purchasesIndex == 1) {
-  //   gridItems.add(gridItemsMap['purchases-index']!);
-  // }
-
+  if (dataBloc.permissions?.purchasesIndex == 1) {
+    gridItems.add(gridItemsMap['purchases-index']!);
+  }
   if (dataBloc.permissions?.customersAdd == 1) {
     gridItems.add(gridItemsMap['customers-add']!);
   }

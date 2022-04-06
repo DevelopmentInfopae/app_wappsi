@@ -29,12 +29,12 @@ class CompaniesProvider {
       }
     }
     String? idCustomer = dataBloc.getBIllerData!.defaultCustomerId;
-        
-    Map<String, dynamic>? customer = await findCompanyById(idCustomer??'0');
 
-    if(customer!=null){
+    Map<String, dynamic>? customer = await findCompanyById(idCustomer ?? '0');
+
+    if (customer != null) {
       return CompanyModel.fromJson(customer);
-    }else{
+    } else {
       return null;
     }
   }
@@ -151,8 +151,18 @@ class CompaniesProvider {
     if (offset) {
       limit = 50;
     }
+    if (dataBloc.getBIllerData == null) {
+      final billerData = await DBProvider.db.getBillerData();
+      if (billerData != null) {
+        dataBloc.setBillerData(BillerDataModel.fromJson(billerData));
+      }
+    }
+    String? idDefaultCustomer = dataBloc.getBIllerData!.defaultCustomerId;
+
+    final defCustm = ' OR id_cloud=$idDefaultCustomer';
+
     final sellerIdFilter = dataBloc.userData?.viewRight == 0
-        ? ' AND customer_seller_id_assigned=${dataBloc.userData!.sellerId}'
+        ? ' AND customer_seller_id_assigned=${dataBloc.userData!.sellerId}$defCustm'
         : '';
     return await DBProvider.db.sqlQuery(
       'sma_companies',

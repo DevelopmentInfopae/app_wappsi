@@ -8,6 +8,7 @@ import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
 // import 'package:pos_wappsi/screens/Authentication/login_form.dart';
 import 'package:pos_wappsi/screens/Purchases/new_purchase.dart';
+import 'package:pos_wappsi/screens/Purchases/purchases_list.dart';
 import 'package:pos_wappsi/screens/Quotes/new_quote.dart';
 import 'package:pos_wappsi/screens/Quotes/quotes_list.dart';
 import 'package:pos_wappsi/screens/cash_accounting/components/open_register_alert.dart';
@@ -152,6 +153,9 @@ class HomeGridCards extends StatelessWidget {
     } else if (gridItems.route == 'quotes_index') {
       dataBloc.homeKey?.currentState?.changeBottomIndex(0);
       const QuotesList().launch(context);
+    } else if (gridItems.route == 'purchases-index') {
+      dataBloc.homeKey?.currentState?.changeBottomIndex(0);
+      const PurchasesList().launch(context);
     } else if (gridItems.route == 'list_orders') {
       final dbProvider = SyncDBProvider();
       dataBloc.homeKey?.currentState?.changeBottomIndex(0);
@@ -195,7 +199,9 @@ class HomeGridCards extends StatelessWidget {
   Future<void> _logout(BuildContext context) async {
     bool _close = false;
     _close = await choiceAlert(
-        context, 'Al cerrar sesión se perderan todos los datos que no se hallan guardado.\n,¿Desea cerrar sesión?', 'assets/images/logout.png');
+        context,
+        'Al cerrar sesión se perderan todos los datos que no se hallan guardado.\n,¿Desea cerrar sesión?',
+        'assets/images/logout.png');
     if (_close) {
       // with this we restart application
       await posBloc.suspendSale();
