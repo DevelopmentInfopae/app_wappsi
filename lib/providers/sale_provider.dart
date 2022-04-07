@@ -49,6 +49,7 @@ class SalesProvider {
         //   confirmDialog(context, res['body']['message'] ?? res['message'],
         //       'assets/images/browser.png');
         // }
+        await logError(res, from: 'Sale creation');
         if (res['error'] ?? true) {
           if (res['body']['data'] != [] &&
               res['body']['data'] != null &&

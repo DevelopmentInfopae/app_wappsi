@@ -286,7 +286,7 @@ class DBProvider {
   Future<void> printAndSaveError(Object e,
       {String table = 'errors_log',
       String from = 'local db operations'}) async {
-    printConsole(e);
+    printConsole(e.toString());
     await insertQuery(table, {'error': e.toString(), 'from': from});
   }
 
