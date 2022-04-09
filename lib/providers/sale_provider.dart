@@ -49,7 +49,6 @@ class SalesProvider {
         //   confirmDialog(context, res['body']['message'] ?? res['message'],
         //       'assets/images/browser.png');
         // }
-        await logError(res, from: 'Sale creation');
         if (res['error'] ?? true) {
           if (res['body']['data'] != [] &&
               res['body']['data'] != null &&
@@ -58,6 +57,7 @@ class SalesProvider {
                 const Duration(seconds: 2),
                 backGroundColor: Colors.red);
 
+            await logError(res, from: 'Sale creation');
             final Map<String, dynamic> changes = res['body']['data'];
             // to show changes in costumer or products
             // String chText = _getChangesString(changes);

@@ -95,9 +95,11 @@ class SyncDBProvider {
               deleteBefore: optionInfo!['delete_before'],
               independentTable: optionInfo['independent_table'],
               dependentTable: optionInfo['dependent_table'],
-              dependentTable2: optionInfo['dependent_table2'],
+              dependentTable2: optionInfo['dependent_table_2'],
               idKey: optionInfo['id_key'],
-              columnName: optionInfo['column_name']);
+              idKey2: optionInfo['id_key_2'],
+              columnName: optionInfo['column_name'],
+              columnName2: optionInfo['column_name_2']);
         } else {
           result = await _writeIntoLocalDB(
               res, (selectedOption ?? options[option])!['table']);
@@ -244,7 +246,9 @@ class SyncDBProvider {
       String? independentTable,
       String? dependentTable,
       String? dependentTable2,
-      String? columnName}) async {
+      String? columnName,
+      String? columnName2,
+      String? idKey2}) async {
     bool result = true;
     if ((res['body']['data'] != null) ||
         (res['body']['data'] != "[]") ||
@@ -259,13 +263,14 @@ class SyncDBProvider {
 
             if (key == independentTable) {
               for (var i = 0; i < data[key]!.length; i++) {
-                idValue = data[key][i][idKey];
+                idValue = data?[key]?[i]?[idKey];
+                final idValue2 = data?[key]?[i]?[idKey2];
                 if (idValue != null) {
                   await DBProvider.db
                       .deleteQuerys(dependentTable!, '$columnName=$idValue');
                   if (dependentTable2 != null) {
-                    await DBProvider.db
-                        .deleteQuerys(dependentTable2, '$columnName=$idValue');
+                    await DBProvider.db.deleteQuerys(dependentTable2,
+                        '${columnName2 ?? columnName}=${idValue2 ?? idValue}');
                   }
                   // printConsole(res);
                 }

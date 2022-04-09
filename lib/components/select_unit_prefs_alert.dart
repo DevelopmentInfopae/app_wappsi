@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/input_decoration.dart';
 // ignore: implementation_imports
 // import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/models/preference_category_model.dart';
+import 'package:pos_wappsi/models/preference_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
+import 'package:pos_wappsi/providers/product_preferences_provider.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 // import 'package:provider/single_child_widget.dart';
 
@@ -19,10 +23,12 @@ class SelectProductUnitDialog extends StatefulWidget {
       {Key? key,
       required this.product,
       this.showInvInstOfPrice = false,
+      this.prefsSelection = false,
       required this.units})
       : super(key: key);
   final ProductModel product;
   final bool showInvInstOfPrice;
+  final bool prefsSelection;
   @override
   SelectProductUnitDialogState createState() {
     return SelectProductUnitDialogState();
@@ -32,16 +38,22 @@ class SelectProductUnitDialog extends StatefulWidget {
 class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
   final _valueController = TextEditingController();
 
-  UnitsModel? _selection;
+  UnitsModel? _selectUnition;
+
+  bool prefsSelection = false;
+
+  Map<PreferenceCategoryModel, List<PreferenceModel>> productPrefs = {};
 
   double qtty = 1;
+
+  final List<PreferenceModel> selectedPrefs = [];
 
   @override
   void initState() {
     _valueController.text = qtty.toString();
     super.initState();
     if (widget.units.length == 1) {
-      _selection = widget.units.first;
+      _selectUnition = widget.units.first;
     }
   }
 
@@ -75,26 +87,33 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
         insetPadding: EdgeInsets.symmetric(
             horizontal: hInsetPadding, vertical: vInsetPadding),
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        title: Column(
-          children: [
-            Text(
-              'Seleccione la unidad de producto para:',
-              style: buttonsSmallTextStyle(context).apply(fontSizeDelta: 1.2),
-              textAlign: TextAlign.center,
+        title: AnimatedCrossFade(
+            firstChild: _title1(context),
+            secondChild: Column(
+              children: [_productName(context), _unitSelectedName(context)],
             ),
-            Text(
-              capitalizeText(widget.product.name),
-              style: normalTextStyle(context, fontSizeFactor: 1.1),
-            ).paddingTop(8)
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _select(context),
-            qttyControl(context).paddingTop(8),
-          ],
-        ),
+            crossFadeState: !prefsSelection
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            duration: const Duration(milliseconds: 200)),
+        // _ordersList(),
+
+        content: AnimatedCrossFade(
+            firstChild: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _selectUnit(context),
+                qttyControl(context).paddingTop(8),
+              ],
+            ),
+            secondChild: Material(
+              color: Colors.transparent,
+              child: _prefsSelection(context),
+            ),
+            crossFadeState: !prefsSelection
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            duration: const Duration(milliseconds: 200)),
         actionsPadding: EdgeInsets.zero,
         buttonPadding: EdgeInsets.zero,
         actions: <Widget>[
@@ -103,13 +122,19 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
               Container(
                 color: Colors.red.withOpacity(0.8),
                 child: CupertinoDialogAction(
-                  child: const Text(
-                    "Cancelar",
-                    style: TextStyle(color: Colors.white),
+                  child: Text(
+                    prefsSelection ? "Regresar" : "Cancelar",
+                    style: const TextStyle(color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                   onPressed: () async {
-                    Navigator.of(context).pop(null);
+                    if (!prefsSelection) {
+                      Navigator.of(context).pop(null);
+                    } else {
+                      setState(() {
+                        prefsSelection = false;
+                      });
+                    }
                     // return widget.product;
                   },
                 ),
@@ -123,12 +148,23 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                     textAlign: TextAlign.center,
                   ),
                   onPressed: () async {
-                    if (_selection != null) {
-                      Navigator.of(context).pop({
-                        "unit": _selection,
-                        "quantity": qtty == 0 ? 1.0 : qtty
-                      });
+                    if (_selectUnition != null) {
+                      if (widget.prefsSelection && !prefsSelection) {
+                        productPrefs = await ProductPreferencesProvider
+                            .listProductPreferences(widget.product.idCloud);
+                        // print('here');
+                        if (productPrefs.isEmpty) {
+                          _returnInfo(context);
+                        } else {
+                          setState(() {
+                            prefsSelection = true;
+                          });
+                        }
+                      } else {
+                        _returnInfo(context);
+                      }
                     }
+
                     // return widget.product;
                   },
                 ),
@@ -138,6 +174,96 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
         ],
       ),
     );
+  }
+
+  SingleChildScrollView _prefsSelection(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: productPrefs.keys.map((prefCat) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                padding: kButtonPadding,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    color: pColor.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(5)),
+                child: Text(
+                  prefCat.name ?? 'xddd',
+                  style: buttonsSmallTextStyle(context),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: kButtonVPadding,
+                child: Wrap(
+                  alignment: WrapAlignment.start,
+                  children: productPrefs[prefCat]!.map((e) {
+                    return ChoiceChip(
+                      // pressElevation: 10,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(15))),
+                      labelPadding: kPadding1,
+                      visualDensity: VisualDensity.comfortable,
+                      padding: EdgeInsets.zero,
+                      selectedColor: pColor.withOpacity(0.2),
+                      label: Text(
+                        e.name ?? '',
+                        style: normalTextStyle(context),
+                      ),
+                      selected: selectedPrefs
+                          .where((element) => element == e)
+                          .isNotEmpty,
+                      onSelected: (bool value) {
+                        if (selectedPrefs
+                            .where((element) => element == e)
+                            .isEmpty) {
+                          setState(() {
+                            selectedPrefs.add(e);
+                          });
+                        } else {
+                          setState(() {
+                            selectedPrefs.remove(e);
+                          });
+                        }
+                      },
+                    ).paddingSymmetric(horizontal: 8);
+                  }).toList(),
+                ),
+              )
+            ],
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  void _returnInfo(BuildContext context) {
+    Navigator.of(context)
+        .pop({"unit": _selectUnition, "quantity": qtty == 0 ? 1.0 : qtty});
+  }
+
+  Column _title1(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          'Seleccione la unidad de producto para:',
+          style: buttonsSmallTextStyle(context).apply(fontSizeDelta: 1.2),
+          textAlign: TextAlign.center,
+        ),
+        _productName(context)
+      ],
+    );
+  }
+
+  Padding _productName(BuildContext context) {
+    return Text(
+      capitalizeText(widget.product.name),
+      style: normalTextStyle(context, fontSizeFactor: 1.1),
+    ).paddingTop(8);
   }
 
   Widget qttyControl(BuildContext context) {
@@ -169,7 +295,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                         qtty = double.tryParse(value) ?? 1.0;
                       }
                     },
-                    enabled: _selection != null,
+                    enabled: _selectUnition != null,
                     controller: _valueController,
                     textStyle: buttonsSmallTextStyle(context),
                     textFieldType: TextFieldType.PHONE,
@@ -181,17 +307,19 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
             _addQty()
           ],
         ),
-        _selection != null
-            ? Text(
-                getRoundedQtty(qtty) + ' - ' + _selection!.name,
-                style: buttonsSmallTextStyle(context),
-              )
-            : Container()
+        _selectUnition != null ? _unitSelectedName(context) : Container()
       ],
     );
   }
 
-  Widget _select(BuildContext context) {
+  Text _unitSelectedName(BuildContext context) {
+    return Text(
+      getRoundedQtty(qtty) + ' - ' + (_selectUnition?.name ?? ''),
+      style: buttonsSmallTextStyle(context),
+    );
+  }
+
+  Widget _selectUnit(BuildContext context) {
     // final _textTheme = Theme.of(context).textTheme;
     return Material(
       color: Colors.transparent,
@@ -201,14 +329,14 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
             return AppButton(
               onTap: () {
                 setState(() {
-                  _selection = u;
+                  _selectUnition = u;
                 });
               },
               color: greyLight,
               shapeBorder: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                   side: BorderSide(
-                      color: u == _selection ? pColor : Colors.white,
+                      color: u == _selectUnition ? pColor : Colors.white,
                       width: 3)),
               padding: EdgeInsets.zero,
               child: ListTile(
@@ -255,7 +383,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
       margin: EdgeInsets.zero,
       color: Colors.grey[100],
       width: 10,
-      enabled: _selection != null,
+      enabled: _selectUnition != null,
       shapeBorder: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
       ),
@@ -280,7 +408,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
       color: Colors.grey[100],
       margin: EdgeInsets.zero,
       width: 10,
-      enabled: _selection != null,
+      enabled: _selectUnition != null,
       shapeBorder: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
       ),

@@ -13,6 +13,7 @@ import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 // import 'package:pos_wappsi/models/suspended_sale_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
+import 'package:pos_wappsi/providers/price_policy_provider.dart';
 
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
@@ -265,11 +266,31 @@ class POSBloc {
           pUnits = getProductUnits!;
         }
 
+        final List<String> pdiffs = [];
+
         /// Empty current product list
-        emptyProductsAdded();
+        // emptyProductsAdded();
+
         await Future.forEach(temp.keys, (String key) async {
-          // Map<String, dynamic>? temp2 =
-          //     await ProductsProvider.findProductDetails(temp[key]!.idCloud);
+          Map<String, dynamic>? pInfo =
+              await ProductsProvider.findProductDetails(temp[key]!.idCloud);
+          final u = await UnitsProvider.getUnitInfo(temp[key]!.idCloud);
+          if (pInfo != null) {
+            final p = ProductModel.fromJson(pInfo);
+            if (dataBloc.settings != null) {
+              final pWithPrices = PricePoliciesProvider.policyCases(
+                  p,
+                  dataBloc.settings!['prioridad_precios_producto'],
+                  posBloc.getCustomer);
+              if (dataBloc.settings!['overselling'] == 0) {
+                if ((temp[key]?.quantity ?? 1) > p.inventory ||
+                    (temp[key]?.price ?? 1) > p.price) {}
+              } else {}
+            } else {
+              await dataBloc.getSettings();
+            }
+          } else {}
+
           // if (temp2 != null) {
           // Map<String, dynamic> pData = queryResultToMap(temp2);
           // pData[keyInitialQtty] = temp[key]!.quantity;

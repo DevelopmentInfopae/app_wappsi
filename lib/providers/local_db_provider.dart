@@ -37,13 +37,16 @@ class DBProvider {
     // printConsole(path);
 
     // creation of db
-    return await openDatabase(path, version: 5, onOpen: (db) {},
+    return await openDatabase(path, version: 6, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       // table creation
 
       await db.execute(DbProductsSql);
       await db.execute(DbProductsPriceSql);
       await db.execute(DbProductPhotosSql);
+      await db.execute(DbProductPreferencesSql);
+      await db.execute(DbPreferencesSql);
+      await db.execute(DbPreferencesCategoriresSql);
       await db.execute(DbProductVariantsSql);
       await db.execute(DbCompaniesSql);
       await db.execute(DbBillerDataSql);

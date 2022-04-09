@@ -307,10 +307,13 @@ class ProductsProvider {
     final policyReq = PricePoliciesProvider.checkProductSelectionRequirements();
     Map<String, dynamic> req = {"product": product, "product_unit": null};
     Map<String, dynamic>? unitInfo;
+    bool prefsSelection =
+        ((dataBloc.settings?['product_preferences_management'] ?? 1) == 1);
     if (policyReq['product_unit']) {
       String priceGroupId = '';
       bool showInvInstOfPrice = false;
       if (fromOrder) {
+        // prefsSelection = true;
         priceGroupId = orderBloc.getCustomer!.priceGroupId!;
       } else if (fromQuote) {
         priceGroupId = quoteBloc.getCustomer!.priceGroupId!;
@@ -323,6 +326,7 @@ class ProductsProvider {
       unitInfo = await UnitsProvider.getProductUnit(
           context, product, priceGroupId,
           showAllwaysUnitAlert: showAllwaysUnitAlert,
+          prefsSelection: prefsSelection,
           showInvInstOfPrice: showInvInstOfPrice);
       if (unitInfo != null) {
         final unit = unitInfo['unit'];
