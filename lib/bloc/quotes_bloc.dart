@@ -192,9 +192,12 @@ class QuoteBloc {
   Future<bool> addProductQuantity(String key, double value) async {
     bool res = false;
     if (dataBloc.settings?.isNotEmpty ?? false) {
-      // printConsole(dataBloc.settings?['overselling']??);
       // verify overselling setting to avoid overselling or not
       if (dataBloc.settings!['overselling'] == 0) {
+        final p = await ProductsProvider.getProductDetails(
+            _productsController.value[key]!.id.toString(), true);
+        _productsController.value[key]!.inventory =
+            p?.inventory ?? _productsController.value[key]!.inventory;
         if (_productsController.value[key]!.inventory < value) {
           if (_productsController.value[key]!.inventory > 0) {
             _productsController.value[key]!.quantity =

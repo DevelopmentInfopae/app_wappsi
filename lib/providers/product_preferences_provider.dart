@@ -1,5 +1,10 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:pos_wappsi/components/alerts/prefs_selection.dart';
 import 'package:pos_wappsi/models/preference_category_model.dart';
 import 'package:pos_wappsi/models/preference_model.dart';
+import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/models/units_model.dart';
 
 import 'local_db_provider.dart';
 
@@ -49,5 +54,35 @@ class ProductPreferencesProvider {
     }
 
     return productPrefs;
+  }
+
+  static Future<Map<PreferenceCategoryModel, List<PreferenceModel>>?>
+      getProductPrefs(BuildContext context, ProductModel product,
+          String priceGroupId, UnitsModel? unit,
+          {bool prefsSelection = false}) async {
+    if (prefsSelection) {
+      final productPrefs =
+          await ProductPreferencesProvider.listProductPreferences(
+              product.idCloud);
+      if (productPrefs.isNotEmpty) {
+        return await showCupertinoDialog<
+                Map<PreferenceCategoryModel, List<PreferenceModel>>?>(
+            // to make selection of product unit required
+            barrierDismissible: false,
+            // useRootNavigator: false,
+            context: context,
+            builder: (context) {
+              return SelectProductPrefsDialog(
+                product: product,
+                unit: unit,
+                productPrefs: productPrefs,
+              );
+            });
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
   }
 }

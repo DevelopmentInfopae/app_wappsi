@@ -3,7 +3,9 @@ import 'dart:async';
 import 'dart:math';
 
 // import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/components/alerts/product_changes_alert.dart';
 // import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
@@ -198,12 +200,14 @@ class POSBloc {
       // printConsole(dataBloc.settings?['overselling']??);
       // verify overselling setting to avoid overselling or not
       if (dataBloc.settings!['overselling'] == 0) {
+        final p = await ProductsProvider.getProductDetails(
+            _productsController.value[key]!.id.toString(), true);
+        _productsController.value[key]!.inventory =
+            p?.inventory ?? _productsController.value[key]!.inventory;
         if (_productsController.value[key]!.inventory < value) {
           if (_productsController.value[key]!.inventory > 0) {
             _productsController.value[key]!.quantity =
                 _productsController.value[key]!.inventory.toDouble();
-
-            setSubTotal(getSubTotal());
           } else {
             _productsController.value.remove(key);
             res = false;
@@ -211,15 +215,15 @@ class POSBloc {
         } else {
           _productsController.value[key]!.quantity = value;
 
-          setSubTotal(getSubTotal());
           res = true;
         }
       } else {
         _productsController.value[key]!.quantity = value;
 
-        setSubTotal(getSubTotal());
         res = true;
       }
+      setSubTotal(getSubTotal());
+
       // reloadProductStream();
       // _updateProductViewQuantity(key,value);
     } else {
@@ -240,13 +244,12 @@ class POSBloc {
   }
 
   /// Function to reload product data, costumer data and customer addresses data
-  Future<bool> reloadPOSData() async {
+  Future<bool> reloadPOSData(BuildContext context) async {
     final customer = await CompanyModel.getCompanyDetails(
         _customerController.value!.idCloud!);
     if (customer != null) {
       setCustomer(customer);
-      final res = await reloadProducts();
-      return res;
+      return await findChanges(context);
     } else {
       return false;
     }
@@ -256,7 +259,54 @@ class POSBloc {
   /// neccesary to recalculate product prices, this function make
   /// current product list empty and then introduce all products
   /// again recalculating prices for parameters.
-  Future<bool> reloadProducts() async {
+  Future<bool> reloadAllProducts() async {
+    bool result = false;
+    if (_productsController.hasValue) {
+      try {
+        await Future.forEach((getProducts ?? {}).keys, (String key) async {
+          result = await reloadProduct(key);
+        });
+      } catch (e) {
+        // printConsole(e);
+        await logError(e, from: 'Reload pos products');
+      }
+    }
+    return result;
+  }
+
+  Future<bool> reloadProduct(String key, {bool getQttys = false}) async {
+    bool result = false;
+    Map<String, dynamic>? pInfo = await ProductsProvider.findProductDetails(
+        getProducts?[key]?.idCloud ?? 0);
+    final u = await UnitsProvider.getUnitInfo(getProductUnits?[key]?.idCloud);
+    if (pInfo != null) {
+      final p = ProductModel.fromJson(pInfo);
+
+      // remove product first, then add
+      removeProduct(key);
+      result =
+          await addProduct({'product': p, 'product_unit': u}, getQttys: false);
+    }
+    return result;
+  }
+
+  Future<bool> reloadOnlyProductPrice(String key, ProductModel product) async {
+    bool result = false;
+
+    getProducts?[key] = product;
+    reloadProductStream();
+    setSubTotal(getSubTotal());
+
+    return result;
+  }
+
+  /// When parameters of product price calculation change, it's
+  /// neccesary to find diffs in their or them units.
+  /// Returns a map with two list, price_diffs is a list of products
+  /// who have changes in its price, and quantity_diffs for products who
+  /// dont have enought inventory.
+  Future<bool> findChanges(BuildContext context) async {
+    bool result = false;
     if (_productsController.hasValue) {
       try {
         // String keyInitialQtty = 'initial_qtty';
@@ -266,50 +316,73 @@ class POSBloc {
           pUnits = getProductUnits!;
         }
 
-        final List<String> pdiffs = [];
-
-        /// Empty current product list
-        // emptyProductsAdded();
-
         await Future.forEach(temp.keys, (String key) async {
           Map<String, dynamic>? pInfo =
               await ProductsProvider.findProductDetails(temp[key]!.idCloud);
-          final u = await UnitsProvider.getUnitInfo(temp[key]!.idCloud);
+          final u = await UnitsProvider.getUnitInfo(pUnits[key]?.idCloud);
           if (pInfo != null) {
             final p = ProductModel.fromJson(pInfo);
             if (dataBloc.settings != null) {
-              final pWithPrices = PricePoliciesProvider.policyCases(
+              final pWithPrices = await PricePoliciesProvider.policyCases(
                   p,
                   dataBloc.settings!['prioridad_precios_producto'],
-                  posBloc.getCustomer);
+                  posBloc.getCustomer,
+                  unit: u);
               if (dataBloc.settings!['overselling'] == 0) {
-                if ((temp[key]?.quantity ?? 1) > p.inventory ||
-                    (temp[key]?.price ?? 1) > p.price) {}
-              } else {}
+                if ((temp[key]?.quantity ?? 1) > p.inventory) {
+                  await showCupertinoDialog<Map<String, dynamic>?>(
+                      barrierDismissible: false,
+                      // useRootNavigator: false,
+                      context: context,
+                      builder: (context) {
+                        return ProductChangesAlert(
+                          productKey: key,
+                          product: pWithPrices,
+                          qttyDiff: true,
+                        );
+                      });
+                }
+                if (temp[key]?.price != pWithPrices.price) {
+                  await showCupertinoDialog<Map<String, dynamic>?>(
+                      barrierDismissible: false,
+                      // useRootNavigator: false,
+                      context: context,
+                      builder: (context) {
+                        return ProductChangesAlert(
+                          productKey: key,
+                          product: pWithPrices,
+                          priceDiff: true,
+                        );
+                      });
+                }
+              } else {
+                if (temp[key]?.price != pWithPrices.price) {
+                  await showCupertinoDialog<Map<String, dynamic>?>(
+                      barrierDismissible: false,
+                      // useRootNavigator: false,
+                      context: context,
+                      builder: (context) {
+                        return ProductChangesAlert(
+                          productKey: key,
+                          product: pWithPrices,
+                          priceDiff: true,
+                        );
+                      });
+                }
+              }
             } else {
               await dataBloc.getSettings();
+              return await findChanges(context);
             }
-          } else {}
-
-          // if (temp2 != null) {
-          // Map<String, dynamic> pData = queryResultToMap(temp2);
-          // pData[keyInitialQtty] = temp[key]!.quantity;
-          // final product = ProductModel.fromJson(pData,
-          //     loadInitialQtty: true, qtyKey: keyInitialQtty);
-          await addProduct({'product': temp[key], 'product_unit': pUnits[key]},
-              getQttys: false);
-          // }
+          }
         });
-
-        return true;
+        result = true;
       } catch (e) {
         // printConsole(e);
         await logError(e, from: 'Reload pos products');
-        return false;
       }
-    } else {
-      return false;
     }
+    return result;
   }
 
   /// Makes product Map empty
@@ -323,11 +396,11 @@ class POSBloc {
 
   /// Remove a product from products Map given a key, if product have an asosiate
   /// unit, remove unit too
-  removeProduct(String key) {
+  removeProduct(String key, {bool removeUnit = true}) {
     _productsController.value.remove(key);
     reloadProductStream();
     setSubTotal(getSubTotal());
-    if (_productUnitController.hasValue) {
+    if (_productUnitController.hasValue && removeUnit) {
       try {
         _productUnitController.value.remove(key);
       } catch (e) {

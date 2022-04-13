@@ -257,7 +257,7 @@ class _NewSaleState extends State<NewSale> {
             confirm: 'Recalcular precios',
             skipeable: false);
         if (choice) {
-          final status = await posBloc.reloadProducts();
+          final status = await posBloc.reloadAllProducts();
           if (!status) {
             confirmDialog(context, 'Error al recalcular precios',
                 'assets/images/warning.png');

@@ -49,6 +49,7 @@ class ProductsList extends StatelessWidget {
           Function rmQtty;
           Function delete;
           UnitsModel? unit;
+          Map<String, List<String>> prefsText = {};
 
           bool requestFocus = false;
           if (productRequestFocus) {
@@ -58,6 +59,7 @@ class ProductsList extends StatelessWidget {
           }
 
           if (fromOrder) {
+            prefsText = orderBloc.prefsText(product.key);
             delete = () => orderBloc.removeProduct(product.key);
             getQtty =
                 () => orderBloc.getProductData(product.key)?.quantity ?? 1;
@@ -78,6 +80,7 @@ class ProductsList extends StatelessWidget {
               if (orderBloc.getProductData(product.key)!.quantity > uOperator) {
                 // setState(() {
                 orderBloc.getProductData(product.key)!.quantity -= uOperator;
+                orderBloc.getSubTotal();
               }
             };
           } else if (fromQuote) {
@@ -100,6 +103,7 @@ class ProductsList extends StatelessWidget {
               if (quoteBloc.getProductData(product.key)!.quantity > uOperator) {
                 // setState(() {
                 quoteBloc.getProductData(product.key)!.quantity -= uOperator;
+                quoteBloc.getSubTotal();
               }
             };
           } else {
@@ -122,6 +126,7 @@ class ProductsList extends StatelessWidget {
               if (posBloc.getProductData(product.key)!.quantity > uOperator) {
                 // setState(() {
                 posBloc.getProductData(product.key)!.quantity -= uOperator;
+                posBloc.setSubTotal(posBloc.getSubTotal());
               }
             };
           }
@@ -144,6 +149,7 @@ class ProductsList extends StatelessWidget {
               getQtty: getQtty,
               editQtty: editQtty,
               addQtty: addQtty,
+              prefsSelection: prefsText,
               rmQtty: rmQtty,
               delete: delete,
               unit: unit,

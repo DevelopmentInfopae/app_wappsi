@@ -4,8 +4,9 @@
 
 import 'dart:convert';
 
+import 'package:pos_wappsi/utils/parsing/to_double.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
-import 'package:pos_wappsi/utils/text_formating/json_parsing.dart';
+// import 'package:pos_wappsi/utils/text_formating/json_parsing.dart';
 
 CustomerAddressesModel customerAddressesModelFromJson(
         Map<String, dynamic> str) =>
@@ -33,7 +34,8 @@ class CustomerAddressesModel {
       required this.priceGroupId,
       required this.customerGroupId,
       required this.vatNo,
-      this.geoLocation,
+      this.latitude,
+      this.longitude,
       this.cityCode,
       this.customerGroupName,
       this.priceGroupName,
@@ -47,7 +49,8 @@ class CustomerAddressesModel {
   String? email;
   int? customerAddressSellerIdAssigned;
   String? phone;
-  Map? geoLocation;
+  double? latitude;
+  double? longitude;
   String? direccion;
   String? city;
   String? vatNo;
@@ -76,7 +79,8 @@ class CustomerAddressesModel {
         phone: json['phone'].toString(),
         priceGroupName: json['price_group_name'].toString(),
         direccion: json["direccion"] ?? '',
-        geoLocation: decodeJson(json["geo_location"]),
+        latitude: parsingToDoubleNullAble(json["latitude"]),
+        longitude: parsingToDoubleNullAble(json["longitude"]),
         city: json["city"] ?? '',
         line1: json["line1"] ?? '',
         line2: json["line2"] ?? '',
@@ -112,7 +116,8 @@ class CustomerAddressesModel {
         "country": country,
         "state": state,
         "direccion": direccion,
-        "geo_location": jsonEncode(geoLocation),
+        "latitude": latitude,
+        "longitude": longitude,
         "city": city,
         "vat_no": vatNo,
         "email": email ?? '',

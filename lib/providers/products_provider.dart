@@ -9,6 +9,7 @@ import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/price_policy_provider.dart';
+import 'package:pos_wappsi/providers/product_preferences_provider.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
@@ -86,6 +87,34 @@ class ProductsProvider {
     }
 
     return await DBProvider.db.sqlRawQuery(sql);
+  }
+
+  static Future<ProductModel?> getProductDetails(
+      String id, bool overselling) async {
+    String sql = '';
+    if (overselling) {
+      sql = '''
+        SELECT p.${productColumns.join(',p.')},wp.quantity, tr.rate,tr.name as tax_rate_name FROM 
+        sma_products p INNER JOIN sma_warehouses_products wp ON (wp.product_id = p.id_cloud AND 
+        wp.warehouse_id = ${dataBloc.userData!.warehouseId}) INNER JOIN sma_tax_rates tr ON tr.id_cloud = 
+        p.tax_rate WHERE p.id = $id
+    ''';
+    } else {
+      sql = '''
+              SELECT p.${productColumns.join(',p.')},wp.quantity, tr.rate,tr.name as tax_rate_name FROM 
+              sma_products p INNER JOIN sma_warehouses_products wp ON (wp.product_id = p.id_cloud AND 
+              wp.warehouse_id = ${dataBloc.userData!.warehouseId}) INNER JOIN sma_tax_rates tr ON 
+              tr.id_cloud = p.tax_rate WHERE p.discontinued = 0 AND wp.quantity>0 AND p.id = $id
+          ''';
+    }
+
+    final res = await DBProvider.db.sqlFirstRawQuery(sql);
+
+    if (res != null) {
+      return ProductModel.fromJson(res);
+    } else {
+      return null;
+    }
   }
 
   ///Function used to get products info based on a list of products IDs,
@@ -305,8 +334,12 @@ class ProductsProvider {
       bool fromPurchase = false,
       bool fromQuote = false}) async {
     final policyReq = PricePoliciesProvider.checkProductSelectionRequirements();
-    Map<String, dynamic> req = {"product": product, "product_unit": null};
-    Map<String, dynamic>? unitInfo;
+    Map<String, dynamic> req = {
+      "product": product,
+      "product_unit": null,
+      'product_prefs': null
+    };
+    Map<String, dynamic>? productDetails;
     bool prefsSelection =
         ((dataBloc.settings?['product_preferences_management'] ?? 1) == 1);
     if (policyReq['product_unit']) {
@@ -323,18 +356,29 @@ class ProductsProvider {
         priceGroupId = posBloc.getCustomer!.priceGroupId!;
       }
 
-      unitInfo = await UnitsProvider.getProductUnit(
+      productDetails = await UnitsProvider.getProductUnitWithPrefs(
           context, product, priceGroupId,
           showAllwaysUnitAlert: showAllwaysUnitAlert,
-          prefsSelection: prefsSelection,
           showInvInstOfPrice: showInvInstOfPrice);
-      if (unitInfo != null) {
-        final unit = unitInfo['unit'];
-        req['product_unit'] = unitInfo['unit'];
+
+      if (productDetails != null) {
+        final unit = productDetails['unit'];
+        req['product_unit'] = productDetails['unit'];
         req['product'].quantity =
-            (unit.operationValue ?? 1) * (unitInfo['quantity'] ?? 1);
+            (unit.operationValue ?? 1) * (productDetails['quantity'] ?? 1);
       } else {
         req = {};
+      }
+      // get product prefs
+      if (prefsSelection) {
+        final prodPrefs = await ProductPreferencesProvider.getProductPrefs(
+            context, product, priceGroupId, req['product_unit'],
+            prefsSelection: true);
+        if (prodPrefs != null) {
+          req['product_prefs'] = prodPrefs;
+        } else {
+          req = {};
+        }
       }
     }
     return req;

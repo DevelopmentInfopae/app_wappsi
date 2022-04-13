@@ -30,6 +30,7 @@ class ProductCard extends StatefulWidget {
       required this.editQtty,
       required this.addQtty,
       required this.rmQtty,
+      required this.prefsSelection,
       required this.delete,
       this.requestFocus = false})
       : super(key: key);
@@ -40,6 +41,7 @@ class ProductCard extends StatefulWidget {
   final Function delete;
   final bool requestFocus;
   final ProductModel? product;
+  final Map<String, List<String>>? prefsSelection;
   final UnitsModel? unit;
   final FocusNode quantityFocusNode;
   final GlobalObjectKey<FormState> formKey;
@@ -103,7 +105,8 @@ class _ProductCardState extends State<ProductCard> {
         // mainAxisAlignment: MainAxisAlignment.spaceAround,
         // mainAxisAlignment: ,
         children: [
-          _productDesc().paddingSymmetric(horizontal: 8, vertical: 2),
+          _productDesc().paddingSymmetric(horizontal: 8, vertical: 1),
+          _productPrefs().paddingOnly(left: 8, right: 8, bottom: 3),
           Divider(
             height: 1,
             color: greyMediumLight,
@@ -116,7 +119,7 @@ class _ProductCardState extends State<ProductCard> {
               ? _unitDetails().paddingOnly(left: 10, right: 14, top: 4)
               : _productWoutInfoPrice()
                   .paddingOnly(left: 10, right: 14, top: 4),
-          _baseUnitQtty(widget.unit)
+          _baseUnitQtty(widget.unit),
         ],
       ).paddingTop(4).expand(),
     ]);
@@ -168,6 +171,37 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
+  Widget _productPrefs() {
+    if ((widget.prefsSelection?.isNotEmpty) ?? false) {
+      try {
+        List<Widget> wChildren = [];
+        for (var prefCat in widget.prefsSelection!.keys) {
+          wChildren.add(Text(
+            prefCat + ': ',
+            style: smallTextStyle2(context, fontWeightDelta: 2),
+          ));
+          for (var pref in widget.prefsSelection![prefCat] ?? []) {
+            wChildren.add(Text(
+              pref != widget.prefsSelection![prefCat]?.last
+                  ? (pref + ', ')
+                  : pref,
+              style: smallTextStyle2(context),
+            ));
+          }
+        }
+        return Wrap(
+          spacing: 0,
+          children: wChildren,
+        );
+      } catch (e) {
+        printConsole(e);
+        return Container();
+      }
+    } else {
+      return Container();
+    }
+  }
+
   // Widget _unitInfo(UnitsModel? unit, String unitInfo) {
   //   return unit != null
   //       ? Row(
@@ -191,7 +225,7 @@ class _ProductCardState extends State<ProductCard> {
 
   Widget _productDesc() {
     return descText(capitalizeText(product?.name ?? ''), context,
-        maxLines: 2, fontSizeFactor: 0.9, fweigth: 2);
+        maxLines: 2, fontSizeFactor: 0.88, fweigth: 2);
   }
 
   Widget _qty() {
@@ -394,7 +428,7 @@ class _ProductCardState extends State<ProductCard> {
   void _stockAlert() {
     confirmDialog(
         context,
-        'El producto ${product?.name} no tiene suficiente stock. Stock actual ${product?.inventory}',
+        'El producto ${product?.name} no tiene suficiente stock. Stock actual ${getRoundedQtty(product?.inventory ?? 0)}',
         'assets/images/out-of-stock.png');
   }
 

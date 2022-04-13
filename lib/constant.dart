@@ -26,6 +26,8 @@ const kButtonPadding = EdgeInsets.all(10);
 const kButtonHPadding = EdgeInsets.symmetric(horizontal: 10);
 const kButtonVPadding = EdgeInsets.symmetric(vertical: 10);
 const kPadding1 = EdgeInsets.symmetric(vertical: 4, horizontal: 6);
+const kPadding2 = EdgeInsets.symmetric(vertical: 2, horizontal: 6);
+const kPadding = EdgeInsets.symmetric(vertical: 2, horizontal: 6);
 const kIconButtonPadding = EdgeInsets.all(15);
 
 const kIconPadding = EdgeInsets.all(5);
@@ -110,6 +112,14 @@ TextStyle normalTextStyle(BuildContext context,
 
 TextStyle smallTextStyle(BuildContext context,
     {fontSizeFactor = 1.28, int fontWeightDelta = 0, Color? color}) {
+  return Theme.of(context).primaryTextTheme.caption!.apply(
+      fontSizeFactor: fontSizeFactor,
+      color: color ?? greyDarkerColor,
+      fontWeightDelta: fontWeightDelta);
+}
+
+TextStyle smallTextStyle2(BuildContext context,
+    {fontSizeFactor = 1.15, int fontWeightDelta = 0, Color? color}) {
   return Theme.of(context).primaryTextTheme.caption!.apply(
       fontSizeFactor: fontSizeFactor,
       color: color ?? greyDarkerColor,

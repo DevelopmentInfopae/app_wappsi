@@ -4,20 +4,14 @@
 
 import 'dart:convert';
 
-class PreferenceModel {
-  PreferenceModel({
-    this.idCloud,
-    this.productId,
-    this.name,
-    this.preferenceId,
-    this.preferenceCategoryId,
-  });
+import 'package:pos_wappsi/utils/parsing/to_double.dart';
 
-  String? idCloud;
-  String? productId;
+class PreferenceModel {
+  PreferenceModel({required this.id, this.categoryId, this.name});
+
+  int id;
+  String? categoryId;
   String? name;
-  String? preferenceId;
-  String? preferenceCategoryId;
 
   factory PreferenceModel.fromRawJson(String str) =>
       PreferenceModel.fromJson(json.decode(str));
@@ -26,20 +20,12 @@ class PreferenceModel {
 
   factory PreferenceModel.fromJson(Map<String, dynamic> json) =>
       PreferenceModel(
-        idCloud: (json["id_cloud"] ?? '').toString(),
-        productId: (json["product_id"] ?? '').toString(),
-        name: (json["name"] ?? '').toString(),
-        preferenceId: (json["preference_id"] ?? '').toString(),
-        preferenceCategoryId: (json["preference_category_id"] ?? '').toString(),
-      );
+          id: parsingToInt(json["id"] ?? ''),
+          categoryId: (json["category_id"] ?? '').toString(),
+          name: (json["name"] ?? '').toString());
 
-  Map<String, dynamic> toJson() => {
-        "id_cloud": idCloud,
-        "product_id": productId,
-        "name": name,
-        "preference_id": preferenceId,
-        "preference_category_id": preferenceCategoryId,
-      };
+  Map<String, dynamic> toJson() =>
+      {"id": id, "category_id": categoryId, "name": name};
 
   static List<PreferenceModel> fromJsonList(List<Map> list) {
     List<PreferenceModel> prefs = [];

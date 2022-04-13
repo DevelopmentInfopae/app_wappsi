@@ -157,7 +157,8 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
     //                                    SAVE PERMISSIONS DATA INTO DATABLOC
     //_______________________________________________________________________________________________________________
 
-    dataBloc.setPermissions(PermissionsModel.fromJson(res['body']['permissions']));
+    dataBloc
+        .setPermissions(PermissionsModel.fromJson(res['body']['permissions']));
 
     //______________________________________________________________________________________________________________
     //

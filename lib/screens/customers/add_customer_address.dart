@@ -215,23 +215,21 @@ class _NewAddressState extends State<NewAddress> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Icon(
-                customerBloc.getAddress.geoLocation != null
+                (customerBloc.getAddress.latitude != null &&
+                        customerBloc.getAddress.longitude != null)
                     ? Icons.location_on_outlined
                     : Icons.add_location_outlined,
                 size: kIconSize,
                 color: pColor,
               ),
               Text(
-                  customerBloc.getAddress.geoLocation != null
+                  (customerBloc.getAddress.latitude != null &&
+                          customerBloc.getAddress.longitude != null)
                       ? 'Lat:' +
-                          roundDouble(
-                                  customerBloc.getAddress.geoLocation!['lon'],
-                                  3)
+                          roundDouble(customerBloc.getAddress.latitude!, 3)
                               .toString() +
                           ', Lon:' +
-                          roundDouble(
-                                  customerBloc.getAddress.geoLocation!['lon'],
-                                  3)
+                          roundDouble(customerBloc.getAddress.longitude!, 3)
                               .toString()
                       : ' Añadir localización',
                   style: buttonsSmallTextStyle(context, color: pColor)),
@@ -250,7 +248,8 @@ class _NewAddressState extends State<NewAddress> {
           message: 'Eliminar',
           child: AppButton(
             // color: greyLight,
-            enabled: customerBloc.getAddress.geoLocation != null,
+            enabled: (customerBloc.getAddress.latitude != null &&
+                customerBloc.getAddress.longitude != null),
             color: cancelColor,
             disabledColor: grey,
             width: 35,
@@ -262,7 +261,8 @@ class _NewAddressState extends State<NewAddress> {
             padding: kButtonPadding,
             onTap: () async {
               setState(() {
-                customerBloc.getAddress.geoLocation = null;
+                customerBloc.getAddress.latitude = null;
+                customerBloc.getAddress.longitude = null;
               });
             },
           ),
@@ -273,7 +273,8 @@ class _NewAddressState extends State<NewAddress> {
             // color: greyLight,
             width: 35,
             child: Icon(
-              customerBloc.getAddress.geoLocation != null
+              (customerBloc.getAddress.latitude != null &&
+                      customerBloc.getAddress.longitude != null)
                   ? Icons.edit_location_alt_outlined
                   : Icons.add_location_alt_outlined,
               // size: kIconSize,
@@ -291,13 +292,17 @@ class _NewAddressState extends State<NewAddress> {
 
   Future<void> _getLocation() async {
     GeoPoint? result = await SearchLocationPage(
-      geoLoc: customerBloc.getAddress.geoLocation != null
-          ? GeoPoint.fromMap(customerBloc.getAddress.geoLocation!)
+      geoLoc: (customerBloc.getAddress.latitude != null &&
+              customerBloc.getAddress.longitude != null)
+          ? GeoPoint(
+              latitude: customerBloc.getAddress.latitude!,
+              longitude: customerBloc.getAddress.longitude!)
           : null,
     ).launch(context);
     if (result != null) {
       setState(() {
-        customerBloc.getAddress.geoLocation = result.toMap();
+        customerBloc.getAddress.latitude = result.latitude;
+        customerBloc.getAddress.longitude = result.longitude;
       });
     }
   }

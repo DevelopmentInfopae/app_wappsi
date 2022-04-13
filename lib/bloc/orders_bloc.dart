@@ -9,6 +9,8 @@ import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
+import 'package:pos_wappsi/models/preference_category_model.dart';
+import 'package:pos_wappsi/models/preference_model.dart';
 // import 'package:pos_wappsi/models/documents_types_model.dart';
 
 // import 'package:pos_wappsi/models/payment_methods_model.dart';
@@ -39,6 +41,10 @@ class OrderBloc {
 
   BehaviorSubject<PaymentMethods?> _paymentMthdController =
       BehaviorSubject<PaymentMethods?>();
+  BehaviorSubject<
+          Map<String, Map<PreferenceCategoryModel, List<PreferenceModel>>>?>
+      _productPrefsController = BehaviorSubject<
+          Map<String, Map<PreferenceCategoryModel, List<PreferenceModel>>>?>();
 
   BehaviorSubject<CompanyModel?> _customerController =
       BehaviorSubject<CompanyModel?>();
@@ -97,28 +103,65 @@ class OrderBloc {
   Future addProduct(Map<String, dynamic> productReq,
       {bool getPrices = true, bool getQttys = true}) async {
     bool res = false;
-    if (_productsController.hasValue) {
-      res = await _addProductToProductPOSMap(
-          productReq['product'], getPrices, getQttys,
-          unit: productReq['product_unit']);
-    } else {
+    if (!_productsController.hasValue) {
       emptyProductsAdded();
-      res = await _addProductToProductPOSMap(
-          productReq['product'], getPrices, getQttys,
-          unit: productReq['product_unit']);
     }
+    res = await _addProductToOrder(productReq['product'], getPrices, getQttys,
+        unit: productReq['product_unit'], prefs: productReq['product_prefs']);
     getSubTotal();
     return res;
   }
 
+  Map<String, List<String>> prefsText(String productKey) {
+    Map<String, List<String>> prefsText = {};
+    if (_productPrefsController.hasValue) {
+      final temp = _productPrefsController.value![productKey];
+      if (temp != null) {
+        if ((temp).isNotEmpty) {
+          for (var prefCat in temp.keys) {
+            for (PreferenceModel pref in (temp[prefCat] ?? [])) {
+              if (prefsText.containsKey(prefCat.name)) {
+                prefsText[prefCat.name]?.add(pref.name ?? '');
+              } else {
+                prefsText[prefCat.name ?? ''] = [pref.name ?? ''];
+              }
+            }
+          }
+        }
+      }
+    }
+    return prefsText;
+  }
+
   /// Add product to sale product list, if getPrices = true, calculate
   /// product prices
-  Future<bool> _addProductToProductPOSMap(
+  Future<bool> _addProductToOrder(
       ProductModel product, bool getPrices, bool getQttys,
-      {UnitsModel? unit}) async {
+      {UnitsModel? unit,
+      Map<PreferenceCategoryModel, List<PreferenceModel>>? prefs}) async {
     bool res = false;
     if (dataBloc.settings!['item_addition'] == 1) {
-      final key = product.id.toString() + ((unit?.id ?? '').toString());
+      String prefsKey = '';
+      String pUnitKey = '';
+      if (prefs == null) {
+        pUnitKey = product.id.toString() + ((unit?.id ?? '').toString());
+      } else {
+        final List<int> prefsId = [];
+        if (prefs.isNotEmpty) {
+          for (var prefCat in prefs.keys) {
+            prefs[prefCat]?.forEach((pref) {
+              prefsId.add(pref.id);
+              // prefsKey += pref.id ?? '';
+            });
+          }
+        }
+        prefsId.sort();
+        prefsKey = prefsId.join();
+      }
+      String key = pUnitKey + prefsKey;
+      if (prefs?.isNotEmpty ?? false) {
+        addProductPrefs(key, prefs!);
+      }
       final p = getProductData(key);
       if (p == null) {
         // add product unit if product unit is selected
@@ -152,7 +195,7 @@ class OrderBloc {
 
       /// gen an unique key for each product
       if (_productsController.value.keys.contains(key)) {
-        _addProductToProductPOSMap(product, getPrices, getQttys, unit: unit);
+        _addProductToOrder(product, getPrices, getQttys, unit: unit);
       } else {
         // add product unit if product unit is selected
         if (unit != null) {
@@ -195,12 +238,16 @@ class OrderBloc {
       // printConsole(dataBloc.settings?['overselling']??);
       // verify overselling setting to avoid overselling or not
       if (dataBloc.settings!['overselling'] == 0) {
+        final p = await ProductsProvider.getProductDetails(
+            _productsController.value[key]!.id.toString(), true);
+        _productsController.value[key]!.inventory =
+            p?.inventory ?? _productsController.value[key]!.inventory;
         if (_productsController.value[key]!.inventory < value) {
           if (_productsController.value[key]!.inventory > 0) {
             _productsController.value[key]!.quantity =
                 _productsController.value[key]!.inventory.toDouble();
             // setProductView(_productsController.value);
-            _subtotalController.sink.add(getSubTotal());
+
           } else {
             _productsController.value.remove(key);
             res = false;
@@ -208,7 +255,6 @@ class OrderBloc {
         } else {
           _productsController.value[key]!.quantity = value;
           // setProductView(_productsController.value);
-          _subtotalController.sink.add(getSubTotal());
 
           res = true;
         }
@@ -216,17 +262,18 @@ class OrderBloc {
       } else {
         _productsController.value[key]!.quantity = value;
         // setProductView(_productsController.value);
-        _subtotalController.sink.add(getSubTotal());
 
         res = true;
       }
+      getSubTotal();
+
       // reloadProductStream();
       // _updateProductViewQuantity(key,value);
     } else {
       await dataBloc.getSettings();
       res = await addProductQuantity(key, value);
     }
-    
+
     return res;
   }
 
@@ -313,6 +360,14 @@ class OrderBloc {
     if (_productUnitController.hasValue) {
       try {
         _productUnitController.value.remove(key);
+      } catch (e) {
+        printConsole(e);
+      }
+    }
+    //remove product prefs if selected
+    if (_productPrefsController.hasValue) {
+      try {
+        _productPrefsController.value?.remove(key);
       } catch (e) {
         printConsole(e);
       }
@@ -456,6 +511,18 @@ class OrderBloc {
     }
   }
 
+  addProductPrefs(String productKey,
+      Map<PreferenceCategoryModel, List<PreferenceModel>> prefs) {
+    try {
+      if (!_productPrefsController.hasValue) {
+        _productPrefsController.value = {};
+      }
+      _productPrefsController.value?[productKey] = prefs;
+    } catch (e) {
+      printConsole(e);
+    }
+  }
+
   //-----------------------------------------------------------------------------
   //                                CUSTOMER
   //
@@ -478,6 +545,9 @@ class OrderBloc {
 
   Map<String, UnitsModel>? get getProductUnits =>
       _productUnitController.valueOrNull;
+
+  Map<String, Map<PreferenceCategoryModel, List<PreferenceModel>>>?
+      get getProductPrefs => _productPrefsController.value;
 
   DocumentsTypes? get getOrderDocumentType =>
       _orderDocumentController.valueOrNull;
@@ -556,6 +626,7 @@ class OrderBloc {
     _productUnitController.close();
     _discountController.close();
     _printDataController.close();
+    _productPrefsController.close();
 
     // _printStateController.close();
   }
@@ -574,6 +645,8 @@ class OrderBloc {
     _orderNoteController = BehaviorSubject<String>();
     _customerController = BehaviorSubject<CompanyModel?>();
     _orderDocumentController = BehaviorSubject<DocumentsTypes?>();
+    _productPrefsController = BehaviorSubject<
+        Map<String, Map<PreferenceCategoryModel, List<PreferenceModel>>>?>();
 
     _customerAddressesController = BehaviorSubject<CustomerAddressesModel?>();
 

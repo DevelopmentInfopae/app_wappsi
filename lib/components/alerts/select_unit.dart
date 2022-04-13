@@ -1,13 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/input_decoration.dart';
 // ignore: implementation_imports
 // import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/constant.dart';
-import 'package:pos_wappsi/models/preference_category_model.dart';
-import 'package:pos_wappsi/models/preference_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/product_preferences_provider.dart';
@@ -23,12 +20,10 @@ class SelectProductUnitDialog extends StatefulWidget {
       {Key? key,
       required this.product,
       this.showInvInstOfPrice = false,
-      this.prefsSelection = false,
       required this.units})
       : super(key: key);
   final ProductModel product;
   final bool showInvInstOfPrice;
-  final bool prefsSelection;
   @override
   SelectProductUnitDialogState createState() {
     return SelectProductUnitDialogState();
@@ -40,13 +35,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
 
   UnitsModel? _selectUnition;
 
-  bool prefsSelection = false;
-
-  Map<PreferenceCategoryModel, List<PreferenceModel>> productPrefs = {};
-
   double qtty = 1;
-
-  final List<PreferenceModel> selectedPrefs = [];
 
   @override
   void initState() {
@@ -87,33 +76,18 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
         insetPadding: EdgeInsets.symmetric(
             horizontal: hInsetPadding, vertical: vInsetPadding),
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        title: AnimatedCrossFade(
-            firstChild: _title1(context),
-            secondChild: Column(
-              children: [_productName(context), _unitSelectedName(context)],
-            ),
-            crossFadeState: !prefsSelection
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            duration: const Duration(milliseconds: 200)),
+        title: _title1(context),
+
         // _ordersList(),
 
-        content: AnimatedCrossFade(
-            firstChild: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _selectUnit(context),
-                qttyControl(context).paddingTop(8),
-              ],
-            ),
-            secondChild: Material(
-              color: Colors.transparent,
-              child: _prefsSelection(context),
-            ),
-            crossFadeState: !prefsSelection
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            duration: const Duration(milliseconds: 200)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _selectUnit(context),
+            qttyControl(context).paddingTop(8),
+          ],
+        ),
+
         actionsPadding: EdgeInsets.zero,
         buttonPadding: EdgeInsets.zero,
         actions: <Widget>[
@@ -122,19 +96,14 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
               Container(
                 color: Colors.red.withOpacity(0.8),
                 child: CupertinoDialogAction(
-                  child: Text(
-                    prefsSelection ? "Regresar" : "Cancelar",
-                    style: const TextStyle(color: Colors.white),
+                  child: const Text(
+                    "Cancelar",
+                    style: TextStyle(color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                   onPressed: () async {
-                    if (!prefsSelection) {
-                      Navigator.of(context).pop(null);
-                    } else {
-                      setState(() {
-                        prefsSelection = false;
-                      });
-                    }
+                    Navigator.of(context).pop(null);
+
                     // return widget.product;
                   },
                 ),
@@ -149,20 +118,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                   ),
                   onPressed: () async {
                     if (_selectUnition != null) {
-                      if (widget.prefsSelection && !prefsSelection) {
-                        productPrefs = await ProductPreferencesProvider
-                            .listProductPreferences(widget.product.idCloud);
-                        // print('here');
-                        if (productPrefs.isEmpty) {
-                          _returnInfo(context);
-                        } else {
-                          setState(() {
-                            prefsSelection = true;
-                          });
-                        }
-                      } else {
-                        _returnInfo(context);
-                      }
+                      _returnInfo(context);
                     }
 
                     // return widget.product;
@@ -172,71 +128,6 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  SingleChildScrollView _prefsSelection(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: productPrefs.keys.map((prefCat) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                padding: kButtonPadding,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: pColor.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(5)),
-                child: Text(
-                  prefCat.name ?? 'xddd',
-                  style: buttonsSmallTextStyle(context),
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                padding: kButtonVPadding,
-                child: Wrap(
-                  alignment: WrapAlignment.start,
-                  children: productPrefs[prefCat]!.map((e) {
-                    return ChoiceChip(
-                      // pressElevation: 10,
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(15))),
-                      labelPadding: kPadding1,
-                      visualDensity: VisualDensity.comfortable,
-                      padding: EdgeInsets.zero,
-                      selectedColor: pColor.withOpacity(0.2),
-                      label: Text(
-                        e.name ?? '',
-                        style: normalTextStyle(context),
-                      ),
-                      selected: selectedPrefs
-                          .where((element) => element == e)
-                          .isNotEmpty,
-                      onSelected: (bool value) {
-                        if (selectedPrefs
-                            .where((element) => element == e)
-                            .isEmpty) {
-                          setState(() {
-                            selectedPrefs.add(e);
-                          });
-                        } else {
-                          setState(() {
-                            selectedPrefs.remove(e);
-                          });
-                        }
-                      },
-                    ).paddingSymmetric(horizontal: 8);
-                  }).toList(),
-                ),
-              )
-            ],
-          );
-        }).toList(),
       ),
     );
   }

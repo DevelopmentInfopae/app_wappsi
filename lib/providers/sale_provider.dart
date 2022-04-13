@@ -37,23 +37,14 @@ class SalesProvider {
             'assets/images/dizzy-robot.png');
       } else {
         hideCurrentScaffoldAlert(context);
-        // try {
-        // scaffoldAlert(
-        //     context,
-        //     res['body']['message'] ??
-        //         res['message'] ??
-        //         'Error al registrar la venta',
-        //     const Duration(seconds: 2),
-        //     backGroundColor: Colors.red);
-        // } catch (e) {
-        //   confirmDialog(context, res['body']['message'] ?? res['message'],
-        //       'assets/images/browser.png');
-        // }
+
         if (res['error'] ?? true) {
           if (res['body']['data'] != [] &&
               res['body']['data'] != null &&
               res['body']['sync']) {
-            scaffoldAlert(context, 'Recargando datos de venta POS',
+            scaffoldAlert(
+                context,
+                'Se encontraron cambios en los detalles de la venta.',
                 const Duration(seconds: 2),
                 backGroundColor: Colors.red);
 
@@ -68,7 +59,7 @@ class SalesProvider {
                 await syncDB.syncOption(context, tableNamesToSyncOpt[key]!);
               }
             });
-            final reload = await posBloc.reloadPOSData();
+            final reload = await posBloc.reloadPOSData(context);
 
             if (!reload) {
               hideCurrentScaffoldAlert(context);
@@ -81,7 +72,7 @@ class SalesProvider {
               Navigator.pop(context);
 
               scaffoldAlert(context, 'Datos de venta POS recargados',
-                  const Duration(seconds: 2));
+                  const Duration(seconds: 1));
             }
           } else {
             scaffoldAlert(

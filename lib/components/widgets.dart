@@ -11,7 +11,10 @@ import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 Widget labelContent(String label, String content,
-    {bool padding = true, EdgeInsetsGeometry paddingValue = EdgeInsets.zero}) {
+    {bool padding = true,
+    EdgeInsetsGeometry paddingValue = EdgeInsets.zero,
+    double? labelFontSize,
+    TextAlign? contentAlign}) {
   return Padding(
     padding: padding
         ? const EdgeInsets.symmetric(horizontal: 20, vertical: 10)
@@ -22,14 +25,12 @@ Widget labelContent(String label, String content,
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            // fontSize: 13
-          ),
+          style:
+              TextStyle(fontWeight: FontWeight.bold, fontSize: labelFontSize),
         ),
         Text(
           capitalizeText(content),
-          textAlign: TextAlign.start,
+          textAlign: contentAlign ?? TextAlign.start,
           style: const TextStyle(fontSize: 17),
         )
       ],
@@ -43,11 +44,15 @@ class DecoratedLabeledContent extends StatelessWidget {
       required this.label,
       required this.content,
       this.backgroundColor,
+      this.contentAlign,
+      this.labelFontSize,
       this.paddingValue = EdgeInsets.zero,
       this.withPadding = true})
       : super(key: key);
   final String label;
   final Color? backgroundColor;
+  final TextAlign? contentAlign;
+  final double? labelFontSize;
   final String content;
   final EdgeInsetsGeometry paddingValue;
   final bool withPadding;
@@ -58,7 +63,10 @@ class DecoratedLabeledContent extends StatelessWidget {
           color: backgroundColor ?? Colors.grey[300]!,
           borderRadius: BorderRadius.circular(15)),
       child: labelContent(label, content,
-          padding: true, paddingValue: paddingValue),
+          padding: true,
+          paddingValue: paddingValue,
+          labelFontSize: labelFontSize,
+          contentAlign: contentAlign),
     );
   }
 }

@@ -42,12 +42,11 @@ class _AddressDetailsState extends State<AddressDetails> {
   @override
   void initState() {
     super.initState();
-    if (widget.address.geoLocation != null &&
-        widget.address.geoLocation != {}) {
+    if (widget.address.latitude != null && widget.address.longitude != null) {
       try {
-        gLoc = GeoPoint.fromMap(
-          widget.address.geoLocation!,
-        );
+        gLoc = GeoPoint(
+            latitude: widget.address.latitude!,
+            longitude: widget.address.longitude!);
         controller = CustomController(
           initMapWithUserPosition: false,
           initPosition: gLoc,

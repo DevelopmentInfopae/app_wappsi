@@ -664,9 +664,6 @@ class _SalePaymentState extends State<SalePayment> {
                       printData: printData,
                     ).launch(context);
                   });
-                  setState(() {
-                    _sending = false;
-                  });
                 } else {
                   setState(() {
                     _sending = false;
