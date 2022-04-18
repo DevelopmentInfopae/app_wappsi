@@ -1,11 +1,11 @@
 // ignore_for_file: unnecessary_string_escapes
 
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:intl/intl.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/environment/environment.dart';
-import 'dart:math';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
 // import 'dart:math';
@@ -26,6 +26,7 @@ bool isNumeric(String s) {
   }
   return double.tryParse(s) != null;
 }
+
 bool isNumericInt(String s) {
   // ignore: unnecessary_null_comparison
   if (s == null) {
@@ -125,8 +126,8 @@ String capitalizeText(String value) {
     '"adis"'
   ];
   final specialLowerCases = ['de', 'la', 'el', 'los', 'las', 'y', 'o', 'con'];
-  if(value.endsWith(' ')){
-    value = value.substring(0,value.length-1);
+  if (value.endsWith(' ')) {
+    value = value.substring(0, value.length - 1);
   }
   if (value.isNotEmpty) {
     List<String> words = value.split(' ');
@@ -152,8 +153,9 @@ String capitalizeText(String value) {
           } else {
             output = output +
                 ' ' +
-                temp.substring(0, 1).toUpperCase() + 
-                temp.substring(1)+' ';
+                temp.substring(0, 1).toUpperCase() +
+                temp.substring(1) +
+                ' ';
           }
         }
       }

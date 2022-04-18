@@ -4,13 +4,15 @@
 
 import 'dart:convert';
 
-class PreferenceCategoryModel {
-  PreferenceCategoryModel({
-    this.id,
-    this.name,
-  });
+import 'package:pos_wappsi/utils/parsing/to_double.dart';
 
-  String? id;
+class PreferenceCategoryModel {
+  PreferenceCategoryModel(
+      {this.id, this.name, this.selectionLimit, this.required});
+
+  int? id;
+  int? selectionLimit;
+  int? required;
   String? name;
 
   factory PreferenceCategoryModel.fromRawJson(String str) =>
@@ -20,11 +22,18 @@ class PreferenceCategoryModel {
 
   factory PreferenceCategoryModel.fromJson(Map<String, dynamic> json) =>
       PreferenceCategoryModel(
-        id: (json["id"] ?? '').toString(),
+        id: parsingToInt(json["id"]),
         name: (json["name"] ?? '').toString(),
+        selectionLimit: parsingToInt(json["selection_limit"]),
+        required: parsingToInt(json["required"]),
       );
 
-  Map<String, dynamic> toJson() => {"id": id, "name": name};
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "selection_limit": selectionLimit,
+        "required": required
+      };
 
   static List<PreferenceCategoryModel> fromJsonList(List<Map> list) {
     List<PreferenceCategoryModel> prefsCat = [];

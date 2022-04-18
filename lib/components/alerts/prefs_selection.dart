@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-
 // ignore: implementation_imports
 // import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/constant.dart';
@@ -9,7 +8,6 @@ import 'package:pos_wappsi/models/preference_category_model.dart';
 import 'package:pos_wappsi/models/preference_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
-
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 // import 'package:provider/single_child_widget.dart';
 
@@ -41,10 +39,33 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
 
   Map<PreferenceCategoryModel, List<PreferenceModel>> productPrefsSelected = {};
 
+  List<PreferenceCategoryModel> reqCatPrefs = [];
+
+  Map<int, bool> markAsNeeded = {};
+
+  Map<int, String?> errorMessage = {};
+
+  bool initVariables = false;
+
   @override
   void initState() {
-    super.initState();
     _selectUnition = widget.unit;
+
+    // for some reason this is not working to init this variables
+    // widget.productPrefs.keys.map((prefCat) {
+    //   // build a list of required product preferences
+    //   if (prefCat.required == 1) {
+    //     if (!reqCatPrefs.contains(prefCat)) {
+    //       reqCatPrefs.add(prefCat);
+    //     }
+    //   }
+
+    //   // add a preference cateogory marker to change card border if
+    //   // preference category is required
+
+    //   markAsNeeded[prefCat.id ?? 0] = false;
+    // });
+    super.initState();
   }
 
   @override
@@ -142,41 +163,69 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: widget.productPrefs.keys.map((prefCat) {
-          return Container(
-            // margin: const EdgeInsets.symmetric(horizontal: 4),
-            // padding: kButtonPadding,
-            margin: EdgeInsets.zero,
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.transparent),
-                borderRadius: BorderRadius.circular(5)),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  width: double.infinity,
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(5)),
-                  child: Text(
-                    (prefCat.name ?? ''),
-                    style: buttonsSmallTextStyle(context),
-                  ),
+          if (!initVariables) {
+            // build a list of required product preferences
+            if (prefCat.required == 1) {
+              if (!reqCatPrefs.contains(prefCat)) {
+                reqCatPrefs.add(prefCat);
+              }
+            }
+
+            // add a preference cateogory marker to change card border if
+            // preference category is required
+
+            markAsNeeded[prefCat.id ?? 0] = false;
+            initVariables = true;
+          }
+          return Column(
+            children: [
+              Container(
+                // margin: const EdgeInsets.symmetric(horizontal: 4),
+                padding: kButtonPadding,
+                margin: EdgeInsets.zero,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: (markAsNeeded[prefCat.id] ?? false)
+                            ? errorColor
+                            : Colors.transparent),
+                    borderRadius: BorderRadius.circular(5)),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      width: double.infinity,
+                      decoration:
+                          BoxDecoration(borderRadius: BorderRadius.circular(5)),
+                      child: Text(
+                        (prefCat.name ?? ''),
+                        style: buttonsSmallTextStyle(context),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      width: double.infinity,
+                      // padding: kButtonVPadding,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: widget.productPrefs[prefCat]!.map((e) {
+                          return _preffButton(e, context, prefCat)
+                              .paddingSymmetric(horizontal: 2, vertical: 3);
+                        }).toList(),
+                      ),
+                    )
+                  ],
                 ),
-                Container(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  width: double.infinity,
-                  // padding: kButtonVPadding,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: widget.productPrefs[prefCat]!.map((e) {
-                      return _preffButton(e, context, prefCat)
-                          .paddingSymmetric(horizontal: 2, vertical: 3);
-                    }).toList(),
-                  ),
-                )
-              ],
-            ),
+              ),
+              markAsNeeded[prefCat.id ?? 0] == true
+                  ? Text(
+                      errorMessage[prefCat.id ?? 0] ?? '',
+                      textAlign: TextAlign.center,
+                      style: normalTextStyle(context, color: errorColor),
+                    ).paddingTop(4)
+                  : const SizedBox()
+            ],
           );
         }).toList(),
       ),
@@ -231,7 +280,36 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
   }
 
   void _returnInfo(BuildContext context) {
-    Navigator.of(context).pop(productPrefsSelected);
+    bool returnInfo = true;
+
+    for (PreferenceCategoryModel reqCatPref in reqCatPrefs) {
+      int? selectionLimit;
+      if (reqCatPref.selectionLimit == 0 || reqCatPref.selectionLimit == null) {
+        selectionLimit = 999;
+      } else {
+        selectionLimit = reqCatPref.selectionLimit!;
+      }
+      if ((!productPrefsSelected.keys.contains(reqCatPref)) ||
+          ((productPrefsSelected[reqCatPref]?.length ?? 1) > selectionLimit)) {
+        String error = '';
+        if ((productPrefsSelected[reqCatPref]?.length ?? 1) > selectionLimit) {
+          error =
+              "Debe seleccionar como maximo ${reqCatPref.selectionLimit ?? 1} preferencia(s) para esta categoria";
+        } else {
+          error =
+              "Debe seleccionar almenos una preferencia para esta categoria";
+        }
+        setState(() {
+          errorMessage[reqCatPref.id ?? 0] = error;
+          markAsNeeded[reqCatPref.id ?? 0] = true;
+          markAsNeeded;
+        });
+        returnInfo = false;
+      }
+    }
+    if (returnInfo) {
+      Navigator.of(context).pop(productPrefsSelected);
+    }
   }
 
   Padding _productName(BuildContext context) {
@@ -241,14 +319,14 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
     ).paddingTop(8);
   }
 
-  Widget _unitSelectedName(BuildContext context) {
-    return _selectUnition != null
-        ? Text(
-            getRoundedQtty(widget.uQtty ?? 1) +
-                ' - ' +
-                (_selectUnition?.name ?? ''),
-            style: buttonsSmallTextStyle(context),
-          )
-        : Container();
-  }
+  // Widget _unitSelectedName(BuildContext context) {
+  //   return _selectUnition != null
+  //       ? Text(
+  //           getRoundedQtty(widget.uQtty ?? 1) +
+  //               ' - ' +
+  //               (_selectUnition?.name ?? ''),
+  //           style: buttonsSmallTextStyle(context),
+  //         )
+  //       : Container();
+  // }
 }
