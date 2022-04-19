@@ -84,6 +84,7 @@ class ProductsList extends StatelessWidget {
               }
             };
           } else if (fromQuote) {
+            prefsText = quoteBloc.prefsText(product.key);
             delete = () => quoteBloc.removeProduct(product.key);
             getQtty =
                 () => quoteBloc.getProductData(product.key)?.quantity ?? 1;
@@ -107,6 +108,7 @@ class ProductsList extends StatelessWidget {
               }
             };
           } else {
+            prefsText = posBloc.prefsText(product.key);
             delete = () => posBloc.removeProduct(product.key);
             getQtty = () => posBloc.getProductData(product.key)?.quantity ?? 1;
             unit = posBloc.getProductUnits?[product.key];

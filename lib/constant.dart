@@ -24,6 +24,7 @@ const kButtonDecoration = BoxDecoration(
 
 const kButtonPadding = EdgeInsets.all(10);
 const kButtonHPadding = EdgeInsets.symmetric(horizontal: 10);
+const kButtonHPadding2 = EdgeInsets.symmetric(horizontal: 10, vertical: 2);
 const kButtonVPadding = EdgeInsets.symmetric(vertical: 10);
 const kPadding1 = EdgeInsets.symmetric(vertical: 4, horizontal: 6);
 const kPadding2 = EdgeInsets.symmetric(vertical: 2, horizontal: 6);
@@ -159,6 +160,8 @@ Color greyDLight = Colors.grey[400]!;
 Color alertBackground = const Color.fromRGBO(234, 234, 234, 1);
 
 double alertBorderRadius = 15;
+
+double normalBorderRadius = 10;
 
 /// Color to subtitles
 Color blueTextColor = const Color.fromRGBO(0, 124, 209, 1);

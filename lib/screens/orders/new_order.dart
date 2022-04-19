@@ -60,6 +60,7 @@ class _NewOrderState extends State<NewOrder> {
   void dispose() {
     _customerController.dispose();
     _customerAddrController.dispose();
+
     super.dispose();
   }
 
@@ -107,7 +108,7 @@ class _NewOrderState extends State<NewOrder> {
             _warehouse(),
             _sellerInfo(),
             _customersDropDown(),
-            _customerAddressesDropDown()
+            _customerAddressesDropDown(),
           ],
         ),
       ),
@@ -142,8 +143,6 @@ class _NewOrderState extends State<NewOrder> {
       },
     );
   }
-
-
 
   Widget _customersDropDown() {
     return DropdownSearch<CompanyModel>(

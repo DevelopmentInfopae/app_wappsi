@@ -7,7 +7,6 @@ import 'package:pos_wappsi/components/input_decoration.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
-import 'package:pos_wappsi/providers/product_preferences_provider.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 // import 'package:provider/single_child_widget.dart';
 

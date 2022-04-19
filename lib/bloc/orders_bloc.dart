@@ -7,6 +7,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/models/delivery_time_model.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/models/preference_category_model.dart';
@@ -36,6 +37,11 @@ class OrderBloc {
       BehaviorSubject<Map<String, ProductModel>>();
   BehaviorSubject<Map<String, UnitsModel>> _productUnitController =
       BehaviorSubject<Map<String, UnitsModel>>();
+
+  BehaviorSubject<DeliveryTime?> _deliveryTimeController =
+      BehaviorSubject<DeliveryTime?>();
+
+  BehaviorSubject<String?> _deliveryDateController = BehaviorSubject<String>();
 
   BehaviorSubject<Map> _printDataController = BehaviorSubject<Map>();
 
@@ -146,17 +152,7 @@ class OrderBloc {
       if (prefs == null) {
         pUnitKey = product.id.toString() + ((unit?.id ?? '').toString());
       } else {
-        final List<int> prefsId = [];
-        if (prefs.isNotEmpty) {
-          for (var prefCat in prefs.keys) {
-            prefs[prefCat]?.forEach((pref) {
-              prefsId.add(pref.id);
-              // prefsKey += pref.id ?? '';
-            });
-          }
-        }
-        prefsId.sort();
-        prefsKey = prefsId.join();
+        prefsKey = _prefsKey(prefs, prefsKey);
       }
       String key = pUnitKey + prefsKey;
       if (prefs?.isNotEmpty ?? false) {
@@ -195,12 +191,16 @@ class OrderBloc {
 
       /// gen an unique key for each product
       if (_productsController.value.keys.contains(key)) {
-        _addProductToOrder(product, getPrices, getQttys, unit: unit);
+        _addProductToOrder(product, getPrices, getQttys,
+            unit: unit, prefs: prefs);
       } else {
         // add product unit if product unit is selected
         if (unit != null) {
           addProductUnit(key, unit);
           product.unit = unit.idCloud;
+        }
+        if (prefs?.isNotEmpty ?? false) {
+          addProductPrefs(key, prefs!);
         }
 
         final temp = {key: product};
@@ -223,12 +223,31 @@ class OrderBloc {
     return res;
   }
 
+  String _prefsKey(Map<PreferenceCategoryModel, List<PreferenceModel>> prefs,
+      String prefsKey) {
+    final List<int> prefsId = [];
+    if (prefs.isNotEmpty) {
+      for (var prefCat in prefs.keys) {
+        prefs[prefCat]?.forEach((pref) {
+          prefsId.add(pref.id);
+          // prefsKey += pref.id ?? '';
+        });
+      }
+    }
+    prefsId.sort();
+    prefsKey = prefsId.join();
+    return prefsKey;
+  }
+
   ///Returns a Map<String,dynamic>, where the keys are the same of
   ///SaleModel.fromJson(), it could be usefull to build an instance of
   ///SaleModel to send to an endpoint of API's service.
   Map<String, dynamic> getProductDetailMapLists() {
-    return ProductModel.getProductDetailMapLists(_productsController.value,
-        dataBloc.userData!.warehouseId, _productUnitController.valueOrNull);
+    return ProductModel.getProductDetailMapLists(
+        _productsController.value,
+        dataBloc.userData!.warehouseId,
+        _productUnitController.valueOrNull,
+        getProductPrefsText);
   }
 
   /// Modify quantity field of a ProductModel() given a key and a value
@@ -387,6 +406,7 @@ class OrderBloc {
       final pInfo = getProducts![key]!.toJson();
       UnitsModel? unitS = getProductUnits?[key];
       pInfo['unit'] = unitS?.toJson();
+      pInfo['preferences'] = getProductPrefsText(key);
       if (unitS != null) {
         final baseUnit = await UnitsProvider.getUnitInfo(unitS.baseUnit);
         pInfo['base_unit'] = baseUnit?.toJson();
@@ -523,6 +543,30 @@ class OrderBloc {
     }
   }
 
+  String getProductPrefsText(String productKey) {
+    String prefsText = '';
+    try {
+      for (PreferenceCategoryModel prefCat
+          in (getProductPrefs?[productKey]?.keys ?? [])) {
+        if (prefCat.name != null) {
+          prefsText += prefCat.name! + ': ';
+        } else {
+          prefsText += '';
+        }
+
+        for (PreferenceModel pref
+            in getProductPrefs![productKey]?[prefCat] ?? []) {
+          prefsText += pref != getProductPrefs![productKey]?[prefCat]?.last
+              ? ((pref.name ?? '') + ', ')
+              : (pref.name ?? '');
+        }
+      }
+    } catch (e) {
+      printConsole(e);
+    }
+    return prefsText;
+  }
+
   //-----------------------------------------------------------------------------
   //                                CUSTOMER
   //
@@ -542,6 +586,10 @@ class OrderBloc {
   //_____________________________________
 
   CompanyModel? get getCustomer => _customerController.valueOrNull;
+
+  DeliveryTime? get getDeliveryTime => _deliveryTimeController.valueOrNull;
+
+  String? get getDeliveryDate => _deliveryDateController.valueOrNull;
 
   Map<String, UnitsModel>? get getProductUnits =>
       _productUnitController.valueOrNull;
@@ -586,6 +634,10 @@ class OrderBloc {
     _customerController.sink.add(customer);
   }
 
+  Function(DeliveryTime?) get setDeliveryTime =>
+      _deliveryTimeController.sink.add;
+  Function(String?) get setDeliveryDate => _deliveryDateController.sink.add;
+
   Function(PaymentMethods?) get setPaymentMethod =>
       _paymentMthdController.sink.add;
   Function(String) get setInternalNote => _internalNoteController.sink.add;
@@ -615,9 +667,11 @@ class OrderBloc {
     isDisposed = true;
     // _productsViewController.close();
     _productsController.close();
+    _deliveryDateController.close();
     _productSearchController.close();
     _subtotalController.close();
     _customerController.close();
+    _deliveryTimeController.close();
     _customerAddressesController.close();
     _paymentMthdController.close();
     _internalNoteController.close();
@@ -636,8 +690,11 @@ class OrderBloc {
       dispose();
     }
     isDisposed = false;
+    _deliveryDateController = BehaviorSubject<String?>();
     _productsController = BehaviorSubject<Map<String, ProductModel>>();
     _productUnitController = BehaviorSubject<Map<String, UnitsModel>>();
+
+    _deliveryTimeController = BehaviorSubject<DeliveryTime?>();
 
     _printDataController = BehaviorSubject<Map>();
     _paymentMthdController = BehaviorSubject<PaymentMethods>();

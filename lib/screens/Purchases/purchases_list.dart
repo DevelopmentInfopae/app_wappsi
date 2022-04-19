@@ -13,12 +13,9 @@ import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/models/order_model.dart';
-import 'package:pos_wappsi/providers/local_orders_provider.dart';
 import 'package:pos_wappsi/providers/purchase_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/Purchases/components/purchases_card_list.dart';
-import 'package:pos_wappsi/screens/orders/components/order_card_list.dart';
 import 'package:pos_wappsi/utils/text_formating/order_status_mapping.dart';
 
 import '../../models/purchase_model.dart';

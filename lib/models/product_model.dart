@@ -153,7 +153,6 @@ class ProductModel {
       try {
         temp['promo_price'] = _promoPrice(temp);
       } catch (e) {
-        
         printConsole(e);
 
         temp['promo_price'] = null;
@@ -179,8 +178,8 @@ class ProductModel {
     if (temp['start_date'] == '' || temp['end_date'] == '') {
       return null;
     } else {
-      final start = DateTime.tryParse(temp['start_date']??'');
-      final end = DateTime.tryParse(temp['end_date']??'');
+      final start = DateTime.tryParse(temp['start_date'] ?? '');
+      final end = DateTime.tryParse(temp['end_date'] ?? '');
       double? promoPrice;
       var now = DateTime.now();
       // printConsole(temp['name'] + start.toString() +end.toString());
@@ -215,6 +214,7 @@ class ProductModel {
 
     return pwoutIVA;
   }
+
   double getCOstWithoutIVA() {
     double pwoutIVA = cost;
 
@@ -230,6 +230,7 @@ class ProductModel {
   String getFormatedPriceIVA({int? decimals}) {
     return getFormatedCurrency(getPriceWithIVA(), decimals: decimals);
   }
+
   String getFormatedCost({int? decimals}) {
     return getFormatedCurrency(cost, decimals: decimals);
   }
@@ -330,7 +331,8 @@ class ProductModel {
   static Map<String, dynamic> getProductDetailMapLists(
       Map<String, ProductModel>? products,
       int warehouseId,
-      Map<String, UnitsModel>? units) {
+      Map<String, UnitsModel>? units,
+      Function(String) getProdPrefText) {
     List<double> _quantitys = [];
     List<int> _units = [];
     List<int?> _unitsSelected = [];
@@ -347,6 +349,7 @@ class ProductModel {
     List<double> _pricesIVA = [];
     List<double> _realPrices = [];
     List<int> _taxRateIds = [];
+    List<String> _productPrefsText = [];
 
     // to order
 
@@ -381,6 +384,7 @@ class ProductModel {
         _pricesIVA.add(pIVA);
         _realPrices.add(products[key]!.priceWithoutDiscount!);
         _taxRateIds.add(products[key]!.taxRateId);
+        _productPrefsText.add(getProdPrefText(key));
 
         double discountPercent = 1 -
             (products[key]!.price /
@@ -406,7 +410,8 @@ class ProductModel {
           "subtotal":
               products[key]!.getPriceWithIVA() * products[key]!.quantity,
           "price_before_tax": products[key]!.getPriceWithoutIVA(),
-          "unit_quantity": products[key]!.quantity
+          "unit_quantity": products[key]!.quantity,
+          "product_preferences_text": getProdPrefText(key)
         });
       }
     }
@@ -430,7 +435,8 @@ class ProductModel {
       'product_unit': _units,
       'product_unit_id_selected': _unitsSelected,
       'product_base_quantity': _quantitys,
-      "product_detail_list": productsDetails
+      "product_detail_list": productsDetails,
+      "product_preferences_text": _productPrefsText
     };
   }
 

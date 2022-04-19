@@ -58,6 +58,7 @@ dependencies:
   package_info_plus: ^1.4.0
   flutter_html: ^2.2.1
   date_time_picker: ^2.1.0
+  time_picker_widget: ^1.0.0+10
   # syncfusion_flutter_datepicker: ^19.4.56
   # place_picker: 0.9.20-nullsafety
   # whatsapp_unilink: ^2.0.1+1

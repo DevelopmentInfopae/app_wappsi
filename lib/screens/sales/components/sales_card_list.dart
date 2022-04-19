@@ -136,7 +136,7 @@ class SalesCard extends StatelessWidget {
 
   Widget _description(var context) {
     final value = getFormatedCurrency(sale.grandTotal);
-    final valuePaid = getFormatedCurrency(sale.paid);
+    // final valuePaid = getFormatedCurrency(sale.paid);
     return Padding(
       padding: const EdgeInsets.only(top: 6, bottom: 6, right: 8, left: 8),
       child: Column(

@@ -30,15 +30,15 @@ class QuotesProvider {
             .toJson(toCreateQuote: true);
 
     List<Map<String, dynamic>> quoteItems =
-        QuoteItemsModel.buildOderSaleItems(
-            quoteBloc.getProducts!.keys.toList());
+        QuoteItemsModel.buildQuoteItems(quoteBloc.getProducts!.keys.toList());
     // final debug = sale.toString();
 
     final data = {'quote': quote, 'quote_items': quoteItems};
     final api = DataProvider();
 
     try {
-      scaffoldAlert(context, 'Registrando cotización', const Duration(seconds: 5));
+      scaffoldAlert(
+          context, 'Registrando cotización', const Duration(seconds: 5));
       final res =
           await api.postPetition(newQuoteEndP, data, dataBloc.getHeaders());
       hideCurrentScaffoldAlert(context);
@@ -62,7 +62,8 @@ class QuotesProvider {
                 'assets/images/browser.png');
           }
         } else {
-          scaffoldAlert(context, 'Cotización creada', const Duration(seconds: 1));
+          scaffoldAlert(
+              context, 'Cotización creada', const Duration(seconds: 1));
           final quoteId = res['body']['data']['quote_id'];
           quote['reference_no'] = res['body']['data']['reference_no'];
           quote['date'] = res['body']['data']['server_date'];
@@ -70,15 +71,11 @@ class QuotesProvider {
           // quoteItems['date'] = res['body']['data']['server_date'];
           final quoteSaveR =
               await DBProvider.db.insertQuery('sma_quotes', quote);
-          final quoteItemsSaveR = await QuoteItemsProvider.saveAllIntoDB(
-            quoteItems,
-            quoteId
-          );
+          final quoteItemsSaveR =
+              await QuoteItemsProvider.saveAllIntoDB(quoteItems, quoteId);
 
           if (quoteSaveR && quoteItemsSaveR) {
-            scaffoldAlert(
-                context,
-                'Cotización creada exitosamente',
+            scaffoldAlert(context, 'Cotización creada exitosamente',
                 const Duration(seconds: 2));
           }
           // get quote print data
@@ -129,9 +126,9 @@ class QuotesProvider {
       List<String>? filters,
       bool offset = false,
       int offsetValue = 1}) async {
-
- 
-    final onlyCreatedByUser = dataBloc.userData?.viewRight == 0?'AND q.created_by=${dataBloc.userData!.id}':'';
+    final onlyCreatedByUser = dataBloc.userData?.viewRight == 0
+        ? 'AND q.created_by=${dataBloc.userData!.id}'
+        : '';
     // final onlyCreatedByUser = '';
 
     final pagination = offset ? " LIMIT 30 OFFSET $offsetValue" : "";

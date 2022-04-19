@@ -115,6 +115,8 @@ class _PrintOrderState extends State<PrintOrder> {
               // hDivider(),
               ordQuotValueDetails(textTheme, widget.printData)
                   .paddingSymmetric(horizontal: 6, vertical: 8),
+              deliveryInfo(context, widget.printData)
+                  .paddingSymmetric(horizontal: 6, vertical: 8),
               wappsiSpam(textTheme, widget.printData)
                   .paddingSymmetric(horizontal: 10),
               // emptyLine(),

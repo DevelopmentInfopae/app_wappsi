@@ -37,6 +37,7 @@ class QuoteItemsModel {
     this.productUnitCode,
     this.unitQuantity,
     this.gst,
+    this.preferences,
     this.cgst,
     this.sgst,
     this.igst,
@@ -68,6 +69,7 @@ class QuoteItemsModel {
   double? realUnitPrice;
   int? productUnitId;
   String? productUnitCode;
+  String? preferences;
   double? unitQuantity;
   String? gst;
   double? cgst;
@@ -97,6 +99,7 @@ class QuoteItemsModel {
         warehouseId: json["warehouse_id"],
         itemTax: json["item_tax"] + 0.0,
         taxRateId: json["tax_rate_id"],
+        preferences: json["preferences"],
         tax: json["tax"],
         itemTax2: double.tryParse(json["item_tax_2"].toString()),
         taxRate2Id: int.tryParse(json["tax_rate_2_id"].toString()),
@@ -140,6 +143,7 @@ class QuoteItemsModel {
         "item_tax_2": itemTax2,
         "tax_rate_2_id": taxRate2Id,
         "tax_2": tax2,
+        "preferences": preferences,
         "discount": discount,
         "item_discount": itemDiscount,
         "subtotal": subtotal,
@@ -163,6 +167,7 @@ class QuoteItemsModel {
         "product_code": productCode,
         "product_name": productName,
         "product_type": productType,
+        "preferences": preferences,
         "option_id": optionId,
         "net_unit_price": netUnitPrice,
         "unit_price": unitPrice,
@@ -208,7 +213,7 @@ class QuoteItemsModel {
 
   /// Build an instance of  QuoteItemsModel given a keys set to get products and units from
   /// order bloc
-  static List<Map<String, dynamic>> buildOderSaleItems(List<String> keys) {
+  static List<Map<String, dynamic>> buildQuoteItems(List<String> keys) {
     List<Map<String, dynamic>> orderSaleItems = [];
     for (String key in keys) {
       final product = quoteBloc.getProducts![key]!;
@@ -228,6 +233,7 @@ class QuoteItemsModel {
           unitPrice: product.getPriceWithIVA(),
           quantity: product.quantity,
           warehouseId: dataBloc.userData!.warehouseId,
+          preferences: quoteBloc.getProductPrefsText(key),
           itemTax: taxValue,
           taxRateId: product.taxRateId,
           productUnitCode: unit?.code,

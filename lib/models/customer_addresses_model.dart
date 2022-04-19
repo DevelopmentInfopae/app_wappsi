@@ -37,6 +37,7 @@ class CustomerAddressesModel {
       this.latitude,
       this.longitude,
       this.cityCode,
+      this.location,
       this.customerGroupName,
       this.priceGroupName,
       this.code});
@@ -54,6 +55,7 @@ class CustomerAddressesModel {
   String? direccion;
   String? city;
   String? vatNo;
+  String? location;
 
   String? code;
   String? line1;
@@ -87,6 +89,7 @@ class CustomerAddressesModel {
         postalCode: json["postal_code"] ?? '',
         vatNo: json["vat_no"] ?? '',
         code: json["code"].toString(),
+        location: json["location"],
         cityCode: json["city_code"].toString(),
         customerGroupId: json["customer_group_id"].toString(),
         customerGroupName: json["customer_group_name"].toString(),
@@ -123,6 +126,7 @@ class CustomerAddressesModel {
         "email": email ?? '',
         "phone": phone ?? '',
         "code": code,
+        "location": location,
         "city_code": cityCode,
         "customer_group_id": customerGroupId,
         "customer_group_name": customerGroupName,

@@ -351,6 +351,7 @@ class ProductsProvider {
       } else if (fromQuote) {
         priceGroupId = quoteBloc.getCustomer!.priceGroupId!;
       } else if (fromPurchase) {
+        prefsSelection = false;
         showInvInstOfPrice = true;
       } else {
         priceGroupId = posBloc.getCustomer!.priceGroupId!;
@@ -370,13 +371,13 @@ class ProductsProvider {
         req = {};
       }
       // get product prefs
-      if (prefsSelection) {
+      if (prefsSelection && req.isNotEmpty) {
         final prodPrefs = await ProductPreferencesProvider.getProductPrefs(
             context, product, priceGroupId, req['product_unit'],
             prefsSelection: true);
         if (prodPrefs != null) {
           req['product_prefs'] = prodPrefs;
-        } else {
+        } else if (prodPrefs?.isEmpty ?? false) {
           req = {};
         }
       }

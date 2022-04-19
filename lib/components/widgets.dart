@@ -14,7 +14,11 @@ Widget labelContent(String label, String content,
     {bool padding = true,
     EdgeInsetsGeometry paddingValue = EdgeInsets.zero,
     double? labelFontSize,
-    TextAlign? contentAlign}) {
+    TextAlign? contentAlign,
+    bool capitalize = true,
+    bool capitalizeLabel = false,
+    Color? labelColor,
+    bool labelBold = true}) {
   return Padding(
     padding: padding
         ? const EdgeInsets.symmetric(horizontal: 20, vertical: 10)
@@ -24,12 +28,14 @@ Widget labelContent(String label, String content,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          label,
-          style:
-              TextStyle(fontWeight: FontWeight.bold, fontSize: labelFontSize),
+          capitalizeLabel ? capitalizeText(label) : label,
+          style: TextStyle(
+              fontWeight: labelBold ? FontWeight.bold : null,
+              fontSize: labelFontSize,
+              color: labelColor ?? greyDarkerColor),
         ),
         Text(
-          capitalizeText(content),
+          capitalize ? capitalizeText(content) : content,
           textAlign: contentAlign ?? TextAlign.start,
           style: const TextStyle(fontSize: 17),
         )

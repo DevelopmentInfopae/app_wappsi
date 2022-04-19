@@ -2,6 +2,7 @@
 
 // import 'dart:io';
 
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -15,7 +16,9 @@ import 'package:pos_wappsi/config/documents_types.dart';
 
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/global_form_const.dart';
+import 'package:pos_wappsi/models/delivery_time_model.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
+import 'package:pos_wappsi/providers/delivery_time_provider.dart';
 import 'package:pos_wappsi/providers/document_types_provider.dart';
 import 'package:pos_wappsi/providers/orders_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
@@ -27,10 +30,12 @@ import 'package:pos_wappsi/screens/orders/print_order.dart';
 // import 'package:pos_wappsi/screens/db_sync/components/sync_popup.dart';
 // import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
+import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/sale_functions/percent_formating.dart';
 import 'package:pos_wappsi/utils/text_formating/currency_formater.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
+import 'package:time_picker_widget/time_picker_widget.dart';
 
 class OrderOtherDetails extends StatefulWidget {
   const OrderOtherDetails({Key? key}) : super(key: key);
@@ -57,6 +62,13 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
   final TextEditingController _internalNController = TextEditingController();
   final TextEditingController _orderNController = TextEditingController();
   final TextEditingController _orderDController = TextEditingController();
+  // final TextEditingController _dateController = TextEditingController();
+
+  List<DeliveryTime> delivTimes = [];
+  bool delvTimeRequired = false;
+
+  DeliveryTime? selectedDelvTime;
+
   @override
   void initState() {
     final discountVal = getFormatedCurrency(orderBloc.getOrderDiscount);
@@ -69,6 +81,8 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
     if (orderBloc.getOrderNote != null) {
       _orderNController.text = orderBloc.getOrderNote!;
     }
+
+    selectedDelvTime = orderBloc.getDeliveryTime;
     super.initState();
   }
 
@@ -76,6 +90,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
   void dispose() {
     _internalNController.dispose();
     _orderNController.dispose();
+    // _dateController.dispose();
     super.dispose();
   }
 
@@ -84,8 +99,8 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
     _size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar:
-          appBar(context, 'Agregar pedido', image: 'assets/images/add-order.png'),
+      appBar: appBar(context, 'Agregar pedido',
+          image: 'assets/images/add-order.png'),
       body: _body(),
     );
   }
@@ -110,6 +125,13 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
           dataBloc.userData!.allowDiscount == 1
               ? _orderDiscount().paddingSymmetric(vertical: 6)
               : Container(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _datePicker().paddingSymmetric(horizontal: 4).expand(),
+              _timePicker().paddingSymmetric(horizontal: 4),
+            ],
+          ).paddingSymmetric(vertical: 6),
           _invoiceNote().paddingSymmetric(vertical: 6),
           _dispatchNote().paddingSymmetric(vertical: 6)
         ],
@@ -177,18 +199,6 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
                 ],
               );
             }),
-
-        // RichText(
-        //   text: TextSpan(
-        //       text: 'Numero de productos: ',hostUrl
-        //       style: buttonsTextStyle(context, color: pColor),
-        //       children: [
-        //         TextSpan(
-        //             text: '${orderBloc.getProductsCount()}',
-        //             style: numbersTextStyle())
-        //       ]),
-        //   // style: textTheme,
-        // ),
       ],
     );
   }
@@ -198,7 +208,9 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       future: DocumentsTypesProvider.loadFromDB(module: orderModule),
       builder:
           (BuildContext context, AsyncSnapshot<List<DocumentsTypes>> snapshot) {
-        if (snapshot.hasData && snapshot.data!.isNotEmpty&&!orderBloc.isDisposed) {
+        if (snapshot.hasData &&
+            snapshot.data!.isNotEmpty &&
+            !orderBloc.isDisposed) {
           orderBloc.setOrderDocumentType(snapshot.data?.first);
           if (snapshot.data!.length > 1) {
             return _documentType(items: snapshot.data!);
@@ -387,6 +399,106 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
     );
   }
 
+  Widget _datePicker() {
+    final now = DateTime.now();
+    return Container(
+      // height: 60,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.grey,
+              offset: Offset(0.0, 1.0), //(x,y)
+              blurRadius: 2.0,
+            )
+          ]),
+      padding: kButtonHPadding2,
+      child: DateTimePicker(
+        type: DateTimePickerType.date,
+        firstDate: DateTime.now(),
+        style: normalTextStyle(context),
+        // controller: _dateController,
+        lastDate: DateTime(
+          now.year + 1,
+        ),
+        dateLabelText: 'Fecha:',
+        initialValue: orderBloc.getDeliveryDate,
+        onChanged: (String? value) async {
+          if (value != null) {
+            // final time = await selectTime(context);
+            // purchaseBloc.setDate(value);
+            if (value != null) {
+              // set new date
+              orderBloc.setDeliveryDate(value);
+              // reset deliveryTime value
+              _updateDeliveryTime(null);
+              // get deliverytimes avaible for selected delivery date
+              delivTimes = await DeliveryTimeProvider.getAvaibleDelivTimes(
+                  context, value, orderBloc.getCustomerAddresses!.location);
+            }
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _timePicker() {
+    // final now = DateTime.now();
+
+    String timeText = '--:-- A --:--';
+
+    if (selectedDelvTime != null) {
+      timeText = selectedDelvTime!.getDelvTimeText(context);
+    }
+
+    return AppButton(
+      padding: EdgeInsets.zero,
+      // width: double.infinity,
+      // height: 60,
+
+      child: Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: delvTimeRequired ? Border.all(color: errorColor) : null,
+              borderRadius: BorderRadius.circular(normalBorderRadius)),
+          child: labelContent('Franja Horaria', timeText,
+              capitalize: false, labelColor: pColor, labelBold: false)),
+      onTap: () async {
+        final time = await showCustomTimePicker(
+            context: context,
+            // It is a must if you provide selectableTimePredicate
+            onFailValidation: (context) => confirmDialog(context,
+                'Franja horaria no disponible.', 'assets/images/warning.png'),
+            initialTime: const TimeOfDay(hour: 6, minute: 0),
+            selectableTimePredicate: (time) {
+              // return true;
+              return delivTimes.where((element) {
+                return element.time1 == time;
+              }).isNotEmpty;
+              //   _availableHours.indexOf(time.hour) != -1 &&
+              //     time.minute % 15 == 0).then(
+              // (time) => setState(() => selectedTime = time?.format(context))
+            });
+        _updateDeliveryTime(time);
+      },
+    );
+  }
+
+  void _updateDeliveryTime(TimeOfDay? time) {
+    setState(() {
+      if (time != null) {
+        delvTimeRequired = false;
+        selectedDelvTime = delivTimes.where((element) {
+          return element.time1 == time;
+        }).first;
+      } else {
+        selectedDelvTime = null;
+      }
+    });
+    orderBloc.setDeliveryTime(selectedDelvTime);
+  }
+
   Widget _invoiceNote() {
     return textFormField(context, 'Nota de venta', (String value) {
       orderBloc.setOrderNote(value);
@@ -425,7 +537,8 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       onTap: _sending
           ? null
           : () async {
-              if (_inputsKey.currentState?.validate() ?? false) {
+              if ((_inputsKey.currentState?.validate() ?? false) &&
+                  orderBloc.getDeliveryTime != null) {
                 final res = await OrdersProvider.sendOrderData(context);
 
                 if (res) {
@@ -445,14 +558,23 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
                       printData: printData,
                     ).launch(context);
                   });
-                  setState(() {
-                    _sending = false;
-                  });
+                  // setState(() {
+                  //   _sending = false;
+                  // });
                 } else {
                   setState(() {
                     _sending = false;
                   });
                 }
+              } else if (orderBloc.getDeliveryTime == null) {
+                setState(() {
+                  delvTimeRequired = true;
+                });
+                scaffoldAlert(
+                    context,
+                    'Debe seleccionar una franja horaria para la entrega del pedido',
+                    const Duration(seconds: 1),
+                    backGroundColor: errorColor);
               }
             },
       child: Text('Finalizar pedido',

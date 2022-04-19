@@ -11,14 +11,10 @@ import 'package:pos_wappsi/bloc/purchases_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/input_decoration.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/config/documents_types.dart';
 
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/global_form_const.dart';
-import 'package:pos_wappsi/models/documents_types_model.dart';
-import 'package:pos_wappsi/providers/document_types_provider.dart';
 import 'package:pos_wappsi/providers/purchase_provider.dart';
-import 'package:pos_wappsi/providers/quotes_provider.dart';
 import 'package:pos_wappsi/screens/Quotes/print_quotes.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 
@@ -193,8 +189,6 @@ class _QuotePurchaseDataState extends State<PurchaseOtherData> {
     );
   }
 
- 
-
   Widget _orderDiscount() {
     return Row(
       children: [
@@ -329,8 +323,6 @@ class _QuotePurchaseDataState extends State<PurchaseOtherData> {
       purchaseBloc.setPayrNote(value);
     }, (String value) {}, () {}, controller: _internalNController, maxLines: 4);
   }
-
-
 
   Widget _sendAndPrint() {
     return Row(

@@ -87,7 +87,10 @@ class OrderModel {
     this.reteIcaBase,
     this.reteOtherPercentage,
     this.reteOtherTotal,
+    this.deliveryText,
     this.reteOtherAccount,
+    this.deliveryDay,
+    this.deliveryTimeId,
     this.reteOtherBase,
     this.resolucion,
     required this.documentTypeId,
@@ -123,10 +126,13 @@ class OrderModel {
   dynamic paymentStatus;
   dynamic paymentTerm;
   String? dueDate;
+  String? deliveryText;
   int createdBy;
   dynamic updatedBy;
   dynamic updatedAt;
   int totalItems;
+  String? deliveryDay;
+  int? deliveryTimeId;
   int? pos;
   int paid;
   dynamic returnId;
@@ -188,6 +194,7 @@ class OrderModel {
         biller: json["biller"],
         warehouseId: json["warehouse_id"],
         note: json["note"],
+        deliveryText: json['delivery_text'],
         staffNote: json["staff_note"],
         total: double.tryParse(json["total"].toString()),
         productDiscount:
@@ -211,6 +218,8 @@ class OrderModel {
         updatedBy: json["updated_by"],
         updatedAt: json["updated_at"],
         totalItems: json["total_items"],
+        deliveryDay: json["delivery_day"],
+        deliveryTimeId: json["delivery_time_id"],
         pos: json["pos"],
         paid: json["paid"],
         returnId: json["return_id"],
@@ -294,6 +303,8 @@ class OrderModel {
         "return_id": returnId,
         "surcharge": surcharge,
         "attachment": attachment,
+        "delivery_day": deliveryDay,
+        "delivery_time_id": deliveryTimeId,
         "return_sale_ref": returnSaleRef,
         "sale_id": saleId,
         "return_sale_total": returnSaleTotal,
@@ -337,6 +348,7 @@ class OrderModel {
       return {
         "id": id,
         "id_cloud": idCloud,
+        "delivery_text": deliveryText,
         "date": date,
         "reference_no": referenceNo,
         "customer_id": customerId,
@@ -367,6 +379,8 @@ class OrderModel {
         "total_items": totalItems,
         "pos": pos,
         "paid": paid,
+        "delivery_day": deliveryDay,
+        "delivery_time_id": deliveryTimeId,
         "return_id": returnId,
         "surcharge": surcharge,
         "attachment": attachment,
@@ -455,6 +469,8 @@ class OrderModel {
         sellerId: user.sellerId,
         warehouseId: user.warehouseId,
         createdBy: int.parse(dataBloc.userData!.id),
+        deliveryDay: orderBloc.getDeliveryDate,
+        deliveryTimeId: orderBloc.getDeliveryTime?.id,
         // paymentMethod: orderBloc.getPaymentMethod!.idCloud,
         dueDate: null,
         staffNote: orderBloc.getInternalNote ?? '',
@@ -524,10 +540,12 @@ class OrderModel {
           'price': item.unitPrice,
           'name': item.productName,
           'unit': unit?.toJson(),
+          'preferences': item.preferences,
           'base_unit': bUnit?.toJson()
         };
         productsMap.add(tItempMap);
-        final taxRate = roundDouble((item.unitPrice / item.netUnitPrice) - 1,2);
+        final taxRate =
+            roundDouble((item.unitPrice / item.netUnitPrice) - 1, 2);
         if (ivasMap.containsKey(taxRate)) {
           ivasMap[taxRate]['value'] =
               ivasMap[taxRate]['value'] + (item.priceBeforeTax * item.quantity);
@@ -543,7 +561,7 @@ class OrderModel {
       // printConsole(e);
       return {};
     }
-    
+
     return {
       'iva': ivasMap,
       'products': productsMap,

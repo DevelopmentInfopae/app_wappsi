@@ -100,8 +100,8 @@ class PurchaseBloc {
     } else {
       emptyProductsAdded();
     }
-      res = await _addProductToProductMap(productReq['product'],
-          unit: productReq['product_unit']);
+    res = await _addProductToProductMap(productReq['product'],
+        unit: productReq['product_unit']);
     getSubTotalCost();
     return res;
   }
@@ -120,14 +120,11 @@ class PurchaseBloc {
         if (unit != null) {
           addProductUnit(key, unit);
           product.unit = unit.idCloud;
-        
         }
 
         final temp = {key: product};
         temp.addAll(_productsController.value);
         _productsController.value = temp;
-        
-
 
         res = await addProductQuantity(key, product.quantity);
       } else {
@@ -167,8 +164,11 @@ class PurchaseBloc {
   ///PurchaseModel.fromJson(), it could be usefull to build an instance of
   ///PurchaseModel to send to an endpoint of API's service.
   Map<String, dynamic> getProductDetailMapLists() {
-    return ProductModel.getProductDetailMapLists(_productsController.value,
-        dataBloc.userData!.warehouseId, _productUnitController.valueOrNull);
+    return ProductModel.getProductDetailMapLists(
+        _productsController.value,
+        dataBloc.userData!.warehouseId,
+        _productUnitController.valueOrNull,
+        (String v) {});
   }
 
   /// Modify quantity field of a ProductModel() given a key and a value
@@ -196,47 +196,6 @@ class PurchaseBloc {
       return [];
     }
   }
-
-  // /// When parameters of product price calculation change, it's
-  // /// neccesary to recalculate product prices, this function make
-  // /// current product list empty and then introduce all products
-  // /// again recalculating prices for parameters.
-  // Future<bool> reloadProducts() async {
-  //   if (_productsController.hasValue) {
-  //     try {
-  //       // String keyInitialQtty = 'initial_qtty';
-  //       final Map<String, ProductModel> temp = _productsController.value;
-  //       Map<String, UnitsModel> pUnits = {};
-  //       if (_productUnitController.hasValue) {
-  //         pUnits = getProductUnits!;
-  //       }
-
-  //       /// Empty current product list
-  //       emptyProductsAdded();
-  //       await Future.forEach(temp.keys, (String key) async {
-  //         // Map<String, dynamic>? temp2 =
-  //         //     await ProductsProvider.findProductDetails(temp[key]!.idCloud);
-  //         // if (temp2 != null) {
-  //         // Map<String, dynamic> pData = queryResultToMap(temp2);
-  //         // pData[keyInitialQtty] = temp[key]!.quantity;
-  //         // final product = ProductModel.fromJson(pData,
-  //         //     loadInitialQtty: true, qtyKey: keyInitialQtty);
-  //         await addProduct({'product': temp[key], 'product_unit': pUnits[key]},
-  //             getQttys: false);
-  //         // }
-  //       });
-
-  //       return true;
-  //     } catch (e) {
-  //       // printConsole(e);
-  //       await logError(e, from: 'Reload order products');
-
-  //       return false;
-  //     }
-  //   } else {
-  //     return false;
-  //   }
-  // }
 
   /// Makes product Map empty
   emptyProductsAdded() {
@@ -423,8 +382,8 @@ class PurchaseBloc {
   Map<String, UnitsModel>? get getProductUnits =>
       _productUnitController.valueOrNull;
 
-  UnitsModel? getUnitDetails(String key){
-    _productUnitController.valueOrNull?[key];
+  UnitsModel? getUnitDetails(String key) {
+    return _productUnitController.valueOrNull?[key];
   }
 
   DocumentsTypes? get getDocumentType => _documentController.valueOrNull;
@@ -441,7 +400,7 @@ class PurchaseBloc {
     if (!_purchaseInfoController.hasValue) {
       _purchaseInfoController.value = PurchaseModel();
     }
-    _purchaseInfoController.value?.date ?? '';
+    return _purchaseInfoController.value?.date ?? '';
   }
 
   double get getDiscount => _discountController.valueOrNull ?? 0;

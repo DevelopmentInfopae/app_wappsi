@@ -65,6 +65,8 @@ class OrdersProvider {
           order['reference_no'] = res['body']['data']['reference_no'];
           order['registration_date'] = res['body']['data']['server_date'];
           order['id_cloud'] = orderId;
+          order['delivery_text'] =
+              orderBloc.getDeliveryTime?.getDelvTimeText(context);
           // orderItems['registration_date'] = res['body']['data']['server_date'];
           final orderSaveR =
               await DBProvider.db.insertQuery('sma_order_sales', order);
@@ -75,9 +77,7 @@ class OrdersProvider {
           );
 
           if (orderSaveR && orderItemsSaveR) {
-            scaffoldAlert(
-                context,
-                'Pedido creado exitosamente',
+            scaffoldAlert(context, 'Pedido creado exitosamente',
                 const Duration(seconds: 2));
           }
           // get Order print data

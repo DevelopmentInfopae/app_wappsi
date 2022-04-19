@@ -3,7 +3,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
@@ -125,8 +124,8 @@ class RegisterFormProvider extends ChangeNotifier {
       await reloadDialog(
           context, res['body']['message'], 'assets/images/dizzy-robot.png');
     } else if (res['error']) {
-      scaffoldAlert(
-          context, res['body']['message'], const Duration(seconds: 1), backGroundColor: errorColor);
+      scaffoldAlert(context, res['body']['message'], const Duration(seconds: 1),
+          backGroundColor: errorColor);
     } else {
       final Map<String, String> registerCloseData = {
         'user_name': ((dataBloc.userData?.firstName ?? '') +

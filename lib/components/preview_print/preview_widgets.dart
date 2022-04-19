@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/params/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
-import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/date_to_text.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:pos_wappsi/utils/text_formating/hmtl_formating.dart';
@@ -190,7 +191,7 @@ Widget products(Map<dynamic, dynamic> printData, {int? pricePolicy}) {
   return DataTable(
     columns: pricePolicy == 10 ? _pColumnsNamesWUnits() : _pColumnsNames(),
     rows: pricePolicy == 10 ? _productsWUnit(products) : _products(products),
-    dataRowHeight: 60,
+    // dataRowHeight: 50,
     showBottomBorder: true,
     columnSpacing: 5,
     horizontalMargin: 10,
@@ -228,7 +229,7 @@ Widget productsFavs(Map<dynamic, dynamic> printData) {
               children: [
                 Text(
                   element.name,
-                  maxLines: 2,
+                  // maxLines: 2,
                 ).expand(),
                 Text(getFormatedCurrency(element.unitValue)),
                 const Text('  _______'),
@@ -254,9 +255,10 @@ Widget productsFavs(Map<dynamic, dynamic> printData) {
 }
 
 List<DataRow> _products(List<Map<dynamic, dynamic>> products) {
-  return products.map((p) {
+  List<DataRow> rows = [];
+  for (var p in products) {
     String value = getFormatedCurrency(p['quantity'] * p['price']);
-    return DataRow(
+    rows.add(DataRow(
       cells: <DataCell>[
         DataCell(Text(getRoundedQtty(p['quantity']))),
         DataCell(Text(
@@ -270,8 +272,16 @@ List<DataRow> _products(List<Map<dynamic, dynamic>> products) {
           ),
         ),
       ],
-    );
-  }).toList();
+    ));
+    if (p['preferences'] != null && p['preferences'] != '') {
+      rows.add(DataRow(cells: <DataCell>[
+        const DataCell(Text('')),
+        DataCell(Text(capitalizeText(p['preferences'] ?? ''))),
+        const DataCell(Text('')),
+      ]));
+    }
+  }
+  return rows;
 }
 
 List<DataRow> _productsWUnit(List<Map<dynamic, dynamic>> products) {
@@ -281,7 +291,20 @@ List<DataRow> _productsWUnit(List<Map<dynamic, dynamic>> products) {
     String valueS = getFormatedCurrency(value);
     final unit = p['unit'];
     final qtty = p['quantity'] / unit['operation_value'];
-    printConsole(qtty);
+
+    // List<Widget> productDesc = [Text(capitalizeText(p['name']))];
+    String text = capitalizeText(p['name']);
+    // printConsole(qtty);
+    // if (p['base_unit'] != null) {
+    //   final bUnit = p['base_unit'];
+    //   final bUnitValue = value / unit['operation_value'];
+    //   final bUnitValueS = getFormatedCurrency(bUnitValue);
+    //   text += '. ' +
+    //       capitalizeText(
+    //           (bUnit['code'] ?? unit['code']) + ' x ' + bUnitValueS) +
+    //       capitalizeText(p['preferences']);
+    // }
+
     rows.add(DataRow(
       cells: <DataCell>[
         DataCell(Text(getRoundedQtty(qtty))),
@@ -289,10 +312,7 @@ List<DataRow> _productsWUnit(List<Map<dynamic, dynamic>> products) {
           capitalizeText(unit['code']),
           maxLines: 3,
         )),
-        DataCell(Text(
-          capitalizeText(p['name']),
-          maxLines: 3,
-        )),
+        DataCell(Text(text)),
         DataCell(
           Text(
             valueS,
@@ -301,22 +321,20 @@ List<DataRow> _productsWUnit(List<Map<dynamic, dynamic>> products) {
         ),
       ],
     ));
+
     if (p['base_unit'] != null) {
       final bUnit = p['base_unit'];
       final bUnitValue = value / unit['operation_value'];
       final bUnitValueS = getFormatedCurrency(bUnitValue);
-      rows.add(DataRow(
-        cells: <DataCell>[
-          const DataCell(Text('')),
-          const DataCell(Text('')),
-          DataCell(Text(
-            capitalizeText(
-                (bUnit['code'] ?? unit['code']) + ' x ' + bUnitValueS),
-            maxLines: 3,
-          )),
-          const DataCell(Text('')),
-        ],
-      ));
+      rows.add(DataRow(cells: <DataCell>[
+        const DataCell(Text('')),
+        const DataCell(Text('')),
+        DataCell(Text(capitalizeText(
+                (bUnit['code'] ?? unit['code']) + ' x ' + bUnitValueS) +
+            '. ' +
+            capitalizeText(p['preferences'] ?? ''))),
+        const DataCell(Text('')),
+      ]));
     }
   }
 
@@ -587,6 +605,34 @@ Widget resolution(TextTheme textTheme, Map<dynamic, dynamic> printData) {
     style: textTheme.bodyText1,
     textAlign: TextAlign.center,
   );
+}
+
+Widget deliveryInfo(BuildContext context, Map<dynamic, dynamic> printData) {
+  final String? day = printData['order_data']['delivery_day'];
+  // final date = DateTime.parse(day ?? '');
+  final dateString = parseDateStrES(day ?? '');
+  final String? deliveryTime = printData['order_data']['delivery_text'];
+
+  return day != null
+      ? Column(children: [
+          const Text(
+            'Fecha de entrega ',
+            // style: normalTextStyle(context, color: greyDarkerColor),
+          ),
+          Text(
+            capitalizeText(dateString),
+            style: buttonsSmallTextStyle(context, color: black),
+          ).paddingBottom(10),
+          const Text(
+            'Franja Horaria',
+            // style: normalTextStyle(context, color: greyDarkerColor),
+          ),
+          Text(
+            deliveryTime ?? '',
+            style: buttonsSmallTextStyle(context, color: black),
+          ),
+        ])
+      : Container();
 }
 
 Widget wappsiSpam(TextTheme textTheme, Map<dynamic, dynamic> printData) {

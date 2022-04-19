@@ -10,10 +10,13 @@ import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/utils/blue_print/blue_print_functions.dart';
+import 'package:pos_wappsi/utils/local_storage/error_log.dart';
+import 'package:pos_wappsi/utils/print_errors.dart';
+import 'package:pos_wappsi/utils/text_formating/date_to_text.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class PrintFormat {
-  PrintFormat({this.productsList, this.movementInfo,this.registerCloseInfo});
+  PrintFormat({this.productsList, this.movementInfo, this.registerCloseInfo});
   List<Map>? productsList;
   Map<String, String>? movementInfo;
   Map<String, String>? registerCloseInfo;
@@ -80,6 +83,9 @@ class PrintFormat {
             await ticketOrdQuotValue(generator, _innerPrinter, printData)));
         await bluetooth.writeBytes(Uint8List.fromList(
             await ticketTax(generator, _innerPrinter, printData)));
+
+        await bluetooth.writeBytes(Uint8List.fromList(
+            await orderDeliveryInfo(generator, _innerPrinter, printData)));
 
         await bluetooth.writeBytes(Uint8List.fromList(
             await ticketFooter(generator, _innerPrinter, printData)));
@@ -251,7 +257,6 @@ class PrintFormat {
     return true;
   }
 
-
   Future<bool?> printRegisterClose(String pathImage) async {
     chrLen = Environment().printerPaperSize == '1' ? 32 : 48;
     await bluetooth.isConnected.then((isConnected) async {
@@ -268,11 +273,13 @@ class PrintFormat {
         generator.setGlobalFont(PosFontType.fontB);
 
         final value = getFormatedCurrency(
-            double.tryParse((registerCloseInfo?['value']??'').toString()) ?? 0.0, decimals: 0);
+            double.tryParse((registerCloseInfo?['value'] ?? '').toString()) ??
+                0.0,
+            decimals: 0);
         final Map<String, String> keyValues2 = {
-          'Usuario:  ': (registerCloseInfo?['user_name']??'').toString(),
-          'Fecha:    ': (registerCloseInfo?['date']??'').toString(),
-          'Sucursal: ': (registerCloseInfo?['biller_name']??'').toString(),
+          'Usuario:  ': (registerCloseInfo?['user_name'] ?? '').toString(),
+          'Fecha:    ': (registerCloseInfo?['date'] ?? '').toString(),
+          'Sucursal: ': (registerCloseInfo?['biller_name'] ?? '').toString(),
           // 'Tipo movimiento:': (registerCloseInfo?['movement_type']??'').toString(),
           'Valor:    ': value,
         };
@@ -288,8 +295,7 @@ class PrintFormat {
                 : dataBloc.settings?['razon_social'] ?? '',
             styles: const PosStyles(bold: true, align: PosAlign.center));
         bytes += generator.emptyLines(1);
-        bytes += generator.text(
-            'Cierre de caja',
+        bytes += generator.text('Cierre de caja',
             styles: const PosStyles(bold: true, align: PosAlign.center));
         generator.reset();
         bytes += generator.emptyLines(1);
@@ -484,6 +490,26 @@ class PrintFormat {
     generator.setGlobalCodeTable('CP1252');
     generator.setGlobalFont(PosFontType.fontB);
     bytes = _footer(generator, bytes, innerPrinter, printData);
+    // // ignore: unnecessary_statements
+    bytes += generator.feed(1);
+    // ignore: unnecessary_statements
+    innerPrinter ? null : bytes += generator.cut();
+    return bytes;
+  }
+
+  Future<List<int>> orderDeliveryInfo(Generator generator, bool innerPrinter,
+      Map<dynamic, dynamic>? printData) async {
+    //init print format values
+    List<int> bytes = [];
+    // delete print buffer
+    generator.reset();
+    generator.spaceBetweenRows = 1;
+    // generator.
+    generator.setGlobalCodeTable('CP1252');
+    generator.setGlobalFont(PosFontType.fontA);
+    generator.setStyles(const PosStyles(
+        bold: true, height: PosTextSize.size1, align: PosAlign.center));
+    bytes = _deliveryInfo(generator, bytes, innerPrinter, printData);
     // // ignore: unnecessary_statements
     bytes += generator.feed(1);
     // ignore: unnecessary_statements
@@ -721,6 +747,20 @@ class PrintFormat {
         // bytes += generator.text(bUnitDetails,
         //     styles: const PosStyles(bold: false, align: PosAlign.left));
       }
+      if (element['preferences'] != null && element['preferences'] != '') {
+        final String preferences = (element['preferences'] ?? '');
+        List<String> formatedS = formatString(preferences.toString(),
+            chrSpaces: (chrLen - (qttyLenght + valueLenght + umdLenght + 3)));
+        for (var str in formatedS) {
+          text += getEmptySpaces(qttyLenght + umdLenght + 2) +
+              capitalizeText(str) +
+              getEmptySpaces(
+                  chrLen - (str.length + umdLenght + qttyLenght + 2));
+        }
+
+        // bytes += generator.text(bUnitDetails,4
+        //     styles: const PosStyles(bold: false, align: PosAlign.left));
+      }
     }
     bytes += generator.text(text,
         styles: const PosStyles(bold: false, align: PosAlign.left));
@@ -882,6 +922,43 @@ class PrintFormat {
     }
 
     bytes = wappsiSpam(_innerPrinter, bytes, generator);
+    return bytes;
+  }
+
+  List<int> _deliveryInfo(Generator generator, List<int> bytes,
+      bool _innerPrinter, Map<dynamic, dynamic>? printData) {
+    final data = printData?['order_data'];
+    bytes += generator.emptyLines(1);
+    if (data != null) {
+      try {
+        if (data['delivery_text'] != null) {
+          final deliveryTime = _innerPrinter
+              ? replaceSpecialCharacters(data['delivery_text'] ?? '')
+              : data['delivery_text'] ?? '';
+          bytes += generator.text('Franja Horaria',
+              styles: const PosStyles(bold: true, align: PosAlign.center));
+          bytes += generator.text(deliveryTime,
+              styles: const PosStyles(bold: true, align: PosAlign.center));
+        }
+      } catch (e) {
+        printConsole(e);
+      }
+      try {
+        if (data['delivery_day'] != null) {
+          final deliveryDay = _innerPrinter
+              ? replaceSpecialCharacters(data['delivery_day'] ?? '')
+              : data['delivery_day'] ?? '';
+          final formatedDeliveryDay = parseDateStrES(deliveryDay);
+          bytes += generator.text('Fecha de entrega',
+              styles: const PosStyles(bold: true, align: PosAlign.center));
+          bytes += generator.text(formatedDeliveryDay,
+              styles: const PosStyles(bold: true, align: PosAlign.center));
+        }
+      } catch (e) {
+        printConsole(e);
+      }
+    }
+
     return bytes;
   }
 }

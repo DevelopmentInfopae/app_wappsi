@@ -84,8 +84,8 @@ class _QuoteOtherDataState extends State<QuoteOtherData> {
     _size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar:
-          appBar(context, 'Agregar cotización', image: 'assets/images/add-quote.png'),
+      appBar: appBar(context, 'Agregar cotización',
+          image: 'assets/images/add-quote.png'),
       body: _body(),
     );
   }
@@ -200,7 +200,7 @@ class _QuoteOtherDataState extends State<QuoteOtherData> {
           (BuildContext context, AsyncSnapshot<List<DocumentsTypes>> snapshot) {
         if (snapshot.hasData && snapshot.data!.isNotEmpty) {
           quoteBloc.setQuoteDocumentType(snapshot.data?.first);
-          if (snapshot.data!.length > 1&&!quoteBloc.isDisposed) {
+          if (snapshot.data!.length > 1 && !quoteBloc.isDisposed) {
             return _documentType(items: snapshot.data!);
           } else {
             return Container();
@@ -449,9 +449,9 @@ class _QuoteOtherDataState extends State<QuoteOtherData> {
                       exitToNewQuote: true,
                     ).launch(context);
                   });
-                  setState(() {
-                    _sending = false;
-                  });
+                  // setState(() {
+                  _sending = false;
+                  // });
                 } else {
                   setState(() {
                     _sending = false;

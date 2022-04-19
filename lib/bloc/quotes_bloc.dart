@@ -9,6 +9,8 @@ import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
+import 'package:pos_wappsi/models/preference_category_model.dart';
+import 'package:pos_wappsi/models/preference_model.dart';
 // import 'package:pos_wappsi/models/documents_types_model.dart';
 
 // import 'package:pos_wappsi/models/payment_methods_model.dart';
@@ -63,6 +65,11 @@ class QuoteBloc {
   BehaviorSubject<DocumentsTypes?> _quoteDocumentController =
       BehaviorSubject<DocumentsTypes?>();
 
+  BehaviorSubject<
+          Map<String, Map<PreferenceCategoryModel, List<PreferenceModel>>>?>
+      _productPrefsController = BehaviorSubject<
+          Map<String, Map<PreferenceCategoryModel, List<PreferenceModel>>>?>();
+
   //-----------------------------------------------------------------------------
   //                                STREAMS
   //
@@ -98,14 +105,14 @@ class QuoteBloc {
       {bool getPrices = true, bool getQttys = true}) async {
     bool res = false;
     if (_productsController.hasValue) {
-      res = await _addProductToProductPOSMap(
+      res = await _addProductToProductQuoteMap(
           productReq['product'], getPrices, getQttys,
-          unit: productReq['product_unit']);
+          unit: productReq['product_unit'], prefs: productReq['product_prefs']);
     } else {
       emptyProductsAdded();
-      res = await _addProductToProductPOSMap(
+      res = await _addProductToProductQuoteMap(
           productReq['product'], getPrices, getQttys,
-          unit: productReq['product_unit']);
+          unit: productReq['product_unit'], prefs: productReq['product_prefs']);
     }
     getSubTotal();
     return res;
@@ -113,12 +120,23 @@ class QuoteBloc {
 
   /// Add product to sale product list, if getPrices = true, calculate
   /// product prices
-  Future<bool> _addProductToProductPOSMap(
+  Future<bool> _addProductToProductQuoteMap(
       ProductModel product, bool getPrices, bool getQttys,
-      {UnitsModel? unit}) async {
+      {UnitsModel? unit,
+      Map<PreferenceCategoryModel, List<PreferenceModel>>? prefs}) async {
     bool res = false;
     if (dataBloc.settings!['item_addition'] == 1) {
-      final key = product.id.toString() + ((unit?.id ?? '').toString());
+      String prefsKey = '';
+      String pUnitKey = '';
+      if (prefs == null) {
+        pUnitKey = product.id.toString() + ((unit?.id ?? '').toString());
+      } else {
+        prefsKey = _prefsKey(prefs, prefsKey);
+      }
+      String key = pUnitKey + prefsKey;
+      if (prefs?.isNotEmpty ?? false) {
+        addProductPrefs(key, prefs!);
+      }
       final p = getProductData(key);
       if (p == null) {
         // add product unit if product unit is selected
@@ -133,7 +151,7 @@ class QuoteBloc {
         _productsController.value = temp;
         // if get prices = true, then we calculate prices based on price policy
         res = getPrices
-            ? await ProductsProvider.getPOSProductPrices(key, toQuote: true)
+            ? await ProductsProvider.getPOSProductPrices(key, toOrder: true)
             : false;
 
         if (res) {
@@ -152,12 +170,16 @@ class QuoteBloc {
 
       /// gen an unique key for each product
       if (_productsController.value.keys.contains(key)) {
-        _addProductToProductPOSMap(product, getPrices, getQttys, unit: unit);
+        _addProductToProductQuoteMap(product, getPrices, getQttys,
+            unit: unit, prefs: prefs);
       } else {
         // add product unit if product unit is selected
         if (unit != null) {
           addProductUnit(key, unit);
           product.unit = unit.idCloud;
+        }
+        if (prefs?.isNotEmpty ?? false) {
+          addProductPrefs(key, prefs!);
         }
 
         final temp = {key: product};
@@ -180,12 +202,31 @@ class QuoteBloc {
     return res;
   }
 
+  String _prefsKey(Map<PreferenceCategoryModel, List<PreferenceModel>> prefs,
+      String prefsKey) {
+    final List<int> prefsId = [];
+    if (prefs.isNotEmpty) {
+      for (var prefCat in prefs.keys) {
+        prefs[prefCat]?.forEach((pref) {
+          prefsId.add(pref.id);
+          // prefsKey += pref.id ?? '';
+        });
+      }
+    }
+    prefsId.sort();
+    prefsKey = prefsId.join();
+    return prefsKey;
+  }
+
   ///Returns a Map<String,dynamic>, where the keys are the same of
   ///SaleModel.fromJson(), it could be usefull to build an instance of
   ///SaleModel to send to an endpoint of API's service.
   Map<String, dynamic> getProductDetailMapLists() {
-    return ProductModel.getProductDetailMapLists(_productsController.value,
-        dataBloc.userData!.warehouseId, _productUnitController.valueOrNull);
+    return ProductModel.getProductDetailMapLists(
+        _productsController.value,
+        dataBloc.userData!.warehouseId,
+        _productUnitController.valueOrNull,
+        getProductPrefsText);
   }
 
   /// Modify quantity field of a ProductModel() given a key and a value
@@ -334,6 +375,7 @@ class QuoteBloc {
     for (var key in _productsController.value.keys) {
       final pInfo = getProducts![key]!.toJson();
       UnitsModel? unitS = getProductUnits?[key];
+      pInfo['preferences'] = getProductPrefsText(key);
       pInfo['unit'] = unitS?.toJson();
       if (unitS != null) {
         final baseUnit = await UnitsProvider.getUnitInfo(unitS.baseUnit);
@@ -459,6 +501,63 @@ class QuoteBloc {
     }
   }
 
+  addProductPrefs(String productKey,
+      Map<PreferenceCategoryModel, List<PreferenceModel>> prefs) {
+    try {
+      if (!_productPrefsController.hasValue) {
+        _productPrefsController.value = {};
+      }
+      _productPrefsController.value?[productKey] = prefs;
+    } catch (e) {
+      printConsole(e);
+    }
+  }
+
+  Map<String, List<String>> prefsText(String productKey) {
+    Map<String, List<String>> prefsText = {};
+    if (_productPrefsController.hasValue) {
+      final temp = _productPrefsController.value![productKey];
+      if (temp != null) {
+        if ((temp).isNotEmpty) {
+          for (var prefCat in temp.keys) {
+            for (PreferenceModel pref in (temp[prefCat] ?? [])) {
+              if (prefsText.containsKey(prefCat.name)) {
+                prefsText[prefCat.name]?.add(pref.name ?? '');
+              } else {
+                prefsText[prefCat.name ?? ''] = [pref.name ?? ''];
+              }
+            }
+          }
+        }
+      }
+    }
+    return prefsText;
+  }
+
+  String getProductPrefsText(String productKey) {
+    String prefsText = '';
+    try {
+      for (PreferenceCategoryModel prefCat
+          in (getProductPrefs?[productKey]?.keys ?? [])) {
+        if (prefCat.name != null) {
+          prefsText += prefCat.name! + ': ';
+        } else {
+          prefsText += '';
+        }
+
+        for (PreferenceModel pref
+            in getProductPrefs![productKey]?[prefCat] ?? []) {
+          prefsText += pref != getProductPrefs![productKey]?[prefCat]?.last
+              ? ((pref.name ?? '') + ', ')
+              : (pref.name ?? '');
+        }
+      }
+    } catch (e) {
+      printConsole(e);
+    }
+    return prefsText;
+  }
+
   //-----------------------------------------------------------------------------
   //                                CUSTOMER
   //
@@ -484,6 +583,9 @@ class QuoteBloc {
 
   DocumentsTypes? get getQuoteDocumentType =>
       _quoteDocumentController.valueOrNull;
+
+  Map<String, Map<PreferenceCategoryModel, List<PreferenceModel>>>?
+      get getProductPrefs => _productPrefsController.value;
 
   // Map<String, dynamic> get settings => _settingsController.value;
 
@@ -563,6 +665,8 @@ class QuoteBloc {
     _discountController.close();
     _printDataController.close();
 
+    _productPrefsController.close();
+
     // _printStateController.close();
   }
 
@@ -586,6 +690,9 @@ class QuoteBloc {
     _subtotalController = StreamController<double>.broadcast();
     _productSearchController = StreamController<List<ProductModel>>.broadcast();
     _discountController = BehaviorSubject<double?>();
+
+    _productPrefsController = BehaviorSubject<
+        Map<String, Map<PreferenceCategoryModel, List<PreferenceModel>>>?>();
   }
 }
 

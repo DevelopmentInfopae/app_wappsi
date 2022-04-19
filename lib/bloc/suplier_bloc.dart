@@ -7,7 +7,6 @@ import 'package:nb_utils/src/extensions/widget_extensions.dart';
 // import 'package:place_picker/entities/location_result.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 // import 'package:pos_wappsi/models/customer_addresses_model.dart';
-import 'package:pos_wappsi/models/product_model.dart';
 
 // import 'package:pos_wappsi/providers/user_supplier.dart';
 
@@ -18,10 +17,9 @@ class SupplierBloc {
   // final _tokenController = BehaviorSubject<String>();
   bool disposed = false;
 
-
-
-  BehaviorSubject<CompanyModel?> _supplierController = BehaviorSubject<CompanyModel?>();
-         // to manage addresses creation data
+  BehaviorSubject<CompanyModel?> _supplierController =
+      BehaviorSubject<CompanyModel?>();
+  // to manage addresses creation data
   // BehaviorSubject<CustomerAddressesModel?> _addressController = BehaviorSubject<CustomerAddressesModel?>();
   // BehaviorSubject<Map<String,ProductModel>> _favoritesController = BehaviorSubject<Map<String, ProductModel>>();
   // BehaviorSubject<String?> _userNameController = BehaviorSubject<String?>();
@@ -35,7 +33,7 @@ class SupplierBloc {
   //-----------------------------------------------------------------------------
 
   // Stream<Map<String, ProductModel>> get favoritesStream =>
-      // _favoritesController.stream.asBroadcastStream();
+  // _favoritesController.stream.asBroadcastStream();
 
   //______________________________________________________________________________________________________________
   //
@@ -118,9 +116,9 @@ class SupplierBloc {
     return _locationController.valueOrNull;
   }
 
-  Map<String, ProductModel>? getProducts() {
-    // return _favoritesController.valueOrNull;
-  }
+  // Map<String, ProductModel>? getProducts() {
+  //   // return _favoritesController.valueOrNull;
+  // }
 
   //______________________________________________________________________________________________________________
   //
@@ -133,7 +131,7 @@ class SupplierBloc {
   // Function(String) get setPassword => _passwordController.sink.add;
 
   dispose() {
-    disposed=true;
+    disposed = true;
     _supplierController.close();
     // _userNameController.close();
     // _passwordController.close();
@@ -144,14 +142,14 @@ class SupplierBloc {
   }
 
   reload() {
-    disposed=false;
-    _supplierController =  BehaviorSubject<CompanyModel?>();
+    disposed = false;
+    _supplierController = BehaviorSubject<CompanyModel?>();
     // _addressController =   BehaviorSubject<CustomerAddressesModel?>();
     // _favoritesController = BehaviorSubject<Map<String, ProductModel>>();
     // _userNameController =  BehaviorSubject<String?>();
     // _passwordController =  BehaviorSubject<String?>();
-    _imageController =     BehaviorSubject<String?>();
-    _locationController =  BehaviorSubject<GeoPoint?>();
+    _imageController = BehaviorSubject<String?>();
+    _locationController = BehaviorSubject<GeoPoint?>();
   }
 
   clearAdressCreationData() {
