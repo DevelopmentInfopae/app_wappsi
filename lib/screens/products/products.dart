@@ -29,12 +29,14 @@ class _ProductsState extends State<Products> {
 
   late Size _size;
   int _queryLen = 0;
+  bool _initOpenSearch = false;
 
   // FloatingSearchBarController _controller = FloatingSearchBarController();
   final Map<String, dynamic> _searchParams = {};
 
   @override
   void initState() {
+    _searchController.open();
     super.initState();
   }
 
@@ -112,6 +114,18 @@ class _ProductsState extends State<Products> {
   }
 
   Widget _searchField() {
+    if (!_initOpenSearch) {
+      try {
+        Timer(const Duration(milliseconds: 00), () {
+          _searchController.open();
+          // setState(() {
+          _initOpenSearch = true;
+          // });
+        });
+      } catch (e) {
+        // printConsole(e);
+      }
+    }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
@@ -142,7 +156,7 @@ class _ProductsState extends State<Products> {
                     : Icons.filter_alt_outlined,
                 onTap: () {
                   // setState(() {
-                    showFilters = !showFilters;
+                  showFilters = !showFilters;
                   // });
                 }),
             Container(width: _size.width * 0.15)
@@ -195,15 +209,17 @@ class _ProductsState extends State<Products> {
       }
     } else {
       final res = await ProductsProvider.findProducts(query);
-      if (res != null) {
-        _productsStream.sink.add(ProductModel.fromJsonList(res));
+      if (res?.isNotEmpty ?? false) {
+        _productsStream.sink.add(ProductModel.fromJsonList(res!));
       } else {
         if (query.length - _queryLen > 1) {
           _searchController.clear();
+          _searchController.close();
           scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
               const Duration(seconds: 1, milliseconds: 500),
               backGroundColor: Colors.red);
-          // posBloc.getSearchBarController.query='';
+          await Future.delayed(const Duration(milliseconds: 500));
+          _searchController.open();
           _queryLen = 0;
         } else {
           _queryLen = query.length;

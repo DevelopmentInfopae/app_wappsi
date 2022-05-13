@@ -37,6 +37,7 @@ class _ProductPriceState extends State<ProductPrice> {
 
   @override
   void initState() {
+    _searchController.open();
     super.initState();
 
     /// To request focus from
@@ -129,6 +130,17 @@ class _ProductPriceState extends State<ProductPrice> {
   }
 
   Widget _searchField() {
+    if (dataBloc.homeKey?.currentState?.selectedTab == TabItem.products) {
+      Timer(const Duration(milliseconds: 00), () {
+        try {
+          _searchController.open();
+          // setState(() {
+          // });
+        } catch (e) {
+          // printConsole(e);
+        }
+      });
+    }
     return Container(
       // alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -139,11 +151,11 @@ class _ProductPriceState extends State<ProductPrice> {
           // color: _theme.primar,
           // color: Colors.black12,
 
+          alwaysOpened: true,
           controller: _searchController,
           hint: 'Buscar producto',
           transitionDuration: const Duration(milliseconds: 800),
           clearQueryOnClose: true,
-          // alwaysOpened: true,
           hideKeyboardOnDownScroll: true,
           onQueryChanged: _onQueryChanged,
           // height: _size.height * 0.078<55?55:_size.height * 0.078,
@@ -167,12 +179,13 @@ class _ProductPriceState extends State<ProductPrice> {
 
     } else {
       final res = await ProductsProvider.findProducts(query);
-      if ((res??[]).isEmpty) {
+      if ((res ?? []).isEmpty) {
         if ((query.length - _currentQueryLen > 1)) {
           _searchController.clear();
           scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
               const Duration(seconds: 1, milliseconds: 500),
               backGroundColor: Colors.red);
+          _searchController.open();
           // posBloc.getSearchBarController.query='';
           _currentQueryLen = 0;
         } else {

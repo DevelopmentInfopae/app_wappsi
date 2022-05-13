@@ -203,7 +203,7 @@ class _NewSaleState extends State<NewSale> {
             icon: const Icon(Icons.clear),
             onPressed: () {
               _customerController.clear();
-              if (_customerController.text.isNotEmpty) {
+              if (_customerController.text.isEmpty) {
                 // _addressesDropDownKey.currentWidget.;
                 Navigator.pop(context);
                 // _customerFocusNode.unfocus();
@@ -267,9 +267,17 @@ class _NewSaleState extends State<NewSale> {
         }
       }
       posBloc.setCustomerAddresses(null);
-      _addressesDropDownKey.currentState?.changeSelectedItem(null);
-      await Future.delayed(const Duration(milliseconds: 500));
-      _addressesDropDownKey.currentState?.openDropDownSearch();
+      final addresses = await CustomerAddressesProvider.getDataAdrreses(
+          '', posBloc.getCustomerId());
+      if (addresses.length == 1) {
+        setState(() {
+          posBloc.setCustomerAddresses(addresses.first);
+        });
+      } else {
+        _addressesDropDownKey.currentState?.changeSelectedItem(null);
+        await Future.delayed(const Duration(milliseconds: 500));
+        _addressesDropDownKey.currentState?.openDropDownSearch();
+      }
     } else {
       posBloc.setCustomer(null);
       posBloc.setCustomerAddresses(null);
@@ -311,7 +319,7 @@ class _NewSaleState extends State<NewSale> {
             icon: const Icon(Icons.clear),
             onPressed: () {
               _customerController.clear();
-              if (_customerController.text.isNotEmpty) {
+              if (_customerController.text.isEmpty) {
                 Navigator.pop(context);
               }
             },
@@ -335,8 +343,8 @@ class _NewSaleState extends State<NewSale> {
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
-      onFind: (String? filter) =>
-          CustomerAddressesProvider.getDataAdrreses(filter),
+      onFind: (String? filter) => CustomerAddressesProvider.getDataAdrreses(
+          filter, posBloc.getCustomerId()),
       onChanged: _customerAddrSelection,
       validator: (value) {
         if (value == null) {

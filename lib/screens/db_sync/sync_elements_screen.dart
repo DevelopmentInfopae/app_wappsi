@@ -31,7 +31,7 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
   @override
   void initState() {
     // elements = syncDB.options.values.toList();
-    keys = options.keys.toList();
+    keys = enabledOptions.keys.toList();
     values = Map.fromIterable(keys, value: (value) {
       return false;
     });
@@ -105,7 +105,7 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
         Padding(
           padding: const EdgeInsets.all(2.0),
           child: Image.asset(
-            'assets/images/' + options[key]!['image'],
+            'assets/images/' + enabledOptions[key]!['image'],
             fit: BoxFit.fitWidth,
           ),
         ).paddingTop(4).flexible(flex: 6),

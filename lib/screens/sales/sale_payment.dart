@@ -391,13 +391,13 @@ class _SalePaymentState extends State<SalePayment> {
   }
 
   Widget _invoiceNote() {
-    return textFormField(context, 'Nota de despacho', (String value) {
+    return textFormField(context, 'Nota de factura', (String value) {
       posBloc.setInvoiceNote(value);
     }, (value) {}, () {}, controller: _invoiceNController);
   }
 
   Widget _dispatchNote() {
-    return textFormField(context, 'Nota de despacho', (String value) {
+    return textFormField(context, 'Nota interna', (String value) {
       posBloc.setDispatchNote(value);
     }, (value) {}, () {}, controller: _dispatchNController);
   }

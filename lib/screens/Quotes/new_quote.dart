@@ -176,7 +176,7 @@ class _NewQuoteState extends State<NewQuote> {
             icon: const Icon(Icons.clear),
             onPressed: () {
               _customerController.clear();
-              if (_customerController.text.isNotEmpty) {
+              if (_customerController.text.isEmpty) {
                 // _addressesDropDownKey.currentWidget.;
                 Navigator.pop(context);
                 // _customerFocusNode.unfocus();
@@ -240,10 +240,17 @@ class _NewQuoteState extends State<NewQuote> {
         }
       }
       quoteBloc.setCustomerAddresses(null);
-      _addressesDropDownKey.currentState?.changeSelectedItem(null);
-      await Future.delayed(const Duration(milliseconds: 500));
-      setState(() {});
-      _addressesDropDownKey.currentState?.openDropDownSearch();
+      final addresses = await CustomerAddressesProvider.getDataAdrreses(
+          '', quoteBloc.getCustomerId());
+      if (addresses.length == 1) {
+        setState(() {
+          quoteBloc.setCustomerAddresses(addresses.first);
+        });
+      } else {
+        _addressesDropDownKey.currentState?.changeSelectedItem(null);
+        await Future.delayed(const Duration(milliseconds: 500));
+        _addressesDropDownKey.currentState?.openDropDownSearch();
+      }
     } else {
       quoteBloc.setCustomer(null);
       quoteBloc.setCustomerAddresses(null);
@@ -288,7 +295,7 @@ class _NewQuoteState extends State<NewQuote> {
             icon: const Icon(Icons.clear),
             onPressed: () {
               _customerController.clear();
-              if (_customerController.text.isNotEmpty) {
+              if (_customerController.text.isEmpty) {
                 Navigator.pop(context);
               }
             },
@@ -312,6 +319,11 @@ class _NewQuoteState extends State<NewQuote> {
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
+        if (value == null) {
+          return 'Debe seleccionar una sucursal de cliente';
+        }
+      },
       onFind: (String? filter) =>
           CustomerAddressesProvider.getDataAdrresesToQuote(filter),
       onChanged: _customerAddrSelection,

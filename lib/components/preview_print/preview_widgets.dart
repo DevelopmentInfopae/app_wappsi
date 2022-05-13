@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:nb_utils/nb_utils.dart';
-// ignore: implementation_imports
+// ignore: implementation_imports, unnecessary_import
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/constant.dart';
@@ -122,7 +122,9 @@ Widget billerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
       printData['sale_data'] ??
       printData['sale_data'];
   final sellerName = dataBloc.userData!.sellerName;
-  final date = data != null ? data['date'] ?? '' : DateTime.now().toString();
+  final date = data != null
+      ? data['date'] ?? data['current_server_date'] ?? ''
+      : DateTime.now().toString();
   return Column(
     // mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.start,

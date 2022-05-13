@@ -86,6 +86,7 @@ class SalesProvider {
         } else {
           try {
             //Load data into SalesModel instance to work with it
+            // res['body']['date'] = res['current_server_date'];
             final printData = await _buildPrintDataMap(res['body']);
             final salesModel = SalesModel.fromPosBloc(
               productsDetails,

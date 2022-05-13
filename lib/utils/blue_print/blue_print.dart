@@ -10,7 +10,6 @@ import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/utils/blue_print/blue_print_functions.dart';
-import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/date_to_text.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
@@ -45,7 +44,8 @@ class PrintFormat {
         // delete print buffer
 
         await bluetooth.writeBytes(Uint8List.fromList(await ticketHeader(
-            generator, _innerPrinter, pathImage, printData, chrLen)));
+            generator, _innerPrinter, pathImage, printData, chrLen,
+            printDate: true)));
         await bluetooth.writeBytes(
             Uint8List.fromList(await ticketProducts(generator, _innerPrinter)));
         await bluetooth.writeBytes(Uint8List.fromList(
@@ -76,7 +76,7 @@ class PrintFormat {
 
         await bluetooth.writeBytes(Uint8List.fromList(await ticketHeader(
             generator, _innerPrinter, pathImage, printData, chrLen,
-            type: 'Orden de Pedido')));
+            type: 'Orden de Pedido', printAddrLocation: true)));
         await bluetooth.writeBytes(
             Uint8List.fromList(await ticketProducts(generator, _innerPrinter)));
         await bluetooth.writeBytes(Uint8List.fromList(
@@ -330,7 +330,9 @@ class PrintFormat {
 
   Future<List<int>> ticketHeader(Generator generator, bool innerPrinter,
       String pathImage, Map<dynamic, dynamic>? printData, int chrLen,
-      {String type = 'Factura POS'}) async {
+      {String type = 'Factura POS',
+      bool printAddrLocation = false,
+      bool printDate = false}) async {
     //init print format values
     List<int> bytes = [];
     // delete print buffer
@@ -346,6 +348,9 @@ class PrintFormat {
         printData?['sale_data'] ??
         printData?['order_data'] ??
         printData?['quote_data'];
+    final date = data != null
+        ? data['date'] ?? data['current_server_date'] ?? ''
+        : DateTime.now().toString();
     final customer = printData?['customer'];
     final customerAddres =
         printData?['customer_address'] ?? printData?['customer'];
@@ -356,8 +361,8 @@ class PrintFormat {
       'Cliente: ',
       'NIT/CC: ',
       innerPrinter ? 'Direccion: ' : 'Dirección: ',
-      'Email: '
     ];
+
     final valuesCustomer = [
       capitalizeText(innerPrinter
           ? replaceSpecialCharacters(customer['name'])
@@ -373,14 +378,24 @@ class PrintFormat {
                       '-' +
                       capitalizeText(customerAddres['city']))
           .toString(),
-      customer['email'].toString()
     ];
+
+    if (printAddrLocation) {
+      labelsCustomer.add('Zona:    ');
+      valuesCustomer.add(customerAddres['location'] ?? 'No registrada');
+    }
+    labelsCustomer.add('Email: ');
+    valuesCustomer.add(customer['email'].toString());
     final labelsSeller = ['Vendedor: '];
     final valuesSeller = [
       innerPrinter
           ? replaceSpecialCharacters(dataBloc.userData!.sellerName)
           : dataBloc.userData!.sellerName
     ];
+    if (printDate) {
+      labelsSeller.add('Fecha/Hora:');
+      valuesSeller.add(parseDateStrES(date) + ' ' + parseTimeStrES(date));
+    }
 
     //image
     bytes += await image(generator, pathImage);
@@ -507,13 +522,13 @@ class PrintFormat {
     // generator.
     generator.setGlobalCodeTable('CP1252');
     generator.setGlobalFont(PosFontType.fontA);
-    generator.setStyles(const PosStyles(
-        bold: true, height: PosTextSize.size1, align: PosAlign.center));
+    // generator.setStyles(const PosStyles(
+    //     bold: true, height: PosTextSize.size1, align: PosAlign.center));
     bytes = _deliveryInfo(generator, bytes, innerPrinter, printData);
     // // ignore: unnecessary_statements
-    bytes += generator.feed(1);
+    // bytes += generator.feed(1);
     // ignore: unnecessary_statements
-    innerPrinter ? null : bytes += generator.cut();
+    // innerPrinter ? null : bytes += generator.cut();
     return bytes;
   }
 
@@ -936,9 +951,13 @@ class PrintFormat {
               ? replaceSpecialCharacters(data['delivery_text'] ?? '')
               : data['delivery_text'] ?? '';
           bytes += generator.text('Franja Horaria',
-              styles: const PosStyles(bold: true, align: PosAlign.center));
+              styles: const PosStyles(align: PosAlign.center));
           bytes += generator.text(deliveryTime,
-              styles: const PosStyles(bold: true, align: PosAlign.center));
+              styles: const PosStyles(
+                  bold: true,
+                  align: PosAlign.center,
+                  height: PosTextSize.size2,
+                  width: PosTextSize.size2));
         }
       } catch (e) {
         printConsole(e);
@@ -950,9 +969,13 @@ class PrintFormat {
               : data['delivery_day'] ?? '';
           final formatedDeliveryDay = parseDateStrES(deliveryDay);
           bytes += generator.text('Fecha de entrega',
-              styles: const PosStyles(bold: true, align: PosAlign.center));
-          bytes += generator.text(formatedDeliveryDay,
-              styles: const PosStyles(bold: true, align: PosAlign.center));
+              styles: const PosStyles(align: PosAlign.center));
+          bytes += generator.text(capitalizeText(formatedDeliveryDay),
+              styles: const PosStyles(
+                  bold: true,
+                  align: PosAlign.center,
+                  height: PosTextSize.size1,
+                  width: PosTextSize.size1));
         }
       } catch (e) {
         printConsole(e);

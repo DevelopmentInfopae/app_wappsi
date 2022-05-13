@@ -130,7 +130,8 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
                     textAlign: TextAlign.center,
                   ),
                   onPressed: () async {
-                    Navigator.of(context).pop(null);
+                    Map<PreferenceCategoryModel, List<PreferenceModel>> t = {};
+                    Navigator.of(context).pop(t);
                   },
                 ),
               ).flexible(flex: 1),
@@ -243,6 +244,21 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
           e.name ?? '',
           style: normalTextStyle(context),
         ),
+        trailing: Checkbox(
+          hoverColor: greyMediumLight,
+          checkColor: okColorWappsi,
+          // fillColor: MaterialStateProperty.resolveWith((){return Colors.white};),
+          activeColor: Colors.white,
+          value: ((productPrefsSelected[prefCat] ?? [])
+              .where((element) => element == e)
+              .isNotEmpty),
+          shape: const CircleBorder(),
+
+          onChanged: (bool? value) {
+            value;
+            _selectUnselectPref(prefCat, e);
+          },
+        ),
       ),
       shapeBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
@@ -255,28 +271,32 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
               width: 3)),
       padding: EdgeInsets.zero,
       onTap: () {
-        if (productPrefsSelected.containsKey(prefCat)) {
-          if (productPrefsSelected[prefCat]!
-              .where((element) => element == e)
-              .isEmpty) {
-            setState(() {
-              productPrefsSelected[prefCat]!.add(e);
-            });
-          } else {
-            setState(() {
-              productPrefsSelected[prefCat]!.remove(e);
-            });
-            if (productPrefsSelected[prefCat]!.isEmpty) {
-              productPrefsSelected.remove(prefCat);
-            }
-          }
-        } else {
-          setState(() {
-            productPrefsSelected[prefCat] = [e];
-          });
-        }
+        _selectUnselectPref(prefCat, e);
       },
     );
+  }
+
+  void _selectUnselectPref(PreferenceCategoryModel prefCat, PreferenceModel e) {
+    if (productPrefsSelected.containsKey(prefCat)) {
+      if (productPrefsSelected[prefCat]!
+          .where((element) => element == e)
+          .isEmpty) {
+        setState(() {
+          productPrefsSelected[prefCat]!.add(e);
+        });
+      } else {
+        setState(() {
+          productPrefsSelected[prefCat]!.remove(e);
+        });
+        if (productPrefsSelected[prefCat]!.isEmpty) {
+          productPrefsSelected.remove(prefCat);
+        }
+      }
+    } else {
+      setState(() {
+        productPrefsSelected[prefCat] = [e];
+      });
+    }
   }
 
   void _returnInfo(BuildContext context) {
@@ -308,7 +328,8 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
       }
     }
     if (returnInfo) {
-      Navigator.of(context).pop(productPrefsSelected);
+      Navigator.of(context)
+          .pop(productPrefsSelected.isEmpty ? null : productPrefsSelected);
     }
   }
 

@@ -28,11 +28,13 @@ class _DBSyncState extends State<DBSync> {
   SyncDBProvider syncDB = SyncDBProvider();
   final Map<String, bool> _status = {};
 
+  bool suceesAlertShown = false;
+
   // late Size _size;
 
   @override
   void initState() {
-    _options = widget.syncElements ?? options.keys.toList();
+    _options = widget.syncElements ?? enabledOptions.keys.toList();
     _status.addAll(Map.fromIterable(_options, value: (value) {
       return false;
     }));
@@ -118,7 +120,12 @@ class _DBSyncState extends State<DBSync> {
               // _navigate();
               return Column(
                 children: [
-                  ElementSync(context: context,optionInfo: options[option]!,optionName: option,status: false,),
+                  ElementSync(
+                    context: context,
+                    optionInfo: enabledOptions[option]!,
+                    optionName: option,
+                    status: false,
+                  ),
                   const Divider(
                     color: Colors.black38,
                     height: 2,
@@ -137,9 +144,9 @@ class _DBSyncState extends State<DBSync> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Image.asset('assets/images/' +
-                (options[option]?['image'] ?? 'countries.png'))
-            .paddingSymmetric(horizontal: 10, vertical: 3).withHeight(50)
-            ,
+                (enabledOptions[option]?['image'] ?? 'countries.png'))
+            .paddingSymmetric(horizontal: 10, vertical: 3)
+            .withHeight(50),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -158,22 +165,25 @@ class _DBSyncState extends State<DBSync> {
       // return ;
       // confirmDialog(context, 'Base de datos sincronizada con exito',
       //     'assets/images/success.png');
-      final homeKey = GlobalKey<HomeState>();
-      WidgetsBinding.instance!.addPostFrameCallback((_) async {
-        confirmDialog(context, 'Base de datos sincronizada con exito',
-            'assets/images/success.png');
-        await Future.delayed(const Duration(seconds: 2));
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (BuildContext context) {
-            dataBloc.setHomeKey(homeKey);
-            return Home(
-              key: homeKey,
-            );
-          }),
-          (route) => false,
-        );
-      });
+      if (!suceesAlertShown) {
+        final homeKey = GlobalKey<HomeState>();
+        WidgetsBinding.instance!.addPostFrameCallback((_) async {
+          confirmDialog(context, 'Base de datos sincronizada con exito',
+              'assets/images/success.png');
+          await Future.delayed(const Duration(seconds: 2));
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (BuildContext context) {
+              dataBloc.setHomeKey(homeKey);
+              return Home(
+                key: homeKey,
+              );
+            }),
+            (route) => false,
+          );
+        });
+        suceesAlertShown = true;
+      }
 
       // return
 

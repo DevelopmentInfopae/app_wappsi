@@ -55,6 +55,7 @@ class ProductPreferencesProvider {
     return productPrefs;
   }
 
+  /// If returns null it means that prefs is not required or there is no prefs for product
   static Future<Map<PreferenceCategoryModel, List<PreferenceModel>>?>
       getProductPrefs(BuildContext context, ProductModel product,
           String priceGroupId, UnitsModel? unit,

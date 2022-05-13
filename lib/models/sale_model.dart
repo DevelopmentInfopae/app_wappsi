@@ -69,6 +69,7 @@ class SaleModel {
       this.chequeNo,
       this.ccMonth,
       this.ccYear,
+      this.date,
       this.ccType,
       this.ccCvv2,
       this.paymentNote,
@@ -129,6 +130,7 @@ class SaleModel {
 
   int typePos;
   dynamic test;
+  String? date;
   int posbiller;
   String? customerGroup;
   String? customerPrices;
@@ -243,6 +245,7 @@ class SaleModel {
   factory SaleModel.fromJson(Map<String, dynamic> json) => SaleModel(
         typePos: json["type_pos"],
         test: json["test"],
+        date: json['date'],
         customerGroup: '0',
         customerPrices: '0',
         posbiller: json["posbiller"],

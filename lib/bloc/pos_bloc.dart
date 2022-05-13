@@ -111,16 +111,12 @@ class POSBloc {
   Future addProduct(Map<String, dynamic> productReq,
       {bool getPrices = true, bool getQttys = true}) async {
     bool res = false;
-    if (_productsController.hasValue) {
-      res = await _addProductToProductPOSMap(
-          productReq['product'], getPrices, getQttys,
-          unit: productReq['product_unit'], prefs: productReq['product_prefs']);
-    } else {
+    if (!_productsController.hasValue) {
       emptyProductsAdded();
-      res = await _addProductToProductPOSMap(
-          productReq['product'], getPrices, getQttys,
-          unit: productReq['product_unit'], prefs: productReq['product_prefs']);
     }
+    res = await _addProductToProductPOSMap(
+        productReq['product'], getPrices, getQttys,
+        unit: productReq['product_unit'], prefs: productReq['product_prefs']);
     setSubTotal(getSubTotal());
     return res;
   }
@@ -157,9 +153,8 @@ class POSBloc {
         temp.addAll(_productsController.value);
         _productsController.value = temp;
         // if get prices = true, then we calculate prices based on price policy
-        res = getPrices
-            ? await ProductsProvider.getPOSProductPrices(key, toOrder: true)
-            : false;
+        res =
+            getPrices ? await ProductsProvider.getPOSProductPrices(key) : false;
 
         if (res) {
           if (getQttys) {

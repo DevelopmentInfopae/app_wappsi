@@ -80,10 +80,14 @@ class PricePoliciesProvider {
   /// Return ProductModel object with prices calculatd by price_policy
   static Future<bool> policyCasesPrice(
       String? productKey, int? policy, CompanyModel? customer,
-      {bool defaultPrice = false, bool toOrder = false, bool toQuote=false}) async {
+      {bool defaultPrice = false,
+      bool toOrder = false,
+      bool toQuote = false}) async {
     //tax rate for IVA
 
     double price = 0.0;
+
+    bool result = false;
 
     ProductModel product;
 
@@ -91,7 +95,7 @@ class PricePoliciesProvider {
       product = orderBloc.getProducts![productKey]!;
     } else if (toQuote) {
       product = quoteBloc.getProducts![productKey]!;
-    } else{
+    } else {
       product = posBloc.getProducts![productKey]!;
     }
 
@@ -99,13 +103,12 @@ class PricePoliciesProvider {
       /// For price_plicy with id 6
       if (policy == 6) {
         ProductModel? t;
-        if(toOrder){
+        if (toOrder) {
           t = orderBloc.getProducts?[productKey];
-        }else if(toQuote){
+        } else if (toQuote) {
           t = quoteBloc.getProducts?[productKey];
-        }else{
+        } else {
           t = posBloc.getProducts?[productKey];
-
         }
         if (t?.promoPrice != null) {
           product.price = product.promoPrice!;
@@ -133,6 +136,7 @@ class PricePoliciesProvider {
             product.discount = values[1];
           }
         }
+        result = true;
       } else if (policy == 10) {
         // posBloc.getProducts![productKey]!.price= posBloc.getProductUnits[]
         UnitsModel unit;
@@ -155,15 +159,16 @@ class PricePoliciesProvider {
         orderBloc.getProducts![productKey!] = product;
       } else if (toQuote) {
         quoteBloc.getProducts![productKey!] = product;
-      } else{
+      } else {
         posBloc.getProducts![productKey!] = product;
       }
-      return true;
+      result = true;
     } catch (e) {
       await logError(e, from: 'policyCasesPrice');
       // printConsole(e);
-      return false;
+      result = false;
     }
+    return result;
   }
 
   /// Return ProductModel object with prices calculatd by price_policy

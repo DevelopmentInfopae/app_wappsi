@@ -112,7 +112,7 @@ _open(BuildContext context, RegisterFormProvider registerProvider,
   Navigator.of(context).pop();
   // hide loading snackbar
 
-  if (!res['body']['error']) {
+  if (!(res?['body']?['error'] ?? true)) {
     // ScaffoldMessenger.of(context).hideCurrentSnackBar();
     // Navigator.pop(context);
     // syncDB ? null : Navigator.pop(context);
@@ -120,8 +120,7 @@ _open(BuildContext context, RegisterFormProvider registerProvider,
 
     hideCurrentScaffoldAlert(context);
 
-    scaffoldAlert(
-          context, res['body']['message'], const Duration(seconds: 1));
+    scaffoldAlert(context, res['body']['message'], const Duration(seconds: 1));
     if (res['body']['register_data']['status'] == 'open') {
       dataBloc.setRegisterData(
           RegisterModel.fromJson(res['body']['register_data']));
@@ -169,8 +168,8 @@ _open(BuildContext context, RegisterFormProvider registerProvider,
     } else {
       // confirmDialog(context, res['body']['message'].toString(),
       //     'assets/images/dizzy-robot.png');
-      scaffoldAlert(
-          context, res['body']['message'], const Duration(seconds: 1), backGroundColor: errorColor);
+      scaffoldAlert(context, res['body']['message'], const Duration(seconds: 1),
+          backGroundColor: errorColor);
     }
   }
 }

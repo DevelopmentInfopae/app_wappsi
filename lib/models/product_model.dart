@@ -384,7 +384,7 @@ class ProductModel {
         _pricesIVA.add(pIVA);
         _realPrices.add(products[key]!.priceWithoutDiscount!);
         _taxRateIds.add(products[key]!.taxRateId);
-        _productPrefsText.add(getProdPrefText(key));
+        _productPrefsText.add(getProdPrefText(key) ?? '');
 
         double discountPercent = 1 -
             (products[key]!.price /

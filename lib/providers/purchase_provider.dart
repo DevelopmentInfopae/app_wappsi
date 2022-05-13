@@ -8,6 +8,7 @@ import 'package:pos_wappsi/models/purchase_model.dart';
 
 // import 'package:pos_wappsi/models/sale_model.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
+import 'package:pos_wappsi/providers/purchase_items_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/local_storage/local_db.dart';
@@ -61,25 +62,21 @@ class PurchaseProvider {
         } else {
           scaffoldAlert(
               context, 'Compra registrada', const Duration(seconds: 1));
-          final purchaseId = res['body']['data']['purchase_sale_id'];
-          purchase['reference_no'] = res['body']['data']['reference_no'];
-          purchase['registration_date'] = res['body']['data']['server_date'];
-          purchase['id_cloud'] = purchaseId;
-          // purchaseItems['registration_date'] = res['body']['data']['server_date'];
+          // final purchaseId = res['body']['data']['purchase_sale_id'];
+          // purchase['reference_no'] = res['body']['data']['reference_no'];
+          // purchase['registration_date'] = res['body']['data']['server_date'];
+          // purchase['id_cloud'] = purchaseId;
+          // // purchaseItems['registration_date'] = res['body']['data']['server_date'];
           // final purchaseSaveR =
-          //     await DBProvider.db.insertQuery('sma_purchase_sales', purchase);
-          // final purchaseItemsSaveR = await purchaseSaleItemsProvider.saveAllIntoDB(
-          //   purchaseItems,
-          //   purchaseId,
-          //   res['body']['data']['server_date'] ?? '',
-          // );
+          //     await DBProvider.db.insertQuery('sma_purchases', purchase);
+          // final purchaseItemsSaveR = await PurchaseItemsProvider.saveAllIntoDB(
+          //     purchaseItems, purchaseId);
 
           // if (purchaseSaveR && purchaseItemsSaveR) {
-          //   scaffoldAlert(
-          //       context,
-          //       'Pedido creado exitosamente',
-          //       const Duration(seconds: 2));
           // }
+          await dataBloc.syncElements(['Compras'], context);
+          scaffoldAlert(context, 'Compra registrada exitosamente',
+              const Duration(seconds: 2));
           // get purchase print data
 
           result = true;

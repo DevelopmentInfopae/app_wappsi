@@ -110,6 +110,7 @@ class _ProductsState extends State<Customers> {
           controller: _searchController,
           transitionDuration: const Duration(milliseconds: 800),
           clearQueryOnClose: true,
+          alwaysOpened: true,
           // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
           // alwaysOpened: true,
           titleStyle: buttonsSmallTextStyle(context),
@@ -138,15 +139,17 @@ class _ProductsState extends State<Customers> {
                       (context, AsyncSnapshot<List<CompanyModel>?> snapshot2) {
                     if (snapshot2.hasData) {
                       return RefreshIndicator(
-                          onRefresh: ()async{
-                            final res = await CompaniesProvider.getAllCustomers(limit: 50);
-                            _customersStream.sink.add(CompanyModel.fromJsonList(res!));
-                          },
-                          child: CustomerCardList(
-                            customer: snapshot2.data!,
-                            searchParams: _searchParams,
-                          ),
-                        );
+                        onRefresh: () async {
+                          final res = await CompaniesProvider.getAllCustomers(
+                              limit: 50);
+                          _customersStream.sink
+                              .add(CompanyModel.fromJsonList(res!));
+                        },
+                        child: CustomerCardList(
+                          customer: snapshot2.data!,
+                          searchParams: _searchParams,
+                        ),
+                      );
                     } else {
                       _customersStream.sink
                           .add(CompanyModel.fromJsonList(snapshot.data!));

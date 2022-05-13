@@ -114,10 +114,9 @@ class CustomerAddressesProvider {
   }
 
   /// To load POS sale customer addresses
-  static Future<List<CustomerAddressesModel>> getDataAdrreses(filter) async {
+  static Future<List<CustomerAddressesModel>> getDataAdrreses(
+      filter, String? customerID) async {
     List<Map> data;
-
-    String? customerID = posBloc.getCustomerId();
 
     if (customerID == '0') {
       data = [];
@@ -278,15 +277,15 @@ class CustomerAddressesProvider {
 
       // // if fails we force DB sync
       // if (!dbUpdated) {
-        customerBloc.clearAdressCreationData();
-        // goHome(context);
-        Navigator.pop(context, true);
-        // DBSyncElements(
-        //   options: {'Terceros': true, 'Sucursales': true},
-        // ).launch(context);
-        await dataBloc.syncElements(['Sucursales'], context);
-        confirmDialog(
-            context, res['body']['message'], 'assets/images/success.png');
+      customerBloc.clearAdressCreationData();
+      // goHome(context);
+      Navigator.pop(context, true);
+      // DBSyncElements(
+      //   options: {'Terceros': true, 'Sucursales': true},
+      // ).launch(context);
+      await dataBloc.syncElements(['Sucursales'], context);
+      confirmDialog(
+          context, res['body']['message'], 'assets/images/success.png');
       // } else {
       //   customerBloc.clearAdressCreationData();
       //   Navigator.pop(context, true);

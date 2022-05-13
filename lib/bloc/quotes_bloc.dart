@@ -104,16 +104,12 @@ class QuoteBloc {
   Future addProduct(Map<String, dynamic> productReq,
       {bool getPrices = true, bool getQttys = true}) async {
     bool res = false;
-    if (_productsController.hasValue) {
-      res = await _addProductToProductQuoteMap(
-          productReq['product'], getPrices, getQttys,
-          unit: productReq['product_unit'], prefs: productReq['product_prefs']);
-    } else {
+    if (!_productsController.hasValue) {
       emptyProductsAdded();
-      res = await _addProductToProductQuoteMap(
-          productReq['product'], getPrices, getQttys,
-          unit: productReq['product_unit'], prefs: productReq['product_prefs']);
     }
+    res = await _addProductToProductQuoteMap(
+        productReq['product'], getPrices, getQttys,
+        unit: productReq['product_unit'], prefs: productReq['product_prefs']);
     getSubTotal();
     return res;
   }
@@ -125,78 +121,82 @@ class QuoteBloc {
       {UnitsModel? unit,
       Map<PreferenceCategoryModel, List<PreferenceModel>>? prefs}) async {
     bool res = false;
-    if (dataBloc.settings!['item_addition'] == 1) {
-      String prefsKey = '';
-      String pUnitKey = '';
-      if (prefs == null) {
-        pUnitKey = product.id.toString() + ((unit?.id ?? '').toString());
-      } else {
-        prefsKey = _prefsKey(prefs, prefsKey);
-      }
-      String key = pUnitKey + prefsKey;
-      if (prefs?.isNotEmpty ?? false) {
-        addProductPrefs(key, prefs!);
-      }
-      final p = getProductData(key);
-      if (p == null) {
-        // add product unit if product unit is selected
-        // product.quantity = 1;
-        if (unit != null) {
-          addProductUnit(key, unit);
-          product.unit = unit.idCloud;
+    try {
+      if (dataBloc.settings!['item_addition'] == 1) {
+        String prefsKey = '';
+        String pUnitKey = '';
+        if (prefs == null) {
+          pUnitKey = product.id.toString() + ((unit?.id ?? '').toString());
+        } else {
+          prefsKey = _prefsKey(prefs, prefsKey);
         }
-
-        final temp = {key: product};
-        temp.addAll(_productsController.value);
-        _productsController.value = temp;
-        // if get prices = true, then we calculate prices based on price policy
-        res = getPrices
-            ? await ProductsProvider.getPOSProductPrices(key, toOrder: true)
-            : false;
-
-        if (res) {
-          if (getQttys) {
-            res = await addProductQuantity(key, product.quantity);
-          }
-        }
-      } else {
-        // add the incoming product initial value
-        res = await addProductQuantity(key, p.quantity + product.quantity);
-      }
-    } else if (dataBloc.settings!['item_addition'] == 0) {
-      Random random = Random();
-      int randomNumber = random.nextInt(300);
-      final key = product.id.toString() + '-' + randomNumber.toString();
-
-      /// gen an unique key for each product
-      if (_productsController.value.keys.contains(key)) {
-        _addProductToProductQuoteMap(product, getPrices, getQttys,
-            unit: unit, prefs: prefs);
-      } else {
-        // add product unit if product unit is selected
-        if (unit != null) {
-          addProductUnit(key, unit);
-          product.unit = unit.idCloud;
-        }
+        String key = pUnitKey + prefsKey;
         if (prefs?.isNotEmpty ?? false) {
           addProductPrefs(key, prefs!);
         }
+        final p = getProductData(key);
+        if (p == null) {
+          // add product unit if product unit is selected
+          // product.quantity = 1;
+          if (unit != null) {
+            addProductUnit(key, unit);
+            product.unit = unit.idCloud;
+          }
 
-        final temp = {key: product};
-        temp.addAll(_productsController.value);
-        _productsController.value = temp;
-        res = getPrices
-            ? await ProductsProvider.getPOSProductPrices(key, toQuote: true)
-            : false;
-        if (res) {
-          if (getQttys) {
-            res = await addProductQuantity(key, product.quantity);
+          final temp = {key: product};
+          temp.addAll(_productsController.value);
+          _productsController.value = temp;
+          // if get prices = true, then we calculate prices based on price policy
+          res = getPrices
+              ? await ProductsProvider.getPOSProductPrices(key, toQuote: true)
+              : false;
+          res;
+          if (res) {
+            if (getQttys) {
+              res = await addProductQuantity(key, product.quantity);
+            }
+          }
+        } else {
+          // add the incoming product initial value
+          res = await addProductQuantity(key, p.quantity + product.quantity);
+        }
+      } else if (dataBloc.settings!['item_addition'] == 0) {
+        Random random = Random();
+        int randomNumber = random.nextInt(300);
+        final key = product.id.toString() + '-' + randomNumber.toString();
+
+        /// gen an unique key for each product
+        if (_productsController.value.keys.contains(key)) {
+          _addProductToProductQuoteMap(product, getPrices, getQttys,
+              unit: unit, prefs: prefs);
+        } else {
+          // add product unit if product unit is selected
+          if (unit != null) {
+            addProductUnit(key, unit);
+            product.unit = unit.idCloud;
+          }
+          if (prefs?.isNotEmpty ?? false) {
+            addProductPrefs(key, prefs!);
+          }
+
+          final temp = {key: product};
+          temp.addAll(_productsController.value);
+          _productsController.value = temp;
+          res = getPrices
+              ? await ProductsProvider.getPOSProductPrices(key, toQuote: true)
+              : false;
+          if (res) {
+            if (getQttys) {
+              res = await addProductQuantity(key, product.quantity);
+            }
           }
         }
+
+        // product.quantity = 1;
+
       }
-
-      // product.quantity = 1;
-
+    } on Exception catch (e) {
+      await logError(e, from: 'Adding product to quote');
     }
     reloadProductStream();
     return res;
@@ -244,7 +244,6 @@ class QuoteBloc {
             _productsController.value[key]!.quantity =
                 _productsController.value[key]!.inventory.toDouble();
             // setProductView(_productsController.value);
-            _subtotalController.sink.add(getSubTotal());
           } else {
             _productsController.value.remove(key);
             res = false;
@@ -252,16 +251,12 @@ class QuoteBloc {
         } else {
           _productsController.value[key]!.quantity = value;
           // setProductView(_productsController.value);
-          _subtotalController.sink.add(getSubTotal());
-
           res = true;
         }
         // reloadProductStream();
       } else {
         _productsController.value[key]!.quantity = value;
         // setProductView(_productsController.value);
-        _subtotalController.sink.add(getSubTotal());
-
         res = true;
       }
       // reloadProductStream();
@@ -270,6 +265,7 @@ class QuoteBloc {
       await dataBloc.getSettings();
       res = await addProductQuantity(key, value);
     }
+    getSubTotal();
 
     return res;
   }
@@ -352,8 +348,7 @@ class QuoteBloc {
   removeProduct(String key) {
     _productsController.value.remove(key);
     reloadProductStream();
-    _subtotalController.sink.add(getSubTotal());
-
+    getSubTotal();
     if (_productUnitController.hasValue) {
       try {
         _productUnitController.value.remove(key);

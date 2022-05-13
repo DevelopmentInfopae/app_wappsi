@@ -375,9 +375,9 @@ class ProductsProvider {
         final prodPrefs = await ProductPreferencesProvider.getProductPrefs(
             context, product, priceGroupId, req['product_unit'],
             prefsSelection: true);
-        if (prodPrefs != null) {
+        if (prodPrefs != null && (prodPrefs.isNotEmpty)) {
           req['product_prefs'] = prodPrefs;
-        } else if (prodPrefs?.isEmpty ?? false) {
+        } else if (prodPrefs != null) {
           req = {};
         }
       }
@@ -424,7 +424,7 @@ class ProductsProvider {
       final result = await PricePoliciesProvider.policyCasesPrice(productKey,
           dataBloc.settings!['prioridad_precios_producto'], customer,
           defaultPrice: defaultPrice, toOrder: toOrder, toQuote: toQuote);
-
+      result;
       return result;
       //aply discount
 

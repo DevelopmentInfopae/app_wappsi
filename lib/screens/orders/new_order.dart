@@ -158,7 +158,7 @@ class _NewOrderState extends State<NewOrder> {
             icon: const Icon(Icons.clear),
             onPressed: () {
               _customerController.clear();
-              if (_customerController.text.isNotEmpty) {
+              if (_customerController.text.isEmpty) {
                 // _addressesDropDownKey.currentWidget.;
                 Navigator.pop(context);
                 // _customerFocusNode.unfocus();
@@ -222,9 +222,17 @@ class _NewOrderState extends State<NewOrder> {
         }
       }
       orderBloc.setCustomerAddresses(null);
-      _addressesDropDownKey.currentState?.changeSelectedItem(null);
-      await Future.delayed(const Duration(milliseconds: 500));
-      _addressesDropDownKey.currentState?.openDropDownSearch();
+      final addresses = await CustomerAddressesProvider.getDataAdrreses(
+          '', orderBloc.getCustomerId());
+      if (addresses.length == 1) {
+        setState(() {
+          orderBloc.setCustomerAddresses(addresses.first);
+        });
+      } else {
+        _addressesDropDownKey.currentState?.changeSelectedItem(null);
+        await Future.delayed(const Duration(milliseconds: 500));
+        _addressesDropDownKey.currentState?.openDropDownSearch();
+      }
     } else {
       orderBloc.setCustomer(null);
       orderBloc.setCustomerAddresses(null);
@@ -262,7 +270,7 @@ class _NewOrderState extends State<NewOrder> {
             icon: const Icon(Icons.clear),
             onPressed: () {
               _customerController.clear();
-              if (_customerController.text.isNotEmpty) {
+              if (_customerController.text.isEmpty) {
                 Navigator.pop(context);
               }
             },
@@ -286,8 +294,8 @@ class _NewOrderState extends State<NewOrder> {
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
-      onFind: (String? filter) =>
-          CustomerAddressesProvider.getDataAdrresesToOrder(filter),
+      onFind: (String? filter) => CustomerAddressesProvider.getDataAdrreses(
+          filter, orderBloc.getCustomerId()),
       onChanged: _customerAddrSelection,
       selectedItem: orderBloc.getCustomerAddresses,
       popupItemBuilder: popupCustomerAddressesItemBuilder,

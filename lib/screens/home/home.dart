@@ -28,6 +28,11 @@ class HomeState extends State<Home> {
     TabItem.settings: GlobalKey<NavigatorState>(),
     TabItem.clients: GlobalKey<NavigatorState>(),
   };
+  @override
+  void initState() {
+    super.initState();
+  }
+
   late Size _size;
 
   int _bottomIndex = 1;
@@ -175,6 +180,10 @@ class HomeState extends State<Home> {
     setState(() {
       syncing = status;
     });
+  }
+
+  TabItem get selectedTab {
+    return _currentTab;
   }
 
   void selectTab(TabItem tabItem) {

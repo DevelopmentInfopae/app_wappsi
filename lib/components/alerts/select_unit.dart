@@ -230,6 +230,8 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                       width: 3)),
               padding: EdgeInsets.zero,
               child: ListTile(
+                // horizontalTitleGap: 1,
+                visualDensity: VisualDensity.compact,
                 title: Row(
                   children: [
                     Text(
@@ -240,6 +242,22 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                         ? inventoryValue(u)
                         : unitValue(u),
                   ],
+                ),
+                trailing: Checkbox(
+                  visualDensity: VisualDensity.compact,
+                  hoverColor: greyMediumLight,
+
+                  checkColor: okColorWappsi,
+                  // fillColor: MaterialStateProperty.resolveWith((){return Colors.white};),
+                  activeColor: Colors.white,
+                  value: u == _selectUnition,
+                  shape: const CircleBorder(),
+
+                  onChanged: (bool? value) {
+                    setState(() {
+                      _selectUnition = u;
+                    });
+                  },
                 ),
               ),
             ).paddingSymmetric(vertical: 2);

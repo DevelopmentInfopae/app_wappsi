@@ -367,12 +367,12 @@ class _QuotePurchaseDataState extends State<PurchaseOtherData> {
                       ),
                       (route) => false,
                     );
-                    final printData = purchaseBloc.getPrintData!;
+                    // final printData = purchaseBloc.getPrintData!;
                     purchaseBloc.dispose();
-                    await PrintQuote(
-                      printData: printData,
-                      exitToNewQuote: true,
-                    ).launch(context);
+                    // await PrintQuote(
+                    //   printData: printData,
+                    //   exitToNewQuote: true,
+                    // ).launch(context);
                   });
                   setState(() {
                     _sending = false;

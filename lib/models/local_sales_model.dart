@@ -444,6 +444,7 @@ class SalesModel {
     final payment = posBloc.getPaymentMethod!;
     final total = posBloc.getSubTotal();
     final pData = salePrintData?['data'];
+    final vDate = salePrintData?['current_server_date'];
     String paymentStatus = '';
     double pDiscount = 0;
     double orderDiscount = 0;
@@ -470,6 +471,7 @@ class SalesModel {
 
     return SalesModel(
       idCloud: pData?["id"] ?? pData['sale_id'] ?? idCld,
+      date: vDate,
       referenceNo: pData?['reference_no'] != null
           ? (pData?['reference_no'] is bool ? '' : pData?['reference_no'])
           : '',
@@ -780,7 +782,7 @@ class SalesModel {
       "sale_data": {
         'reference_no': referenceNo,
         'resolucion': resolucion,
-        'date': registrationDate
+        'date': date ?? registrationDate
       },
       "pos_note": note ?? '',
       "payment": payment.posPaid,

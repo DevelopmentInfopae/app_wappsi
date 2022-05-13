@@ -71,8 +71,8 @@ class SyncDBProvider {
     bool isSpecial = false,
     bool post = true,
   }) async {
-    final res =
-        await _getUpdates(selectedOption ?? options[option]!, isPost: post);
+    final res = await _getUpdates(selectedOption ?? enabledOptions[option]!,
+        isPost: post);
     //check if JWT is ok, if not logout
     if (res['status'] == -1) {
       return {
@@ -90,7 +90,7 @@ class SyncDBProvider {
         // ignore: unrelated_type_equality_checks
 
         if (specialSync.contains(option)) {
-          final optionInfo = options[option];
+          final optionInfo = enabledOptions[option];
           result = await _specialWriteIntoLocalDB(res,
               deleteBefore: optionInfo!['delete_before'],
               independentTable: optionInfo['independent_table'],
@@ -102,10 +102,11 @@ class SyncDBProvider {
               columnName2: optionInfo['column_name_2']);
         } else {
           result = await _writeIntoLocalDB(
-              res, (selectedOption ?? options[option])!['table']);
+              res, (selectedOption ?? enabledOptions[option])!['table']);
         }
 
-        if ((selectedOption ?? options[option])!['table'] == 'sma_settings') {
+        if ((selectedOption ?? enabledOptions[option])!['table'] ==
+            'sma_settings') {
           await dataBloc.getSettings();
         }
 
@@ -114,7 +115,7 @@ class SyncDBProvider {
           // syncBloc.setProgressMessage('Estableciendo fecha de ultima actualización para $option');
 
           await DBProvider.db.setUpdateDate(res['body']['server_date_time'],
-              (selectedOption ?? options[option])!['sync_id']);
+              (selectedOption ?? enabledOptions[option])!['sync_id']);
 
           // syncBloc.setProgressMessage('$option sincronizados');
           return {
@@ -141,7 +142,7 @@ class SyncDBProvider {
 
   Future<Map> updateBillerTables() async {
     // String updateDate = '';
-    Map<String, dynamic> billerSync = options['Datos de Facturación']!;
+    Map<String, dynamic> billerSync = enabledOptions['Datos de Facturación']!;
     DataProvider api = DataProvider();
 
     Map<String, dynamic> body = {'biller_id': dataBloc.userData!.billerId};
@@ -353,7 +354,7 @@ class SyncDBProvider {
   Future<bool> syncSpecialSelectedOption(String option, context,
       {bool isPost = true}) async {
     bool result = false;
-    final res = await _getUpdates(options[option]!, isPost: isPost);
+    final res = await _getUpdates(enabledOptions[option]!, isPost: isPost);
     if (res['status'] == -1) {
       await reloadDialog(
           context,
@@ -368,7 +369,7 @@ class SyncDBProvider {
           return await syncSpecialSelectedOption(option, context);
         }
       } else {
-        final optionInfo = options[option];
+        final optionInfo = enabledOptions[option];
         return await _specialWriteIntoLocalDB(res,
             deleteBefore: optionInfo!['delete_before'],
             independentTable: optionInfo['independent_table'],

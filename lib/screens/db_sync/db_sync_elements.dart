@@ -77,7 +77,12 @@ class _DBSyncElementsState extends State<DBSyncElements> {
   }
 
   Widget elementSync(String option, {bool completed = false}) {
-    return ElementSync(context: context,status: completed,optionInfo: options[option]!,optionName:option).paddingSymmetric(horizontal: 13, vertical: 7);
+    return ElementSync(
+            context: context,
+            status: completed,
+            optionInfo: enabledOptions[option]!,
+            optionName: option)
+        .paddingSymmetric(horizontal: 13, vertical: 7);
   }
 
   Widget _bottom() {
@@ -104,4 +109,3 @@ class _DBSyncElementsState extends State<DBSyncElements> {
         _size);
   }
 }
-

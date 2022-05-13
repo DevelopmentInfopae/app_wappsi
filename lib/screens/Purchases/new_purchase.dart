@@ -354,7 +354,7 @@ class _NewPurchaseState extends State<NewPurchase> {
             icon: const Icon(Icons.clear),
             onPressed: () {
               _customerController.clear();
-              if (_customerController.text.isNotEmpty) {
+              if (_customerController.text.isEmpty) {
                 Navigator.pop(context);
                 // _customerFocusNode.unfocus();
               }

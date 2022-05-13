@@ -84,7 +84,7 @@ class SyncAlertDialogState extends State<SyncAlertDialog> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Image.asset('assets/images/' +
-                (options[option]?['image'] ?? 'synchronization.png'))
+                (enabledOptions[option]?['image'] ?? 'synchronization.png'))
             .paddingSymmetric(horizontal: 10, vertical: 3)
             .withHeight(
               _size.height * 0.07 > 60 ? _size.height * 0.07 : 60,
