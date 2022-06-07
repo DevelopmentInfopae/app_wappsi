@@ -65,8 +65,8 @@ class _ProductsState extends State<Suppliers> {
         leading: AppBarLeading(
             widget: Icon(Icons.add, size: leadingIconSize, color: pColor),
             onTap: () async {
-              const NewSupplier().launch(context);
               await dataBloc.refreshToken(context);
+              const NewSupplier().launch(context);
             }));
   }
 

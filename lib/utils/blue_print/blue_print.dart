@@ -46,8 +46,8 @@ class PrintFormat {
         await bluetooth.writeBytes(Uint8List.fromList(await ticketHeader(
             generator, _innerPrinter, pathImage, printData, chrLen,
             printDate: true)));
-        await bluetooth.writeBytes(
-            Uint8List.fromList(await ticketProducts(generator, _innerPrinter)));
+        await bluetooth.writeBytes(Uint8List.fromList(
+            await ticketProducts(generator, _innerPrinter, roundPrices: true)));
         await bluetooth.writeBytes(Uint8List.fromList(
             await ticketPayDetails(generator, _innerPrinter, printData)));
         await bluetooth.writeBytes(Uint8List.fromList(
@@ -76,7 +76,9 @@ class PrintFormat {
 
         await bluetooth.writeBytes(Uint8List.fromList(await ticketHeader(
             generator, _innerPrinter, pathImage, printData, chrLen,
-            type: 'Orden de Pedido', printAddrLocation: true)));
+            type: 'Orden de Pedido',
+            printAddrLocation: true,
+            printDate: true)));
         await bluetooth.writeBytes(
             Uint8List.fromList(await ticketProducts(generator, _innerPrinter)));
         await bluetooth.writeBytes(Uint8List.fromList(
@@ -394,7 +396,8 @@ class PrintFormat {
     ];
     if (printDate) {
       labelsSeller.add('Fecha/Hora:');
-      valuesSeller.add(parseDateStrES(date) + ' ' + parseTimeStrES(date));
+      // valuesSeller.add(parseDateStrES(date) + ' ' + parseTimeStrES(date));
+      valuesSeller.add(date);
     }
 
     //image
@@ -532,10 +535,8 @@ class PrintFormat {
     return bytes;
   }
 
-  Future<List<int>> ticketProducts(
-    Generator generator,
-    bool innerPrinter,
-  ) async {
+  Future<List<int>> ticketProducts(Generator generator, bool innerPrinter,
+      {bool roundPrices = false}) async {
     //init print format values
     List<int> bytes = [];
     // delete print buffer
@@ -550,16 +551,15 @@ class PrintFormat {
     if (dataBloc.settings!['prioridad_precios_producto'] == 10) {
       bytes = await ticketProductsPP10(generator, innerPrinter);
     } else if (dataBloc.settings!['prioridad_precios_producto'] == 6) {
-      bytes = await ticketProductsPP6(generator, innerPrinter);
+      bytes = await ticketProductsPP6(generator, innerPrinter,
+          roundPrices: roundPrices);
     }
 
     return bytes;
   }
 
-  Future<List<int>> ticketProductsPP6(
-    Generator generator,
-    bool innerPrinter,
-  ) async {
+  Future<List<int>> ticketProductsPP6(Generator generator, bool innerPrinter,
+      {bool roundPrices = false}) async {
     //init print format values
     List<int> bytes = [];
     // delete print buffer
@@ -574,17 +574,8 @@ class PrintFormat {
     int valueLenght = 0;
     // to get value and qtty max values
     for (var element in productsList!) {
-      if (dataBloc.settings!['prioridad_precios_producto'] == 10) {
-        final qttyDouble = element['quantity'];
-        final unitOpertor = element['unit']['operation_value'];
-        final qtty = qttyDouble / (unitOpertor ?? 1);
-        if (getRoundedQtty(qtty).length > qttyLenght) {
-          qttyLenght = getRoundedQtty(qtty).length;
-        }
-      } else {
-        if (getRoundedQtty(element['quantity']).length > qttyLenght) {
-          qttyLenght = getRoundedQtty(element['quantity']).length;
-        }
+      if (getRoundedQtty(element['quantity']).length > qttyLenght) {
+        qttyLenght = getRoundedQtty(element['quantity']).length;
       }
       final price = element['quantity'] * element['price'];
       String vTemp = getFormatedCurrency(price).substring(1);
@@ -615,7 +606,9 @@ class PrintFormat {
       // text = '';
       final price = element['quantity'] * element['price'];
 
-      String value = getFormatedCurrency(price).substring(1);
+      String value =
+          getFormatedCurrency(price, decimals: roundPrices ? 0 : null)
+              .substring(1);
       value = value.substring(
           0,
           value.length > valueMaxCharLen

@@ -37,7 +37,7 @@ class DBProvider {
     // printConsole(path);
 
     // creation of db
-    return await openDatabase(path, version: 8, onOpen: (db) {},
+    return await openDatabase(path, version: 9, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       // table creation
 

@@ -95,16 +95,16 @@ class HomeGridCards extends StatelessWidget {
     if (gridItems.route == 'sales') {
       // to show or hide home bottombar
 
-      await _newSale(context);
       await dataBloc.refreshToken(context);
+      await _newSale(context);
     } else if (gridItems.route == 'orders') {
       // to show or hide home bottombar
       if (posBloc.isDisposed) {
         posBloc.reload();
       }
       dataBloc.homeKey?.currentState?.changeBottomIndex(0);
-      const NewOrder().launch(context);
       await dataBloc.refreshToken(context);
+      const NewOrder().launch(context);
     } else if (gridItems.route == 'purchases-add') {
       const NewPurchase().launch(context);
       await dataBloc.refreshToken(context);
@@ -128,16 +128,16 @@ class HomeGridCards extends StatelessWidget {
     } else if (gridItems.route == 'addCustomer') {
       // dataBloc.homeKey?.currentState?.selectTab(TabItem.clients);
       // await Future.delayed(Duration(seconds: 1));
+      await dataBloc.refreshToken(context);
       const NewCustomer().launch(context);
       dataBloc.homeKey?.currentState?.changeBottomIndex(0);
-      await dataBloc.refreshToken(context);
       // dataBloc.homeKey?.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'suppliers-add') {
       // dataBloc.homeKey?.currentState?.selectTab(TabItem.clients);
       // await Future.delayed(Duration(seconds: 1));
+      await dataBloc.refreshToken(context);
       const NewSupplier().launch(context);
       dataBloc.homeKey?.currentState?.changeBottomIndex(0);
-      await dataBloc.refreshToken(context);
       // dataBloc.homeKey?.currentState?.changeBottomIndex(0);
     } else if (gridItems.route == 'register') {
       dataBloc.homeKey?.currentState?.changeBottomIndex(0);
