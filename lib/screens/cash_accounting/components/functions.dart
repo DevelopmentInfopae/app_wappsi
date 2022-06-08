@@ -14,7 +14,7 @@ sendRegisterAction(BuildContext context, RegisterFormProvider registerProvider,
   valueFocus.unfocus();
 
   if (registerProvider.isValidForm()) {
-    // WidgetsBinding.instance!.addPostFrameCallback((_) {
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   Navigator.pushNamed(context, '/home');
     // });
 
@@ -129,7 +129,7 @@ _open(BuildContext context, RegisterFormProvider registerProvider,
     // await Future.delayed(const Duration(milliseconds: 300));
     if (res['status'] == 1) {
       syncDB
-          ? WidgetsBinding.instance!.addPostFrameCallback((_) {
+          ? WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.pushNamedAndRemoveUntil(
                   context, '/db_sync', (route) => false);
             })

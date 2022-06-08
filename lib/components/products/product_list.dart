@@ -49,7 +49,7 @@ class ProductsList extends StatelessWidget {
           Function rmQtty;
           Function delete;
           UnitsModel? unit;
-          Map<String, List<String>> prefsText = {};
+          String prefsText = "";
 
           bool requestFocus = false;
           if (productRequestFocus) {

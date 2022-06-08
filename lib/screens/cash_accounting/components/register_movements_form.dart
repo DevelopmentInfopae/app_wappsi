@@ -434,8 +434,8 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
                   await dataBloc.refreshToken(context);
 
                   final Map<String, String> movementData = {
-                    'date': res['date']??'',
-                    'reference_no': res['reference_no']??'',
+                    'date': res['date'] ?? '',
+                    'reference_no': res['reference_no'] ?? '',
                     'biller_name': dataBloc.userData!.billerName,
                     'movement_type': registerMovements
                         .where((element) =>
@@ -447,7 +447,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
                     'user_name': (dataBloc.userData?.firstName ?? '') +
                         (dataBloc.userData?.lastName ?? '')
                   };
-                  WidgetsBinding.instance!.addPostFrameCallback((_) async {
+                  WidgetsBinding.instance.addPostFrameCallback((_) async {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(

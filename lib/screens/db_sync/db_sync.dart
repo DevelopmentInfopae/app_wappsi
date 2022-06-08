@@ -167,7 +167,7 @@ class _DBSyncState extends State<DBSync> {
       //     'assets/images/success.png');
       if (!suceesAlertShown) {
         final homeKey = GlobalKey<HomeState>();
-        WidgetsBinding.instance!.addPostFrameCallback((_) async {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
           confirmDialog(context, 'Base de datos sincronizada con exito',
               'assets/images/success.png');
           await Future.delayed(const Duration(seconds: 2));

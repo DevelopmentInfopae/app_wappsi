@@ -235,7 +235,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
       // route = '/home';
     }
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Navigator.pushNamedAndRemoveUntil(context, route, (route) => false);
     });
   }

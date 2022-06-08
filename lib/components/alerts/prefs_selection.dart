@@ -277,16 +277,16 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
   }
 
   void _selectUnselectPref(PreferenceCategoryModel prefCat, PreferenceModel e) {
-    if (productPrefsSelected.containsKey(prefCat)) {
+    if (productPrefsSelected[prefCat] != null) {
       if (productPrefsSelected[prefCat]!
           .where((element) => element == e)
           .isEmpty) {
         setState(() {
-          productPrefsSelected[prefCat]!.add(e);
+          productPrefsSelected[prefCat]?.add(e);
         });
       } else {
         setState(() {
-          productPrefsSelected[prefCat]!.remove(e);
+          productPrefsSelected[prefCat]?.remove(e);
         });
         if (productPrefsSelected[prefCat]!.isEmpty) {
           productPrefsSelected.remove(prefCat);

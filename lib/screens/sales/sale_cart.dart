@@ -347,7 +347,7 @@ class _SaleCartState extends State<SaleCart> {
 
   _searchBarFocusManagement() {
     if (dataBloc.settings!['set_focus'] == 0) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         // _searchController.close();
         _searchController.query = '';
         if (_searchController.isClosed) {
@@ -458,7 +458,7 @@ class _SaleCartState extends State<SaleCart> {
           // check if empty products then reload view
           if (posBloc.getProducts == {} || posBloc.getProducts == null) {
             _searchController.close();
-            WidgetsBinding.instance!.addPostFrameCallback((_) async {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(

@@ -352,7 +352,7 @@ class _OrderProductsState extends State<OrderProducts> {
 
   _searchBarFocusManagement() {
     if (dataBloc.settings!['set_focus'] == 0) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         // _searchController.close();
         if (_searchController.isOpen) {
           _searchController.query = '';

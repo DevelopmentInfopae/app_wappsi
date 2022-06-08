@@ -650,7 +650,7 @@ class _SalePaymentState extends State<SalePayment> {
                   /// update JWT token
                   await dataBloc.refreshToken(context);
 
-                  WidgetsBinding.instance!.addPostFrameCallback((_) async {
+                  WidgetsBinding.instance.addPostFrameCallback((_) async {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(

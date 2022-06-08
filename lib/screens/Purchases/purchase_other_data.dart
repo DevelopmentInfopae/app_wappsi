@@ -359,7 +359,7 @@ class _QuotePurchaseDataState extends State<PurchaseOtherData> {
                 if (res) {
                   /// update JWT token
                   await dataBloc.refreshToken(context);
-                  WidgetsBinding.instance!.addPostFrameCallback((_) async {
+                  WidgetsBinding.instance.addPostFrameCallback((_) async {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(

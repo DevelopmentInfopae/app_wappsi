@@ -41,7 +41,7 @@ class ProductCard extends StatefulWidget {
   final Function delete;
   final bool requestFocus;
   final ProductModel? product;
-  final Map<String, List<String>>? prefsSelection;
+  final String prefsSelection;
   final UnitsModel? unit;
   final FocusNode quantityFocusNode;
   final GlobalObjectKey<FormState> formKey;
@@ -172,26 +172,26 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _productPrefs() {
-    if ((widget.prefsSelection?.isNotEmpty) ?? false) {
+    if (widget.prefsSelection.isNotEmpty) {
       try {
-        List<Widget> wChildren = [];
-        for (var prefCat in widget.prefsSelection!.keys) {
-          wChildren.add(Text(
-            prefCat + ': ',
-            style: smallTextStyle2(context, fontWeightDelta: 2),
-          ));
-          for (var pref in widget.prefsSelection![prefCat] ?? []) {
-            wChildren.add(Text(
-              pref != widget.prefsSelection![prefCat]?.last
-                  ? (pref + ', ')
-                  : pref,
-              style: smallTextStyle2(context),
-            ));
-          }
-        }
-        return Wrap(
-          spacing: 0,
-          children: wChildren,
+        //   List<Widget> wChildren = [];
+        //   for (var prefCat in widget.prefsSelection!.keys) {
+        //     wChildren.add(Text(
+        //       prefCat + ': ',
+        //       style: smallTextStyle2(context, fontWeightDelta: 2),
+        //     ));
+        //     for (var pref in widget.prefsSelection![prefCat] ?? []) {
+        //       wChildren.add(Text(
+        //         pref != widget.prefsSelection![prefCat]?.last
+        //             ? (pref + ', ')
+        //             : pref,
+        //         style: smallTextStyle2(context),
+        //       ));
+        //     }
+        //   }
+        return Text(
+          widget.prefsSelection,
+          style: smallTextStyle2(context),
         );
       } catch (e) {
         printConsole(e);

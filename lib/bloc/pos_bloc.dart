@@ -610,18 +610,28 @@ class POSBloc {
     }
   }
 
-  Map<String, List<String>> prefsText(String productKey) {
-    Map<String, List<String>> prefsText = {};
+  String prefsText(String productKey) {
+    String prefsText = '';
+
     if (_productPrefsController.hasValue) {
       final temp = _productPrefsController.value![productKey];
       if (temp != null) {
         if ((temp).isNotEmpty) {
           for (var prefCat in temp.keys) {
-            for (PreferenceModel pref in (temp[prefCat] ?? [])) {
-              if (prefsText.containsKey(prefCat.name)) {
-                prefsText[prefCat.name]?.add(pref.name ?? '');
+            String text = '';
+
+            for (PreferenceModel element in (temp[prefCat] ?? [])) {
+              if (element == temp[prefCat]?.last) {
+                text += '' + element.name!;
               } else {
-                prefsText[prefCat.name ?? ''] = [pref.name ?? ''];
+                text += '' + element.name! + ', ';
+              }
+            }
+            if (text.isNotEmpty) {
+              if (prefsText.isNotEmpty) {
+                prefsText += " / " + text;
+              } else {
+                prefsText += text;
               }
             }
           }
