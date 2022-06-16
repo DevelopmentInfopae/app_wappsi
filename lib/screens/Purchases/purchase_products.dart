@@ -407,8 +407,9 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
         } else {
           if (res.length == 1) {
             final temp = ProductModel.fromJson(res.first);
-            final productReq =
-                await ProductsProvider.getProductRequirements(context, temp);
+            final productReq = await ProductsProvider.getProductRequirements(
+                context, temp,
+                fromPurchase: true);
             if (productReq != {}) {
               final result = await purchaseBloc.addProduct(productReq);
               if (result) {

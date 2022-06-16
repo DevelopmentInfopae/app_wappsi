@@ -1,5 +1,7 @@
 // ignore_for_file: implementation_imports, unused_field
 
+import 'dart:async';
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -10,6 +12,8 @@ import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/go_back_bottom.dart';
 import 'package:pos_wappsi/components/widgets.dart';
+import 'package:pos_wappsi/models/subzone_model.dart';
+import 'package:pos_wappsi/models/zone_model.dart';
 import 'package:pos_wappsi/params/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/constant.dart';
@@ -19,6 +23,7 @@ import 'package:pos_wappsi/models/states_model.dart';
 import 'package:pos_wappsi/providers/cities_provider.dart';
 import 'package:pos_wappsi/providers/countries_provider.dart';
 import 'package:pos_wappsi/providers/states_provider.dart';
+import 'package:pos_wappsi/providers/zone_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/new_customer_data3.dart';
@@ -39,6 +44,8 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   TextEditingController personTypeypeController = TextEditingController();
   final _statesDropDownKey = GlobalKey<DropdownSearchState<StatesModel?>>();
   final _citiesDropDownKey = GlobalKey<DropdownSearchState<CitiesModel?>>();
+  final _zonesDropDownKey = GlobalKey<DropdownSearchState<ZoneModel?>>();
+  final _subZoneDropDownKey = GlobalKey<DropdownSearchState<SubzoneModel?>>();
 
   final FocusNode _e = FocusNode();
   final FocusNode _p = FocusNode();
@@ -52,9 +59,19 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   StatesModel? _states;
   CitiesModel? _citys;
 
+  bool subzoneLoaded = false;
+
+  final StreamController<List<ZoneModel>> _zonesController =
+      StreamController<List<ZoneModel>>.broadcast();
+
+  final StreamController<List<SubzoneModel>> _subzonesController =
+      StreamController<List<SubzoneModel>>.broadcast();
+
   final TextEditingController _countryController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _zoneController = TextEditingController();
+  final TextEditingController _subzoneController = TextEditingController();
 
   final bool _loading = false;
 
@@ -75,6 +92,10 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
 
   @override
   void dispose() {
+    _subzoneController.dispose();
+    _zoneController.dispose();
+    _zonesController.close();
+    _subzonesController.close();
     personTypeypeController.dispose();
     _countryController.dispose();
     _stateController.dispose();
@@ -109,9 +130,13 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
         child: ListView(
           children: [
             _regimenTypeDropdown().paddingSymmetric(vertical: 3),
+
             _countries().paddingSymmetric(vertical: 3),
             _state().paddingSymmetric(vertical: 3),
+
             _cities().paddingSymmetric(vertical: 3),
+            _zones().paddingSymmetric(vertical: 3),
+            _subZones().paddingSymmetric(vertical: 3),
             _address().paddingSymmetric(vertical: 3),
             _email().paddingSymmetric(vertical: 3),
             _phone().paddingSymmetric(vertical: 3),
@@ -201,14 +226,235 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
             _states != null &&
             _country != null) {
           _citys = snapshot.data;
+
           customerBloc.getCustomer.city = snapshot.data!.descripcion;
           customerBloc.getCustomer.cityCode = snapshot.data!.codigo;
+          if (_citys != null) {
+            _zonesController.sink.add([]);
+          }
           return _citiesDropdown();
         } else {
           return _citiesDropdown();
         }
       },
     );
+  }
+
+  Widget _zones() {
+    return StreamBuilder<List<ZoneModel>>(
+      //load city if already defined in customer data, if not load default city
+      stream: _zonesController.stream,
+      initialData: [],
+      builder: (BuildContext context, AsyncSnapshot<List<ZoneModel>> snapshot) {
+        ZoneModel? _selectedZone;
+        try {
+          _selectedZone = snapshot.data
+              ?.where((element) =>
+                  element.zoneCode == customerBloc.getCustomer.location)
+              .first;
+        } catch (e) {
+          log(e);
+        }
+        return FutureBuilder<List<ZoneModel>?>(
+            future: (_citys != null && (snapshot.data?.isEmpty ?? true))
+                ? ZonesProvider.loadCityZones(_citys!.codigo!)
+                : null,
+            builder: (context, AsyncSnapshot snapshot1) {
+              if (snapshot.hasData && (snapshot.data?.isEmpty ?? false)) {
+                try {
+                  _zonesController.sink.add(snapshot1.data);
+                } catch (e) {
+                  log(e);
+                }
+              }
+              return DropdownSearch<ZoneModel>(
+                key: _zonesDropDownKey,
+                searchFieldProps: TextFieldProps(
+                  controller: _zoneController,
+                  // autofocus: true,
+                  decoration: InputDecoration(
+                    labelText: 'Zona',
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        _zoneController.clear();
+                        if (_zoneController.text.isEmpty) {
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                mode: Mode.BOTTOM_SHEET,
+                validator: (item) {
+                  if (item == null) return "Campo requerido";
+                  return null;
+                },
+                maxHeight: _size.width * 0.9,
+                dialogMaxWidth: _size.width * 0.8,
+                isFilteredOnline: true,
+                showClearButton: true,
+                showSelectedItems: true,
+                clearButton: const Icon(Icons.clear_rounded),
+                compareFn: (item, selectedItem) =>
+                    item?.zoneCode == selectedItem?.zoneCode,
+                showSearchBox: true,
+                selectedItem: _selectedZone,
+                dropdownSearchDecoration: InputDecoration(
+                  labelText: 'Zona :',
+                  labelStyle: TextStyle(color: _pc),
+                  filled: true,
+                  fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                ),
+                autoValidateMode: AutovalidateMode.onUserInteraction,
+                onFind: (String? filter) async {
+                  return await snapshot.data
+                          ?.where((element) =>
+                              element.zoneName.contains(filter ?? ""))
+                          .toList() ??
+                      (<ZoneModel>[]);
+                },
+                onChanged: (data) async {
+                  if (customerBloc.getCustomer.location != data?.zoneCode) {
+                    customerBloc.getCustomer.location = data?.zoneCode;
+                    customerBloc.getCustomer.subzone = null;
+                    await _loadSubzones(null, reload: true);
+                  }
+                },
+                popupSafeArea:
+                    const PopupSafeAreaProps(top: true, bottom: true),
+                scrollbarProps: ScrollbarProps(
+                  isAlwaysShown: true,
+                  thickness: 7,
+                ),
+              );
+            });
+      },
+    );
+  }
+
+  Widget _subZones() {
+    return StreamBuilder<List<SubzoneModel>>(
+      //load city if already defined in customer data, if not load default city
+      stream: _subzonesController.stream,
+      initialData: [],
+      builder:
+          (BuildContext context, AsyncSnapshot<List<SubzoneModel>> snapshot) {
+        SubzoneModel? _selectedSZone;
+        try {
+          _selectedSZone = snapshot.data
+              ?.where((element) =>
+                  element.subzoneCode == customerBloc.getCustomer.subzone)
+              .first;
+        } catch (e) {
+          log(e);
+        }
+        return FutureBuilder<List<SubzoneModel>?>(
+          future: (customerBloc.getCustomer.location != null &&
+                  (snapshot.data?.isEmpty ?? true))
+              ? ZonesProvider.loadSubZones(
+                  customerBloc.getCustomer.location ?? "")
+              : null,
+          builder: (context, AsyncSnapshot snapshot1) {
+            if (snapshot.hasData && !subzoneLoaded) {
+              subzoneLoaded = true;
+              try {
+                _subzonesController.sink.add(snapshot1.data);
+              } catch (e) {
+                log(e);
+              }
+            }
+            return DropdownSearch<SubzoneModel>(
+              key: _subZoneDropDownKey,
+              searchFieldProps: TextFieldProps(
+                controller: _subzoneController,
+                // autofocus: true,
+                decoration: InputDecoration(
+                  labelText: 'Barrio',
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      _subzoneController.clear();
+                      if (_subzoneController.text.isEmpty) {
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                ),
+              ),
+              mode: Mode.BOTTOM_SHEET,
+              validator: (item) {
+                if (item == null) return "Campo requerido";
+                return null;
+              },
+              maxHeight: _size.width * 0.9,
+              dialogMaxWidth: _size.width * 0.8,
+              isFilteredOnline: true,
+              showClearButton: true,
+              showSelectedItems: true,
+              clearButton: const Icon(Icons.clear_rounded),
+              compareFn: (item, selectedItem) =>
+                  item?.subzoneCode == selectedItem?.subzoneCode,
+              showSearchBox: true,
+              selectedItem: _selectedSZone,
+              dropdownSearchDecoration: InputDecoration(
+                labelText: 'Barrio :',
+                labelStyle: TextStyle(color: _pc),
+                filled: true,
+                fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+              ),
+              autoValidateMode: AutovalidateMode.onUserInteraction,
+              onFind: (String? filter) async {
+                return await snapshot.data
+                        ?.where((element) =>
+                            element.subzoneName.contains(filter ?? ""))
+                        .toList() ??
+                    (<SubzoneModel>[]);
+              },
+              onChanged: (data) async {
+                customerBloc.getCustomer.subzone = data?.subzoneCode;
+              },
+              popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
+              scrollbarProps: ScrollbarProps(
+                isAlwaysShown: true,
+                thickness: 7,
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _loadCityZones(List<ZoneModel>? data,
+      {bool reload = false}) async {
+    if (reload) {
+      if (_citys != null) {
+        final zones = await ZonesProvider.loadCityZones(_citys!.codigo!);
+        _zonesController.sink.add(zones);
+      }
+    } else {
+      if (_citys != null && (data?.isEmpty ?? true)) {
+        final zones = await ZonesProvider.loadCityZones(_citys!.codigo!);
+        _zonesController.sink.add(zones);
+      }
+    }
+  }
+
+  Future<void> _loadSubzones(List<SubzoneModel>? data,
+      {bool reload = false}) async {
+    if (reload) {
+      final szones = await ZonesProvider.loadSubZones(
+          customerBloc.getCustomer.location ?? "");
+      _subzonesController.sink.add(szones);
+    } else {
+      if (customerBloc.getCustomer.subzone != null && (data?.isEmpty ?? true)) {
+        final szones = await ZonesProvider.loadSubZones(
+            customerBloc.getCustomer.location ?? "");
+
+        _subzonesController.sink.add(szones);
+      }
+    }
   }
 
   Widget _regimenTypeDropdown() {
@@ -260,7 +506,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
             icon: const Icon(Icons.clear),
             onPressed: () {
               _countryController.clear();
-              if (_countryController.text.isNotEmpty) {}
+              if (_countryController.text.isEmpty) {}
               Navigator.pop(context);
             },
           ),
@@ -344,7 +590,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
             icon: const Icon(Icons.clear),
             onPressed: () {
               _stateController.clear();
-              if (_stateController.text.isNotEmpty) {
+              if (_stateController.text.isEmpty) {
                 Navigator.pop(context);
               }
             },
@@ -432,7 +678,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
             icon: const Icon(Icons.clear),
             onPressed: () {
               _cityController.clear();
-              if (_cityController.text.isNotEmpty) {
+              if (_cityController.text.isEmpty) {
                 Navigator.pop(context);
               }
             },
@@ -464,9 +710,12 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       onFind: (String? filter) => CitiesProvider.loadFromDB(
           search: filter, departament: _states?.coddepartamento),
       onChanged: (data) async {
-        _citys = data;
-        customerBloc.getCustomer.city = data?.descripcion;
-        customerBloc.getCustomer.cityCode = data?.codigo;
+        if (_citys?.codigo != data?.codigo) {
+          _citys = data;
+          customerBloc.getCustomer.city = data?.descripcion;
+          customerBloc.getCustomer.cityCode = data?.codigo;
+          await _loadCityZones(null, reload: true);
+        }
       },
       // selectedItem: posBloc.getCustomer,
       popupItemBuilder: _customPopupCitysItemBuilder,

@@ -38,6 +38,7 @@ class CustomerAddressesModel {
       this.longitude,
       this.cityCode,
       this.location,
+      this.subzone,
       this.customerGroupName,
       this.priceGroupName,
       this.code});
@@ -65,6 +66,7 @@ class CustomerAddressesModel {
   String? customerGroupId;
   String? customerGroupName;
   String? priceGroupName;
+  String? subzone;
   String priceGroupId;
 
   factory CustomerAddressesModel.fromJson(Map<dynamic, dynamic> json) =>
@@ -111,7 +113,35 @@ class CustomerAddressesModel {
     // prString(temp);
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson({bool toCreate = false}) {
+    if (toCreate) {
+      return {
+        "sucursal": sucursal,
+        "subzone": subzone,
+        "company_id": companyId,
+        "country": country,
+        "state": state,
+        "direccion": direccion,
+        "latitude": latitude,
+        "longitude": longitude,
+        "city": city,
+        "vat_no": vatNo,
+        "email": email ?? '',
+        "phone": phone ?? '',
+        "code": code,
+        "location": location,
+        "city_code": cityCode,
+        "customer_group_id": customerGroupId,
+        "customer_group_name": customerGroupName,
+        "price_group_name": priceGroupName,
+        "price_group_id": priceGroupId,
+        "postal_code": postalCode,
+        "line1": line1,
+        "line2": line2,
+        "customer_address_seller_id_assigned": customerAddressSellerIdAssigned
+      };
+    } else {
+      return {
         "id": id,
         "id_cloud": idCloud,
         "sucursal": sucursal,
@@ -137,6 +167,8 @@ class CustomerAddressesModel {
         "line2": line2,
         "customer_address_seller_id_assigned": customerAddressSellerIdAssigned
       };
+    }
+  }
 
   @override
   String toString() => capitalizeText(sucursal ?? '');

@@ -55,7 +55,7 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
   Widget _leading() {
     return AppBarLeading(
         widget: Icon(
-          FontAwesomeIcons.trashAlt,
+          FontAwesomeIcons.trashCan,
           color: Colors.red,
           size: leadingIconSize - 4,
         ),

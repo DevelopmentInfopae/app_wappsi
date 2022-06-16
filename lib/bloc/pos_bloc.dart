@@ -644,21 +644,34 @@ class POSBloc {
   String getProductPrefsText(String productKey) {
     String prefsText = '';
     try {
-      for (PreferenceCategoryModel prefCat
-          in (getProductPrefs?[productKey]?.keys ?? [])) {
-        if (prefCat.name != null) {
-          prefsText += prefCat.name! + ': ';
-        } else {
-          prefsText += '';
-        }
+      String prefsText = '';
 
-        for (PreferenceModel pref
-            in getProductPrefs![productKey]?[prefCat] ?? []) {
-          prefsText += pref != getProductPrefs![productKey]?[prefCat]?.last
-              ? ((pref.name ?? '') + ', ')
-              : (pref.name ?? '');
+      if (_productPrefsController.hasValue) {
+        final temp = _productPrefsController.value![productKey];
+        if (temp != null) {
+          if ((temp).isNotEmpty) {
+            for (var prefCat in temp.keys) {
+              String text = '';
+
+              for (PreferenceModel element in (temp[prefCat] ?? [])) {
+                if (element == temp[prefCat]?.last) {
+                  text += '' + element.name!;
+                } else {
+                  text += '' + element.name! + ', ';
+                }
+              }
+              if (text.isNotEmpty) {
+                if (prefsText.isNotEmpty) {
+                  prefsText += " / " + text;
+                } else {
+                  prefsText += text;
+                }
+              }
+            }
+          }
         }
       }
+      return prefsText;
     } catch (e) {
       printConsole(e);
     }

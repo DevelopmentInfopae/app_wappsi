@@ -475,8 +475,9 @@ class _OrderProductsState extends State<OrderProducts> {
         } else {
           if (res.length == 1) {
             final temp = ProductModel.fromJson(res.first);
-            final productReq =
-                await ProductsProvider.getProductRequirements(context, temp);
+            final productReq = await ProductsProvider.getProductRequirements(
+                context, temp,
+                fromOrder: true);
             if (productReq != {}) {
               final result = await orderBloc.addProduct(productReq);
               if (result) {

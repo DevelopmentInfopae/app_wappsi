@@ -8,6 +8,7 @@ import 'package:pos_wappsi/bloc/suplier_bloc.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/biller_data_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/providers/groups_providers.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
@@ -347,9 +348,19 @@ class CompaniesProvider {
         .sqlFirstQuery('sma_customer_groups', where: "id_cloud = $id");
   }
 
-  static sendCustomerInfo(BuildContext context) async {
+  static sendCustomerInfo(BuildContext context,
+      {bool createUser = true}) async {
     final customerGroup = await GroupsProvider.loadCustomerGroup();
     // bool closeLoading = false;
+    final addrss = CustomerAddressesModel(
+        id: '',
+        direccion: '',
+        vatNo: '',
+        idCloud: 0,
+        customerGroupId: '',
+        sucursal: '',
+        companyId: '',
+        priceGroupId: '');
 
     final apiProvider = DataProvider();
     if (customerGroup == null) {
@@ -370,23 +381,33 @@ class CompaniesProvider {
 
     customerBloc.getCustomer.customerSellerIdAssigned =
         dataBloc.userData?.sellerId;
+    Map<String, dynamic> body = {};
+    body["company_data"] = customerBloc.getCustomer.customerToJson();
 
-    final body = customerBloc.getCustomer.customerToJson();
+    if (createUser) {
+      if (customerBloc.getUserName != null &&
+          customerBloc.getPassword != null) {
+        final temp = {};
+        temp['username'] = customerBloc.getUserName;
+        temp['password'] = encodePass(customerBloc.getPassword!);
+        temp['first_name'] = customerBloc.getCustomer.firstName;
+        temp['last_name'] = customerBloc.getCustomer.firstName;
+        temp['company'] = customerBloc.getCustomer.company;
+        temp['email'] = customerBloc.getCustomer.email;
+        temp['phone'] = customerBloc.getCustomer.phone;
+        temp['group_id'] = customerBloc.getCustomer.groupId;
+        temp['active'] = "1";
+        body['user_data'] = temp;
+      }
 
-    if (customerBloc.getUserName != null && customerBloc.getPassword != null) {
-      final temp = {};
-      temp['username'] = customerBloc.getUserName;
-      temp['password'] = encodePass(customerBloc.getPassword!);
-      body['user_data'] = temp;
-    }
-
-    // ignore: unnecessary_null_comparison
-    if (customerBloc.getProducts() != null) {
-      List<int> favorites = [];
-      customerBloc.getProducts()!.forEach((key, value) {
-        favorites.add(value.idCloud);
-      });
-      body['favorites'] = favorites;
+      // ignore: unnecessary_null_comparison
+      if (customerBloc.getProducts() != null) {
+        List<int> favorites = [];
+        customerBloc.getProducts()!.forEach((key, value) {
+          favorites.add(value.idCloud);
+        });
+        body['favorites'] = favorites;
+      }
     }
 
     if (customerBloc.getImagePath != null) {
@@ -394,9 +415,33 @@ class CompaniesProvider {
       String img64 = base64Encode(bytes);
       body['image'] = img64;
     }
-    if (customerBloc.getLocation != null) {
-      body['geo_location'] = customerBloc.getLocation!.toMap();
-    }
+
+    // data for address creation
+
+    addrss.city = customerBloc.getCustomer.city;
+    addrss.cityCode = customerBloc.getCustomer.cityCode;
+    addrss.latitude = customerBloc.getLocation?.latitude;
+    addrss.longitude = customerBloc.getLocation?.longitude;
+    addrss.direccion = customerBloc.getCustomer.address;
+    addrss.sucursal = customerBloc.getCustomer.name;
+    addrss.customerAddressSellerIdAssigned =
+        customerBloc.getCustomer.customerSellerIdAssigned;
+    addrss.city = customerBloc.getCustomer.city;
+    addrss.state = customerBloc.getCustomer.state;
+    addrss.country = customerBloc.getCustomer.country;
+    addrss.phone = customerBloc.getCustomer.phone;
+    addrss.customerGroupId = customerBloc.getCustomer.customerGroupId;
+    addrss.customerGroupName = customerBloc.getCustomer.customerGroupName;
+    addrss.priceGroupId = customerBloc.getCustomer.priceGroupId ?? "";
+    addrss.priceGroupName = customerBloc.getCustomer.priceGroupName;
+    addrss.email = customerBloc.getCustomer.email;
+    addrss.location = customerBloc.getCustomer.location;
+    addrss.subzone = customerBloc.getCustomer.subzone;
+    addrss.code = (customerBloc.getCustomer.vatNo ?? "") + "- 01";
+
+    // add addres data to data
+
+    body["address_data"] = addrss.toJson(toCreate: true);
 
     try {
       scaffoldAlert(context, 'Registrando cliente', const Duration(seconds: 10),

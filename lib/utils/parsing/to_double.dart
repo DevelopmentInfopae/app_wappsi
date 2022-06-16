@@ -27,3 +27,13 @@ int parsingToInt(var value) {
   }
   return d;
 }
+
+int? parsingToIntNullable(var value) {
+  int? d;
+  if (value != null) {
+    if (value != '') {
+      d = int.tryParse(value.toString()) ?? 0;
+    }
+  }
+  return d;
+}

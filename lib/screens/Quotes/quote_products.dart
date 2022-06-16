@@ -475,8 +475,9 @@ class _QuoteProductsState extends State<QuoteProducts> {
         } else {
           if (res.length == 1) {
             final temp = ProductModel.fromJson(res.first);
-            final productReq =
-                await ProductsProvider.getProductRequirements(context, temp);
+            final productReq = await ProductsProvider.getProductRequirements(
+                context, temp,
+                fromQuote: true);
             if (productReq != {}) {
               final result = await quoteBloc.addProduct(productReq);
               if (result) {

@@ -541,6 +541,7 @@ class SaleModel {
         productPreferencesText: productsDetails["product_preferences_text"],
         customerBranch: customerAddress.idCloud,
         documentTypeId: user.documentTypeId,
+        orderSaleOrigin: 2,
         productTaxRate: productsDetails['product_tax_rate'],
         productDiscount: productsDetails['product_discount'],
         productDiscountVal: productsDetails['product_discount_val'],
