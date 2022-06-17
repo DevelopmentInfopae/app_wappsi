@@ -309,8 +309,9 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
                 autoValidateMode: AutovalidateMode.onUserInteraction,
                 onFind: (String? filter) async {
                   return await snapshot.data
-                          ?.where((element) =>
-                              element.zoneName.contains(filter ?? ""))
+                          ?.where((element) => element.zoneName
+                              .toUpperCase()
+                              .contains(filter?.toUpperCase() ?? ""))
                           .toList() ??
                       (<ZoneModel>[]);
                 },
@@ -405,11 +406,13 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
               ),
               autoValidateMode: AutovalidateMode.onUserInteraction,
               onFind: (String? filter) async {
-                return await snapshot.data
-                        ?.where((element) =>
-                            element.subzoneName.contains(filter ?? ""))
-                        .toList() ??
-                    (<SubzoneModel>[]);
+                final data = snapshot.data?.where((element) {
+                  final result = element.subzoneName
+                      .toUpperCase()
+                      .contains(filter?.toUpperCase() ?? "");
+                  return result;
+                }).toList();
+                return data ?? (<SubzoneModel>[]);
               },
               onChanged: (data) async {
                 customerBloc.getCustomer.subzone = data?.subzoneCode;

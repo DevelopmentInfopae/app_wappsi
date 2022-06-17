@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/bloc/printer_bloc.dart';
 import 'package:pos_wappsi/config/bd_creation.dart';
+import 'package:pos_wappsi/config/table_columns.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:sqflite/sqflite.dart';
@@ -194,18 +195,21 @@ class DBProvider {
     // final enc = jsonEncode(query);
     // final queryF = jsonDecode(enc.replaceAll("'", replace));
     // Batch batch = db!.batch();
-    for (var element in query) {
+    for (Map element in query) {
       try {
-        await db!.insert(table, element,
+        await db!.insert(table, element as Map<String, dynamic>,
             conflictAlgorithm: ConflictAlgorithm.replace);
       } catch (e) {
         await printAndSaveError(e);
 
         try {
+          // remove unespected column names
+          element.removeWhere((key, value) =>
+              !(tablesColumnsNames[table]?.contains(key) ?? false));
           String values = getStringFromValues(element.values);
           String sql =
               'INSERT OR REPLACE INTO $table ("${element.keys.join('","')}") VALUES ($values);';
-          await db!.rawQuery(sql);
+          await db!.rawQuery(sql, []);
         } catch (e) {
           await printAndSaveError(e);
         }

@@ -47,7 +47,6 @@ app.*.map.json
 
 push_repo.sh
 
-/lib/config/
 
 /android/key.properties
 
