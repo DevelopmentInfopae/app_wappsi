@@ -433,9 +433,22 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
               orderBloc.setDeliveryDate(value);
               // reset deliveryTime value
               _updateDeliveryTime(null);
-              // get deliverytimes avaible for selected delivery date
-              delivTimes = await DeliveryTimeProvider.getAvaibleDelivTimes(
-                  context, value, orderBloc.getCustomerAddresses!.location);
+              if (orderBloc.getCustomerAddresses!.location != null) {
+                // get deliverytimes avaible for selected delivery date
+                delivTimes = await DeliveryTimeProvider.getAvaibleDelivTimes(
+                    context, value, orderBloc.getCustomerAddresses!.location);
+                if (delivTimes.isEmpty) {
+                  confirmDialog(
+                      context,
+                      "No se encontraron franjas horarias para la zona de sucursal de cliente.",
+                      'assets/images/dizzy-robot.png');
+                }
+              } else {
+                confirmDialog(
+                    context,
+                    "No se encontro zona configurada para la sucursal de cliente seleccionada.",
+                    "assets/images/dizzy-robot.png");
+              }
             }
           }
         },
@@ -482,6 +495,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
             });
         _updateDeliveryTime(time);
       },
+      enabled: delivTimes.isNotEmpty,
     );
   }
 
