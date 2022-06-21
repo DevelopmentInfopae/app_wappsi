@@ -489,8 +489,6 @@ const List<String> addressesColumns = [
   "sucursal",
   "city",
   "postal_code",
-  // this should be removed in future updates
-  "geo_location",
   "latitude",
   "longitude",
   "state",
