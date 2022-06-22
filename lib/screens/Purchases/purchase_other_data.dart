@@ -15,7 +15,6 @@ import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/global_form_const.dart';
 import 'package:pos_wappsi/providers/purchase_provider.dart';
-import 'package:pos_wappsi/screens/Quotes/print_quotes.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';

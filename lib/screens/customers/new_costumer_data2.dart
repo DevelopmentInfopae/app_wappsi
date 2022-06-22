@@ -244,7 +244,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
     return StreamBuilder<List<ZoneModel>>(
       //load city if already defined in customer data, if not load default city
       stream: _zonesController.stream,
-      initialData: [],
+      initialData: const [],
       builder: (BuildContext context, AsyncSnapshot<List<ZoneModel>> snapshot) {
         ZoneModel? _selectedZone;
         try {
@@ -308,7 +308,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
                 ),
                 autoValidateMode: AutovalidateMode.onUserInteraction,
                 onFind: (String? filter) async {
-                  return await snapshot.data
+                  return snapshot.data
                           ?.where((element) => element.zoneName
                               .toUpperCase()
                               .contains(filter?.toUpperCase() ?? ""))
@@ -338,7 +338,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
     return StreamBuilder<List<SubzoneModel>>(
       //load city if already defined in customer data, if not load default city
       stream: _subzonesController.stream,
-      initialData: [],
+      initialData: const [],
       builder:
           (BuildContext context, AsyncSnapshot<List<SubzoneModel>> snapshot) {
         SubzoneModel? _selectedSZone;

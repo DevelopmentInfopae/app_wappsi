@@ -14,7 +14,6 @@ import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/order_sale_items_provider.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
-import 'package:pos_wappsi/utils/parsing/to_double.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 // import 'package:pos_wappsi/bloc/orders_bloc.dart';

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
-import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/bloc/quotes_bloc.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/companies_model.dart';

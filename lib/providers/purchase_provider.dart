@@ -8,7 +8,6 @@ import 'package:pos_wappsi/models/purchase_model.dart';
 
 // import 'package:pos_wappsi/models/sale_model.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
-import 'package:pos_wappsi/providers/purchase_items_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/local_storage/local_db.dart';
