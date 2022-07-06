@@ -8,7 +8,7 @@ import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 
 class DeliveryTimeProvider {
   static Future<List<DeliveryTime>> getAvaibleDelivTimes(
-      BuildContext context, String date, String? addressLocation) async {
+      BuildContext context, String date, int? addressLocation) async {
     List<DeliveryTime> delivTimes = [];
 
     // instance of api provider

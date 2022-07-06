@@ -18,9 +18,11 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/global_form_const.dart';
 import 'package:pos_wappsi/models/delivery_time_model.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
+import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
 import 'package:pos_wappsi/providers/delivery_time_provider.dart';
 import 'package:pos_wappsi/providers/document_types_provider.dart';
 import 'package:pos_wappsi/providers/orders_provider.dart';
+import 'package:pos_wappsi/screens/customers/components/add_address_zone_subzone.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
 
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
@@ -125,13 +127,15 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
           dataBloc.userData!.allowDiscount == 1
               ? _orderDiscount().paddingSymmetric(vertical: 6)
               : Container(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _datePicker().paddingSymmetric(horizontal: 4).expand(),
-              _timePicker().paddingSymmetric(horizontal: 4),
-            ],
-          ).paddingSymmetric(vertical: 6),
+          dataBloc.settings!['management_order_sale_delivery_time'] == 1
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _datePicker().paddingSymmetric(horizontal: 4).expand(),
+                    _timePicker().paddingSymmetric(horizontal: 4),
+                  ],
+                ).paddingSymmetric(vertical: 6)
+              : Container(),
           _invoiceNote().paddingSymmetric(vertical: 6),
           _dispatchNote().paddingSymmetric(vertical: 6)
         ],
@@ -435,25 +439,49 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
               _updateDeliveryTime(null);
               if (orderBloc.getCustomerAddresses!.location != null) {
                 // get deliverytimes avaible for selected delivery date
-                delivTimes = await DeliveryTimeProvider.getAvaibleDelivTimes(
-                    context, value, orderBloc.getCustomerAddresses!.location);
-                if (delivTimes.isEmpty) {
-                  confirmDialog(
-                      context,
-                      "No se encontraron franjas horarias para la zona de sucursal de cliente.",
-                      'assets/images/dizzy-robot.png');
-                }
+                await loadDelivTimes(value);
               } else {
-                confirmDialog(
+                await confirmDialog(
                     context,
                     "No se encontro zona configurada para la sucursal de cliente seleccionada.",
                     "assets/images/dizzy-robot.png");
+                // if (orderBloc.getCustomerAddresses != null) {
+                final reloadAddress = await showDialog<Map<String, dynamic>?>(
+                    barrierDismissible: false,
+                    // useRootNavigator: false,
+                    context: context,
+                    builder: (context) {
+                      return ZoneSZoneSelection(
+                          address: orderBloc.getCustomerAddresses!);
+                    });
+                if (reloadAddress?["reload_address"] == true) {
+                  final reloadedAdrres =
+                      await CustomerAddressesProvider.loadCustomerAddress(
+                          (orderBloc.getCustomerAddresses?.idCloud ?? "")
+                              .toString());
+                  orderBloc.setCustomerAddresses(reloadedAdrres);
+                  await loadDelivTimes(value);
+                }
+                // }
               }
             }
           }
         },
       ),
     );
+  }
+
+  Future<void> loadDelivTimes(String value) async {
+    delivTimes = await DeliveryTimeProvider.getAvaibleDelivTimes(
+        context, value, orderBloc.getCustomerAddresses!.location);
+    if (delivTimes.isEmpty) {
+      await confirmDialog(
+          context,
+          "No se encontraron franjas horarias para la zona de sucursal de cliente.",
+          'assets/images/dizzy-robot.png');
+    } else {
+      setState(() {});
+    }
   }
 
   Widget _timePicker() {

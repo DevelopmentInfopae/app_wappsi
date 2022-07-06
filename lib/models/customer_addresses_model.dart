@@ -56,7 +56,7 @@ class CustomerAddressesModel {
   String? direccion;
   String? city;
   String? vatNo;
-  String? location;
+  int? location;
 
   String? code;
   String? line1;
@@ -66,36 +66,37 @@ class CustomerAddressesModel {
   String? customerGroupId;
   String? customerGroupName;
   String? priceGroupName;
-  String? subzone;
+  int? subzone;
   String priceGroupId;
 
   factory CustomerAddressesModel.fromJson(Map<dynamic, dynamic> json) =>
       CustomerAddressesModel(
-        id: json["id"].toString(),
+        id: (json["id"] ?? "").toString(),
         idCloud: json["id_cloud"],
-        customerAddressSellerIdAssigned: int.tryParse(
-            json["customer_address_seller_id_assigned"]?.toString() ?? ''),
+        customerAddressSellerIdAssigned:
+            parsingToInt(json["customer_address_seller_id_assigned"]),
         sucursal: json["sucursal"] ?? '',
         companyId: json["companyId"] ?? '',
-        country: json["country"].toString(),
-        state: json['state'].toString(),
-        email: json['email'].toString(),
-        phone: json['phone'].toString(),
-        priceGroupName: json['price_group_name'].toString(),
+        country: (json["country"] ?? "").toString(),
+        state: (json['state'] ?? "").toString(),
+        email: (json['email'] ?? "").toString(),
+        phone: (json['phone'] ?? "").toString(),
+        priceGroupName: (json['price_group_name'] ?? "").toString(),
         direccion: json["direccion"] ?? '',
         latitude: parsingToDoubleNullAble(json["latitude"]),
         longitude: parsingToDoubleNullAble(json["longitude"]),
         city: json["city"] ?? '',
         line1: json["line1"] ?? '',
         line2: json["line2"] ?? '',
+        subzone: parsingToIntNullable( json["subzone"]),
         postalCode: json["postal_code"] ?? '',
         vatNo: json["vat_no"] ?? '',
-        code: json["code"].toString(),
-        location: json["location"],
-        cityCode: json["city_code"].toString(),
-        customerGroupId: json["customer_group_id"].toString(),
-        customerGroupName: json["customer_group_name"].toString(),
-        priceGroupId: json["price_group_id"].toString(),
+        code: (json["code"] ?? "").toString(),
+        location: parsingToIntNullable( json["location"]),
+        cityCode: json["city_code"],
+        customerGroupId: (json["customer_group_id"] ?? "").toString(),
+        customerGroupName: (json["customer_group_name"] ?? "").toString(),
+        priceGroupId: (json["price_group_id"] ?? "").toString(),
       );
 
   static List<CustomerAddressesModel> fromJsonList(List<Map> list) {

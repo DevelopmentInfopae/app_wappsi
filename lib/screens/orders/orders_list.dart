@@ -19,6 +19,8 @@ import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/orders/components/order_card_list.dart';
 import 'package:pos_wappsi/utils/text_formating/order_status_mapping.dart';
 
+import '../../providers/orders_provider.dart';
+
 class OrdersList extends StatefulWidget {
   const OrdersList({Key? key}) : super(key: key);
 
@@ -99,7 +101,7 @@ class _ProductsState extends State<OrdersList> {
                 if (result['error'] == false) {
                   final orders = await LocalOrdersProvider.listLocalOrders(
                       search: _searchParams['search'] ?? '', filters: _filters);
-                  _ordersListStream.sink.add(orders ?? []);
+                  _ordersListStream.sink.add(orders);
                 }
               },
               child: _ordersList()),
@@ -279,10 +281,25 @@ class _ProductsState extends State<OrdersList> {
   _onQueryChanged(String? query) async {
     _searchParams['search'] = query;
 
-    final res = await LocalOrdersProvider.listLocalOrders(
+    List<OrderModel> res = await LocalOrdersProvider.listLocalOrders(
         search: query ?? '', filters: _filters);
-    if (res != null) {
-      _ordersListStream.sink.add(res);
+    if(res.length<30){
+      final findNewInServer = await OrdersProvider.getOrdersFromServer(
+          context,
+          search:query??"",
+          filters: _filters,
+        );
+        if (findNewInServer) {
+          // _page =0;
+         res = await LocalOrdersProvider.listLocalOrders(
+          search: query ?? '', filters: _filters);
+         
+        }else{
+         
+        }
     }
+      _ordersListStream.sink.add(res);
+    // if (res.isNotEmpty) {
+    // }
   }
 }

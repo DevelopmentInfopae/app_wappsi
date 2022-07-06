@@ -24,8 +24,6 @@ class Routes {
         '/db_sync' :  (context) => const DBSync(),
         // '/newSale' :  (context) => NewSale(),
         // '/stock' :  (context) => const Products(),
-
-
     };
   }
 }

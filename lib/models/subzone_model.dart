@@ -6,16 +6,20 @@ import 'dart:convert';
 
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
+import '../utils/parsing/to_double.dart';
+
 class SubzoneModel {
   SubzoneModel({
     required this.zoneCode,
     required this.subzoneName,
     required this.subzoneCode,
+    required this.id
   });
 
   final String zoneCode;
   final String subzoneName;
   final String subzoneCode;
+  final int id;
 
   factory SubzoneModel.fromRawJson(String str) =>
       SubzoneModel.fromJson(json.decode(str));
@@ -26,12 +30,14 @@ class SubzoneModel {
         zoneCode: json["zone_code"],
         subzoneName: json["subzone_name"],
         subzoneCode: json["subzone_code"],
+        id: parsingToInt(json["id"]),
       );
 
   Map<String, dynamic> toJson() => {
         "zone_code": zoneCode,
         "subzone_name": subzoneName,
         "subzone_code": subzoneCode,
+        "id":id
       };
 
   static List<SubzoneModel> fromJsonList(List data) {

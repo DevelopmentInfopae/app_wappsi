@@ -481,6 +481,8 @@ const List<String> settingsColumns = [
   "rete_other_language",
   "last_update",
   "product_preferences_management",
+  "management_order_sale_delivery_time",
+  "delivery_day_max_orders"
 ];
 const List<String> addressesColumns = [
   "id_cloud",

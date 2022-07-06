@@ -423,7 +423,7 @@ class CompaniesProvider {
     addrss.latitude = customerBloc.getLocation?.latitude;
     addrss.longitude = customerBloc.getLocation?.longitude;
     addrss.direccion = customerBloc.getCustomer.address;
-    addrss.sucursal = customerBloc.getCustomer.name;
+    addrss.sucursal = customerBloc.getCustomer.buildName();
     addrss.customerAddressSellerIdAssigned =
         customerBloc.getCustomer.customerSellerIdAssigned;
     addrss.city = customerBloc.getCustomer.city;

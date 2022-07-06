@@ -11,6 +11,8 @@ import 'package:pos_wappsi/bloc/customer_bloc.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/go_back_bottom.dart';
+import 'package:pos_wappsi/components/location/subzone_dropdown.dart';
+import 'package:pos_wappsi/components/location/zone_dropdown.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/models/subzone_model.dart';
 import 'package:pos_wappsi/models/zone_model.dart';
@@ -84,6 +86,9 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
     customerBloc.getCustomer.tipoRegimen ??= regimenT["1"]!.value.toString();
     customerBloc.getCustomer.typePerson ??= personT["1"]!.value.toString();
 
+    _loadCityZones(init: true);
+    _loadSubzones();
+
     _addressController.text = customerBloc.getCustomer.address ?? '';
     _emailController.text = customerBloc.getCustomer.email ?? '';
     _phoneController.text = customerBloc.getCustomer.phone ?? '';
@@ -102,6 +107,28 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
     _cityController.dispose();
 
     super.dispose();
+  }
+
+  Future<void> _loadCityZones({bool init = false}) async {
+    String? cityCode;
+    if (init) {
+      if ( customerBloc.getCustomer.cityCode == null) {
+        final city = await CitiesProvider.defaultCity();
+        cityCode = city?.codigo;
+      } else {
+        cityCode =  customerBloc.getCustomer.cityCode;
+      }
+    } else {
+      cityCode =  customerBloc.getCustomer.cityCode;
+    }
+    final zones = await ZonesProvider.loadCityZones(cityCode ?? "");
+    _zonesController.sink.add(zones);
+  }
+
+  Future<void> _loadSubzones() async {
+    final szones =
+        await ZonesProvider.loadSubZones(customerBloc.getCustomer.location);
+    _subzonesController.sink.add(szones);
   }
 
   @override
@@ -229,9 +256,6 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
 
           customerBloc.getCustomer.city = snapshot.data!.descripcion;
           customerBloc.getCustomer.cityCode = snapshot.data!.codigo;
-          if (_citys != null) {
-            _zonesController.sink.add([]);
-          }
           return _citiesDropdown();
         } else {
           return _citiesDropdown();
@@ -241,223 +265,37 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   }
 
   Widget _zones() {
-    return StreamBuilder<List<ZoneModel>>(
-      //load city if already defined in customer data, if not load default city
-      stream: _zonesController.stream,
-      initialData: const [],
-      builder: (BuildContext context, AsyncSnapshot<List<ZoneModel>> snapshot) {
-        ZoneModel? _selectedZone;
-        try {
-          _selectedZone = snapshot.data
-              ?.where((element) =>
-                  element.zoneCode == customerBloc.getCustomer.location)
-              .first;
-        } catch (e) {
-          log(e);
-        }
-        return FutureBuilder<List<ZoneModel>?>(
-            future: (_citys != null && (snapshot.data?.isEmpty ?? true))
-                ? ZonesProvider.loadCityZones(_citys!.codigo!)
-                : null,
-            builder: (context, AsyncSnapshot snapshot1) {
-              if (snapshot.hasData && (snapshot.data?.isEmpty ?? false)) {
-                try {
-                  _zonesController.sink.add(snapshot1.data);
-                } catch (e) {
-                  log(e);
-                }
-              }
-              return DropdownSearch<ZoneModel>(
-                key: _zonesDropDownKey,
-                searchFieldProps: TextFieldProps(
-                  controller: _zoneController,
-                  // autofocus: true,
-                  decoration: InputDecoration(
-                    labelText: 'Zona',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        _zoneController.clear();
-                        if (_zoneController.text.isEmpty) {
-                          Navigator.pop(context);
-                        }
-                      },
-                    ),
-                  ),
-                ),
-                mode: Mode.BOTTOM_SHEET,
-                validator: (item) {
-                  if (item == null) return "Campo requerido";
-                  return null;
-                },
-                maxHeight: _size.width * 0.9,
-                dialogMaxWidth: _size.width * 0.8,
-                isFilteredOnline: true,
-                showClearButton: true,
-                showSelectedItems: true,
-                clearButton: const Icon(Icons.clear_rounded),
-                compareFn: (item, selectedItem) =>
-                    item?.zoneCode == selectedItem?.zoneCode,
-                showSearchBox: true,
-                selectedItem: _selectedZone,
-                dropdownSearchDecoration: InputDecoration(
-                  labelText: 'Zona :',
-                  labelStyle: TextStyle(color: _pc),
-                  filled: true,
-                  fillColor: Theme.of(context).inputDecorationTheme.fillColor,
-                ),
-                autoValidateMode: AutovalidateMode.onUserInteraction,
-                onFind: (String? filter) async {
-                  return snapshot.data
-                          ?.where((element) => element.zoneName
-                              .toUpperCase()
-                              .contains(filter?.toUpperCase() ?? ""))
-                          .toList() ??
-                      (<ZoneModel>[]);
-                },
-                onChanged: (data) async {
-                  if (customerBloc.getCustomer.location != data?.zoneCode) {
-                    customerBloc.getCustomer.location = data?.zoneCode;
-                    customerBloc.getCustomer.subzone = null;
-                    await _loadSubzones(null, reload: true);
-                  }
-                },
-                popupSafeArea:
-                    const PopupSafeAreaProps(top: true, bottom: true),
-                scrollbarProps: ScrollbarProps(
-                  isAlwaysShown: true,
-                  thickness: 7,
-                ),
-              );
-            });
-      },
-    );
+    return ZoneDropDown(
+        stream: _zonesController.stream,
+        dropDownKey: _zonesDropDownKey,
+        required: false,
+        onChange: (data) async {
+          if (data != null) {
+            if (data.id != customerBloc.getCustomer.location) {
+              customerBloc.getCustomer.location = data.id;
+              await _loadSubzones();
+              _subZoneDropDownKey.currentState?.changeSelectedItem(null);
+              await Future.delayed(const Duration(milliseconds: 500));
+              _subZoneDropDownKey.currentState?.openDropDownSearch();
+            }
+          } else {
+            customerBloc.getCustomer.location = data?.id;
+
+            _subZoneDropDownKey.currentState?.changeSelectedItem(null);
+          }
+        },
+        selectedZone: customerBloc.getCustomer.location);
   }
 
   Widget _subZones() {
-    return StreamBuilder<List<SubzoneModel>>(
-      //load city if already defined in customer data, if not load default city
-      stream: _subzonesController.stream,
-      initialData: const [],
-      builder:
-          (BuildContext context, AsyncSnapshot<List<SubzoneModel>> snapshot) {
-        SubzoneModel? _selectedSZone;
-        try {
-          _selectedSZone = snapshot.data
-              ?.where((element) =>
-                  element.subzoneCode == customerBloc.getCustomer.subzone)
-              .first;
-        } catch (e) {
-          log(e);
-        }
-        return FutureBuilder<List<SubzoneModel>?>(
-          future: (customerBloc.getCustomer.location != null &&
-                  (snapshot.data?.isEmpty ?? true))
-              ? ZonesProvider.loadSubZones(
-                  customerBloc.getCustomer.location ?? "")
-              : null,
-          builder: (context, AsyncSnapshot snapshot1) {
-            if (snapshot.hasData && !subzoneLoaded) {
-              subzoneLoaded = true;
-              try {
-                _subzonesController.sink.add(snapshot1.data);
-              } catch (e) {
-                log(e);
-              }
-            }
-            return DropdownSearch<SubzoneModel>(
-              key: _subZoneDropDownKey,
-              searchFieldProps: TextFieldProps(
-                controller: _subzoneController,
-                // autofocus: true,
-                decoration: InputDecoration(
-                  labelText: 'Barrio',
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      _subzoneController.clear();
-                      if (_subzoneController.text.isEmpty) {
-                        Navigator.pop(context);
-                      }
-                    },
-                  ),
-                ),
-              ),
-              mode: Mode.BOTTOM_SHEET,
-              validator: (item) {
-                if (item == null) return "Campo requerido";
-                return null;
-              },
-              maxHeight: _size.width * 0.9,
-              dialogMaxWidth: _size.width * 0.8,
-              isFilteredOnline: true,
-              showClearButton: true,
-              showSelectedItems: true,
-              clearButton: const Icon(Icons.clear_rounded),
-              compareFn: (item, selectedItem) =>
-                  item?.subzoneCode == selectedItem?.subzoneCode,
-              showSearchBox: true,
-              selectedItem: _selectedSZone,
-              dropdownSearchDecoration: InputDecoration(
-                labelText: 'Barrio :',
-                labelStyle: TextStyle(color: _pc),
-                filled: true,
-                fillColor: Theme.of(context).inputDecorationTheme.fillColor,
-              ),
-              autoValidateMode: AutovalidateMode.onUserInteraction,
-              onFind: (String? filter) async {
-                final data = snapshot.data?.where((element) {
-                  final result = element.subzoneName
-                      .toUpperCase()
-                      .contains(filter?.toUpperCase() ?? "");
-                  return result;
-                }).toList();
-                return data ?? (<SubzoneModel>[]);
-              },
-              onChanged: (data) async {
-                customerBloc.getCustomer.subzone = data?.subzoneCode;
-              },
-              popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
-              scrollbarProps: ScrollbarProps(
-                isAlwaysShown: true,
-                thickness: 7,
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Future<void> _loadCityZones(List<ZoneModel>? data,
-      {bool reload = false}) async {
-    if (reload) {
-      if (_citys != null) {
-        final zones = await ZonesProvider.loadCityZones(_citys!.codigo!);
-        _zonesController.sink.add(zones);
-      }
-    } else {
-      if (_citys != null && (data?.isEmpty ?? true)) {
-        final zones = await ZonesProvider.loadCityZones(_citys!.codigo!);
-        _zonesController.sink.add(zones);
-      }
-    }
-  }
-
-  Future<void> _loadSubzones(List<SubzoneModel>? data,
-      {bool reload = false}) async {
-    if (reload) {
-      final szones = await ZonesProvider.loadSubZones(
-          customerBloc.getCustomer.location ?? "");
-      _subzonesController.sink.add(szones);
-    } else {
-      if (customerBloc.getCustomer.subzone != null && (data?.isEmpty ?? true)) {
-        final szones = await ZonesProvider.loadSubZones(
-            customerBloc.getCustomer.location ?? "");
-
-        _subzonesController.sink.add(szones);
-      }
-    }
+    return SubZoneDropDown(
+        stream: _subzonesController.stream,
+        dropDownKey: _subZoneDropDownKey,
+        required: false,
+        onChange: (data) async {
+          customerBloc.getCustomer.subzone = data?.id;
+        },
+        selectedSZoneCode: customerBloc.getCustomer.subzone);
   }
 
   Widget _regimenTypeDropdown() {
@@ -539,16 +377,18 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       onFind: (String? filter) => CountriesProvider.loadFromDB(search: filter),
       onChanged: (data) async {
         if (data != null) {
-          _country = data;
+          if (data.codigo != customerBloc.getCustomer.country) {
+            customerBloc.getCustomer.country = data.codigo;
+            _statesDropDownKey.currentState?.changeSelectedItem(null);
+            await Future.delayed(const Duration(milliseconds: 500));
+            _statesDropDownKey.currentState?.openDropDownSearch();
+          }
+        } else {
+          customerBloc.getCustomer.country = data?.codigo;
 
           _statesDropDownKey.currentState?.changeSelectedItem(null);
-          await Future.delayed(const Duration(milliseconds: 500));
-          _statesDropDownKey.currentState?.openDropDownSearch();
-        } else {
-          _country = data;
-          _statesDropDownKey.currentState?.changeSelectedItem(null);
         }
-        customerBloc.getCustomer.country = data?.nombre;
+        _country = data;
       },
       // selectedItem: posBloc.getCustomer,
       popupItemBuilder: _customPopupCountriesItemBuilder,
@@ -626,16 +466,18 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
           StatesProvider.loadFromDB(search: filter, country: _country?.codigo),
       onChanged: (data) async {
         if (data != null) {
-          _states = data;
+          if (data.coddepartamento != customerBloc.getCustomer.state) {
+            customerBloc.getCustomer.state = data.coddepartamento;
+            _citiesDropDownKey.currentState?.changeSelectedItem(null);
+            await Future.delayed(const Duration(milliseconds: 500));
+            _citiesDropDownKey.currentState?.openDropDownSearch();
+          }
+        } else {
+          customerBloc.getCustomer.state = data?.coddepartamento;
 
           _citiesDropDownKey.currentState?.changeSelectedItem(null);
-          await Future.delayed(const Duration(milliseconds: 500));
-          _citiesDropDownKey.currentState?.openDropDownSearch();
-        } else {
-          _states = data;
-          _citiesDropDownKey.currentState?.changeSelectedItem(null);
         }
-        customerBloc.getCustomer.state = data?.departamento;
+        _states = data;
       },
       // selectedItem: posBloc.getCustomer,
       popupItemBuilder: _customPopupStatesItemBuilder,
@@ -713,11 +555,24 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       onFind: (String? filter) => CitiesProvider.loadFromDB(
           search: filter, departament: _states?.coddepartamento),
       onChanged: (data) async {
-        if (_citys?.codigo != data?.codigo) {
-          _citys = data;
+        if (data != null) {
+          if (data.codigo != customerBloc.getCustomer.cityCode) {
+            customerBloc.getCustomer.city = data.descripcion;
+            customerBloc.getCustomer.cityCode = data.codigo;
+            try {
+              await _loadCityZones();
+            } catch (e) {
+              log(e);
+            }
+
+            _zonesDropDownKey.currentState?.changeSelectedItem(null);
+            await Future.delayed(const Duration(milliseconds: 500));
+            _zonesDropDownKey.currentState?.openDropDownSearch();
+          }
+        } else {
+          _zonesDropDownKey.currentState?.changeSelectedItem(null);
           customerBloc.getCustomer.city = data?.descripcion;
           customerBloc.getCustomer.cityCode = data?.codigo;
-          await _loadCityZones(null, reload: true);
         }
       },
       // selectedItem: posBloc.getCustomer,

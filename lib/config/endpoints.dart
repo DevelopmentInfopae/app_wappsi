@@ -53,6 +53,7 @@ String addSupplierEndP = 'companies/newSupplier';
 
 /// Endpoint to create new company on sma_companies
 String addAddressEnd = 'addresses/newAddress';
+String addAddressZoneSZoneEnd = 'addresses/addAddressZoneSZone';
 
 //______________________________________________________________________________________________________________
 //
@@ -71,7 +72,9 @@ String addCompanyFavEndP = 'wishlist/addCompanyFavorites';
 //_______________________________________________________________________________________________________________
 
 /// Endpoint to send sale data
-String newOrderEndP = 'orders/new';
+const String newOrderEndP = 'orders/new';
+const String searchOrdersEndP = 'orders/findOrders';
+
 //______________________________________________________________________________________________________________
 //
 //                                        ERRORS ENDPOINTS

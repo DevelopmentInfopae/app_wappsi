@@ -9,11 +9,15 @@ import 'package:pos_wappsi/models/order_sale_items.dart';
 // import 'package:pos_wappsi/models/sale_model.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
+import 'package:pos_wappsi/providers/local_orders_provider.dart';
 import 'package:pos_wappsi/providers/order_sale_items_provider.dart';
+import 'package:pos_wappsi/providers/sync_db_provider.dart';
 
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
+
+import '../config/bd_sync.dart';
 
 class OrdersProvider {
   /// Send current pos data to server, if there is any changes between local db and server,
@@ -119,5 +123,45 @@ class OrdersProvider {
       "settings": settings,
       "footer": temp
     };
+  }
+
+  /// get new orders from server
+  static Future<bool> getOrdersFromServer(BuildContext context,
+      {String search = "", List<String>? filters, int limit = 30}) async {
+    try {
+      final localIds =
+          await LocalOrdersProvider.ordersIds(search: search, filters: filters);
+    // final currentBiller = dataBloc.userData!.billerId;
+
+      final res = await DataProvider().postPetition(
+          searchOrdersEndP,
+          {
+            "query": search,
+            "status_filter": filters,
+            "limit": limit,
+            "local_orders": localIds,
+            "biller_id":dataBloc.userData?.billerId
+          },
+          dataBloc.getHeaders());
+      if (res['status'] == -1) {
+        reloadDialog(
+            context,
+            res['body']['error_message'] ?? res['body']['message'],
+            'assets/images/dizzy-robot.png');
+      } else if (!(res['error'] ?? true)) {
+        final syncOptionName = tableNamesToSyncOpt['sma_order_sales']!;
+        // here this if condition is innesesary 'cause order_sales are specialSync
+        // if (specialSync.contains("Ordenes de pedido")) {
+          // final Map data = res['body']?['data']??{};
+          if(res['body']?['data'].isNotEmpty??false){
+            return await SyncDBProvider.addNewDataOnSpecialOption(syncOptionName, res);
+          }
+        //  }
+      }
+    } catch (e) {
+      logError(e, from: "Finding orders froms server");
+    }
+
+    return false;
   }
 }

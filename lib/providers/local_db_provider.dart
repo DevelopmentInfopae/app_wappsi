@@ -38,7 +38,7 @@ class DBProvider {
     // printConsole(path);
 
     // creation of db
-    return await openDatabase(path, version: 9, onOpen: (db) {},
+    return await openDatabase(path, version: 10, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       // table creation
 
@@ -136,7 +136,7 @@ class DBProvider {
         batch.insert(table, element,
             conflictAlgorithm: ConflictAlgorithm.replace);
       } catch (e) {
-        printConsole(e);
+        // printConsole(e);
         if (element is List) {
           if (element.isNotEmpty) {
             result =

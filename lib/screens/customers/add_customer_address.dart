@@ -1,4 +1,6 @@
 // ignore_for_file: implementation_imports, unused_field
+import 'dart:async';
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
@@ -8,6 +10,8 @@ import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/components/go_back_bottom.dart';
 import 'package:pos_wappsi/components/location/location_picker.dart';
+import 'package:pos_wappsi/components/location/subzone_dropdown.dart';
+import 'package:pos_wappsi/components/location/zone_dropdown.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/cities_model.dart';
@@ -21,6 +25,9 @@ import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
 import 'package:pos_wappsi/providers/states_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 
+import '../../models/subzone_model.dart';
+import '../../models/zone_model.dart';
+import '../../providers/zone_provider.dart';
 import '../../utils/text_formating/functions.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
@@ -35,11 +42,21 @@ class _NewAddressState extends State<NewAddress> {
   late Size _size;
   late Color _pc;
 
+  bool subzoneLoaded = false;
+
+  final StreamController<List<ZoneModel>> _zonesController =
+      StreamController<List<ZoneModel>>.broadcast();
+
+  final StreamController<List<SubzoneModel>> _subzonesController =
+      StreamController<List<SubzoneModel>>.broadcast();
+
   final TextEditingController _documentNController = TextEditingController();
   final TextEditingController _direccionController = TextEditingController();
   final TextEditingController _sucursalController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _zoneController = TextEditingController();
+  final TextEditingController _subzoneController = TextEditingController();
 
   CountriesModel? _country;
   StatesModel? _states;
@@ -51,6 +68,8 @@ class _NewAddressState extends State<NewAddress> {
 
   final _statesDropDownKey = GlobalKey<DropdownSearchState<StatesModel?>>();
   final _citiesDropDownKey = GlobalKey<DropdownSearchState<CitiesModel?>>();
+  final _zonesDropDownKey = GlobalKey<DropdownSearchState<ZoneModel?>>();
+  final _subZoneDropDownKey = GlobalKey<DropdownSearchState<SubzoneModel?>>();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -72,16 +91,23 @@ class _NewAddressState extends State<NewAddress> {
     if (customerBloc.disposed) {
       customerBloc.reload();
     }
+    _loadCityZones(init: true);
+    _loadSubzones(null, reload: true);
 
     _sucursalController.text = customerBloc.getAddress.sucursal ?? '';
     _direccionController.text = customerBloc.getAddress.direccion ?? '';
     _emailController.text = customerBloc.getAddress.email ?? '';
     _phoneController.text = customerBloc.getAddress.phone ?? '';
+
     super.initState();
   }
 
   @override
   void dispose() {
+    _zonesController.close();
+    _subzonesController.close();
+    _subzoneController.dispose();
+    _zoneController.dispose();
     _direccionFocus.dispose();
     _sucursalFocus.dispose();
     _phoneFocus.dispose();
@@ -94,6 +120,59 @@ class _NewAddressState extends State<NewAddress> {
     _documentNController.dispose();
 
     super.dispose();
+  }
+
+  // Future<void> _loadCityZones(List<ZoneModel>? data,
+  //     {bool reload = false}) async {
+  //     String? cityCode;
+  //   if (reload) {
+  //     if (customerBloc.getAddress.cityCode == null) {
+  //       final city = await CitiesProvider.defaultCity();
+  //       cityCode = city?.codigo;
+  //     } else {
+  //       cityCode = customerBloc.getAddress.cityCode;
+  //     }
+
+  //     final zones = await ZonesProvider.loadCityZones(cityCode ?? "");
+  //     _zonesController.sink.add(zones);
+  //   } else {
+  //     if (_citys != null && (data?.isEmpty ?? true)) {
+  //       final zones = await ZonesProvider.loadCityZones(
+  //           customerBloc.getAddress.cityCode ?? "");
+  //       _zonesController.sink.add(zones);
+  //     }
+  //   }
+  // }
+  Future<void> _loadCityZones({bool init = false}) async {
+    String? cityCode;
+    if (init) {
+      if (customerBloc.getAddress.cityCode == null) {
+        final city = await CitiesProvider.defaultCity();
+        cityCode = city?.codigo;
+      } else {
+        cityCode = customerBloc.getAddress.cityCode;
+      }
+    } else {
+      cityCode = customerBloc.getAddress.cityCode;
+    }
+    final zones = await ZonesProvider.loadCityZones(cityCode ?? "");
+    _zonesController.sink.add(zones);
+  }
+
+  Future<void> _loadSubzones(List<SubzoneModel>? data,
+      {bool reload = false}) async {
+    if (reload) {
+      final szones =
+          await ZonesProvider.loadSubZones(customerBloc.getAddress.location);
+      _subzonesController.sink.add(szones);
+    } else {
+      if (customerBloc.getAddress.subzone != null && (data?.isEmpty ?? true)) {
+        final szones =
+            await ZonesProvider.loadSubZones(customerBloc.getAddress.location);
+
+        _subzonesController.sink.add(szones);
+      }
+    }
   }
 
   @override
@@ -129,6 +208,8 @@ class _NewAddressState extends State<NewAddress> {
             _countries().withHeight(75).paddingSymmetric(vertical: 2),
             _state().withHeight(75).paddingSymmetric(vertical: 2),
             _cities().withHeight(75).paddingSymmetric(vertical: 2),
+            _zones().paddingSymmetric(vertical: 2),
+            _subZones().paddingSymmetric(vertical: 2),
             _locationSelector().paddingSymmetric(vertical: 4),
             _sucursal(),
             _direccion(),
@@ -202,6 +283,33 @@ class _NewAddressState extends State<NewAddress> {
         }
       },
     );
+  }
+
+  Widget _zones() {
+    return ZoneDropDown(
+        stream: _zonesController.stream,
+        dropDownKey: _zonesDropDownKey,
+        required: false,
+        onChange: (data) async {
+          if (customerBloc.getAddress.location != data?.id) {
+            customerBloc.getAddress.location = data?.id;
+            _subZoneDropDownKey.currentState?.changeSelectedItem(null);
+
+            await _loadSubzones(null, reload: true);
+          }
+        },
+        selectedZone: customerBloc.getAddress.location);
+  }
+
+  Widget _subZones() {
+    return SubZoneDropDown(
+        stream: _subzonesController.stream,
+        dropDownKey: _subZoneDropDownKey,
+        required: false,
+        onChange: (SubzoneModel? szone) {
+          customerBloc.getAddress.subzone = szone?.id;
+        },
+        selectedSZoneCode: customerBloc.getAddress.subzone);
   }
 
   Widget _locationSelector() {
@@ -358,7 +466,7 @@ class _NewAddressState extends State<NewAddress> {
         _country = data;
         customerBloc.getAddress.country = _country?.nombre;
       },
-      // selectedItem: posBloc.getCustomer,
+      // selectedItem: posBloc.getAddress,
       popupItemBuilder: _customPopupCountriesItemBuilder,
       popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
@@ -445,7 +553,7 @@ class _NewAddressState extends State<NewAddress> {
 
         customerBloc.getAddress.state = _states?.departamento;
       },
-      // selectedItem: posBloc.getCustomer,
+      // selectedItem: posBloc.getAddress,
       popupItemBuilder: _customPopupStatesItemBuilder,
       popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
 
@@ -520,12 +628,19 @@ class _NewAddressState extends State<NewAddress> {
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onFind: (String? filter) => CitiesProvider.loadFromDB(
           search: filter, departament: _states?.coddepartamento),
-      onChanged: (data) {
+      onChanged: (data) async {
         _citys = data;
-        customerBloc.getAddress.city = _citys?.descripcion;
-        customerBloc.getAddress.cityCode = _citys?.codigo;
+        if (_citys?.descripcion != customerBloc.getAddress.city) {
+          customerBloc.getAddress.city = _citys?.descripcion;
+          customerBloc.getAddress.cityCode = _citys?.codigo;
+
+          _zonesDropDownKey.currentState?.changeSelectedItem(null);
+          _subZoneDropDownKey.currentState?.changeSelectedItem(null);
+
+          await _loadCityZones();
+        }
       },
-      // selectedItem: posBloc.getCustomer,
+      // selectedItem: posBloc.getAddress,
       popupItemBuilder: _customPopupCitysItemBuilder,
       popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(

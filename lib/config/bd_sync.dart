@@ -1,5 +1,7 @@
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 
+
+/// To get sync option name with the table_name
 Map<String, String> tableNamesToSyncOpt = {
   'sma_products': 'Productos',
   'sma_addresses': 'Sucursales',

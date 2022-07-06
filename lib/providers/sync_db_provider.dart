@@ -241,7 +241,7 @@ class SyncDBProvider {
   ///This function is used to sync tables who have tables directly related, like sma_order_sales and
   ///sma_order_sale_items. If we dont have a unique constraint, we can delete before insert using delete_before
   ///param, with that we need to specify the identifierKey (id) and the columnName to build delete query.
-  Future<bool> _specialWriteIntoLocalDB(Map<String, dynamic> res,
+  static Future<bool> _specialWriteIntoLocalDB(Map res,
       {bool deleteBefore = false,
       String? idKey,
       String? independentTable,
@@ -282,7 +282,7 @@ class SyncDBProvider {
         });
       }
     }
-    // print(result);
+    print(result);
     return result;
   }
 
@@ -381,6 +381,30 @@ class SyncDBProvider {
     }
     return result;
   }
+
+  static Future<bool> addNewDataOnSpecialOption(
+      String option, Map data) async {
+    final optionInfo = enabledOptions[option]!;
+    return await _specialWriteIntoLocalDB(data,
+        deleteBefore:false,
+        independentTable: optionInfo['independent_table'],
+        dependentTable: optionInfo['dependent_table'],
+        dependentTable2: optionInfo['dependent_table2'],
+        idKey: optionInfo['id_key'],
+        columnName: optionInfo['column_name']);
+  }
+  
+  // static Future<bool> writeNewDataOnOption(
+  //     String option, Map data) async {
+  //   final optionInfo = enabledOptions[option];
+  //   return await _specialWriteIntoLocalDB(data,
+  //       deleteBefore: optionInfo!['delete_before'],
+  //       independentTable: optionInfo['independent_table'],
+  //       dependentTable: optionInfo['dependent_table'],
+  //       dependentTable2: optionInfo['dependent_table2'],
+  //       idKey: optionInfo['id_key'],
+  //       columnName: optionInfo['column_name']);
+  // }
 
   Future<Map> updateBillerData(BuildContext context) async {
     final res = await updateBillerTables();

@@ -27,9 +27,9 @@ class ZonesProvider {
     return list;
   }
 
-  static Future<List<SubzoneModel>> loadSubZones(String zoneCode) async {
+  static Future<List<SubzoneModel>> loadSubZones(int? idZone) async {
     final data = await DataProvider().postPetition(
-        subZonesEndP, {"zone_code": zoneCode}, dataBloc.getHeaders());
+        subZonesEndP, {"zone_id": idZone}, dataBloc.getHeaders());
     List<SubzoneModel> list = [];
     if (!(data['error'] ?? true)) {
       if (data["body"]['data'] is List) {

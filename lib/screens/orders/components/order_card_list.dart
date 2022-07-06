@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/order_model.dart';
 import 'package:pos_wappsi/providers/local_orders_provider.dart';
+import 'package:pos_wappsi/providers/orders_provider.dart';
 import 'package:pos_wappsi/screens/orders/print_order.dart';
-import 'package:pos_wappsi/utils/alerts.dart';
+// import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/text_formating/date_to_text.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:pos_wappsi/utils/text_formating/order_status_mapping.dart';
+
+import '../../../constant.dart';
 
 class OrdersCardList extends StatefulWidget {
   const OrdersCardList(
@@ -30,12 +32,18 @@ class _OrdersCardListState extends State<OrdersCardList> {
   late ScrollController _controller;
   late Size _size;
   bool _loading = false;
-  bool _allLoaded = false;
+  bool _allLocalLoaded = false;
   int _page = 1;
   @override
   void initState() {
     super.initState();
     _controller = ScrollController()..addListener(infinityScrollListener);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -47,7 +55,7 @@ class _OrdersCardListState extends State<OrdersCardList> {
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           controller: _controller,
           padding: EdgeInsets.zero,
-          itemCount: widget.orders.length + (_allLoaded ? 1 : 0),
+          itemCount: widget.orders.length + (_allLocalLoaded ? 1 : 0),
           physics: const AlwaysScrollableScrollPhysics(),
           separatorBuilder: (context, index) => const Divider(
             height: 5,
@@ -82,34 +90,55 @@ class _OrdersCardListState extends State<OrdersCardList> {
       });
 
       _loading = true;
-      final res = await LocalOrdersProvider.listLocalOrders(
+      List<OrderModel> res = await _findOrders();
+
+      if (res.isNotEmpty) {
+        setState(() {
+          // widget.products.clear();
+          widget.orders.addAll(res);
+          _page += 1;
+          _loading = false;
+        });
+      } else {
+        final findNewInServer = await OrdersProvider.getOrdersFromServer(
+          context,
           search: widget.searchParams['search'] ?? '',
           filters: widget.filters,
-          offset: true,
-          limit: 30,
-          offsetValue: _page * 30);
-      if (res != null) {
-        if (res.isNotEmpty) {
-          setState(() {
-            // widget.products.clear();
+        );
+        if (findNewInServer) {
+          List<OrderModel> res = await _findOrders();
+          _page += 1;
+          if (res.isNotEmpty) {
+            // widget.orders.clear();
             widget.orders.addAll(res);
-            _page += 1;
-            _loading = false;
-          });
+            // _controller.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.bounceInOut);
+            setState(() {
+              _loading = false;
+            });
+          } else {
+            setState(() {
+              _allLocalLoaded = true;
+              _loading = false;
+            });
+          }
         } else {
           setState(() {
-            _allLoaded = true;
+            _allLocalLoaded = true;
             _loading = false;
           });
         }
-      } else {
-        await confirmDialog(
-            context, 'Error al cargar datos', 'assets/images/dizzy-robot.png');
-        setState(() {
-          _loading = false;
-        });
       }
     }
+  }
+
+  Future<List<OrderModel>> _findOrders({bool offset = true}) async {
+    final res = await LocalOrdersProvider.listLocalOrders(
+        search: widget.searchParams['search'] ?? '',
+        filters: widget.filters,
+        offset: offset,
+        limit: 30,
+        offsetValue: _page * 30);
+    return res;
   }
 }
 

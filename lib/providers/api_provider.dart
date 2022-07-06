@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/environment/environment.dart';
@@ -106,6 +107,7 @@ class DataProvider {
       };
     } catch (e) {
       await logError(e, from: 'Api provider, http.post');
+      log(e);
       return {
         'status': 0,
         'error': true,

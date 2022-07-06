@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 
 import 'package:pos_wappsi/providers/companies_provider.dart';
+import 'package:pos_wappsi/utils/parsing/to_double.dart';
 
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
@@ -107,8 +108,8 @@ class CompanyModel {
   String? vatNo;
   String? digitoVerificacion;
   String? address;
-  String? location;
-  String? subzone;
+  int? location;
+  int? subzone;
   String? city;
   String? state;
   String? postalCode;
@@ -191,79 +192,78 @@ class CompanyModel {
 
   factory CompanyModel.fromJson(Map<String, dynamic> json) => CompanyModel(
         idCloud: json["id_cloud"].toString(),
-        id: json["id"]?.toString() ,
+        id: json["id"]?.toString(),
         groupId: json["group_id"].toString(),
-        groupName: json["group_name"]?.toString() ,
-        customerGroupId: json["customer_group_id"]?.toString() ,
-        customerGroupName: json["customer_group_name"] ,
-        typePerson: json["type_person"]?.toString() ,
-        name: json["name"] ?? json["company"] ,
-        firstName: json["first_name"]?.toString() ,
-        secondName: json["second_name"]?.toString() ,
-        firstLastname: json["first_lastname"]?.toString() ,
-        secondLastname: json["second_lastname"]?.toString() ,
-        company: json["company"] ?? json["name"] ,
-        commercialRegister: json["commercial_register"]?.toString() ,
-        tipoDocumento: json["tipo_documento"]?.toString() ,
-        documentCode: json["document_code"]?.toString() ,
-        vatNo: json["vat_no"]?.toString() ,
-        digitoVerificacion: json["digito_verificacion"]?.toString() ,
-        address: json["address"]?.toString() ,
-        location: json["location"]?.toString() ,
-        subzone: json["subzone"]?.toString() ,
-        city: json["city"] ,
-        state: json["state"] ,
-        postalCode: json["postal_code"]?.toString() ,
-        country: json["country"] ,
-        phone: json["phone"]?.toString() ,
-        email: json["email"]?.toString() ,
-        cf1: json["cf1"]?.toString() ,
-        cf2: json["cf2"]?.toString() ,
-        cf3: json["cf3"]?.toString() ,
-        cf4: json["cf4"]?.toString() ,
-        cf5: json["cf5"]?.toString() ,
-        cf6: json["cf6"]?.toString() ,
-        invoiceFooter: json["invoice_footer"] ,
-        paymentTerm: json["payment_term"]?.toString() ,
+        groupName: json["group_name"]?.toString(),
+        customerGroupId: json["customer_group_id"]?.toString(),
+        customerGroupName: json["customer_group_name"],
+        typePerson: json["type_person"]?.toString(),
+        name: json["name"] ?? json["company"],
+        firstName: json["first_name"]?.toString(),
+        secondName: json["second_name"]?.toString(),
+        firstLastname: json["first_lastname"]?.toString(),
+        secondLastname: json["second_lastname"]?.toString(),
+        company: json["company"] ?? json["name"],
+        commercialRegister: json["commercial_register"]?.toString(),
+        tipoDocumento: json["tipo_documento"]?.toString(),
+        documentCode: json["document_code"]?.toString(),
+        vatNo: json["vat_no"]?.toString(),
+        digitoVerificacion: json["digito_verificacion"]?.toString(),
+        address: json["address"]?.toString(),
+        location: parsingToIntNullable(json["location"]),
+        subzone: parsingToIntNullable(json["subzone"]),
+        city: json["city"],
+        state: json["state"],
+        postalCode: json["postal_code"]?.toString(),
+        country: json["country"],
+        phone: json["phone"]?.toString(),
+        email: json["email"]?.toString(),
+        cf1: json["cf1"]?.toString(),
+        cf2: json["cf2"]?.toString(),
+        cf3: json["cf3"]?.toString(),
+        cf4: json["cf4"]?.toString(),
+        cf5: json["cf5"]?.toString(),
+        cf6: json["cf6"]?.toString(),
+        invoiceFooter: json["invoice_footer"],
+        paymentTerm: json["payment_term"]?.toString(),
         logo: json["logo"] ?? 'logo.png',
-        awardPoints: json["award_poStrings"]?.toString() ,
+        awardPoints: json["award_poStrings"]?.toString(),
         depositAmount:
             double.tryParse(json["deposit_amount"].toString()) ?? 0.0,
-        priceGroupId: json["price_group_id"]?.toString() ,
-        priceGroupName: json["price_group_name"]?.toString() ,
-        idPartner: json["id_partner"] ,
-        tipoRegimen: json["tipo_regimen"]?.toString() ,
-        cityCode: json["city_code"] ,
-        status: json["status"]?.toString() ,
-        birthMonth: json["birth_month"]?.toString() ,
-        birthDay: json["birth_day"]?.toString() ,
-        customerOnlyForPos: json["customer_only_for_pos"]?.toString() ,
-        customerSellerIdAssigned:
-            int.tryParse(json["customer_seller_id_assigned"]?.toString()??'0') ,
-        customerSpecialDiscount:
-            json["customer_special_discount"]?.toString() ,
-        fuenteRetainer: json["fuente_retainer"]?.toString() ,
-        ivaRetainer: json["iva_retainer"]?.toString() ,
-        icaRetainer: json["ica_retainer"]?.toString() ,
-        defaultReteFuenteId: json["default_rete_fuente_id"]?.toString() ,
-        defaultReteIvaId: json["default_rete_iva_id"]?.toString() ,
-        defaultReteIcaId: json["default_rete_ica_id"]?.toString() ,
-        defaultReteOtherId: json["default_rete_other_id"]?.toString() ,
-        customerPaymentType: json["customer_payment_type"]?.toString() ,
+        priceGroupId: json["price_group_id"]?.toString(),
+        priceGroupName: json["price_group_name"]?.toString(),
+        idPartner: json["id_partner"],
+        tipoRegimen: json["tipo_regimen"]?.toString(),
+        cityCode: json["city_code"],
+        status: json["status"]?.toString(),
+        birthMonth: json["birth_month"]?.toString(),
+        birthDay: json["birth_day"]?.toString(),
+        customerOnlyForPos: json["customer_only_for_pos"]?.toString(),
+        customerSellerIdAssigned: int.tryParse(
+            json["customer_seller_id_assigned"]?.toString() ?? '0'),
+        customerSpecialDiscount: json["customer_special_discount"]?.toString(),
+        fuenteRetainer: json["fuente_retainer"]?.toString(),
+        ivaRetainer: json["iva_retainer"]?.toString(),
+        icaRetainer: json["ica_retainer"]?.toString(),
+        defaultReteFuenteId: json["default_rete_fuente_id"]?.toString(),
+        defaultReteIvaId: json["default_rete_iva_id"]?.toString(),
+        defaultReteIcaId: json["default_rete_ica_id"]?.toString(),
+        defaultReteOtherId: json["default_rete_other_id"]?.toString(),
+        customerPaymentType: json["customer_payment_type"]?.toString(),
         customerCreditLimit:
             double.tryParse(json["customercredit_limit"].toString()) ?? 0.0,
-        customerPaymentTerm: json["customer_payment_term"]?.toString() ,
+        customerPaymentTerm: json["customer_payment_term"]?.toString(),
         customerValidateMinBaseRetention:
-            json["customer_validate_min_base_retention"]?.toString() ,
-        gender: json["gender"]?.toString() ,
+            json["customer_validate_min_base_retention"]?.toString(),
+        gender: json["gender"]?.toString(),
         logoSquare: json["logo_square"] ?? 'logo.png',
-        taxExemptCustomer: json["tax_exempt_customer"]?.toString() ,
+        taxExemptCustomer: json["tax_exempt_customer"]?.toString(),
         initialAccountingBalanceTransferred:
-            json["initial_accounting_balance_transferred"]?.toString() ,
-        customerProfilePhoto: json["customer_profile_photo"]?.toString() ,
-        supplierType: json["supplier_type"]?.toString() ,
-        note: json["note"] ,
-        lastUpdate: json["last_update"] ,
+            json["initial_accounting_balance_transferred"]?.toString(),
+        customerProfilePhoto: json["customer_profile_photo"]?.toString(),
+        supplierType: json["supplier_type"]?.toString(),
+        note: json["note"],
+        lastUpdate: json["last_update"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -339,86 +339,94 @@ class CompanyModel {
         "last_update": lastUpdate,
       };
 
-  Map<String, dynamic> customerToJson({int? defaultCustGroup=1}) => {
+  Map<String, dynamic> customerToJson({int? defaultCustGroup = 1}) => {
         "group_id": groupId,
         "group_name": groupName,
         "customer_group_id": customerGroupId ?? defaultCustGroup,
         "customer_group_name": customerGroupName,
         "type_person": typePerson,
-        "name": (firstName  ?? '') +
-            ' ' +
-            ((secondName  ?? '' ' ') + ' '+ 
-                ((firstLastname  ?? '') + ' ') +
-                (secondLastname  ?? '')),
+        "name": buildName(),
         "first_name": firstName,
-        "second_name": secondName??'',
+        "second_name": secondName ?? '',
         "first_lastname": firstLastname,
-        "second_lastname": secondLastname??"",
+        "second_lastname": secondLastname ?? "",
         "company": company ??
-            ((firstName  ?? '') +
-                ' ' +
-                (((secondName ?? '') + ' ') +
-                    (firstLastname  ?? '') +
-                    ' ' +
-                    (secondLastname  ?? ''))),
-        "commercial_register": commercialRegister??"",
+            buildName(),
+        "commercial_register": commercialRegister ?? "",
         "tipo_documento": tipoDocumento,
         "document_code": documentCode,
         "vat_no": vatNo,
-        "digito_verificacion": digitoVerificacion ,
-        "address": address ,
-        "location": location ??"",
-        "subzone": subzone ,
-        "city": city ,
-        "state": state ,
-        "postal_code": postalCode ,
-        "country": country ,
-        "phone": phone ,
-        "email": email??"",
-        "cf1": cf1 ,
-        "cf2": cf2 ,
-        "cf3": cf3 ,
-        "cf4": cf4 ,
-        "cf5": cf5 ,
-        "cf6": cf6 ,
-        "invoice_footer": invoiceFooter ,
-        "payment_term": paymentTerm ,
-        "logo": logo ,
-        "deposit_amount": depositAmount ,
+        "digito_verificacion": digitoVerificacion,
+        "address": address,
+        "location": location ?? "",
+        "subzone": subzone,
+        "city": city,
+        "state": state,
+        "postal_code": postalCode,
+        "country": country,
+        "phone": phone,
+        "email": email ?? "",
+        "cf1": cf1,
+        "cf2": cf2,
+        "cf3": cf3,
+        "cf4": cf4,
+        "cf5": cf5,
+        "cf6": cf6,
+        "invoice_footer": invoiceFooter,
+        "payment_term": paymentTerm,
+        "logo": logo,
+        "deposit_amount": depositAmount,
         "price_group_id": (priceGroupId ?? '0'),
-        "price_group_name": priceGroupName ,
-        "id_partner": idPartner ,
-        "tipo_regimen": tipoRegimen ,
-        "city_code": cityCode ,
+        "price_group_name": priceGroupName,
+        "id_partner": idPartner,
+        "tipo_regimen": tipoRegimen,
+        "city_code": cityCode,
         "status": status ?? '1',
-        "birth_month": birthMonth ,
-        "birth_day": birthDay ,
-        "customer_only_for_pos": customerOnlyForPos??0,
+        "birth_month": birthMonth,
+        "birth_day": birthDay,
+        "customer_only_for_pos": customerOnlyForPos ?? 0,
         "customer_seller_id_assigned": customerSellerIdAssigned,
         "customer_special_discount": customerSpecialDiscount,
-        "fuente_retainer": fuenteRetainer ,
+        "fuente_retainer": fuenteRetainer,
         "iva_retainer": ivaRetainer,
         "ica_retainer": icaRetainer,
         "default_rete_fuente_id": defaultReteFuenteId,
-        "default_rete_iva_id": defaultReteIvaId ,
-        "default_rete_ica_id": defaultReteIcaId ,
-        "default_rete_other_id": defaultReteOtherId ,
-        "customer_payment_type": customerPaymentType ,
-        "customer_credit_limit": customerCreditLimit ,
-        "customer_payment_term": customerPaymentTerm ,
+        "default_rete_iva_id": defaultReteIvaId,
+        "default_rete_ica_id": defaultReteIcaId,
+        "default_rete_other_id": defaultReteOtherId,
+        "customer_payment_type": customerPaymentType,
+        "customer_credit_limit": customerCreditLimit,
+        "customer_payment_term": customerPaymentTerm,
         "customer_validate_min_base_retention":
-            customerValidateMinBaseRetention ,
-        "gender": gender ,
-        "logo_square": logoSquare ,
-        "tax_exempt_customer": taxExemptCustomer ,
+            customerValidateMinBaseRetention,
+        "gender": gender,
+        "logo_square": logoSquare,
+        "tax_exempt_customer": taxExemptCustomer,
         "initial_accounting_balance_transferred":
-            initialAccountingBalanceTransferred ,
-        "customer_profile_photo": customerProfilePhoto ,
-        "supplier_type": supplierType ,
+            initialAccountingBalanceTransferred,
+        "customer_profile_photo": customerProfilePhoto,
+        "supplier_type": supplierType,
         "note": note,
         // "last_update": lastUpdate,
       };
 
+  String buildName() {
+    String n = "";
+    if (firstName?.isNotEmpty ?? false) {
+      n += capitalizeText(firstName!) + " ";
+    }
+    if (secondName?.isNotEmpty ?? false) {
+      n += capitalizeText(secondName!) + " ";
+    }
+    if (firstLastname?.isNotEmpty ?? false) {
+      n += capitalizeText(firstLastname!) + " ";
+    }
+    if (secondLastname?.isNotEmpty ?? false) {
+      n += capitalizeText(secondLastname!) + " ";
+    }
+    return n;
+  }
+
   @override
-  String toString() => capitalizeText(name ?? company ?? firstName  ?? '');
+  String toString() => capitalizeText(name ?? company ?? firstName ?? '');
 }

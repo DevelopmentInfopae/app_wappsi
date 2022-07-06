@@ -14,20 +14,23 @@ import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
 class CustomerAddressesProvider {
-  static List<String> get _addressesColumns => [
-        "id",
-        "id_cloud",
-        "sucursal",
-        "company_id",
-        "country",
-        "state",
-        "direccion",
-        "city",
-        "vat_no",
-        "code",
-        "customer_group_id",
-        "price_group_id",
-      ];
+  // static List<String> get _addressesColumns => [
+  //       "id",
+  //       "id_cloud",
+  //       "sucursal",
+  //       "company_id",
+  //       "country",
+  //       "state",
+  //       "direccion",
+  //       "city_code",
+  //       "city",
+  //       "vat_no",
+  //       "code",
+  //       "customer_group_id",
+  //       "price_group_id",
+  //       "location",
+  //       "subzone"
+  //     ];
 
   /// Load default customer address
   static Future<CustomerAddressesModel?> selectDefaultAddrs(
@@ -198,7 +201,7 @@ class CustomerAddressesProvider {
       String searchs, String customerID) async {
     try {
       final res = await DBProvider.db.sqlQuery('sma_addresses',
-          columns: _addressesColumns,
+          // columns: _addressesColumns,
           where: '''
           company_id = $customerID AND (sucursal LIKE '%$searchs%' OR state 
           LIKE '%$searchs%' OR city LIKE '%$searchs%' OR country LIKE '%$searchs%')
@@ -295,5 +298,25 @@ class CustomerAddressesProvider {
 
       // Navigator.pop(context);
     }
+  }
+
+  /// Adds zone and subzone to selected address
+  static Future<bool> addZoneSZoneToAddress(BuildContext context,
+      {String? addressId, int? zoneId, int? subzoneId}) async {
+    final result = await DataProvider().postPetition(
+        addAddressZoneSZoneEnd,
+        {
+          "address_id": addressId,
+          "zone_id": zoneId,
+          "subzone_id": subzoneId
+        },
+        dataBloc.getHeaders());
+     if (result['status'] == -1) {
+      await reloadDialog(
+          context, result['body']['message'], 'assets/images/dizzy-robot.png');
+    } else if(!(result["error"]??true)){
+      return true;
+    }
+    return false;
   }
 }
