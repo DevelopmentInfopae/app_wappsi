@@ -170,6 +170,11 @@ class _DBSyncState extends State<DBSync> {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           confirmDialog(context, 'Base de datos sincronizada con exito',
               'assets/images/success.png');
+
+          /// set last_logged user to current_user value, used to perform bd operations 
+          /// on user change
+          await setValue("last_user", getStringAsync("current_user"));
+
           await Future.delayed(const Duration(seconds: 2));
           Navigator.pushAndRemoveUntil(
             context,

@@ -1,6 +1,7 @@
 // import 'dart:convert';
 import 'dart:io';
 
+import 'package:nb_utils/nb_utils.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
@@ -33,12 +34,12 @@ class DBProvider {
   Future<Database> initDB() async {
     // Path where DB will be stored
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-
-    final path = join(documentsDirectory.path, 'SmaDB.db');
+    int dbVersion = 10;
+    final path = join(documentsDirectory.path, 'SmaDBv$dbVersion.db');
     // printConsole(path);
 
     // creation of db
-    return await openDatabase(path, version: 10, onOpen: (db) {},
+    final db = await openDatabase(path, version: dbVersion, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       // table creation
 
@@ -118,6 +119,18 @@ class DBProvider {
         printConsole(e);
       }
     });
+
+    if (getStringAsync("current_user") != getStringAsync("last_user") &&
+        getStringAsync("last_user").isNotEmpty) {
+      await reloadTable("sync", DbUpdatesSql, db);
+    }
+    return db;
+  }
+
+  Future<void> reloadTable(
+      String tableName, String tableSqlite, Database db) async {
+    await db.rawQuery("DROP TABLE IF EXISTS $tableName");
+    await db.execute(tableSqlite);
   }
 
   ///-----------------------------------------------------------------------------

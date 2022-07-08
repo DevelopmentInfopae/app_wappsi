@@ -163,19 +163,32 @@ Widget headerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
             TextSpan(text: customer['phone'] ?? '', style: textTheme.bodyText1)
           ])),
       zoneSzoneData.isNotEmpty
-          ? RichText(
-              text: TextSpan(
-                  text: 'Zona / Barrio: ',
-                  style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
-                  children: [
-                  TextSpan(
-                      text: capitalizeText(
-                          (zoneSzoneData['zone_data']?["zone_name"] ?? '--') +
-                              ' / ' +
-                              (zoneSzoneData['subzone_data']?["subzone_name"] ??
-                                  '--')),
-                      style: textTheme.bodyText1)
-                ]))
+          ? Column(
+              children: [
+                RichText(
+                    text: TextSpan(
+                        text: 'Zona: ',
+                        style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+                        children: [
+                      TextSpan(
+                          text: capitalizeText((zoneSzoneData['zone_data']
+                                  ?["zone_name"] ??
+                              '--')),
+                          style: textTheme.bodyText1)
+                    ])),
+                RichText(
+                    text: TextSpan(
+                        text: 'Barrio: ',
+                        style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+                        children: [
+                      TextSpan(
+                          text: capitalizeText((zoneSzoneData['subzone_data']
+                                  ?["subzone_name"] ??
+                              '--')),
+                          style: textTheme.bodyText1)
+                    ])),
+              ],
+            )
           : Container(),
       RichText(
           text: TextSpan(

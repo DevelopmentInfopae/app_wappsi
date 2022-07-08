@@ -384,11 +384,12 @@ class PrintFormat {
     ];
 
     if (printAddrLocation) {
-      labelsCustomer.add('Zona/Barrio: ');
+      labelsCustomer.add('Zona:  ');
+      valuesCustomer.add(
+          capitalizeText((zoneSzoneData['zone_data']?["zone_name"] ?? '--')));
+      labelsCustomer.add('Barrio:  ');
       valuesCustomer.add(capitalizeText(
-          (zoneSzoneData['zone_data']?["zone_name"] ?? '--') +
-              ' / ' +
-              (zoneSzoneData['subzone_data']?["subzone_name"] ?? '--')));
+          (zoneSzoneData['subzone_data']?["subzone_name"] ?? '--')));
     }
     labelsCustomer.add('Email: ');
     valuesCustomer.add(customer['email'].toString());

@@ -127,7 +127,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
           dataBloc.userData!.allowDiscount == 1
               ? _orderDiscount().paddingSymmetric(vertical: 6)
               : Container(),
-          dataBloc.settings!['management_order_sale_delivery_time'] == 1
+          dataBloc.settings!['management_order_sale_delivery_time'] != 1
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

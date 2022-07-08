@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 // import 'package:flutter/services.dart';
@@ -135,7 +136,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
 
       final res = await loginForm.login(override: override);
 
-      _action(res, loginForm, context, override);
+      await _action(res, loginForm, context, override);
 
       // hide loading snackbar
 
@@ -144,13 +145,17 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
     }
   }
 
-  void _saveData(Map res) {
+  Future<void> _saveData(Map res) async{
     //______________________________________________________________________________________________________________
     //
     //                                    SAVE DATA INTO USER PROVIDER
     //_______________________________________________________________________________________________________________
 
     dataBloc.setUserData(UserModel.fromJson(res['body']['user_data']));
+
+    /// set current logged user id on sharedprefs
+    // set current user value 
+    await setValue("current_user",dataBloc.userData?.id);
 
     //______________________________________________________________________________________________________________
     //
@@ -191,8 +196,8 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
   //                                 WHAT TO DO IN ANY RESPONSE STATUS
   //_______________________________________________________________________________________________________________
 
-  void _action(Map res, LoginFormProvider loginForm, BuildContext context,
-      bool override) {
+  Future<void> _action(Map res, LoginFormProvider loginForm, BuildContext context,
+      bool override) async{
     if (res['body']['logged'] ?? false) {
       // ScaffoldMessenger.of(context).hideCurrentSnackBar();
       Navigator.pop(context);
@@ -210,6 +215,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
       loginForm.isLoading = false;
       userFocusNode.requestFocus();
     } else if (res['status'] == 1) {
+      
       _navigate(context, res);
     } else {
       // hide loading snackbar
@@ -220,11 +226,13 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
     }
   }
 
-  void _navigate(BuildContext context, Map res) {
+  Future<void> _navigate(BuildContext context, Map res) async{
     // ScaffoldMessenger.of(context).hideCurrentSnackBar();
     Navigator.pop(context);
 
-    _saveData(res);
+    // change current user value
+
+    await _saveData(res);
     //route to go
     String route = '/cash';
 

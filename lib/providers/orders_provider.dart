@@ -52,9 +52,9 @@ class OrdersProvider {
             'assets/images/dizzy-robot.png');
       } else {
         if (res['error'] ?? true) {
-          if (res['body']['data'] != [] &&
-              res['body']['data'] != null &&
-              res['body']['sync']) {
+          if (res['body']?['data'] != [] &&
+              res['body']?['data'] != null &&
+              (res['body']?['sync']??false)) {
             hideCurrentScaffoldAlert(context);
             scaffoldAlert(
                 context,
@@ -62,7 +62,7 @@ class OrdersProvider {
                 const Duration(seconds: 2));
           } else {
             confirmDialog(context, res['body']['message'] ?? res['message'],
-                'assets/images/browser.png');
+                'assets/images/warning.png');
           }
         } else {
           scaffoldAlert(context, 'Pedido creado', const Duration(seconds: 1));
