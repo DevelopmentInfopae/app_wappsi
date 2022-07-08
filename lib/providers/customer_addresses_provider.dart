@@ -257,7 +257,7 @@ class CustomerAddressesProvider {
 
     customerBloc.getAddress.code = (customer.vatNo ?? '') + '-' + nAddress;
 
-    final body = customerBloc.getAddress.toJson();
+    final body = customerBloc.getAddress.toJson(toCreate: true);
 
     scaffoldAlert(context, 'Creando sucursal', const Duration(seconds: 10),
         key: UniqueKey());
