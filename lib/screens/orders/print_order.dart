@@ -95,7 +95,7 @@ class _PrintOrderState extends State<PrintOrder> {
               emptyLine(),
               orderRef(textTheme, widget.printData),
               emptyLine(),
-              billerData(textTheme, widget.printData)
+              headerData(textTheme, widget.printData)
                   .withWidth(_size.width * 0.85)
                   .paddingSymmetric(horizontal: 10),
               emptyLine(),

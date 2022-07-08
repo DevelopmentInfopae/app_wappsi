@@ -111,7 +111,7 @@ class _PrintFavState extends State<PrintFav> {
               legalInformation(textTheme, widget.printData),
               emptyLine(),
               emptyLine(),
-              billerData(textTheme, widget.printData)
+              headerData(textTheme, widget.printData)
                   .withWidth(_size.width * 0.75)
                   .paddingSymmetric(horizontal: 10),
               emptyLine(),

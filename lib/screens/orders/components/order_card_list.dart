@@ -160,7 +160,7 @@ class OrdersCard extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         PrintOrder(
-          printData: await order.buildPrintDataMap(),
+          printData: await LocalOrdersProvider.buildPrintDataMap(order),
           back: true,
           exitToNewOrder: false,
         ).launch(context);

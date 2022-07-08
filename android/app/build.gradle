@@ -43,8 +43,8 @@ android {
         minSdkVersion 20
         targetSdkVersion 30
         // lapappaya
-        versionCode 15
-        versionName "1.0.15"
+        versionCode 17
+        versionName "1.0.17"
         // dulcelandia
         // versionCode 2
         // versionName "1.0.2"

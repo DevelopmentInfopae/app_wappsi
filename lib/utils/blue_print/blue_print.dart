@@ -356,6 +356,7 @@ class PrintFormat {
     final customer = printData?['customer'];
     final customerAddres =
         printData?['customer_address'] ?? printData?['customer'];
+    final Map zoneSzoneData = printData?['zone_szone_data'] ?? {};
     final companyData = printData?['company_data'];
     final regType = settings?['tipo_regimen'];
 
@@ -383,8 +384,11 @@ class PrintFormat {
     ];
 
     if (printAddrLocation) {
-      labelsCustomer.add('Zona:    ');
-      valuesCustomer.add(customerAddres['location'] ?? 'No registrada');
+      labelsCustomer.add('Zona/Barrio: ');
+      valuesCustomer.add(capitalizeText(
+          (zoneSzoneData['zone_data']?["zone_name"] ?? '--') +
+              ' / ' +
+              (zoneSzoneData['subzone_data']?["subzone_name"] ?? '--')));
     }
     labelsCustomer.add('Email: ');
     valuesCustomer.add(customer['email'].toString());

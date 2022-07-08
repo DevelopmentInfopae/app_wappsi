@@ -4,6 +4,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 
 import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/components/location/zone_szone_data.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 
 import 'package:pos_wappsi/constant.dart';
@@ -114,10 +115,14 @@ class _CustomerDetailsState extends State<CustomerDetails> {
         child: ListView(
           padding: const EdgeInsets.all(5),
           children: [
-            labelContent('Drección ', widget.customer.address ?? ''),
-            hDivider(),
             labelContent('Ubicación ',
                 '${widget.customer.city ?? ''} ${widget.customer.state ?? ''}-${widget.customer.country ?? ''}'),
+            hDivider(),
+            labelContent('Drección ', widget.customer.address ?? ''),
+            hDivider(),
+            ZoneSZoneData(
+                zoneId: widget.customer.location,
+                subzoneId: widget.customer.subzone),
             hDivider(),
             labelContent('Email ', widget.customer.email ?? ''),
             hDivider(),
@@ -128,7 +133,8 @@ class _CustomerDetailsState extends State<CustomerDetails> {
             hDivider(),
             labelContent(
                 'Descuentos ', widget.customer.customerGroupName ?? ''),
-            hDivider(),
+            // hDivider(),
+
             // futureLabelContent(DBProvider.db.findCustomerDiscount(customer.customerGroupId??1), 'name', 'Marca')
           ],
         ));

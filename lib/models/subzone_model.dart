@@ -55,6 +55,10 @@ class SubzoneModel {
     // prString(temp);
   }
 
+  String capitalizeSubzoneName(){
+    return capitalizeText(subzoneName);
+  }
+
   @override
   String toString() {
     return capitalizeText(subzoneName);

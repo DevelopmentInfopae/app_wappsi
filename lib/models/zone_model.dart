@@ -53,6 +53,10 @@ class ZoneModel {
     // prString(temp);
   }
 
+  String capitalizeZoneName(){
+    return capitalizeText(zoneName);
+  }
+
   @override
   String toString() {
     return capitalizeText(zoneName);

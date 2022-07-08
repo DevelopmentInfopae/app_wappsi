@@ -101,7 +101,7 @@ class _PrintSaleState extends State<PrintSale> {
               emptyLine(),
               invoiceRef(textTheme, widget.printData),
               emptyLine(),
-              billerData(textTheme, widget.printData)
+              headerData(textTheme, widget.printData)
                   .withWidth(_size.width * 0.75)
                   .paddingSymmetric(horizontal: 10),
               emptyLine(),

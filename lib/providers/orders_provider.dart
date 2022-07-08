@@ -12,6 +12,7 @@ import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/local_orders_provider.dart';
 import 'package:pos_wappsi/providers/order_sale_items_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
+import 'package:pos_wappsi/providers/zone_provider.dart';
 
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
@@ -112,6 +113,10 @@ class OrdersProvider {
       "products": await orderBloc.getProductsListMap(),
       "customer": orderBloc.getCustomer!.toJson(),
       "customer_address": orderBloc.getCustomerAddresses!.toJson(),
+      "zone_szone_data": await ZonesProvider.getZoneSzoneDataJson(
+          zoneId: orderBloc.getCustomerAddresses?.location,
+          subzoneId: orderBloc.getCustomerAddresses?.subzone
+      ),
       "order_data": order,
       "pos_note": orderBloc.getOrderNote ?? '',
       "total": order['total'],
@@ -131,7 +136,7 @@ class OrdersProvider {
     try {
       final localIds =
           await LocalOrdersProvider.ordersIds(search: search, filters: filters);
-    // final currentBiller = dataBloc.userData!.billerId;
+      // final currentBiller = dataBloc.userData!.billerId;
 
       final res = await DataProvider().postPetition(
           searchOrdersEndP,
@@ -140,7 +145,7 @@ class OrdersProvider {
             "status_filter": filters,
             "limit": limit,
             "local_orders": localIds,
-            "biller_id":dataBloc.userData?.billerId
+            "biller_id": dataBloc.userData?.billerId
           },
           dataBloc.getHeaders());
       if (res['status'] == -1) {
@@ -152,10 +157,11 @@ class OrdersProvider {
         final syncOptionName = tableNamesToSyncOpt['sma_order_sales']!;
         // here this if condition is innesesary 'cause order_sales are specialSync
         // if (specialSync.contains("Ordenes de pedido")) {
-          // final Map data = res['body']?['data']??{};
-          if(res['body']?['data'].isNotEmpty??false){
-            return await SyncDBProvider.addNewDataOnSpecialOption(syncOptionName, res);
-          }
+        // final Map data = res['body']?['data']??{};
+        if (res['body']?['data'].isNotEmpty ?? false) {
+          return await SyncDBProvider.addNewDataOnSpecialOption(
+              syncOptionName, res);
+        }
         //  }
       }
     } catch (e) {

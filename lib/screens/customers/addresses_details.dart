@@ -17,6 +17,7 @@ import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
+import '../../components/location/zone_szone_data.dart';
 import '../../utils/location/custom_controller.dart';
 
 class AddressDetails extends StatefulWidget {
@@ -91,17 +92,6 @@ class _AddressDetailsState extends State<AddressDetails> {
       children: [
         _addressHead(context).paddingOnly(left: 10, right: 10, bottom: 5),
         _addressDetails().paddingOnly(left: 10, right: 10, bottom: 5).expand(),
-        // bottom(
-        //     Row(
-        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //       children: [
-        //         const GoBackBottom(),
-        //         // _addresses(context),
-        //         // _favorites(context),
-        //       ],
-        //     ),
-        //     pColor,
-        //     size)
       ],
     );
   }
@@ -138,13 +128,13 @@ class _AddressDetailsState extends State<AddressDetails> {
               crossAxisAlignment: CrossAxisAlignment.start,
               // padding: const EdgeInsets.all(5),
               children: [
+                labelContent('Telefono ', widget.address.phone ?? ''),
+                hDivider(),
                 labelContent('Ubicación ', stateCity),
                 hDivider(),
                 labelContent('Dirección ', widget.address.direccion ?? ''),
                 hDivider(),
-                labelContent('Telefono ', widget.address.phone ?? ''),
-                // hDivider(),
-                // futureLabelContent(DBProvider.db.findCustomerDiscount(customer.customerGroupId??1), 'name', 'Marca')
+                _zoneSzoneInfo(),
               ],
             )),
         Card(
@@ -156,6 +146,15 @@ class _AddressDetailsState extends State<AddressDetails> {
                     : Container())
             .expand(),
       ],
+    );
+  }
+
+  Widget _zoneSzoneInfo() {
+    int? zoneId = widget.address.location;
+    int? subzoneId = widget.address.subzone;
+    return ZoneSZoneData(
+      zoneId: zoneId,
+      subzoneId: subzoneId,
     );
   }
 

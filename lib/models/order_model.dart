@@ -491,85 +491,85 @@ class OrderModel {
         payPartner: 0);
   }
 
-  Future<Map> buildPrintDataMap() async {
-    final customer =
-        await CompaniesProvider.getCompanyById(customerId.toString());
-    final biller = await CompaniesProvider.getCompanyById(billerId.toString());
-    final billerData =
-        await BillerDataProvider.loadBillerDataId(billerId.toString());
-    final customerAddress = await CustomerAddressesProvider.loadCustomerAddress(
-        addressId.toString());
-    // Load only first sale payment
+  // Future<Map> buildPrintDataMap() async {
+  //   final customer =
+  //       await CompaniesProvider.getCompanyById(customerId.toString());
+  //   final biller = await CompaniesProvider.getCompanyById(billerId.toString());
+  //   final billerData =
+  //       await BillerDataProvider.loadBillerDataId(billerId.toString());
+  //   final customerAddress = await CustomerAddressesProvider.loadCustomerAddress(
+  //       addressId.toString());
+  //   // Load only first sale payment
 
-    final settings = dataBloc.settings;
-    final docDetails =
-        await DBProvider.db.getDocumentDetails(documentTypeId.toString());
-    final temp = removeRareSpaceChr(docDetails?['invoice_footer'] ?? '');
+  //   final settings = dataBloc.settings;
+  //   final docDetails =
+  //       await DBProvider.db.getDocumentDetails(documentTypeId.toString());
+  //   final temp = removeRareSpaceChr(docDetails?['invoice_footer'] ?? '');
 
-    final productsInfo = await _productsMap(idCloud!);
+  //   final productsInfo = await _productsMap(idCloud!);
 
-    return {
-      "products": productsInfo['products'],
-      "customer": customer?.toJson() ?? {},
-      "customer_address": customerAddress?.toJson() ?? {},
-      "order_data": {
-        'reference_no': referenceNo,
-        'resolucion': resolucion,
-        'date': registrationDate
-      },
-      "pos_note": note ?? '',
-      "total": total,
-      "grand_total": grandTotal,
-      "products_discount": productDiscount,
-      "order_discount": orderDiscount,
-      "total_discount": totalDiscount,
-      "iva": productsInfo['iva'],
-      "company_data": biller,
-      "biller_data": billerData,
-      "settings": settings,
-      "footer": temp
-    };
-  }
+  //   return {
+  //     "products": productsInfo['products'],
+  //     "customer": customer?.toJson() ?? {},
+  //     "customer_address": customerAddress?.toJson() ?? {},
+  //     "order_data": {
+  //       'reference_no': referenceNo,
+  //       'resolucion': resolucion,
+  //       'date': registrationDate
+  //     },
+  //     "pos_note": note ?? '',
+  //     "total": total,
+  //     "grand_total": grandTotal,
+  //     "products_discount": productDiscount,
+  //     "order_discount": orderDiscount,
+  //     "total_discount": totalDiscount,
+  //     "iva": productsInfo['iva'],
+  //     "company_data": biller,
+  //     "biller_data": billerData,
+  //     "settings": settings,
+  //     "footer": temp
+  //   };
+  // }
 
-  static Future<Map<String, dynamic>> _productsMap(int saleId) async {
-    final saleItems = await OrderSaleItemsProvider.loadFromDB(saleId);
+  // static Future<Map<String, dynamic>> _productsMap(int saleId) async {
+  //   final saleItems = await OrderSaleItemsProvider.loadFromDB(saleId);
 
-    List<Map<String, dynamic>> productsMap = [];
-    Map<double, dynamic> ivasMap = {};
-    try {
-      for (var item in saleItems) {
-        final unit = await UnitsProvider.getUnitInfo(item.productUnitId);
-        final bUnit = await UnitsProvider.getUnitInfo(unit?.baseUnit);
-        final tItempMap = {
-          'quantity': item.quantity,
-          'price': item.unitPrice,
-          'name': item.productName,
-          'unit': unit?.toJson(),
-          'preferences': item.preferences,
-          'base_unit': bUnit?.toJson()
-        };
-        productsMap.add(tItempMap);
-        final taxRate =
-            roundDouble((item.unitPrice / item.netUnitPrice) - 1, 2);
-        if (ivasMap.containsKey(taxRate)) {
-          ivasMap[taxRate]['value'] =
-              ivasMap[taxRate]['value'] + (item.priceBeforeTax * item.quantity);
-        } else {
-          ivasMap[taxRate] = {
-            'value': (item.priceBeforeTax * item.quantity),
-            'name': item.tax
-          };
-        }
-      }
-    } catch (e) {
-      await logError(e, from: 'OrderModel, _productsMap');
-      // printConsole(e);
-      return {};
-    }
+  //   List<Map<String, dynamic>> productsMap = [];
+  //   Map<double, dynamic> ivasMap = {};
+  //   try {
+  //     for (var item in saleItems) {
+  //       final unit = await UnitsProvider.getUnitInfo(item.productUnitId);
+  //       final bUnit = await UnitsProvider.getUnitInfo(unit?.baseUnit);
+  //       final tItempMap = {
+  //         'quantity': item.quantity,
+  //         'price': item.unitPrice,
+  //         'name': item.productName,
+  //         'unit': unit?.toJson(),
+  //         'preferences': item.preferences,
+  //         'base_unit': bUnit?.toJson()
+  //       };
+  //       productsMap.add(tItempMap);
+  //       final taxRate =
+  //           roundDouble((item.unitPrice / item.netUnitPrice) - 1, 2);
+  //       if (ivasMap.containsKey(taxRate)) {
+  //         ivasMap[taxRate]['value'] =
+  //             ivasMap[taxRate]['value'] + (item.priceBeforeTax * item.quantity);
+  //       } else {
+  //         ivasMap[taxRate] = {
+  //           'value': (item.priceBeforeTax * item.quantity),
+  //           'name': item.tax
+  //         };
+  //       }
+  //     }
+  //   } catch (e) {
+  //     await logError(e, from: 'OrderModel, _productsMap');
+  //     // printConsole(e);
+  //     return {};
+  //   }
 
-    return {
-      'iva': ivasMap,
-      'products': productsMap,
-    };
-  }
+  //   return {
+  //     'iva': ivasMap,
+  //     'products': productsMap,
+  //   };
+  // }
 }

@@ -116,12 +116,13 @@ Widget quoteRef(TextTheme textTheme, Map<dynamic, dynamic> printData) {
   );
 }
 
-Widget billerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
+Widget headerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
   final customer = printData['customer'];
   final data = printData['sale_data']?['data'] ??
       printData['sale_data'] ??
       printData['sale_data'];
   final sellerName = dataBloc.userData!.sellerName;
+  final Map zoneSzoneData = printData['zone_szone_data'] ?? {};
   final date = data != null
       ? data['date'] ?? data['current_server_date'] ?? ''
       : DateTime.now().toString();
@@ -161,6 +162,21 @@ Widget billerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
               children: [
             TextSpan(text: customer['phone'] ?? '', style: textTheme.bodyText1)
           ])),
+      zoneSzoneData.isNotEmpty
+          ? RichText(
+              text: TextSpan(
+                  text: 'Zona / Barrio: ',
+                  style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+                  children: [
+                  TextSpan(
+                      text: capitalizeText(
+                          (zoneSzoneData['zone_data']?["zone_name"] ?? '--') +
+                              ' / ' +
+                              (zoneSzoneData['subzone_data']?["subzone_name"] ??
+                                  '--')),
+                      style: textTheme.bodyText1)
+                ]))
+          : Container(),
       RichText(
           text: TextSpan(
               text: 'Dirección: ',
@@ -174,7 +190,7 @@ Widget billerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
           ])),
       Text(
         customer['email'] ?? '',
-        style: textTheme.bodyText1,
+        style: textTheme.bodyText1?.apply(fontWeightDelta: 2),
       ),
       RichText(
           text: TextSpan(

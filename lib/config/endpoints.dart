@@ -116,3 +116,5 @@ String avaibleDelTimeEndP = 'deliveryTime/getDeliveryTimes';
 const String cityZonesEndP = "/locations/cityZones";
 
 const String subZonesEndP = "/locations/zoneSubzones";
+
+const String locationDataEndP = "locations/locationData";
