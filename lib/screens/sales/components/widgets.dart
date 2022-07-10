@@ -49,6 +49,7 @@ Widget subTotal(
 
 Widget _totalLarge(BuildContext context, String value, {Color? color}) {
   return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
     children: [
       Text("Total: ", style: buttonsSmallTextStyle(context, color: color)),
       totalValue(context, value, color: color).paddingOnly(right: 8),

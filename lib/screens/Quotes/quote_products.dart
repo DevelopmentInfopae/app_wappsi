@@ -237,7 +237,7 @@ class _QuoteProductsState extends State<QuoteProducts> {
       elevation: 0,
       // padding: EdgeInsets.symmetric(horizontal: 5),
       // border: BorderSide(color: _pc, width: 1),
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(radius2),
 
       margins: EdgeInsets.zero,
       hint: 'Buscar producto',
@@ -426,7 +426,7 @@ class _QuoteProductsState extends State<QuoteProducts> {
       padding: kButtonPadding,
       color: Colors.white,
       shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radius2),
           side: const BorderSide(color: pColor)),
       width: 10,
       onTap: () async {

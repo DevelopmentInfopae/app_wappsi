@@ -174,7 +174,7 @@ class PurchaseCard extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
                 color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10)),
+                borderRadius: BorderRadius.circular(radius2)),
             padding: const EdgeInsets.all(4),
             child: Column(
               children: [
@@ -214,7 +214,7 @@ class PurchaseCard extends StatelessWidget {
           width: 110,
           decoration: BoxDecoration(
               color: cardColors['background'],
-              borderRadius: BorderRadius.circular(10)),
+              borderRadius: BorderRadius.circular(radius2)),
           child: Text(
             mapStatusText(purchase.status ?? ''),
             textAlign: TextAlign.center,

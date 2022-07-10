@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
-import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/components/back_app_bar.dart';

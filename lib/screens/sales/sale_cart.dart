@@ -241,7 +241,7 @@ class _SaleCartState extends State<SaleCart> {
       elevation: 0,
       // padding: EdgeInsets.symmetric(horizontal: 8),
       // border: BorderSide(color: _pc, width: 1),
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(radius2),
       margins: EdgeInsets.zero,
       hint: 'Buscar producto',
       actions: [
@@ -442,7 +442,7 @@ class _SaleCartState extends State<SaleCart> {
       padding: kButtonPadding,
       color: Colors.white,
       shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radius2),
           side: const BorderSide(color: pColor)),
       width: 10,
       onTap: () async {

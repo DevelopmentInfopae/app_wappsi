@@ -116,7 +116,7 @@ class _AddFavoritesState extends State<AddFavorites> {
       elevation: 0,
       padding: const EdgeInsets.symmetric(horizontal: 5),
       // border: BorderSide(color: _pc, width: 1),
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(radius2),
       margins: EdgeInsets.zero,
       hint: 'Buscar producto',
       actions: [
@@ -186,7 +186,7 @@ class _AddFavoritesState extends State<AddFavorites> {
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         decoration: BoxDecoration(
                             color: Colors.red,
-                            borderRadius: BorderRadius.circular(10)),
+                            borderRadius: BorderRadius.circular(radius2)),
                         child: Row(
                           children: [
                             Icon(

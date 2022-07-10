@@ -29,7 +29,7 @@
 //               width: 172.0,
 //               decoration: BoxDecoration(
 //                 color: Colors.white,
-//                 borderRadius: BorderRadius.circular(10),
+//                 borderRadius: BorderRadius.circular(radius2),
 //                 ),
 //               child: Column(
 //                 children: [

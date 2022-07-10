@@ -104,7 +104,7 @@ class _ProductsState extends State<Customers> {
       padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
           color: Colors.grey[200],
-          borderRadius: const BorderRadius.all(Radius.circular(10))),
+          borderRadius: const BorderRadius.all(Radius.circular(radius2))),
       child: FloatingSearchAppBar(
           hint: 'Buscar cliente',
           controller: _searchController,

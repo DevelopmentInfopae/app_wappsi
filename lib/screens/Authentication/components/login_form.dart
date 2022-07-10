@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
-import 'package:nb_utils/src/extensions/widget_extensions.dart';
 // import 'package:flutter/services.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/components/button_global.dart';

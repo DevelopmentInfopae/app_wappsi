@@ -197,7 +197,7 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
                 margin: EdgeInsets.zero,
                 decoration: BoxDecoration(
                     border: Border.all(color: errorColor),
-                    borderRadius: BorderRadius.circular(10)),
+                    borderRadius: BorderRadius.circular(radius2)),
               ).flexible(flex: 1),
               Icon(
                 Icons.arrow_forward_ios_rounded,
@@ -220,7 +220,7 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
                 margin: EdgeInsets.zero,
                 decoration: BoxDecoration(
                     border: Border.all(color: pColor),
-                    borderRadius: BorderRadius.circular(10)),
+                    borderRadius: BorderRadius.circular(radius2)),
               ).flexible(flex: 1),
             ],
           ),

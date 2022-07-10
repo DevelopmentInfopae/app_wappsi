@@ -37,6 +37,7 @@ import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/sale_functions/percent_formating.dart';
 import 'package:pos_wappsi/utils/text_formating/currency_formater.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:time_picker_widget/time_picker_widget.dart';
 
 class OrderOtherDetails extends StatefulWidget {
@@ -54,6 +55,10 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
 
   // form key to valitations
   final GlobalKey<FormState> _inputsKey = GlobalKey<FormState>();
+
+  /// to controll send order button
+  final RoundedLoadingButtonController _btnController =
+      RoundedLoadingButtonController();
 
   late Size _size;
   // final TextEditingController _paymentMethodController =
@@ -127,7 +132,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
           dataBloc.userData!.allowDiscount == 1
               ? _orderDiscount().paddingSymmetric(vertical: 6)
               : Container(),
-          dataBloc.settings!['management_order_sale_delivery_time'] != 1
+          dataBloc.settings!['management_order_sale_delivery_time'] == 1
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -369,7 +374,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       // },
 
       // popupShape: RoundedRectangleBorder(
-      //     // borderRadius: BorderRadius.circular(10),
+      //     // borderRadius: BorderRadius.circular(radius2),
       //     side: const BorderSide(color: pColor)),
       maxHeight: 140,
 
@@ -409,7 +414,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       // height: 60,
       decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radius2),
           boxShadow: const [
             BoxShadow(
               color: Colors.grey,
@@ -569,59 +574,80 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
     );
   }
 
-  AppButton sendButton() {
+  RoundedLoadingButton sendButton() {
     // bool enabled = true;
-    return AppButton(
-      padding: kButtonPadding,
-      color: Colors.white,
-      disabledColor: Colors.grey[300],
-      enabled: !_sending,
-      onTap: _sending
-          ? null
-          : () async {
-              if ((_inputsKey.currentState?.validate() ?? false) &&
-                  orderBloc.getDeliveryTime != null) {
-                final res = await OrdersProvider.sendOrderData(context);
+    return RoundedLoadingButton(
+      color: pColor,
+      // disabledColor: Colors.grey[300],
+      controller: _btnController,
+      borderRadius: radius3,
+      onPressed: () async {
+        _btnController.start();
+        // await Future.delayed(Duration(seconds: 5));
+        if ((_inputsKey.currentState?.validate() ?? false) &&
+            orderBloc.getDeliveryTime != null &&
+            !_sending) {
+          final res = await OrdersProvider.sendOrderData(context);
+          if (res) {
+            /// update JWT token
+            await dataBloc.refreshToken(context);
+            _btnController.success();
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => const HomeScreen(),
+                ),
+                (route) => false,
+              );
+              final printData = orderBloc.getPrintData!;
+              orderBloc.dispose();
+              await PrintOrder(
+                printData: printData,
+              ).launch(context);
+            });
+          } else {
+            await _errorAnimation();
+          }
+        } else if (orderBloc.getDeliveryTime == null) {
+          setState(() {
+            delvTimeRequired = true;
+          });
+          scaffoldAlert(
+              context,
+              'Debe seleccionar una franja horaria para la entrega del pedido',
+              const Duration(seconds: 1),
+              backGroundColor: errorColor);
+          await _errorAnimation();
+        } else {
+          await _errorAnimation();
+        }
 
-                if (res) {
-                  /// update JWT token
-                  await dataBloc.refreshToken(context);
-                  WidgetsBinding.instance.addPostFrameCallback((_) async {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => const HomeScreen(),
-                      ),
-                      (route) => false,
-                    );
-                    final printData = orderBloc.getPrintData!;
-                    orderBloc.dispose();
-                    await PrintOrder(
-                      printData: printData,
-                    ).launch(context);
-                  });
-                  // setState(() {
-                  //   _sending = false;
-                  // });
-                } else {
-                  setState(() {
-                    _sending = false;
-                  });
-                }
-              } else if (orderBloc.getDeliveryTime == null) {
-                setState(() {
-                  delvTimeRequired = true;
-                });
-                scaffoldAlert(
-                    context,
-                    'Debe seleccionar una franja horaria para la entrega del pedido',
-                    const Duration(seconds: 1),
-                    backGroundColor: errorColor);
-              }
-            },
-      child: Text('Finalizar pedido',
-          style: buttonsSmallTextStyle(context,
-              color: !_sending ? pColor : greyColor)),
+        // _btnController.error();
+        // await Future.delayed(Duration(seconds: 1));
+
+        // _btnController.reset();
+      },
+      child: Container(
+        width: 165,
+        height: 50,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(radius3)),
+        child: Text('Finalizar pedido',
+            style: buttonsSmallTextStyle(context,
+                color: !_sending ? pColor : greyColor)),
+      ),
+      width: 145,
+      errorColor: errorColor,
+      successColor: okColorWappsi,
+      valueColor: Colors.white,
     );
+  }
+
+  Future<void> _errorAnimation() async {
+    _btnController.error();
+    await Future.delayed(const Duration(seconds: 2));
+    _btnController.reset();
   }
 }

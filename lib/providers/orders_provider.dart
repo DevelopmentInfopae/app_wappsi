@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 
@@ -54,15 +55,19 @@ class OrdersProvider {
         if (res['error'] ?? true) {
           if (res['body']?['data'] != [] &&
               res['body']?['data'] != null &&
-              (res['body']?['sync']??false)) {
+              (res['body']?['sync'] ?? false)) {
             hideCurrentScaffoldAlert(context);
             scaffoldAlert(
                 context,
                 res['body']['error_message'] ?? res['body']['message'],
-                const Duration(seconds: 2));
+                const Duration(seconds: 1, milliseconds: 500),
+                backGroundColor: errorColor);
           } else {
-            confirmDialog(context, res['body']['message'] ?? res['message'],
-                'assets/images/warning.png');
+            confirmDialog(
+              context,
+              res['body']['message'] ?? res['message'],
+              'assets/images/warning.png',
+            );
           }
         } else {
           scaffoldAlert(context, 'Pedido creado', const Duration(seconds: 1));
@@ -115,8 +120,7 @@ class OrdersProvider {
       "customer_address": orderBloc.getCustomerAddresses!.toJson(),
       "zone_szone_data": await ZonesProvider.getZoneSzoneDataJson(
           zoneId: orderBloc.getCustomerAddresses?.location,
-          subzoneId: orderBloc.getCustomerAddresses?.subzone
-      ),
+          subzoneId: orderBloc.getCustomerAddresses?.subzone),
       "order_data": order,
       "pos_note": orderBloc.getOrderNote ?? '',
       "total": order['total'],

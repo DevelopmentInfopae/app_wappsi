@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/components/location/subzone_dropdown.dart';
@@ -35,7 +34,6 @@ class _ZoneSZoneSelectionState extends State<ZoneSZoneSelection> {
 
   SubzoneModel? _selectedSZone;
 
-  late Size _size;
   bool loading = false;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -60,7 +58,6 @@ class _ZoneSZoneSelectionState extends State<ZoneSZoneSelection> {
 
   @override
   Widget build(BuildContext context) {
-    _size = MediaQuery.of(context).size;
     return AlertDialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(alertBorderRadius)),

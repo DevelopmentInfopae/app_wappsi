@@ -214,7 +214,7 @@ class _SearchPageState extends State<SearchLocationPage> {
         padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: greyLight),
+            borderRadius: BorderRadius.circular(radius2), color: greyLight),
         child: AppTextField(
           focus: searchFocus,
           controller: textEditingController,

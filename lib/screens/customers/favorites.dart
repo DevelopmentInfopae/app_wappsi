@@ -150,7 +150,7 @@ class _ListFavoritesState extends State<ListFavorites> {
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   decoration: BoxDecoration(
                       color: Colors.red,
-                      borderRadius: BorderRadius.circular(10)),
+                      borderRadius: BorderRadius.circular(radius2)),
                   child: Row(
                     children: [
                       Icon(

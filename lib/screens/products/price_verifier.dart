@@ -145,8 +145,8 @@ class _ProductPriceState extends State<ProductPrice> {
       // alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: const BorderRadius.all(Radius.circular(10))),
+          color: greyLight,
+          borderRadius: const BorderRadius.all(Radius.circular(radius2))),
       child: FloatingSearchAppBar(
           // color: _theme.primar,
           // color: Colors.black12,

@@ -203,7 +203,7 @@ class OrdersCard extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
                 color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10)),
+                borderRadius: BorderRadius.circular(radius2)),
             padding: const EdgeInsets.all(4),
             child: Column(
               children: [
@@ -242,7 +242,7 @@ class OrdersCard extends StatelessWidget {
           width: 110,
           decoration: BoxDecoration(
               color: cardColors['background'],
-              borderRadius: BorderRadius.circular(10)),
+              borderRadius: BorderRadius.circular(radius2)),
           child: Text(
             mapStatusText(order.saleStatus),
             textAlign: TextAlign.center,

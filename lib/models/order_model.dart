@@ -7,14 +7,7 @@ import 'dart:convert';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/models/user_model.dart';
-import 'package:pos_wappsi/providers/biller_data_provider.dart';
-import 'package:pos_wappsi/providers/companies_provider.dart';
-import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
-import 'package:pos_wappsi/providers/local_db_provider.dart';
-import 'package:pos_wappsi/providers/order_sale_items_provider.dart';
-import 'package:pos_wappsi/providers/units_provider.dart';
-import 'package:pos_wappsi/utils/local_storage/error_log.dart';
-import 'package:pos_wappsi/utils/text_formating/functions.dart';
+
 
 // import 'package:pos_wappsi/bloc/orders_bloc.dart';
 // import 'package:pos_wappsi/models/user_model.dart';

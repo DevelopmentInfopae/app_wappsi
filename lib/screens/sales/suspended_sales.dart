@@ -84,7 +84,7 @@ class _SuspendedSalesScreenState extends State<SuspendedSalesScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
           color: Colors.grey[200],
-          borderRadius: const BorderRadius.all(Radius.circular(10))),
+          borderRadius: const BorderRadius.all(Radius.circular(radius2))),
       child: FloatingSearchAppBar(
           hint: 'Buscar venta suspendida',
           controller: _searchController,

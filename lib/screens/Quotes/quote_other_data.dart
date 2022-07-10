@@ -353,7 +353,7 @@ class _QuoteOtherDataState extends State<QuoteOtherData> {
       // },
 
       // popupShape: RoundedRectangleBorder(
-      //     // borderRadius: BorderRadius.circular(10),
+      //     // borderRadius: BorderRadius.circular(radius2),
       //     side: const BorderSide(color: pColor)),
       maxHeight: 140,
 

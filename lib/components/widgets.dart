@@ -177,7 +177,7 @@ Widget bottom(Widget child, Color _pc, Size _size,
       width: _size.width,
       alignment: alignment,
       decoration: BoxDecoration(
-          // borderRadius: BorderRadius.circular(10),
+          // borderRadius: BorderRadius.circular(radius2),
           color: _pc,
           boxShadow: elevation
               ? [

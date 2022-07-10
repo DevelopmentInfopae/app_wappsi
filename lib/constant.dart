@@ -68,16 +68,21 @@ double dropDownHeight = 70;
 
 OutlineInputBorder outlineFocusedInputBorder() {
   return OutlineInputBorder(
-    borderRadius: BorderRadius.circular(5.0),
+    borderRadius: BorderRadius.circular(radius1),
     borderSide: const BorderSide(color: pColor),
   );
 }
+
+const double radius1 = 5;
+const double radius2 = 10;
+const double radius3 = 30;
+
 
 final otpInputDecoration = InputDecoration(
   contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 5),
   border: outlineInputBorder(),
   focusedBorder: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(5.0),
+    borderRadius: BorderRadius.circular(radius1),
     borderSide: const BorderSide(color: pColor),
   ),
   enabledBorder: outlineInputBorder(),

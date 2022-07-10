@@ -499,7 +499,7 @@ class _SalePaymentState extends State<SalePayment> {
       padding: kButtonPadding,
       width: 20,
       shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radius2),
           side: BorderSide(color: counter != 0 ? _pc : Colors.white, width: 1)),
       // padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       onTap: () {

@@ -8,6 +8,8 @@ import 'package:pos_wappsi/screens/sales/print_sale.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
+import '../../../constant.dart';
+
 class SalesCardList extends StatefulWidget {
   const SalesCardList(
       {Key? key, required this.sales, required this.searchParams})
@@ -154,7 +156,7 @@ class SalesCard extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
                 color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10)),
+                borderRadius: BorderRadius.circular(radius2)),
             padding: const EdgeInsets.all(4),
             child: Column(
               children: [
