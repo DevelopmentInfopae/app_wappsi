@@ -587,6 +587,41 @@ class OrderBloc {
     return prefsText;
   }
 
+  String getProductPrefsTextToSend(String productKey) {
+    String prefsText = '';
+    try {
+      if (_productPrefsController.hasValue) {
+        final temp = _productPrefsController.value![productKey];
+        if (temp != null) {
+          if ((temp).isNotEmpty) {
+            for (var prefCat in temp.keys) {
+              String text =
+                  '' + ((prefCat.name != null ? prefCat.name! + ' : ' : ''));
+
+              for (PreferenceModel element in (temp[prefCat] ?? [])) {
+                if (element == temp[prefCat]?.last) {
+                  text += '' + element.name!;
+                } else {
+                  text += '' + element.name! + ', ';
+                }
+              }
+              if (text.isNotEmpty) {
+                if (prefsText.isNotEmpty) {
+                  prefsText += ", " + text;
+                } else {
+                  prefsText += text;
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      printConsole(e);
+    }
+    return prefsText;
+  }
+
   //-----------------------------------------------------------------------------
   //                                CUSTOMER
   //

@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:pos_wappsi/utils/parsing/to_double.dart';
+
 List<BillerDataModel> billerDataModelFromJson(String str) =>
     List<BillerDataModel>.from(
         json.decode(str).map((x) => BillerDataModel.fromJson(x)));
@@ -12,51 +14,52 @@ String billerDataModelToJson(List<BillerDataModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class BillerDataModel {
-  BillerDataModel({
-    required this.idCloud,
-    required this.id,
-    required this.billerId,
-    this.posDocumentTypeDefault,
-    this.detalDocumentTypeDefault,
-    this.defaultPriceGroup,
-    this.defaultWarehouseId,
-    this.defaultCustomerId,
-    this.defaultSellerId,
-    this.keyLog,
-    required this.productOrder,
-    this.purchasesDocumentTypeDefault,
-    this.pinCode,
-    this.branchType,
-    this.coverageCountry,
-    this.coverageState,
-    this.coverageCity,
-    this.coverageZone,
-    this.prioridadPreciosProducto,
-    this.language,
-    this.currency,
-    this.chargeShippingCost,
-    this.shippingCost,
-    this.maxTotalShippingCost,
-    this.concessionStatus,
-    this.defaultPosSection,
-    this.preparationAdjustmentDocumentTypeId,
-    this.defaultCostCenterId,
-    this.reteBomberilPercentage,
-    this.reteBomberilAccount,
-    this.reteBomberilAccountCounterpart,
-    this.reteAutoavisoPercentage,
-    this.reteAutoavisoAccount,
-    this.reteAutoavisoAccountCounterpart,
-    this.reteAutoicaPercentage,
-    this.reteAutoicaAccount,
-    this.reteAutoicaAccountCounterpart,
-    this.cashPaymentMethodAccount,
-    this.pinCodeRequest,
-    this.pinCodeMethod,
-    this.randomPinCode,
-    this.randomPinCodeDate,
-    required this.lastUpdate,
-  });
+  BillerDataModel(
+      {required this.idCloud,
+      required this.id,
+      required this.billerId,
+      this.posDocumentTypeDefault,
+      this.detalDocumentTypeDefault,
+      this.defaultPriceGroup,
+      this.defaultWarehouseId,
+      this.defaultCustomerId,
+      this.defaultSellerId,
+      this.keyLog,
+      required this.productOrder,
+      this.purchasesDocumentTypeDefault,
+      this.pinCode,
+      this.branchType,
+      this.coverageCountry,
+      this.coverageState,
+      this.coverageCity,
+      this.coverageZone,
+      this.prioridadPreciosProducto,
+      this.language,
+      this.currency,
+      this.chargeShippingCost,
+      this.shippingCost,
+      this.maxTotalShippingCost,
+      this.concessionStatus,
+      this.defaultPosSection,
+      this.preparationAdjustmentDocumentTypeId,
+      this.defaultCostCenterId,
+      this.reteBomberilPercentage,
+      this.reteBomberilAccount,
+      this.reteBomberilAccountCounterpart,
+      this.reteAutoavisoPercentage,
+      this.reteAutoavisoAccount,
+      this.reteAutoavisoAccountCounterpart,
+      this.reteAutoicaPercentage,
+      this.reteAutoicaAccount,
+      this.reteAutoicaAccountCounterpart,
+      this.cashPaymentMethodAccount,
+      this.pinCodeRequest,
+      this.pinCodeMethod,
+      this.randomPinCode,
+      this.randomPinCodeDate,
+      required this.lastUpdate,
+      this.minSaleAmount,
+      this.orderSalesDocumentTypeDefault = 0});
 
   String id;
   String idCloud;
@@ -101,6 +104,8 @@ class BillerDataModel {
   String? randomPinCode;
   dynamic randomPinCodeDate;
   String lastUpdate;
+  int orderSalesDocumentTypeDefault;
+  double? minSaleAmount;
 
   factory BillerDataModel.fromJson(Map<String, dynamic> json) =>
       BillerDataModel(
@@ -159,6 +164,9 @@ class BillerDataModel {
         randomPinCode: json["random_pin_code"]?.toString() ?? '',
         randomPinCodeDate: json["random_pin_code_date"]?.toString() ?? '',
         lastUpdate: json["last_update"]?.toString() ?? '',
+        minSaleAmount: parsingToDoubleNullAble(json["min_sale_amount"]),
+        orderSalesDocumentTypeDefault:
+            parsingToInt(json["order_sales_document_type_default"]),
       );
 
   Map<String, dynamic> toJson() => {

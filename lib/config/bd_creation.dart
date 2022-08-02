@@ -295,7 +295,9 @@ pin_code_request INTEGER DEFAULT '3',
 pin_code_method INTEGER DEFAULT '1',
 random_pin_code TEXT  DEFAULT '98987878747471424454745',
 random_pin_code_date datetime DEFAULT NULL,
-last_update datetime DEFAULT CURRENT_TIMESTAMP
+last_update datetime DEFAULT CURRENT_TIMESTAMP,
+order_sales_document_type_default INTEGER DEFAULT NULL,
+min_sale_amount decimal(25,4) DEFAULT NULL
 );
 ''';
 

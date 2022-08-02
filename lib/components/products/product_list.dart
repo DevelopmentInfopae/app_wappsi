@@ -59,7 +59,7 @@ class ProductsList extends StatelessWidget {
           }
 
           if (fromOrder) {
-            prefsText = orderBloc.prefsText(product.key);
+            prefsText = orderBloc.getProductPrefsTextToSend(product.key);
             delete = () => orderBloc.removeProduct(product.key);
             getQtty =
                 () => orderBloc.getProductData(product.key)?.quantity ?? 1;

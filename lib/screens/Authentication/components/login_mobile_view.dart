@@ -19,7 +19,6 @@ class LoginMobileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return SingleChildScrollView(
       child: Card(
         color: Colors.white,
@@ -47,7 +46,7 @@ class LoginMobileView extends StatelessWidget {
                   width: 250,
                   height: _size.height * 0.065,
                   fit: BoxFit.fitWidth,
-                  image: 'assets/images/logo wappsi pos móvil.png',
+                  image: 'assets/images/logo_wappsi_pos_movil.png',
                 ),
                 const CurrentVersion(),
               ],
@@ -68,24 +67,26 @@ class CurrentVersion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return FutureBuilder<PackageInfo>(
-      future: PackageInfo.fromPlatform(),
-      builder: (context, AsyncSnapshot<PackageInfo> snapshot) {
-
-        String appName = '';
-        // String packageName = '';
-        String version = '';
-        // String buildNumber = '';
-        if(snapshot.hasData){
-          
-          // packageName = packageInfo.packageName;
-          appName = snapshot.data!.appName;
-          version = snapshot.data!.version;
-          // buildNumber = snapshot.data!.buildNumber;
-        }
-        return Text('$appName v $version', style: normalTextStyle(context, fontSizeFactor: 0.8,),);
-      }
-    );
+        future: PackageInfo.fromPlatform(),
+        builder: (context, AsyncSnapshot<PackageInfo> snapshot) {
+          String appName = '';
+          // String packageName = '';
+          String version = '';
+          // String buildNumber = '';
+          if (snapshot.hasData) {
+            // packageName = packageInfo.packageName;
+            appName = snapshot.data!.appName;
+            version = snapshot.data!.version;
+            // buildNumber = snapshot.data!.buildNumber;
+          }
+          return Text(
+            '$appName v $version',
+            style: normalTextStyle(
+              context,
+              fontSizeFactor: 0.8,
+            ),
+          );
+        });
   }
 }

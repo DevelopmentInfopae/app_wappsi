@@ -301,8 +301,10 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
 
   void _returnInfo(BuildContext context) {
     bool returnInfo = true;
-
-    for (PreferenceCategoryModel reqCatPref in reqCatPrefs) {
+    final List<PreferenceCategoryModel> selectedPrefs = [];
+    selectedPrefs.addAll(reqCatPrefs);
+    selectedPrefs.addAll(productPrefsSelected.keys);
+    for (PreferenceCategoryModel reqCatPref in selectedPrefs) {
       int? selectionLimit;
       if (reqCatPref.selectionLimit == 0 || reqCatPref.selectionLimit == null) {
         selectionLimit = 999;
@@ -323,8 +325,8 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
           errorMessage[reqCatPref.id ?? 0] = error;
           markAsNeeded[reqCatPref.id ?? 0] = true;
           markAsNeeded;
+          returnInfo = false;
         });
-        returnInfo = false;
       }
     }
     if (returnInfo) {

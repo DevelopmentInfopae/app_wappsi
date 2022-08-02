@@ -240,6 +240,8 @@ const List<String> billerDataColumns = [
   "random_pin_code",
   "random_pin_code_date",
   "last_update",
+  "order_sales_document_type_default",
+  "min_sale_amount"
 ];
 const List<String> customerGroupsColumns = [
   "id_cloud",

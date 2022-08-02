@@ -34,7 +34,7 @@ class DBProvider {
   Future<Database> initDB() async {
     // Path where DB will be stored
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    int dbVersion = 10;
+    int dbVersion = 11;
     final path = join(documentsDirectory.path, 'SmaDBv$dbVersion.db');
     // printConsole(path);
 

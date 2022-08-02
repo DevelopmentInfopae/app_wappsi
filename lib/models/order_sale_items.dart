@@ -270,7 +270,7 @@ class OrderSaleItemsModel {
           unitQuantity: product.quantity / (unit?.operationValue ?? 1),
           productUnitId: unit?.idCloud ?? product.unit,
           tax: product.taxRateName,
-          preferences: orderBloc.getProductPrefsText(key),
+          preferences: orderBloc.getProductPrefsTextToSend(key),
           subtotal: pIVA * product.quantity);
       orderSaleItems.add(orderSaleItem.toJson(withoutIds: true));
     }
