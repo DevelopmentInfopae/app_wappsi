@@ -160,12 +160,13 @@ class LocalOrdersProvider {
       "order_data": {
         'reference_no': order.referenceNo,
         'resolucion': order.resolucion,
-        'date': order.registrationDate
+        'date': order.registrationDate,
+        'status': order.saleStatus,
+        'order_id': order.idCloud
       },
       "zone_szone_data": await ZonesProvider.getZoneSzoneDataJson(
           zoneId: customerAddress?.location,
-          subzoneId: customerAddress?.subzone
-      ),
+          subzoneId: customerAddress?.subzone),
       "pos_note": order.note ?? '',
       "total": order.total,
       "grand_total": order.grandTotal,

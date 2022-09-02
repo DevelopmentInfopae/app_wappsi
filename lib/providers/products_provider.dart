@@ -341,7 +341,7 @@ class ProductsProvider {
     };
     Map<String, dynamic>? productDetails;
     bool prefsSelection =
-        ((dataBloc.settings?['product_preferences_management'] ?? 1) == 1);
+        ((dataBloc.settings?['product_preferences_management'] ?? 0) == 1);
     if (policyReq['product_unit']) {
       String priceGroupId = '';
       bool showInvInstOfPrice = false;

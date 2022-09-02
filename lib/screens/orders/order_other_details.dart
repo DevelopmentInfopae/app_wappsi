@@ -5,6 +5,7 @@
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
@@ -133,13 +134,12 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
               ? _orderDiscount().paddingSymmetric(vertical: 6)
               : Container(),
           dataBloc.settings!['management_order_sale_delivery_time'] == 1
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ? Column(
                   children: [
-                    _datePicker().paddingSymmetric(horizontal: 4).expand(),
+                    _datePicker().paddingSymmetric(horizontal: 4),
                     _timePicker().paddingSymmetric(horizontal: 4),
                   ],
-                ).paddingSymmetric(vertical: 6)
+                )
               : Container(),
           _invoiceNote().paddingSymmetric(vertical: 6),
           _dispatchNote().paddingSymmetric(vertical: 6)
@@ -426,8 +426,15 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       child: DateTimePicker(
         type: DateTimePickerType.date,
         firstDate: DateTime.now(),
+        decoration: const InputDecoration(
+            border: InputBorder.none, labelText: 'Fecha de entrega'),
         style: normalTextStyle(context),
         // controller: _dateController,
+        // dateHintText: "Fe",
+        // inputFormatters: [
+        //   Formater()
+        // ],
+        // locale: const Locale('ES'),
         lastDate: DateTime(
           now.year + 1,
         ),
@@ -492,44 +499,109 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
   Widget _timePicker() {
     // final now = DateTime.now();
 
-    String timeText = '--:-- A --:--';
+    // String timeText = '--:-- A --:--';
 
-    if (selectedDelvTime != null) {
-      timeText = selectedDelvTime!.getDelvTimeText(context);
-    }
+    // if (selectedDelvTime != null) {
+    //   timeText = selectedDelvTime!.getDelvTimeText();
+    // }
 
-    return AppButton(
-      padding: EdgeInsets.zero,
-      // width: double.infinity,
-      // height: 60,
-
-      child: Container(
+    List<Widget> widgets = [];
+    for (var delivTime in delivTimes) {
+      final bool isSelected = selectedDelvTime?.id == delivTime.id;
+      final choiceCard = AppButton(
+        onTap: () async {
+          orderBloc.setDeliveryTime(delivTime);
+          selectedDelvTime = delivTime;
+          setState(() {});
+        },
+        width: 0,
+        height: 0,
+        shapeBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radius1)),
+        padding: EdgeInsets.zero,
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        child: Container(
           decoration: BoxDecoration(
-              color: Colors.white,
-              border: delvTimeRequired ? Border.all(color: errorColor) : null,
-              borderRadius: BorderRadius.circular(normalBorderRadius)),
-          child: labelContent('Franja Horaria', timeText,
-              capitalize: false, labelColor: pColor, labelBold: false)),
-      onTap: () async {
-        final time = await showCustomTimePicker(
-            context: context,
-            // It is a must if you provide selectableTimePredicate
-            onFailValidation: (context) => confirmDialog(context,
-                'Franja horaria no disponible.', 'assets/images/warning.png'),
-            initialTime: const TimeOfDay(hour: 6, minute: 0),
-            selectableTimePredicate: (time) {
-              // return true;
-              return delivTimes.where((element) {
-                return element.time1 == time;
-              }).isNotEmpty;
-              //   _availableHours.indexOf(time.hour) != -1 &&
-              //     time.minute % 15 == 0).then(
-              // (time) => setState(() => selectedTime = time?.format(context))
-            });
-        _updateDeliveryTime(time);
-      },
-      enabled: delivTimes.isNotEmpty,
+              borderRadius: BorderRadius.circular(radius1),
+              border: isSelected ? Border.all(color: pColor) : null
+              // color: isSelected ? primary : Colors.white
+              ),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          width: 90,
+          height: 80,
+          child: Text(
+            (delivTime.toString()),
+            style: normalTextStyle(context,
+                // color: !isSelected ? null : Colors.white,
+                fontWeightDelta: !isSelected ? 1 : 2),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+
+      widgets.add(choiceCard);
+    }
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: widgets,
+      ),
     );
+    // return delivTimes.isEmpty
+    //     ? Container(
+    //         decoration: BoxDecoration(
+    //             color: Colors.white,
+    //             border: delvTimeRequired ? Border.all(color: errorColor) : null,
+    //             borderRadius: BorderRadius.circular(normalBorderRadius)),
+    //         child: labelContent('Franja Horaria', timeText,
+    //             capitalize: false, labelColor: pColor, labelBold: false))
+    //     : DropdownButton<DeliveryTime?>(
+    //         value: selectedDelvTime,
+    //         items: delivTimes.map((e) {
+    //           return DropdownMenuItem<DeliveryTime?>(
+    //             child: labelContent('Franja Horaria', timeText,
+    //                 capitalize: false, labelColor: pColor, labelBold: false),
+    //           );
+    //         }).toList(),
+    //         // selectedItemBuilder: ,
+
+    //         onChanged: (value) {
+    //           orderBloc.setDeliveryTime(value);
+    //         });
+
+    // return AppButton(
+    //   padding: EdgeInsets.zero,
+    //   // width: double.infinity,
+    //   // height: 60,
+
+    //   child: Container(
+    //       decoration: BoxDecoration(
+    //           color: Colors.white,
+    //           border: delvTimeRequired ? Border.all(color: errorColor) : null,
+    //           borderRadius: BorderRadius.circular(normalBorderRadius)),
+    //       child: labelContent('Franja Horaria', timeText,
+    //           capitalize: false, labelColor: pColor, labelBold: false)),
+    //   onTap: () async {
+    //     final time = await showCustomTimePicker(
+    //         context: context,
+    //         // It is a must if you provide selectableTimePredicate
+    //         onFailValidation: (context) => confirmDialog(context,
+    //             'Franja horaria no disponible.', 'assets/images/warning.png'),
+    //         initialTime: const TimeOfDay(hour: 6, minute: 0),
+    //         selectableTimePredicate: (time) {
+    //           // return true;
+    //           return delivTimes.where((element) {
+    //             return element.time1 == time;
+    //           }).isNotEmpty;
+    //           //   _availableHours.indexOf(time.hour) != -1 &&
+    //           //     time.minute % 15 == 0).then(
+    //           // (time) => setState(() => selectedTime = time?.format(context))
+    //         });
+    //     _updateDeliveryTime(time);
+    //   },
+    //   enabled: delivTimes.isNotEmpty,
+    // );
   }
 
   void _updateDeliveryTime(TimeOfDay? time) {
@@ -592,6 +664,8 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
             /// update JWT token
             await dataBloc.refreshToken(context);
             _btnController.success();
+            final printData = orderBloc.getPrintData!;
+            orderBloc.reload(disposeFirst: true);
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               Navigator.pushAndRemoveUntil(
                 context,
@@ -600,8 +674,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
                 ),
                 (route) => false,
               );
-              final printData = orderBloc.getPrintData!;
-              orderBloc.dispose();
+
               await PrintOrder(
                 printData: printData,
               ).launch(context);

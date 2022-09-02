@@ -10,6 +10,7 @@ import 'package:pos_wappsi/components/preview_print/preview_widgets.dart';
 import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/img_dir.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/providers/orders_provider.dart';
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/orders/new_order.dart';
@@ -45,11 +46,15 @@ class _PrintOrderState extends State<PrintOrder> {
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
   late PrintFormat printFormat;
 
+  bool cancellable = false;
+  bool gotCancelled = false;
+
   @override
   void initState() {
     printFormat = PrintFormat(productsList: widget.printData['products']);
     // initSavetoPath();
     // initPlatformState();
+    cancellable = widget.printData['order_data']['status'] == 'pending';
     super.initState();
   }
 
@@ -57,14 +62,57 @@ class _PrintOrderState extends State<PrintOrder> {
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
     _pc = pColor;
-    return Scaffold(
-      appBar: appBar(
-        context,
-        'Imprimir pedido',
-        back: widget.back,
-        image: widget.image,
+    return WillPopScope(
+      onWillPop: () async {
+        finish(context, gotCancelled);
+        return true;
+      },
+      child: Scaffold(
+        appBar: appBar(
+          context,
+          'Imprimir pedido',
+          onPop: () {
+            finish(context, gotCancelled);
+          },
+          back: widget.back,
+          image: widget.image,
+          leading: cancellable
+              ? Tooltip(
+                  message: "Cancelar orden de pedido",
+                  child: IconButton(
+                      onPressed: () async {
+                        final result = await choiceAlert(
+                            context,
+                            '¿Desea cancelar esta orden de pedido?',
+                            'assets/images/alert.png');
+                        if (result) {
+                          final res = await OrdersProvider.cancelPendingOrder(
+                              context,
+                              widget.printData['order_data']['order_id']);
+                          if (res) {
+                            setState(() {
+                              cancellable = false;
+                              gotCancelled = true;
+                            });
+                            await confirmDialog(
+                                context,
+                                'Orden cancelada exitosamente',
+                                'assets/images/success.png');
+                          }
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.cancel_outlined,
+                        color: errorColor,
+                        size: 30,
+                      )),
+                )
+              : SizedBox(
+                  width: 20,
+                ),
+        ),
+        body: _body(),
       ),
-      body: _body(),
     );
   }
 

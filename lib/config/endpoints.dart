@@ -73,6 +73,7 @@ String addCompanyFavEndP = 'wishlist/addCompanyFavorites';
 
 /// Endpoint to send sale data
 const String newOrderEndP = 'orders/new';
+const String cancelPendingOrderEndP = 'orders/cancel';
 const String searchOrdersEndP = 'orders/findOrders';
 
 //______________________________________________________________________________________________________________

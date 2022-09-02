@@ -297,9 +297,17 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
         productPrefsSelected[prefCat] = [e];
       });
     }
+    validate();
   }
 
   void _returnInfo(BuildContext context) {
+    if (validate()) {
+      Navigator.of(context)
+          .pop(productPrefsSelected.isEmpty ? null : productPrefsSelected);
+    }
+  }
+
+  bool validate() {
     bool returnInfo = true;
     final List<PreferenceCategoryModel> selectedPrefs = [];
     selectedPrefs.addAll(reqCatPrefs);
@@ -316,10 +324,10 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
         String error = '';
         if ((productPrefsSelected[reqCatPref]?.length ?? 1) > selectionLimit) {
           error =
-              "Debe seleccionar como maximo ${reqCatPref.selectionLimit ?? 1} preferencia(s) para esta categoria";
+              "Debe seleccionar como máximo ${reqCatPref.selectionLimit ?? 1} preferencia(s) para esta categoría";
         } else {
           error =
-              "Debe seleccionar almenos una preferencia para esta categoria";
+              "Debe seleccionar por lo menos una preferencia para esta categoría";
         }
         setState(() {
           errorMessage[reqCatPref.id ?? 0] = error;
@@ -327,12 +335,14 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
           markAsNeeded;
           returnInfo = false;
         });
+      } else {
+        errorMessage[reqCatPref.id ?? 0] = '';
+        markAsNeeded[reqCatPref.id ?? 0] = false;
+        markAsNeeded;
+        returnInfo = true;
       }
     }
-    if (returnInfo) {
-      Navigator.of(context)
-          .pop(productPrefsSelected.isEmpty ? null : productPrefsSelected);
-    }
+    return returnInfo;
   }
 
   Padding _productName(BuildContext context) {

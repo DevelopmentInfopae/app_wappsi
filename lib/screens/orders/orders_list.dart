@@ -98,7 +98,7 @@ class _ProductsState extends State<OrdersList> {
 
                 final result = await dbProvider.syncOption(
                     context, tableNamesToSyncOpt['sma_order_sales']!);
-                if (result['error'] == false) {
+                if (result) {
                   final orders = await LocalOrdersProvider.listLocalOrders(
                       search: _searchParams['search'] ?? '', filters: _filters);
                   _ordersListStream.sink.add(orders);
@@ -283,22 +283,19 @@ class _ProductsState extends State<OrdersList> {
 
     List<OrderModel> res = await LocalOrdersProvider.listLocalOrders(
         search: query ?? '', filters: _filters);
-    if(res.length<30){
+    if (res.length < 30) {
       final findNewInServer = await OrdersProvider.getOrdersFromServer(
-          context,
-          search:query??"",
-          filters: _filters,
-        );
-        if (findNewInServer) {
-          // _page =0;
-         res = await LocalOrdersProvider.listLocalOrders(
-          search: query ?? '', filters: _filters);
-         
-        }else{
-         
-        }
+        context,
+        search: query ?? "",
+        filters: _filters,
+      );
+      if (findNewInServer) {
+        // _page =0;
+        res = await LocalOrdersProvider.listLocalOrders(
+            search: query ?? '', filters: _filters);
+      } else {}
     }
-      _ordersListStream.sink.add(res);
+    _ordersListStream.sink.add(res);
     // if (res.isNotEmpty) {
     // }
   }

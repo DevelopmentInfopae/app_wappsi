@@ -323,11 +323,12 @@ class SyncDBProvider {
         await _updateBillerInDataBLoc();
       }
       // Environment().env!='DEV'?null:print('xd');
-      return res;
+      // return res;
+      return true;
     }
   }
 
-  Future<void> synSelectedOption(Map<String, dynamic> option, context,
+  Future<bool> synSelectedOption(Map<String, dynamic> option, context,
       {bool isPost = true}) async {
     final res = await update(
       '',
@@ -339,16 +340,20 @@ class SyncDBProvider {
           context,
           'Sesión expirada, es necesario a iniciar sesión',
           'assets/images/warning.png');
+      return false;
     } else {
       if (res['error'] == true) {
-        final choice = await choiceAlert(context,
-            res['message'] + '¿Reintentar?', 'assets/images/warning.png');
+        final choice = await choiceAlert(
+            context,
+            res['message'] + '¿Intentar de nuevo?',
+            'assets/images/warning.png');
 
         if (choice) {
           return await synSelectedOption(option, context, isPost: isPost);
         }
       }
     }
+    return true;
   }
 
   Future<bool> syncSpecialSelectedOption(String option, context,
@@ -382,18 +387,17 @@ class SyncDBProvider {
     return result;
   }
 
-  static Future<bool> addNewDataOnSpecialOption(
-      String option, Map data) async {
+  static Future<bool> addNewDataOnSpecialOption(String option, Map data) async {
     final optionInfo = enabledOptions[option]!;
     return await _specialWriteIntoLocalDB(data,
-        deleteBefore:false,
+        deleteBefore: false,
         independentTable: optionInfo['independent_table'],
         dependentTable: optionInfo['dependent_table'],
         dependentTable2: optionInfo['dependent_table2'],
         idKey: optionInfo['id_key'],
         columnName: optionInfo['column_name']);
   }
-  
+
   // static Future<bool> writeNewDataOnOption(
   //     String option, Map data) async {
   //   final optionInfo = enabledOptions[option];

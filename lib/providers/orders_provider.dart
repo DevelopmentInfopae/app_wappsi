@@ -75,8 +75,7 @@ class OrdersProvider {
           order['reference_no'] = res['body']['data']['reference_no'];
           order['registration_date'] = res['body']['data']['server_date'];
           order['id_cloud'] = orderId;
-          order['delivery_text'] =
-              orderBloc.getDeliveryTime?.getDelvTimeText(context);
+          order['delivery_text'] = orderBloc.getDeliveryTime?.getDelvTimeText();
           // orderItems['registration_date'] = res['body']['data']['server_date'];
           final orderSaveR =
               await DBProvider.db.insertQuery('sma_order_sales', order);
@@ -170,6 +169,34 @@ class OrdersProvider {
       }
     } catch (e) {
       logError(e, from: "Finding orders froms server");
+    }
+
+    return false;
+  }
+
+  /// Cancel a pending order.
+  static Future<bool> cancelPendingOrder(
+      BuildContext context, int orderId) async {
+    try {
+      // final currentBiller = dataBloc.userData!.billerId;
+
+      final res = await DataProvider().postPetition(
+          cancelPendingOrderEndP, {"order_id": orderId}, dataBloc.getHeaders());
+      if (res['status'] == -1) {
+        reloadDialog(
+            context,
+            res['body']['error_message'] ?? res['body']['message'],
+            'assets/images/dizzy-robot.png');
+      } else if (!(res['error'] ?? true)) {
+        final dbProvider = SyncDBProvider();
+
+        final result = await dbProvider.syncOption(
+            context, tableNamesToSyncOpt['sma_order_sales']!);
+        return result;
+        //  }
+      }
+    } catch (e) {
+      logError(e, from: "Cancel pending order");
     }
 
     return false;

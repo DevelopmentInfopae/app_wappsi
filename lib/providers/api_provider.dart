@@ -15,7 +15,7 @@ import 'dart:io';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
 class DataProvider {
-  // POST petitons
+  // Peticiones POST
   Future<Map<String, dynamic>> postPetition(
       String endpoint, Map<String, dynamic> data, Map<String, String> headers,
       {int awaitTime = 30}) async {
@@ -96,7 +96,7 @@ class DataProvider {
           'message': 'Verifica tu conexión a internet',
         }
       };
-      // controlador = 'sinConexion';
+      // controlador = 'sinConexión';
     } on TimeoutException {
       return {
         'status': 4,
@@ -194,7 +194,7 @@ class DataProvider {
           'message': 'Verifica tu conexión a internet',
         }
       };
-      // controlador = 'sinConexion';
+      // controlador = 'sinConexión';
     } on TimeoutException {
       return {
         'status': 4,
@@ -252,7 +252,7 @@ class DataProvider {
 
   //   on SocketException {
   //     return {'status': 1, 'message': 'Verify your internet connection', 'body': null};
-  //       // controlador = 'sinConexion';
+  //       // controlador = 'sinConexión';
   //   } on http.ClientException {
   //     // printConsole('ClientException');
   //     return {'status': 2, 'message': 'Something went wrong, try again', 'body': null};

@@ -56,7 +56,7 @@ class DeliveryTime {
     // prString(temp);
   }
 
-  String getDelvTimeText(BuildContext context) {
+  String getDelvTimeText() {
     String text = '';
 
     final part1 = formatTimeOfDay(time1);
@@ -68,5 +68,10 @@ class DeliveryTime {
     text += ' A ' + part2;
 
     return text;
+  }
+
+  @override
+  String toString() {
+    return getDelvTimeText();
   }
 }

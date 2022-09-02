@@ -214,7 +214,8 @@ reloadDialog(BuildContext context, String msg, String img) async {
                     await posBloc.suspendSale();
                   }
                   dataBloc.reload();
-                  Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/', (route) => false);
                   // Restart.restartApp(webOrigin: '/loginForm');
                 },
               ),
@@ -225,7 +226,7 @@ reloadDialog(BuildContext context, String msg, String img) async {
 }
 
 /// Choice alert who returns a bool based on user selection, it can also show a custom widget if required
-choiceAlert(BuildContext context, String msj, String img,
+Future<bool> choiceAlert(BuildContext context, String msj, String img,
     {String cancel = 'Cancelar',
     String confirm = 'Aceptar',
     bool skipeable = true,
@@ -240,7 +241,6 @@ choiceAlert(BuildContext context, String msj, String img,
       useRootNavigator: useRootNav,
       builder: (context) {
         return CupertinoAlertDialog(
-          
           title: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Image.asset(
