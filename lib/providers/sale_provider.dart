@@ -54,15 +54,15 @@ class SalesProvider {
             final Map<String, dynamic> changes = res['body']['data'];
             // to show changes in costumer or products
             // String chText = _getChangesString(changes);
+            final syncDB = SyncDBProvider();
             await Future.forEach(changes.keys.toList(), (String key) async {
               // here update tables who are supposed to be not updated
               if (changes[key]) {
-                final syncDB = SyncDBProvider();
                 await syncDB.syncOption(context, tableNamesToSyncOpt[key]!);
               }
             });
             final reload = await posBloc.reloadPOSData(context);
-
+            await Future.delayed(const Duration(seconds: 1));
             if (!reload) {
               hideCurrentScaffoldAlert(context);
               scaffoldAlert(
@@ -71,6 +71,7 @@ class SalesProvider {
                 const Duration(seconds: 2),
                 backGroundColor: Colors.red,
               );
+              await Future.delayed(const Duration(seconds: 1));
             } else {
               hideCurrentScaffoldAlert(context);
 
@@ -79,7 +80,7 @@ class SalesProvider {
               scaffoldAlert(
                 context,
                 'Datos de venta POS recargados',
-                const Duration(seconds: 1),
+                const Duration(seconds: 2),
               );
             }
           } else {

@@ -404,35 +404,20 @@ class POSBloc {
                     },
                   );
                 }
-                if (temp[key]?.price != pWithPrices.price) {
-                  await showCupertinoDialog<Map<String, dynamic>?>(
-                    barrierDismissible: false,
-                    // useRootNavigator: false,
-                    context: context,
-                    builder: (context) {
-                      return ProductChangesAlert(
-                        productKey: key,
-                        product: pWithPrices,
-                        priceDiff: true,
-                      );
-                    },
-                  );
-                }
-              } else {
-                if (temp[key]?.price != pWithPrices.price) {
-                  await showCupertinoDialog<Map<String, dynamic>?>(
-                    barrierDismissible: false,
-                    // useRootNavigator: false,
-                    context: context,
-                    builder: (context) {
-                      return ProductChangesAlert(
-                        productKey: key,
-                        product: pWithPrices,
-                        priceDiff: true,
-                      );
-                    },
-                  );
-                }
+              }
+              if (temp[key]?.price != pWithPrices.price) {
+                await showCupertinoDialog<Map<String, dynamic>?>(
+                  barrierDismissible: false,
+                  // useRootNavigator: false,
+                  context: context,
+                  builder: (context) {
+                    return ProductChangesAlert(
+                      productKey: key,
+                      product: pWithPrices,
+                      priceDiff: true,
+                    );
+                  },
+                );
               }
             } else {
               await dataBloc.getSettings();
@@ -445,6 +430,9 @@ class POSBloc {
         // printConsole(e);
         await logError(e, from: 'Reload pos products');
       }
+    } else {
+      _productsController.value = {};
+      return await findChanges(context);
     }
     return result;
   }

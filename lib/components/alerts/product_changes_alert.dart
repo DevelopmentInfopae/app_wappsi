@@ -153,18 +153,15 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
                     }
                   }
                   // return widget.product;
-                  Navigator.pop(context);
                 } else if (widget.qttyDiff) {
                   if (widget.fromSale) {
                     posBloc.getProducts?[widget.productKey]?.quantity =
                         widget.product!.inventory;
-                    // posBloc.getProducts?[widget.productKey]?.inventory =
-                    //     widget.product!.inventory;
-                    posBloc.reloadProductStream();
-                    posBloc.setSubTotal(posBloc.getSubTotal());
                   }
-                  Navigator.pop(context);
                 }
+                posBloc.setSubTotal(posBloc.getSubTotal());
+                posBloc.reloadProductStream();
+                Navigator.pop(context);
               },
             ),
           ),
