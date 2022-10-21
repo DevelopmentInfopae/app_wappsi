@@ -37,12 +37,12 @@ class POSBloc {
   BehaviorSubject<Map<String, UnitsModel>> _productUnitController =
       BehaviorSubject<Map<String, UnitsModel>>();
 
-  BehaviorSubject<PaymentMethods?> _paymentMthdController =
+  BehaviorSubject<PaymentMethods?> _paymentMethodController =
       BehaviorSubject<PaymentMethods?>();
 
   BehaviorSubject<DocumentsTypes?> _paymentDocumentController =
       BehaviorSubject<DocumentsTypes?>();
-  BehaviorSubject<int?> _paymenttermController = BehaviorSubject<int?>();
+  BehaviorSubject<int?> _paymentTermController = BehaviorSubject<int?>();
 
   BehaviorSubject<Map> _printDataController = BehaviorSubject<Map>();
 
@@ -108,15 +108,22 @@ class POSBloc {
   ///Add a producto to a Map where key is the local id of product
   ///and value is an instance of ProductModel(). Param getPrices is
   ///used to know if product prices should or not be calculated
-  Future addProduct(Map<String, dynamic> productReq,
-      {bool getPrices = true, bool getQttys = true}) async {
+  Future addProduct(
+    Map<String, dynamic> productReq, {
+    bool getPrices = true,
+    bool getQttys = true,
+  }) async {
     bool res = false;
     if (!_productsController.hasValue) {
       emptyProductsAdded();
     }
     res = await _addProductToProductPOSMap(
-        productReq['product'], getPrices, getQttys,
-        unit: productReq['product_unit'], prefs: productReq['product_prefs']);
+      productReq['product'],
+      getPrices,
+      getQttys,
+      unit: productReq['product_unit'],
+      prefs: productReq['product_prefs'],
+    );
     setSubTotal(getSubTotal());
     return res;
   }
@@ -124,9 +131,12 @@ class POSBloc {
   /// Add product to sale product list, if getPrices = true, calculate
   /// product prices
   Future<bool> _addProductToProductPOSMap(
-      ProductModel product, bool getPrices, bool getQttys,
-      {UnitsModel? unit,
-      Map<PreferenceCategoryModel, List<PreferenceModel>>? prefs}) async {
+    ProductModel product,
+    bool getPrices,
+    bool getQttys, {
+    UnitsModel? unit,
+    Map<PreferenceCategoryModel, List<PreferenceModel>>? prefs,
+  }) async {
     bool res = false;
     if (dataBloc.settings!['item_addition'] == 1) {
       String prefsKey = '';
@@ -172,8 +182,13 @@ class POSBloc {
 
       /// gen an unique key for each product
       if (_productsController.value.keys.contains(key)) {
-        _addProductToProductPOSMap(product, getPrices, getQttys,
-            unit: unit, prefs: prefs);
+        _addProductToProductPOSMap(
+          product,
+          getPrices,
+          getQttys,
+          unit: unit,
+          prefs: prefs,
+        );
       } else {
         // add product unit if product unit is selected
         if (unit != null) {
@@ -203,8 +218,10 @@ class POSBloc {
     return res;
   }
 
-  String _prefsKey(Map<PreferenceCategoryModel, List<PreferenceModel>> prefs,
-      String prefsKey) {
+  String _prefsKey(
+    Map<PreferenceCategoryModel, List<PreferenceModel>> prefs,
+    String prefsKey,
+  ) {
     final List<int> prefsId = [];
     if (prefs.isNotEmpty) {
       for (var prefCat in prefs.keys) {
@@ -220,14 +237,15 @@ class POSBloc {
   }
 
   ///Returns a Map<String,dynamic>, where the keys are the same of
-  ///SaleModel.fromJson(), it could be usefull to build an instance of
+  ///SaleModel.fromJson(), it could be useful to build an instance of
   ///SaleModel to send to an endpoint of API's service.
   Map<String, dynamic> getProductDetailMapLists() {
     return ProductModel.getProductDetailMapLists(
-        _productsController.value,
-        dataBloc.userData!.warehouseId,
-        _productUnitController.valueOrNull,
-        getProductPrefsText);
+      _productsController.value,
+      dataBloc.userData!.warehouseId,
+      _productUnitController.valueOrNull,
+      getProductPrefsText,
+    );
   }
 
   /// Modify quantity field of a ProductModel() given a key and a value
@@ -238,7 +256,9 @@ class POSBloc {
       // verify overselling setting to avoid overselling or not
       if (dataBloc.settings!['overselling'] == 0) {
         final p = await ProductsProvider.getProductDetails(
-            _productsController.value[key]!.id.toString(), true);
+          _productsController.value[key]!.id.toString(),
+          true,
+        );
         _productsController.value[key]!.inventory =
             p?.inventory ?? _productsController.value[key]!.inventory;
         if (_productsController.value[key]!.inventory < value) {
@@ -273,7 +293,8 @@ class POSBloc {
   List<Map<String, dynamic>> getProductsMap() {
     if (_productsController.hasValue) {
       List<Map<String, dynamic>> products = List.from(
-          _productsController.value.values.map((value) => value.toJson()));
+        _productsController.value.values.map((value) => value.toJson()),
+      );
       return products;
     } else {
       return [];
@@ -283,7 +304,8 @@ class POSBloc {
   /// Function to reload product data, costumer data and customer addresses data
   Future<bool> reloadPOSData(BuildContext context) async {
     final customer = await CompanyModel.getCompanyDetails(
-        _customerController.value!.idCloud!);
+      _customerController.value!.idCloud!,
+    );
     if (customer != null) {
       setCustomer(customer);
       return await findChanges(context);
@@ -293,7 +315,7 @@ class POSBloc {
   }
 
   /// When parameters of product price calculation change, it's
-  /// neccesary to recalculate product prices, this function make
+  /// necessary to recalculate product prices, this function make
   /// current product list empty and then introduce all products
   /// again recalculating prices for parameters.
   Future<bool> reloadAllProducts() async {
@@ -314,7 +336,8 @@ class POSBloc {
   Future<bool> reloadProduct(String key, {bool getQttys = false}) async {
     bool result = false;
     Map<String, dynamic>? pInfo = await ProductsProvider.findProductDetails(
-        getProducts?[key]?.idCloud ?? 0);
+      getProducts?[key]?.idCloud ?? 0,
+    );
     final u = await UnitsProvider.getUnitInfo(getProductUnits?[key]?.idCloud);
     if (pInfo != null) {
       final p = ProductModel.fromJson(pInfo);
@@ -338,10 +361,10 @@ class POSBloc {
   }
 
   /// When parameters of product price calculation change, it's
-  /// neccesary to find diffs in their or them units.
+  /// necessary to find diffs in their or them units.
   /// Returns a map with two list, price_diffs is a list of products
   /// who have changes in its price, and quantity_diffs for products who
-  /// dont have enought inventory.
+  /// don't have enough inventory.
   Future<bool> findChanges(BuildContext context) async {
     bool result = false;
     if (_productsController.hasValue) {
@@ -361,50 +384,54 @@ class POSBloc {
             final p = ProductModel.fromJson(pInfo);
             if (dataBloc.settings != null) {
               final pWithPrices = await PricePoliciesProvider.policyCases(
-                  p,
-                  dataBloc.settings!['prioridad_precios_producto'],
-                  posBloc.getCustomer,
-                  unit: u);
+                p,
+                dataBloc.settings!['prioridad_precios_producto'],
+                posBloc.getCustomer,
+                unit: u,
+              );
               if (dataBloc.settings!['overselling'] == 0) {
                 if ((temp[key]?.quantity ?? 1) > p.inventory) {
                   await showCupertinoDialog<Map<String, dynamic>?>(
-                      barrierDismissible: false,
-                      // useRootNavigator: false,
-                      context: context,
-                      builder: (context) {
-                        return ProductChangesAlert(
-                          productKey: key,
-                          product: pWithPrices,
-                          qttyDiff: true,
-                        );
-                      });
+                    barrierDismissible: false,
+                    // useRootNavigator: false,
+                    context: context,
+                    builder: (context) {
+                      return ProductChangesAlert(
+                        productKey: key,
+                        product: pWithPrices,
+                        qttyDiff: true,
+                      );
+                    },
+                  );
                 }
                 if (temp[key]?.price != pWithPrices.price) {
                   await showCupertinoDialog<Map<String, dynamic>?>(
-                      barrierDismissible: false,
-                      // useRootNavigator: false,
-                      context: context,
-                      builder: (context) {
-                        return ProductChangesAlert(
-                          productKey: key,
-                          product: pWithPrices,
-                          priceDiff: true,
-                        );
-                      });
+                    barrierDismissible: false,
+                    // useRootNavigator: false,
+                    context: context,
+                    builder: (context) {
+                      return ProductChangesAlert(
+                        productKey: key,
+                        product: pWithPrices,
+                        priceDiff: true,
+                      );
+                    },
+                  );
                 }
               } else {
                 if (temp[key]?.price != pWithPrices.price) {
                   await showCupertinoDialog<Map<String, dynamic>?>(
-                      barrierDismissible: false,
-                      // useRootNavigator: false,
-                      context: context,
-                      builder: (context) {
-                        return ProductChangesAlert(
-                          productKey: key,
-                          product: pWithPrices,
-                          priceDiff: true,
-                        );
-                      });
+                    barrierDismissible: false,
+                    // useRootNavigator: false,
+                    context: context,
+                    builder: (context) {
+                      return ProductChangesAlert(
+                        productKey: key,
+                        product: pWithPrices,
+                        priceDiff: true,
+                      );
+                    },
+                  );
                 }
               }
             } else {
@@ -431,7 +458,7 @@ class POSBloc {
     _productsController.sink.add(_productsController.value);
   }
 
-  /// Remove a product from products Map given a key, if product have an asosiate
+  /// Remove a product from products Map given a key, if product have an associate
   /// unit, remove unit too
   removeProduct(String key, {bool removeUnit = true}) {
     _productsController.value.remove(key);
@@ -485,7 +512,7 @@ class POSBloc {
     return subTotal;
   }
 
-  /// Returns total price of products without aplying customer discount.
+  /// Returns total price of products without applying customer discount.
   double getTotalWithoutDiscount() {
     double total = 0;
     // ignore: unnecessary_null_comparison
@@ -576,10 +603,10 @@ class POSBloc {
 
   _emptyPosData() {
     emptyProductsAdded();
-    _paymenttermController.value = null;
+    _paymentTermController.value = null;
     _customerAddressesController.value = null;
     _customerController.value = null;
-    _paymentMthdController.value = null;
+    _paymentMethodController.value = null;
     _paymentDocumentController.value = null;
     _paymentValueController.value = 0;
     _dispatchNoteController.value = '';
@@ -598,8 +625,10 @@ class POSBloc {
     }
   }
 
-  addProductPrefs(String productKey,
-      Map<PreferenceCategoryModel, List<PreferenceModel>> prefs) {
+  addProductPrefs(
+    String productKey,
+    Map<PreferenceCategoryModel, List<PreferenceModel>> prefs,
+  ) {
     try {
       if (!_productPrefsController.hasValue) {
         _productPrefsController.value = {};
@@ -629,7 +658,7 @@ class POSBloc {
             }
             if (text.isNotEmpty) {
               if (prefsText.isNotEmpty) {
-                prefsText += " / " + text;
+                prefsText += ' / ' + text;
               } else {
                 prefsText += text;
               }
@@ -662,7 +691,7 @@ class POSBloc {
               }
               if (text.isNotEmpty) {
                 if (prefsText.isNotEmpty) {
-                  prefsText += " / " + text;
+                  prefsText += ' / ' + text;
                 } else {
                   prefsText += text;
                 }
@@ -712,7 +741,7 @@ class POSBloc {
 
   Map? get getPrintData => _printDataController.valueOrNull;
 
-  PaymentMethods? get getPaymentMethod => _paymentMthdController.valueOrNull;
+  PaymentMethods? get getPaymentMethod => _paymentMethodController.valueOrNull;
 
   DocumentsTypes? get getPaymentDocument =>
       _paymentDocumentController.valueOrNull;
@@ -732,7 +761,7 @@ class POSBloc {
 
   String? get getDispatchNote => _dispatchNoteController.valueOrNull;
 
-  int? get getPaymentTerm => _paymenttermController.valueOrNull;
+  int? get getPaymentTerm => _paymentTermController.valueOrNull;
 
   int? get getPaymentValue => _paymentValueController.valueOrNull;
 
@@ -752,7 +781,7 @@ class POSBloc {
   Function(Map) get setPrintData => _printDataController.sink.add;
 
   Function(PaymentMethods?) get setPaymentMethod =>
-      _paymentMthdController.sink.add;
+      _paymentMethodController.sink.add;
 
   Function(DocumentsTypes?) get setPaymentDocument =>
       _paymentDocumentController.sink.add;
@@ -773,7 +802,7 @@ class POSBloc {
 
   Function(String) get setDispatchNote => _dispatchNoteController.sink.add;
 
-  Function(int?) get setPaymentTerm => _paymenttermController.sink.add;
+  Function(int?) get setPaymentTerm => _paymentTermController.sink.add;
 
   Function(double) get setSubTotal => _subtotalController.sink.add;
 
@@ -793,14 +822,14 @@ class POSBloc {
     _verifyPricesController.close();
     _customerController.close();
     _customerAddressesController.close();
-    _paymentMthdController.close();
+    _paymentMethodController.close();
     _productUnitController.close();
     // _settingsController.close();
     _paymentDocumentController.close();
     _printDataController.close();
     _productPrefsController.close();
 
-    _paymenttermController.close();
+    _paymentTermController.close();
     // _printStateController.close();
   }
 
@@ -812,9 +841,9 @@ class POSBloc {
     _productsController = BehaviorSubject<Map<String, ProductModel>>();
     _productUnitController = BehaviorSubject<Map<String, UnitsModel>>();
 
-    _paymentMthdController = BehaviorSubject<PaymentMethods?>();
+    _paymentMethodController = BehaviorSubject<PaymentMethods?>();
     _paymentDocumentController = BehaviorSubject<DocumentsTypes?>();
-    _paymenttermController = BehaviorSubject<int?>();
+    _paymentTermController = BehaviorSubject<int?>();
     _printDataController = BehaviorSubject<Map>();
 
     _productPrefsController = BehaviorSubject<

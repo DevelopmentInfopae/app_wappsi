@@ -9,13 +9,13 @@ import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/components/image_file.dart';
 
 class ImagePreview extends StatelessWidget {
-  const ImagePreview(
-      {Key? key,
-      required this.imagePath,
-      this.isAssetImage = false,
-      this.isFileImage = true,
-      this.isNetworkImage = false})
-      : super(key: key);
+  const ImagePreview({
+    Key? key,
+    required this.imagePath,
+    this.isAssetImage = false,
+    this.isFileImage = true,
+    this.isNetworkImage = false,
+  }) : super(key: key);
   final String imagePath;
   final bool isAssetImage;
   final bool isFileImage;

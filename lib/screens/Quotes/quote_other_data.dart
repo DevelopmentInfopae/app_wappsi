@@ -29,23 +29,23 @@ import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/sale_functions/percent_formating.dart';
-import 'package:pos_wappsi/utils/text_formating/currency_formater.dart';
+import 'package:pos_wappsi/utils/text_formating/currency_formatter.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class QuoteOtherData extends StatefulWidget {
   const QuoteOtherData({Key? key}) : super(key: key);
 
   @override
-  _QuoteOtherDataState createState() => _QuoteOtherDataState();
+  Validations createState() => Validations();
 }
 
-class _QuoteOtherDataState extends State<QuoteOtherData> {
-  // to disable paybutton when awaiting for response
+class Validations extends State<QuoteOtherData> {
+  // to disable payButton when awaiting for response
   bool _sending = false;
   // TextEditingController _paymentDocumentController =
   //     TextEditingController();
 
-  // form key to valitations
+  // form key to validations
   final GlobalKey<FormState> _inputsKey = GlobalKey<FormState>();
 
   late Size _size;
@@ -84,8 +84,11 @@ class _QuoteOtherDataState extends State<QuoteOtherData> {
     _size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: appBar(context, 'Agregar cotización',
-          image: 'assets/images/add-quote.png'),
+      appBar: appBar(
+        context,
+        'Agregar cotización',
+        image: 'assets/images/add-quote.png',
+      ),
       body: _body(),
     );
   }
@@ -119,64 +122,74 @@ class _QuoteOtherDataState extends State<QuoteOtherData> {
 
   Widget _productsInfo() {
     final totalBeforeDisc = getFormatedCurrency(
-        quoteBloc.getSubTotalWithoutDiscount(),
-        decimals: 1);
+      quoteBloc.getSubTotalWithoutDiscount(),
+      decimals: 1,
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(children: [
-          Text(
-            'Cantidad de items: ',
-            style: buttonsTextStyle(context, color: pColor),
-          ),
-          const Spacer(),
-          Text('${quoteBloc.getItemsCount()}', style: numbersTextStyle())
-        ]
-            // style: textTheme,
+        Row(
+          children: [
+            Text(
+              'Cantidad de items: ',
+              style: buttonsTextStyle(context, color: pColor),
             ),
-        Row(children: [
-          Text(
-            'Subtotal: ',
-            style: buttonsTextStyle(context, color: pColor),
-          ),
-          const Spacer(),
-          Text(totalBeforeDisc, style: numbersTextStyle())
-        ]),
+            const Spacer(),
+            Text('${quoteBloc.getItemsCount()}', style: numbersTextStyle())
+          ],
+          // style: textTheme,
+        ),
+        Row(
+          children: [
+            Text(
+              'Subtotal: ',
+              style: buttonsTextStyle(context, color: pColor),
+            ),
+            const Spacer(),
+            Text(totalBeforeDisc, style: numbersTextStyle())
+          ],
+        ),
         StreamBuilder<double?>(
-            stream: quoteBloc.quoteDiscountStream,
-            builder: (context, snapshot) {
-              return Row(
-                children: [
-                  Text(
-                    'Descuento: ',
-                    style: buttonsTextStyle(context, color: pColor),
+          stream: quoteBloc.quoteDiscountStream,
+          builder: (context, snapshot) {
+            return Row(
+              children: [
+                Text(
+                  'Descuento: ',
+                  style: buttonsTextStyle(context, color: pColor),
 
-                    // style: textTheme,
-                  ),
-                  const Spacer(),
-                  Text(getFormatedCurrency(snapshot.data ?? 0),
-                      style: numbersTextStyle())
-                ],
-              );
-            }),
+                  // style: textTheme,
+                ),
+                const Spacer(),
+                Text(
+                  getFormatedCurrency(snapshot.data ?? 0),
+                  style: numbersTextStyle(),
+                )
+              ],
+            );
+          },
+        ),
         StreamBuilder<double?>(
-            stream: quoteBloc.subTotalStream,
-            initialData: quoteBloc.getSubTotalWithoutDiscount(),
-            builder: (context, snapshot) {
-              return Row(
-                children: [
-                  Text(
-                    'Total: ',
-                    style: buttonsTextStyle(context, color: pColor),
+          stream: quoteBloc.subTotalStream,
+          initialData: quoteBloc.getSubTotalWithoutDiscount(),
+          builder: (context, snapshot) {
+            return Row(
+              children: [
+                Text(
+                  'Total: ',
+                  style: buttonsTextStyle(context, color: pColor),
 
-                    // style: textTheme,
-                  ),
-                  const Spacer(),
-                  Text(getFormatedCurrency(snapshot.data ?? 0),
-                      style: numbersTextStyle())
-                ],
-              );
-            }),
+                  // style: textTheme,
+                ),
+                const Spacer(),
+                Text(
+                  getFormatedCurrency(snapshot.data ?? 0),
+                  style: numbersTextStyle(),
+                )
+              ],
+            );
+          },
+        ),
 
         // RichText(
         //   text: TextSpan(
@@ -216,7 +229,7 @@ class _QuoteOtherDataState extends State<QuoteOtherData> {
     return DropdownSearch<DocumentsTypes>(
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       // key: _documentTypeKey,
@@ -273,7 +286,9 @@ class _QuoteOtherDataState extends State<QuoteOtherData> {
       inputFormatters:
           _discountTSelected == '1' ? [CurrencyInputFormatter()] : null,
       decoration: InputDecorations.authInputDecoration(
-          hintText: '', labelText: 'Descuento'),
+        hintText: '',
+        labelText: 'Descuento',
+      ),
 
       textFieldType: TextFieldType.PHONE,
       textStyle: Theme.of(context).textTheme.subtitle1,
@@ -313,10 +328,12 @@ class _QuoteOtherDataState extends State<QuoteOtherData> {
               quoteBloc.setQuoteDiscount(0);
             }
             try {
-              final valueD = double.parse((value == '' ? '0' : value)
-                  .replaceAll('\$', '')
-                  .replaceAll(',', '')
-                  .replaceAll('.', ''));
+              final valueD = double.parse(
+                (value == '' ? '0' : value)
+                    .replaceAll('\$', '')
+                    .replaceAll(',', '')
+                    .replaceAll('.', ''),
+              );
               quoteBloc.setQuoteDiscount(valueD);
             } catch (e) {
               // quoteBloc.setQuoteDiscount(0);
@@ -336,7 +353,7 @@ class _QuoteOtherDataState extends State<QuoteOtherData> {
 
             quoteBloc.setQuoteDiscount(oDiscount);
 
-            // ubdate subtotal
+            // update subtotal
 
           }
         }
@@ -388,15 +405,31 @@ class _QuoteOtherDataState extends State<QuoteOtherData> {
   }
 
   Widget _note() {
-    return textFormField(context, 'Nota', (String value) {
-      quoteBloc.setNote(value);
-    }, (String value) {}, () {}, controller: _internalNController, maxLines: 4);
+    return textFormField(
+      context,
+      'Nota',
+      (String value) {
+        quoteBloc.setNote(value);
+      },
+      (String value) {},
+      () {},
+      controller: _internalNController,
+      maxLines: 4,
+    );
   }
 
   Widget _dispatchNote() {
-    return textFormField(context, 'Nota interna', (String value) {
-      quoteBloc.setInternalNote(value);
-    }, (String value) {}, () {}, controller: _orderNController, maxLines: 4);
+    return textFormField(
+      context,
+      'Nota interna',
+      (String value) {
+        quoteBloc.setInternalNote(value);
+      },
+      (String value) {},
+      () {},
+      controller: _orderNController,
+      maxLines: 4,
+    );
   }
 
   Widget _sendAndPrint() {
@@ -404,12 +437,11 @@ class _QuoteOtherDataState extends State<QuoteOtherData> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         subTotal(
-                stream: quoteBloc.subTotalStream,
-                large: true,
-                color: Colors.white,
-                defaultValue: quoteBloc.getSubTotal())
-            .paddingLeft(8)
-            .expand(),
+          stream: quoteBloc.subTotalStream,
+          large: true,
+          color: Colors.white,
+          defaultValue: quoteBloc.getSubTotal(),
+        ).paddingLeft(8).expand(),
         sendButton().flexible(),
       ],
     );
@@ -459,9 +491,13 @@ class _QuoteOtherDataState extends State<QuoteOtherData> {
                 }
               }
             },
-      child: Text('Finalizar cotización',
-          style: buttonsSmallTextStyle(context,
-              color: !_sending ? pColor : greyColor)),
+      child: Text(
+        'Finalizar cotización',
+        style: buttonsSmallTextStyle(
+          context,
+          color: !_sending ? pColor : greyColor,
+        ),
+      ),
     );
   }
 }

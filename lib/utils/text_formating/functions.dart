@@ -11,7 +11,10 @@ import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'dart:math';
 
 Map<String, dynamic> replaceStringInMap(
-    Map map, String oldString, String newString) {
+  Map map,
+  String oldString,
+  String newString,
+) {
   String stMap = jsonEncode(map);
 
   stMap.replaceAll(oldString, newString);
@@ -56,7 +59,8 @@ List getKeyValuesOfListMap(List<Map> map, String key) {
 
 String getFormatedCurrency(double value, {int? decimals}) {
   final _formatCurrency = NumberFormat.simpleCurrency(
-      decimalDigits: decimals ?? dataBloc.settings?['decimals']);
+    decimalDigits: decimals ?? dataBloc.settings?['decimals'],
+  );
   return _formatCurrency.format(value);
 }
 
@@ -176,7 +180,7 @@ String getStringFromValues(var values) {
   for (var i = 0; i < values.length; i++) {
     if (i == 0) {
       if (values.elementAt(i) == null || values.elementAt(i) == '') {
-        string = string + "null";
+        string = string + 'null';
       } else {
         var val = values.elementAt(i);
         String valString;
@@ -206,7 +210,7 @@ String getStringFromValues(var values) {
       }
     } else {
       if (values.elementAt(i) == null) {
-        string = string + ",null";
+        string = string + ',null';
       } else {
         var val = values.elementAt(i);
         String valString;

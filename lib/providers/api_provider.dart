@@ -17,8 +17,11 @@ import 'package:pos_wappsi/utils/print_errors.dart';
 class DataProvider {
   // Peticiones POST
   Future<Map<String, dynamic>> postPetition(
-      String endpoint, Map<String, dynamic> data, Map<String, String> headers,
-      {int awaitTime = 30}) async {
+    String endpoint,
+    Map<String, dynamic> data,
+    Map<String, String> headers, {
+    int awaitTime = 30,
+  }) async {
     // ignore: prefer_typing_uninitialized_variables
     var resp;
     // add Access-Control-Allow-Origin header
@@ -34,14 +37,16 @@ class DataProvider {
     // to seconds to milliseconds, seconds * 1000
     dio.options.receiveTimeout = awaitTime * 1000;
     dio.options.method = 'POST';
+    // ignore: unused_local_variable
     final data2 = jsonEncode(data);
 
     try {
-      resp = await dio
-          .post(endpoint, data: data)
-          .timeout(Duration(seconds: awaitTime), onTimeout: () {
-        throw TimeoutException('Now answer, try again.');
-      });
+      resp = await dio.post(endpoint, data: data).timeout(
+        Duration(seconds: awaitTime),
+        onTimeout: () {
+          throw TimeoutException('Now answer, try again.');
+        },
+      );
       dynamic decodedRespBody;
 
       if (resp.data is Map) {
@@ -51,7 +56,7 @@ class DataProvider {
         return {
           'status': 2,
           'error': true,
-          'body': {'message': "Respuesta inesperada", 'data': []}
+          'body': {'message': 'Respuesta inesperada', 'data': []}
         };
       }
 
@@ -121,7 +126,9 @@ class DataProvider {
 
   // GET
   Future<Map<String, dynamic>> getPetition(
-      String endpoint, Map<String, String> headers) async {
+    String endpoint,
+    Map<String, String> headers,
+  ) async {
     // ignore: prefer_typing_uninitialized_variables
     var resp;
 
@@ -147,7 +154,7 @@ class DataProvider {
         return {
           'status': 2,
           'error': true,
-          'body': {'message': "Respuesta inesperada"}
+          'body': {'message': 'Respuesta inesperada'}
         };
       }
 

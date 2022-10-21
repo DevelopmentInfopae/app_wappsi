@@ -35,7 +35,7 @@ class PurchaseBloc {
 
   BehaviorSubject<Map> _printDataController = BehaviorSubject<Map>();
 
-  BehaviorSubject<PaymentMethods?> _paymentMthdController =
+  BehaviorSubject<PaymentMethods?> _paymentMethodController =
       BehaviorSubject<PaymentMethods?>();
 
   BehaviorSubject<CompanyModel?> _supplierController =
@@ -93,23 +93,30 @@ class PurchaseBloc {
   ///Add a producto to a Map where key is the local id of product
   ///and value is an instance of ProductModel(). Param getPrices is
   ///used to know if product prices should or not be calculated
-  Future addProduct(Map<String, dynamic> productReq,
-      {bool getPrices = true, bool getQttys = true}) async {
+  Future addProduct(
+    Map<String, dynamic> productReq, {
+    bool getPrices = true,
+    bool getQttys = true,
+  }) async {
     bool res = false;
     if (_productsController.hasValue) {
     } else {
       emptyProductsAdded();
     }
-    res = await _addProductToProductMap(productReq['product'],
-        unit: productReq['product_unit']);
+    res = await _addProductToProductMap(
+      productReq['product'],
+      unit: productReq['product_unit'],
+    );
     getSubTotalCost();
     return res;
   }
 
   /// Add product to sale product list, if getPrices = true, calculate
   /// product prices
-  Future<bool> _addProductToProductMap(ProductModel product,
-      {UnitsModel? unit}) async {
+  Future<bool> _addProductToProductMap(
+    ProductModel product, {
+    UnitsModel? unit,
+  }) async {
     bool res = false;
     if (dataBloc.settings!['item_addition'] == 1) {
       final key = product.id.toString() + ((unit?.id ?? '').toString());
@@ -161,14 +168,15 @@ class PurchaseBloc {
   }
 
   ///Returns a Map<String,dynamic>, where the keys are the same of
-  ///PurchaseModel.fromJson(), it could be usefull to build an instance of
+  ///PurchaseModel.fromJson(), it could be useful to build an instance of
   ///PurchaseModel to send to an endpoint of API's service.
   Map<String, dynamic> getProductDetailMapLists() {
     return ProductModel.getProductDetailMapLists(
-        _productsController.value,
-        dataBloc.userData!.warehouseId,
-        _productUnitController.valueOrNull,
-        (String v) {});
+      _productsController.value,
+      dataBloc.userData!.warehouseId,
+      _productUnitController.valueOrNull,
+      (String v) {},
+    );
   }
 
   /// Modify quantity field of a ProductModel() given a key and a value
@@ -190,7 +198,8 @@ class PurchaseBloc {
   List<Map<String, dynamic>> getProductsMap() {
     if (_productsController.hasValue) {
       List<Map<String, dynamic>> products = List.from(
-          _productsController.value.values.map((value) => value.toJson()));
+        _productsController.value.values.map((value) => value.toJson()),
+      );
       return products;
     } else {
       return [];
@@ -206,7 +215,7 @@ class PurchaseBloc {
     _productsController.sink.add(_productsController.value);
   }
 
-  /// Remove a product from products Map given a key, if product have an asosiate
+  /// Remove a product from products Map given a key, if product have an associate
   /// unit, remove unit too
   removeProduct(String key) {
     _productsController.value.remove(key);
@@ -272,7 +281,7 @@ class PurchaseBloc {
     return subTotal;
   }
 
-  /// Returns total price of products without aplying customer discount.
+  /// Returns total price of products without applying customer discount.
   double getTotalWithoutDiscount() {
     double total = 0;
     // ignore: unnecessary_null_comparison
@@ -415,7 +424,7 @@ class PurchaseBloc {
   String? get getSupplierConsecutive =>
       _purchaseInfoController.value?.consecutiveSupplier;
   String? get getPayNote => _payNoteController.valueOrNull;
-  PaymentMethods? get getPaymentMethod => _paymentMthdController.valueOrNull;
+  PaymentMethods? get getPaymentMethod => _paymentMethodController.valueOrNull;
 
   CustomerAddressesModel? get getCustomerAddresses =>
       _customerAddressesController.valueOrNull;
@@ -438,7 +447,7 @@ class PurchaseBloc {
   }
 
   Function(PaymentMethods?) get setPaymentMethod =>
-      _paymentMthdController.sink.add;
+      _paymentMethodController.sink.add;
   void setReference(String reference) {
     if (!_purchaseInfoController.hasValue) {
       _purchaseInfoController.value = PurchaseModel();
@@ -460,7 +469,7 @@ class PurchaseBloc {
     _purchaseInfoController.value?.date = date;
   }
 
-  Function(String) get setPayrNote => _payNoteController.sink.add;
+  Function(String) get setPayNote => _payNoteController.sink.add;
   Function(double) get setDiscount => _discountController.sink.add;
 
   // Function(bool) get setPrintState => _printStateController.sink.add;
@@ -489,7 +498,7 @@ class PurchaseBloc {
     _subtotalCostController.close();
     _supplierController.close();
     _customerAddressesController.close();
-    _paymentMthdController.close();
+    _paymentMethodController.close();
     _purchaseInfoController.close();
     _documentController.close();
     _payNoteController.close();
@@ -509,7 +518,7 @@ class PurchaseBloc {
     _productUnitController = BehaviorSubject<Map<String, UnitsModel>>();
 
     _printDataController = BehaviorSubject<Map>();
-    _paymentMthdController = BehaviorSubject<PaymentMethods>();
+    _paymentMethodController = BehaviorSubject<PaymentMethods>();
     _purchaseInfoController = BehaviorSubject<PurchaseModel?>();
     _payNoteController = BehaviorSubject<String>();
     _supplierController = BehaviorSubject<CompanyModel?>();

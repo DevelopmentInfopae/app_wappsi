@@ -42,11 +42,16 @@ class UserProvider {
   }
 
   static Future<bool> verifyIfUserNameExist(
-      BuildContext context, String userName) async {
+    BuildContext context,
+    String userName,
+  ) async {
     final apiProvider = DataProvider();
 
     final response = await apiProvider.postPetition(
-        verifyUserNameEndP, {'username': userName}, dataBloc.getHeaders());
+      verifyUserNameEndP,
+      {'username': userName},
+      dataBloc.getHeaders(),
+    );
 
     manageResponseAlerts(response, context);
 
@@ -54,11 +59,16 @@ class UserProvider {
   }
 
   static Future<bool> verifyIfCompanyHaveUser(
-      BuildContext context, String companyId) async {
+    BuildContext context,
+    String companyId,
+  ) async {
     final apiProvider = DataProvider();
 
     final response = await apiProvider.postPetition(
-        verifyUserExistEndP, {'company_id': companyId}, dataBloc.getHeaders());
+      verifyUserExistEndP,
+      {'company_id': companyId},
+      dataBloc.getHeaders(),
+    );
 
     manageResponseAlerts(response, context, showErrorDialog: false);
 

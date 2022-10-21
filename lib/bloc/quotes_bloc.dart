@@ -39,7 +39,7 @@ class QuoteBloc {
 
   BehaviorSubject<Map> _printDataController = BehaviorSubject<Map>();
 
-  BehaviorSubject<PaymentMethods?> _paymentMthdController =
+  BehaviorSubject<PaymentMethods?> _paymentMethodController =
       BehaviorSubject<PaymentMethods?>();
 
   BehaviorSubject<CompanyModel?> _customerController =
@@ -101,15 +101,22 @@ class QuoteBloc {
   ///Add a producto to a Map where key is the local id of product
   ///and value is an instance of ProductModel(). Param getPrices is
   ///used to know if product prices should or not be calculated
-  Future addProduct(Map<String, dynamic> productReq,
-      {bool getPrices = true, bool getQttys = true}) async {
+  Future addProduct(
+    Map<String, dynamic> productReq, {
+    bool getPrices = true,
+    bool getQttys = true,
+  }) async {
     bool res = false;
     if (!_productsController.hasValue) {
       emptyProductsAdded();
     }
     res = await _addProductToProductQuoteMap(
-        productReq['product'], getPrices, getQttys,
-        unit: productReq['product_unit'], prefs: productReq['product_prefs']);
+      productReq['product'],
+      getPrices,
+      getQttys,
+      unit: productReq['product_unit'],
+      prefs: productReq['product_prefs'],
+    );
     getSubTotal();
     return res;
   }
@@ -117,9 +124,12 @@ class QuoteBloc {
   /// Add product to sale product list, if getPrices = true, calculate
   /// product prices
   Future<bool> _addProductToProductQuoteMap(
-      ProductModel product, bool getPrices, bool getQttys,
-      {UnitsModel? unit,
-      Map<PreferenceCategoryModel, List<PreferenceModel>>? prefs}) async {
+    ProductModel product,
+    bool getPrices,
+    bool getQttys, {
+    UnitsModel? unit,
+    Map<PreferenceCategoryModel, List<PreferenceModel>>? prefs,
+  }) async {
     bool res = false;
     try {
       if (dataBloc.settings!['item_addition'] == 1) {
@@ -167,8 +177,13 @@ class QuoteBloc {
 
         /// gen an unique key for each product
         if (_productsController.value.keys.contains(key)) {
-          _addProductToProductQuoteMap(product, getPrices, getQttys,
-              unit: unit, prefs: prefs);
+          _addProductToProductQuoteMap(
+            product,
+            getPrices,
+            getQttys,
+            unit: unit,
+            prefs: prefs,
+          );
         } else {
           // add product unit if product unit is selected
           if (unit != null) {
@@ -202,8 +217,10 @@ class QuoteBloc {
     return res;
   }
 
-  String _prefsKey(Map<PreferenceCategoryModel, List<PreferenceModel>> prefs,
-      String prefsKey) {
+  String _prefsKey(
+    Map<PreferenceCategoryModel, List<PreferenceModel>> prefs,
+    String prefsKey,
+  ) {
     final List<int> prefsId = [];
     if (prefs.isNotEmpty) {
       for (var prefCat in prefs.keys) {
@@ -219,14 +236,15 @@ class QuoteBloc {
   }
 
   ///Returns a Map<String,dynamic>, where the keys are the same of
-  ///SaleModel.fromJson(), it could be usefull to build an instance of
+  ///SaleModel.fromJson(), it could be useful to build an instance of
   ///SaleModel to send to an endpoint of API's service.
   Map<String, dynamic> getProductDetailMapLists() {
     return ProductModel.getProductDetailMapLists(
-        _productsController.value,
-        dataBloc.userData!.warehouseId,
-        _productUnitController.valueOrNull,
-        getProductPrefsText);
+      _productsController.value,
+      dataBloc.userData!.warehouseId,
+      _productUnitController.valueOrNull,
+      getProductPrefsText,
+    );
   }
 
   /// Modify quantity field of a ProductModel() given a key and a value
@@ -236,7 +254,9 @@ class QuoteBloc {
       // verify overselling setting to avoid overselling or not
       if (dataBloc.settings!['overselling'] == 0) {
         final p = await ProductsProvider.getProductDetails(
-            _productsController.value[key]!.id.toString(), true);
+          _productsController.value[key]!.id.toString(),
+          true,
+        );
         _productsController.value[key]!.inventory =
             p?.inventory ?? _productsController.value[key]!.inventory;
         if (_productsController.value[key]!.inventory < value) {
@@ -273,7 +293,8 @@ class QuoteBloc {
   List<Map<String, dynamic>> getProductsMap() {
     if (_productsController.hasValue) {
       List<Map<String, dynamic>> products = List.from(
-          _productsController.value.values.map((value) => value.toJson()));
+        _productsController.value.values.map((value) => value.toJson()),
+      );
       return products;
     } else {
       return [];
@@ -283,7 +304,9 @@ class QuoteBloc {
   /// Function to reload product data, costumer data and customer addresses data
   Future<bool> reloadPOSData() async {
     final customer = await DBProvider.db.findTableFieldsById(
-        'sma_companies', _customerController.value!.idCloud!);
+      'sma_companies',
+      _customerController.value!.idCloud!,
+    );
     if (customer != null) {
       setCustomer(CompanyModel.fromJson(customer));
       final res = await reloadProducts();
@@ -294,7 +317,7 @@ class QuoteBloc {
   }
 
   /// When parameters of product price calculation change, it's
-  /// neccesary to recalculate product prices, this function make
+  /// necessary to recalculate product prices, this function make
   /// current product list empty and then introduce all products
   /// again recalculating prices for parameters.
   Future<bool> reloadProducts() async {
@@ -317,8 +340,10 @@ class QuoteBloc {
           // pData[keyInitialQtty] = temp[key]!.quantity;
           // final product = ProductModel.fromJson(pData,
           //     loadInitialQtty: true, qtyKey: keyInitialQtty);
-          await addProduct({'product': temp[key], 'product_unit': pUnits[key]},
-              getQttys: false);
+          await addProduct(
+            {'product': temp[key], 'product_unit': pUnits[key]},
+            getQttys: false,
+          );
           // }
         });
 
@@ -343,7 +368,7 @@ class QuoteBloc {
     _productsController.sink.add(_productsController.value);
   }
 
-  /// Remove a product from products Map given a key, if product have an asosiate
+  /// Remove a product from products Map given a key, if product have an associate
   /// unit, remove unit too
   removeProduct(String key) {
     _productsController.value.remove(key);
@@ -409,7 +434,7 @@ class QuoteBloc {
     return subTotal;
   }
 
-  /// Returns total price of products without aplying customer discount.
+  /// Returns total price of products without applying customer discount.
   double getTotalWithoutDiscount() {
     double total = 0;
     // ignore: unnecessary_null_comparison
@@ -496,8 +521,10 @@ class QuoteBloc {
     }
   }
 
-  addProductPrefs(String productKey,
-      Map<PreferenceCategoryModel, List<PreferenceModel>> prefs) {
+  addProductPrefs(
+    String productKey,
+    Map<PreferenceCategoryModel, List<PreferenceModel>> prefs,
+  ) {
     try {
       if (!_productPrefsController.hasValue) {
         _productPrefsController.value = {};
@@ -527,7 +554,7 @@ class QuoteBloc {
             }
             if (text.isNotEmpty) {
               if (prefsText.isNotEmpty) {
-                prefsText += " / " + text;
+                prefsText += ' / ' + text;
               } else {
                 prefsText += text;
               }
@@ -607,7 +634,7 @@ class QuoteBloc {
 
   String? get getInternalNote => _internalNoteController.valueOrNull;
   String? get getNote => _quoteNoteController.valueOrNull;
-  PaymentMethods? get getPaymentMethod => _paymentMthdController.valueOrNull;
+  PaymentMethods? get getPaymentMethod => _paymentMethodController.valueOrNull;
 
   CustomerAddressesModel? get getCustomerAddresses =>
       _customerAddressesController.valueOrNull;
@@ -630,7 +657,7 @@ class QuoteBloc {
   }
 
   Function(PaymentMethods?) get setPaymentMethod =>
-      _paymentMthdController.sink.add;
+      _paymentMethodController.sink.add;
   Function(String) get setInternalNote => _internalNoteController.sink.add;
   Function(String) get setNote => _quoteNoteController.sink.add;
   Function(double) get setQuoteDiscount => _discountController.sink.add;
@@ -662,7 +689,7 @@ class QuoteBloc {
     _subtotalController.close();
     _customerController.close();
     _customerAddressesController.close();
-    _paymentMthdController.close();
+    _paymentMethodController.close();
     _internalNoteController.close();
     _quoteDocumentController.close();
     _quoteNoteController.close();
@@ -684,7 +711,7 @@ class QuoteBloc {
     _productUnitController = BehaviorSubject<Map<String, UnitsModel>>();
 
     _printDataController = BehaviorSubject<Map>();
-    _paymentMthdController = BehaviorSubject<PaymentMethods>();
+    _paymentMethodController = BehaviorSubject<PaymentMethods>();
     _internalNoteController = BehaviorSubject<String>();
     _quoteNoteController = BehaviorSubject<String>();
     _customerController = BehaviorSubject<CompanyModel?>();

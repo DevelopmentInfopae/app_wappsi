@@ -7,14 +7,14 @@ import 'package:pos_wappsi/models/zone_model.dart';
 import '../../providers/zone_provider.dart';
 
 class ZoneFutureDropDown extends StatefulWidget {
-  const ZoneFutureDropDown(
-      {Key? key,
-      required this.selectedCityCode,
-      this.dropDownKey,
-      required this.required,
-      required this.onChange,
-      required this.selectedZone})
-      : super(key: key);
+  const ZoneFutureDropDown({
+    Key? key,
+    required this.selectedCityCode,
+    this.dropDownKey,
+    required this.required,
+    required this.onChange,
+    required this.selectedZone,
+  }) : super(key: key);
 
   final String? selectedCityCode;
   final int? selectedZone;
@@ -44,7 +44,7 @@ class _ZoneFutureDropDownState extends State<ZoneFutureDropDown> {
   Widget build(BuildContext context) {
     return FutureBuilder<List<ZoneModel>?>(
       future: (widget.selectedCityCode != null)
-          ? ZonesProvider.loadCityZones(widget.selectedCityCode ?? "")
+          ? ZonesProvider.loadCityZones(widget.selectedCityCode ?? '')
           : null,
       builder: (context, AsyncSnapshot snapshot) {
         if (_selectedZone == null) {
@@ -78,7 +78,7 @@ class _ZoneFutureDropDownState extends State<ZoneFutureDropDown> {
           validator: (item) {
             if (item == null && widget.required) {
               // if ((snapshot.data?.isEmpty ?? false)) {
-                return "Campo requerido";
+              return 'Campo requerido';
               // }
             }
             return null;
@@ -103,7 +103,7 @@ class _ZoneFutureDropDownState extends State<ZoneFutureDropDown> {
               final data = (snapshot.data)?.where((element) {
                 final result = element.zoneName
                     .toUpperCase()
-                    .contains(filter?.toUpperCase() ?? "");
+                    .contains(filter?.toUpperCase() ?? '');
                 return result;
               }).toList();
               return data ?? (<ZoneModel>[]);

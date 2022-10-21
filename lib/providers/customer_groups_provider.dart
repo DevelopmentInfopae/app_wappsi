@@ -40,17 +40,21 @@ class CustomerGroupsProvider {
 
   /// Return sma_customer_groups row of a given id
   static Future<Map<String, dynamic>?> loadCustomerGroupFromDB(
-      String id) async {
+    String id,
+  ) async {
     return await DBProvider.db
         .sqlFirstQuery('sma_customer_groups', where: 'id_cloud = $id');
   }
 
-  /// Return a list with customer_groups data wich fields name or percent LIKE
-  /// param searchs
+  /// Return a list with customer_groups data which fields name or percent LIKE
+  /// param search
   static Future<List<Map<String, dynamic>>?> findCustomerGroup(
-      String searchs) async {
-    return await DBProvider.db.sqlQuery('sma_customer_groups',
-        where: "name LIKE '%$searchs%' OR percent LIKE '%$searchs%'",
-        limit: 20);
+    String search,
+  ) async {
+    return await DBProvider.db.sqlQuery(
+      'sma_customer_groups',
+      where: "name LIKE '%$search%' OR percent LIKE '%$search%'",
+      limit: 20,
+    );
   }
 }

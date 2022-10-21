@@ -25,7 +25,7 @@ import 'package:pos_wappsi/screens/sales/new_sale.dart';
 import 'package:pos_wappsi/screens/sales/sales_screen.dart';
 import 'package:pos_wappsi/screens/suppliers/new_supplier.dart';
 import 'package:pos_wappsi/screens/suppliers/suppliers_list.dart';
-import 'package:pos_wappsi/screens/user/profile_sreen.dart';
+import 'package:pos_wappsi/screens/user/profile_screen.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 // import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:provider/provider.dart';
@@ -57,10 +57,12 @@ class HomeGridCards extends StatelessWidget {
         Container(
           child: _text(context).paddingOnly(bottom: 2, left: 2, right: 2),
           decoration: BoxDecoration(
-              color: Colors.grey[50],
-              borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(5.0),
-                  bottomRight: Radius.circular(5.0))),
+            color: Colors.grey[50],
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(5.0),
+              bottomRight: Radius.circular(5.0),
+            ),
+          ),
         ).flexible(flex: 5),
       ],
     ).withSize(width: size.width, height: size.height);
@@ -93,12 +95,12 @@ class HomeGridCards extends StatelessWidget {
 
   Future<void> _navigation(BuildContext context) async {
     if (gridItems.route == 'sales') {
-      // to show or hide home bottombar
+      // to show or hide home bottomBar
 
       await dataBloc.refreshToken(context);
       await _newSale(context);
     } else if (gridItems.route == 'orders') {
-      // to show or hide home bottombar
+      // to show or hide home bottomBar
       if (posBloc.isDisposed) {
         posBloc.reload();
       }
@@ -160,7 +162,9 @@ class HomeGridCards extends StatelessWidget {
       final dbProvider = SyncDBProvider();
       dataBloc.homeKey?.currentState?.changeBottomIndex(0);
       await dbProvider.syncSpecialSelectedOption(
-          tableNamesToSyncOpt['sma_order_sales']!, context);
+        tableNamesToSyncOpt['sma_order_sales']!,
+        context,
+      );
 
       // printConsole(result);
 
@@ -177,21 +181,26 @@ class HomeGridCards extends StatelessWidget {
       const NewSale().launch(context);
     } else {
       await showCupertinoDialog(
-          barrierDismissible: true,
-          context: context,
-          builder: (context) {
-            return ChangeNotifierProvider(
-                create: (_) => RegisterFormProvider(),
-                child: const RegisterAlertDialog(
-                  action: 'open',
-                ));
-          });
+        barrierDismissible: true,
+        context: context,
+        builder: (context) {
+          return ChangeNotifierProvider(
+            create: (_) => RegisterFormProvider(),
+            child: const RegisterAlertDialog(
+              action: 'open',
+            ),
+          );
+        },
+      );
       if (dataBloc.registerData?.status == 'open') {
         dataBloc.homeKey?.currentState?.changeBottomIndex(0);
         const NewSale().launch(context);
       } else {
-        confirmDialog(context, 'Error al abrir caja, intente nuevamente',
-            'assets/images/warning.png');
+        confirmDialog(
+          context,
+          'Error al abrir caja, intente nuevamente',
+          'assets/images/warning.png',
+        );
       }
     }
   }
@@ -199,9 +208,10 @@ class HomeGridCards extends StatelessWidget {
   Future<void> _logout(BuildContext context) async {
     bool _close = false;
     _close = await choiceAlert(
-        context,
-        'Al cerrar sesión se perderan todos los datos que no se hallan guardado.\n,¿Desea cerrar sesión?',
-        'assets/images/logout.png');
+      context,
+      'Al cerrar sesión se perderán todos los datos que no se hallan guardado.\n,¿Desea cerrar sesión?',
+      'assets/images/logout.png',
+    );
     if (_close) {
       // with this we restart application
       await posBloc.suspendSale();

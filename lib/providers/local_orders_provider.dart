@@ -15,28 +15,29 @@ import 'customer_addresses_provider.dart';
 import 'order_sale_items_provider.dart';
 
 class LocalOrdersProvider {
-  static Future<List<OrderModel>> listLocalOrders(
-      {String search = '',
-      int? limit,
-      String orderBy = 'name',
-      List<String>? filters,
-      bool offset = false,
-      int offsetValue = 1}) async {
+  static Future<List<OrderModel>> listLocalOrders({
+    String search = '',
+    int? limit,
+    String orderBy = 'name',
+    List<String>? filters,
+    bool offset = false,
+    int offsetValue = 1,
+  }) async {
     String? filter;
-    String searchSql = "";
+    String searchSql = '';
 
     final onlyCreatedByUser = dataBloc.userData?.viewRight == 0
         ? 'AND created_by=${dataBloc.userData!.id}'
         : '';
 
-    final pagination = offset ? " LIMIT 30 OFFSET $offsetValue" : "";
+    final pagination = offset ? ' LIMIT 30 OFFSET $offsetValue' : '';
     final currentBiller = dataBloc.userData!.billerId;
 
     if (search.isNotEmpty) {
       searchSql =
           '''(customer LIKE "%$search%" OR note LIKE "%$search%" OR staff_note LIKE "%$search%" OR reference_no LIKE "%$search%") ''';
       if (filters?.isEmpty ?? true) {
-        searchSql += " AND";
+        searchSql += ' AND';
       }
     }
 
@@ -85,13 +86,15 @@ class LocalOrdersProvider {
     return status;
   }
 
-  static Future<List<int>> ordersIds(
-      {String search = '', List<String>? filters}) async {
+  static Future<List<int>> ordersIds({
+    String search = '',
+    List<String>? filters,
+  }) async {
     // const sql =
     // '''SELECT id_cloud FROM sma_order_sales''';
     // final res = await DBProvider.db.sqlRawQuery(sql);
-    String filter = "";
-    String searchSql = "";
+    String filter = '';
+    String searchSql = '';
     if (filters != null) {
       if (filters.isNotEmpty) {
         filter = "AND sale_status IN ('" + filters.join("','") + "') ";
@@ -104,7 +107,7 @@ class LocalOrdersProvider {
       searchSql =
           '''(customer LIKE "%$search%" OR note LIKE "%$search%" OR staff_note LIKE "%$search%" OR reference_no LIKE "%$search%") ''';
       if (filters?.isEmpty ?? true) {
-        searchSql += " AND";
+        searchSql += ' AND';
       }
     }
     if (filters != null) {
@@ -143,7 +146,8 @@ class LocalOrdersProvider {
     final billerData =
         await BillerDataProvider.loadBillerDataId(order.billerId.toString());
     final customerAddress = await CustomerAddressesProvider.loadCustomerAddress(
-        order.addressId.toString());
+      order.addressId.toString(),
+    );
     // Load only first sale payment
 
     final settings = dataBloc.settings;
@@ -154,30 +158,31 @@ class LocalOrdersProvider {
     final productsInfo = await _productsMap(order.idCloud!);
 
     return {
-      "products": productsInfo['products'],
-      "customer": customer?.toJson() ?? {},
-      "customer_address": customerAddress?.toJson() ?? {},
-      "order_data": {
+      'products': productsInfo['products'],
+      'customer': customer?.toJson() ?? {},
+      'customer_address': customerAddress?.toJson() ?? {},
+      'order_data': {
         'reference_no': order.referenceNo,
         'resolucion': order.resolucion,
         'date': order.registrationDate,
         'status': order.saleStatus,
         'order_id': order.idCloud
       },
-      "zone_szone_data": await ZonesProvider.getZoneSzoneDataJson(
-          zoneId: customerAddress?.location,
-          subzoneId: customerAddress?.subzone),
-      "pos_note": order.note ?? '',
-      "total": order.total,
-      "grand_total": order.grandTotal,
-      "products_discount": order.productDiscount,
-      "order_discount": order.orderDiscount,
-      "total_discount": order.totalDiscount,
-      "iva": productsInfo['iva'],
-      "company_data": biller,
-      "biller_data": billerData,
-      "settings": settings,
-      "footer": temp
+      'zone_szone_data': await ZonesProvider.getZoneSzoneDataJson(
+        zoneId: customerAddress?.location,
+        subzoneId: customerAddress?.subzone,
+      ),
+      'pos_note': order.note ?? '',
+      'total': order.total,
+      'grand_total': order.grandTotal,
+      'products_discount': order.productDiscount,
+      'order_discount': order.orderDiscount,
+      'total_discount': order.totalDiscount,
+      'iva': productsInfo['iva'],
+      'company_data': biller,
+      'biller_data': billerData,
+      'settings': settings,
+      'footer': temp
     };
   }
 

@@ -28,17 +28,17 @@ class DeliveryTime {
   String toRawJson() => json.encode(toJson());
 
   factory DeliveryTime.fromJson(Map<String, dynamic> json) => DeliveryTime(
-        id: parsingToInt(json["id"]),
-        day: json["day"],
-        time1: parseTimeOfDay(json["time_1"]),
-        time2: parseTimeOfDay(json["time_2"]),
+        id: parsingToInt(json['id']),
+        day: json['day'],
+        time1: parseTimeOfDay(json['time_1']),
+        time2: parseTimeOfDay(json['time_2']),
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "day": day,
-        "time_1": time1,
-        "time_2": time2,
+        'id': id,
+        'day': day,
+        'time_1': time1,
+        'time_2': time2,
       };
 
   static List<DeliveryTime> fromJsonList(List list) {
@@ -56,7 +56,7 @@ class DeliveryTime {
     // prString(temp);
   }
 
-  String getDelvTimeText() {
+  String getDeliveryTimeText() {
     String text = '';
 
     final part1 = formatTimeOfDay(time1);
@@ -72,6 +72,6 @@ class DeliveryTime {
 
   @override
   String toString() {
-    return getDelvTimeText();
+    return getDeliveryTimeText();
   }
 }

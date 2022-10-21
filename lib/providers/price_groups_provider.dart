@@ -60,11 +60,15 @@ class PriceGroupsProvider {
         .sqlFirstQuery('sma_price_groups', where: 'price_group_base =1');
   }
 
-  /// Return a list with price_groups data wich fields name or percent LIKE
-  /// param searchs
+  /// Return a list with price_groups data which fields name or percent LIKE
+  /// param search
   static Future<List<Map<String, dynamic>>?> findPriceGroup(
-      String searchs) async {
-    return await DBProvider.db.sqlQuery('sma_price_groups',
-        where: "name LIKE '%$searchs%'", limit: 20);
+    String search,
+  ) async {
+    return await DBProvider.db.sqlQuery(
+      'sma_price_groups',
+      where: "name LIKE '%$search%'",
+      limit: 20,
+    );
   }
 }

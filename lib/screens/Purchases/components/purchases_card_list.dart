@@ -11,12 +11,12 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:pos_wappsi/utils/text_formating/order_status_mapping.dart';
 
 class PurchasesCardList extends StatefulWidget {
-  const PurchasesCardList(
-      {Key? key,
-      required this.purchases,
-      required this.searchParams,
-      this.filters = const []})
-      : super(key: key);
+  const PurchasesCardList({
+    Key? key,
+    required this.purchases,
+    required this.searchParams,
+    this.filters = const [],
+  }) : super(key: key);
   final List<PurchaseModel> purchases;
   final List<String> filters;
   final Map searchParams;
@@ -82,11 +82,12 @@ class _PurchasesCardListState extends State<PurchasesCardList> {
 
       _loading = true;
       final res = await PurchaseProvider.listLocalPurchases(
-          search: widget.searchParams['search'] ?? '',
-          filters: widget.filters,
-          offset: true,
-          limit: 30,
-          offsetValue: _page * 30);
+        search: widget.searchParams['search'] ?? '',
+        filters: widget.filters,
+        offset: true,
+        limit: 30,
+        offsetValue: _page * 30,
+      );
       if (res != null) {
         if (res.isNotEmpty) {
           setState(() {
@@ -103,7 +104,10 @@ class _PurchasesCardListState extends State<PurchasesCardList> {
         }
       } else {
         await confirmDialog(
-            context, 'Error al cargar datos', 'assets/images/dizzy-robot.png');
+          context,
+          'Error al cargar datos',
+          'assets/images/dizzy-robot.png',
+        );
         setState(() {
           _loading = false;
         });
@@ -112,7 +116,7 @@ class _PurchasesCardListState extends State<PurchasesCardList> {
   }
 }
 
-// class to show customer indormation in form of a card
+// class to show customer information in form of a card
 
 class PurchaseCard extends StatelessWidget {
   final PurchaseModel purchase;
@@ -129,10 +133,10 @@ class PurchaseCard extends StatelessWidget {
     // _size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () async {
-        // Printpurchase(
+        // PrintPurchase(
         //   printData: await purchase.buildPrintDataMap(),
         //   back: true,
-        //   exitToNewpurchase: false,
+        //   exitToNewPurchase: false,
         // ).launch(context);
       },
       child: Card(
@@ -155,39 +159,53 @@ class PurchaseCard extends StatelessWidget {
         children: [
           _status(context).paddingSymmetric(horizontal: 8),
           labelContentH(
-              'Proveedor:', capitalizeText(purchase.supplier ?? ''), context,
-              withInnerPading: false,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
+            'Proveedor:',
+            capitalizeText(purchase.supplier ?? ''),
+            context,
+            withInnerPadding: false,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          ),
           labelContentH(
-              'Fecha:',
-              capitalizeText(parseDateStrES(purchase.registrationDate ?? '') +
+            'Fecha:',
+            capitalizeText(
+              parseDateStrES(purchase.registrationDate ?? '') +
                   ' ' +
-                  parseTimeStrES(purchase.registrationDate ?? '')),
-              context,
-              withInnerPading: false,
-              flexCol1: 1,
-              flexCol2: 3,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
-          labelContentH('Referencia No:', purchase.referenceNo ?? '', context,
-              withInnerPading: false,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
+                  parseTimeStrES(purchase.registrationDate ?? ''),
+            ),
+            context,
+            withInnerPadding: false,
+            flexCol1: 1,
+            flexCol2: 3,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          ),
+          labelContentH(
+            'Referencia No:',
+            purchase.referenceNo ?? '',
+            context,
+            withInnerPadding: false,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          ),
           Container(
             decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(radius2)),
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(radius2),
+            ),
             padding: const EdgeInsets.all(4),
             child: Column(
               children: [
                 // labelContentH(
                 //     'Items:', (purchase.).toString(), context,
-                //     withInnerPading: false,
+                //     withInnerPadding: false,
                 //     padding:
                 //         const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
                 labelContentH(
-                    'Total:', value.substring(0, value.length - 1), context,
-                    withInnerPading: false,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2))
+                  'Total:',
+                  value.substring(0, value.length - 1),
+                  context,
+                  withInnerPadding: false,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                )
               ],
             ),
           ),
@@ -213,13 +231,17 @@ class PurchaseCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 6),
           width: 110,
           decoration: BoxDecoration(
-              color: cardColors['background'],
-              borderRadius: BorderRadius.circular(radius2)),
+            color: cardColors['background'],
+            borderRadius: BorderRadius.circular(radius2),
+          ),
           child: Text(
             mapStatusText(purchase.status ?? ''),
             textAlign: TextAlign.center,
-            style: normalTextStyle(context,
-                fontWeightDelta: 2, color: cardColors['text']),
+            style: normalTextStyle(
+              context,
+              fontWeightDelta: 2,
+              color: cardColors['text'],
+            ),
           ),
         ),
       ],

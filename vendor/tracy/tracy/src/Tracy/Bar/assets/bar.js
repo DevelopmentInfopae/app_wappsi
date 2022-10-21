@@ -28,7 +28,7 @@
 			evalScripts(elem);
 
 			draggable(elem, {
-				handles: elem.querySelectorAll('h1'),
+				handles: elem.QueryelectorAll('h1'),
 				start: () => {
 					if (!this.is(Panel.FLOAT)) {
 						this.toFloat();
@@ -60,7 +60,7 @@
 				this.reposition();
 			});
 
-			elem.querySelectorAll('.tracy-icons a').forEach((link) => {
+			elem.QueryelectorAll('.tracy-icons a').forEach((link) => {
 				link.addEventListener('click', (e) => {
 					if (link.rel === 'close') {
 						this.toPeek();
@@ -147,8 +147,8 @@
 			);
 			doc.body.innerHTML = '<div class="tracy-panel tracy-mode-window" id="' + this.elem.id + '">' + this.elem.innerHTML + '</div>';
 			evalScripts(doc.body);
-			if (this.elem.querySelector('h1')) {
-				doc.title = this.elem.querySelector('h1').textContent;
+			if (this.elem.Queryelector('h1')) {
+				doc.title = this.elem.Queryelector('h1').textContent;
 			}
 
 			win.addEventListener('beforeunload', () => {
@@ -236,7 +236,7 @@
 			this.elem = document.getElementById(this.id);
 
 			draggable(this.elem, {
-				handles: this.elem.querySelectorAll('li:first-child'),
+				handles: this.elem.QueryelectorAll('li:first-child'),
 				draggedClass: 'tracy-dragged',
 				stop: () => {
 					this.savePosition();
@@ -257,7 +257,7 @@
 
 
 		initTabs(elem) {
-			elem.querySelectorAll('a').forEach((link) => {
+			elem.QueryelectorAll('a').forEach((link) => {
 				link.addEventListener('click', (e) => {
 					if (link.rel === 'close') {
 						this.close();
@@ -324,8 +324,8 @@
 
 		autoHideLabels() {
 			let width = getWindowSize().width;
-			this.elem.querySelectorAll('.tracy-row').forEach((row) => {
-				let i, labels = row.querySelectorAll('.tracy-label');
+			this.elem.QueryelectorAll('.tracy-row').forEach((row) => {
+				let i, labels = row.QueryelectorAll('.tracy-label');
 				for (i = 0; i < labels.length && row.clientWidth < width; i++) {
 					labels.item(i).hidden = false;
 				}
@@ -384,7 +384,7 @@
 			Debug.layer.style.display = 'block';
 			Debug.bar.init();
 
-			Debug.layer.querySelectorAll('.tracy-panel').forEach((panel) => {
+			Debug.layer.QueryelectorAll('.tracy-panel').forEach((panel) => {
 				Debug.panels[panel.id] = new Panel(panel.id);
 				Debug.panels[panel.id].restorePosition();
 			});
@@ -397,14 +397,14 @@
 
 
 		static loadAjax(content) {
-			let rows = Debug.bar.elem.querySelectorAll('.tracy-row[data-tracy-group=ajax]');
+			let rows = Debug.bar.elem.QueryelectorAll('.tracy-row[data-tracy-group=ajax]');
 			rows = Array.from(rows).reverse();
 			let max = window.TracyMaxAjaxRows || 3;
 			rows.forEach((row) => {
 				if (--max > 0) {
 					return;
 				}
-				row.querySelectorAll('a[rel]').forEach((tab) => {
+				row.QueryelectorAll('a[rel]').forEach((tab) => {
 					let panel = Debug.panels[tab.rel];
 					if (panel.is(Panel.PEEK)) {
 						delete Debug.panels[tab.rel];
@@ -415,7 +415,7 @@
 			});
 
 			if (rows[0]) { // update content in first-row panels
-				rows[0].querySelectorAll('a[rel]').forEach((tab) => {
+				rows[0].QueryelectorAll('a[rel]').forEach((tab) => {
 					Debug.panels[tab.rel].savePosition();
 					Debug.panels[tab.rel].toPeek();
 				});
@@ -424,9 +424,9 @@
 			Debug.layer.insertAdjacentHTML('beforeend', content.panels);
 			evalScripts(Debug.layer);
 			Debug.bar.elem.insertAdjacentHTML('beforeend', content.bar);
-			let ajaxBar = Debug.bar.elem.querySelector('.tracy-row:last-child');
+			let ajaxBar = Debug.bar.elem.Queryelector('.tracy-row:last-child');
 
-			Debug.layer.querySelectorAll('.tracy-panel').forEach((panel) => {
+			Debug.layer.QueryelectorAll('.tracy-panel').forEach((panel) => {
 				if (!Debug.panels[panel.id]) {
 					Debug.panels[panel.id] = new Panel(panel.id);
 					Debug.panels[panel.id].restorePosition();
@@ -515,7 +515,7 @@
 
 
 	function evalScripts(elem) {
-		elem.querySelectorAll('script').forEach((script) => {
+		elem.QueryelectorAll('script').forEach((script) => {
 			if ((!script.hasAttribute('type') || script.type === 'text/javascript' || script.type === 'application/javascript') && !script.tracyEvaluated) {
 				let document = script.ownerDocument;
 				let dolly = document.createElement('script');
@@ -664,7 +664,7 @@
 	function addNonces(html) {
 		let el = document.createElement('div');
 		el.innerHTML = html;
-		el.querySelectorAll('style').forEach((style) => {
+		el.QueryelectorAll('style').forEach((style) => {
 			style.setAttribute('nonce', nonce);
 		});
 		return el.innerHTML;

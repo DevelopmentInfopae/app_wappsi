@@ -23,18 +23,18 @@ class DocumentypeModel {
 
   factory DocumentypeModel.fromJson(Map<String, dynamic> json) =>
       DocumentypeModel(
-        id: json["id"],
-        idCloud: json["id_cloud"],
-        nombre: json["nombre"],
-        abreviacion: json["abreviacion"],
-        codigoDoc: json["codigo_doc"],
+        id: json['id'],
+        idCloud: json['id_cloud'],
+        nombre: json['nombre'],
+        abreviacion: json['abreviacion'],
+        codigoDoc: json['codigo_doc'],
       );
 
   Map<String, dynamic> toJson() => {
-        "id_cloud": idCloud,
-        "nombre": nombre,
-        "abreviacion": abreviacion,
-        "codigo_doc": codigoDoc,
+        'id_cloud': idCloud,
+        'nombre': nombre,
+        'abreviacion': abreviacion,
+        'codigo_doc': codigoDoc,
       };
 
   @override

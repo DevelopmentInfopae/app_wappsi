@@ -29,7 +29,7 @@ import 'package:pos_wappsi/utils/validation_encoding/reg_exp.dart';
 
 class NewSupplierPage2 extends StatefulWidget {
   final bool backToHome;
-  const NewSupplierPage2({Key? key, this.backToHome=true}) : super(key: key);
+  const NewSupplierPage2({Key? key, this.backToHome = true}) : super(key: key);
 
   @override
   _NewSupplierPage2State createState() => _NewSupplierPage2State();
@@ -39,7 +39,7 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
   late Size _size;
   late Color _pc;
 
-  TextEditingController personTypeypeController = TextEditingController();
+  TextEditingController personTypeController = TextEditingController();
   final _statesDropDownKey = GlobalKey<DropdownSearchState<StatesModel?>>();
   final _citiesDropDownKey = GlobalKey<DropdownSearchState<CitiesModel?>>();
 
@@ -53,7 +53,7 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
 
   CountriesModel? _country;
   StatesModel? _states;
-  CitiesModel? _citys;
+  CitiesModel? _city;
 
   final TextEditingController _countryController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
@@ -67,7 +67,8 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
 
   @override
   void initState() {
-    supplierBloc.getCustomer.customerPaymentType ??= supplierrPayM["1"]!.value.toString();
+    supplierBloc.getCustomer.customerPaymentType ??=
+        supplierPayM['1']!.value.toString();
     _addressController.text = supplierBloc.getCustomer.address ?? '';
     _emailController.text = supplierBloc.getCustomer.email ?? '';
     _phoneController.text = supplierBloc.getCustomer.phone ?? '';
@@ -76,7 +77,7 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
 
   @override
   void dispose() {
-    personTypeypeController.dispose();
+    personTypeController.dispose();
     _countryController.dispose();
     _stateController.dispose();
     _cityController.dispose();
@@ -92,8 +93,11 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
   }
 
   PreferredSize _appBar() {
-    return appBar(context, 'Agregar proveedor',
-        image: 'assets/images/add-user.png');
+    return appBar(
+      context,
+      'Agregar proveedor',
+      image: 'assets/images/add-user.png',
+    );
   }
 
   Widget _body() {
@@ -125,13 +129,11 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
     );
   }
 
-  
-
   Widget _countries() {
     return SizedBox(
       height: dropDownHeight,
       child: FutureBuilder<CountriesModel?>(
-        // load country if already defined in customerdata, if not load default country
+        // load country if already defined in customerData, if not load default country
         future: supplierBloc.getCustomer.country == null
             ? CountriesProvider.defaultCountry()
             : CountriesProvider.loadCountry(supplierBloc.getCustomer.country!),
@@ -180,10 +182,10 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
             : CitiesProvider.loadCity(supplierBloc.getCustomer.city!),
         builder: (BuildContext context, AsyncSnapshot<CitiesModel?> snapshot) {
           if (snapshot.hasData &&
-              _citys == null &&
+              _city == null &&
               _states != null &&
               _country != null) {
-            _citys = snapshot.data;
+            _city = snapshot.data;
             supplierBloc.getCustomer.city = snapshot.data!.descripcion;
             supplierBloc.getCustomer.cityCode = snapshot.data!.codigo;
             return _citiesDropdown();
@@ -202,7 +204,7 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
         mode: Mode.BOTTOM_SHEET,
 
         validator: (item) {
-          if (item == null) return "Campo requerido";
+          if (item == null) return 'Campo requerido';
           return null;
         },
 
@@ -212,9 +214,9 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
         // showClearButton: true,
         showSelectedItems: true,
         compareFn: (item, selectedItem) => item?.name == selectedItem?.name,
-        items: supplierrPayM.values.toList(),
+        items: supplierPayM.values.toList(),
         selectedItem:
-            supplierrPayM[supplierBloc.getCustomer.customerPaymentType ?? "1"],
+            supplierPayM[supplierBloc.getCustomer.customerPaymentType ?? '1'],
         // selectedItem: _doc,
         dropdownSearchDecoration: InputDecoration(
           labelText: 'Tipo de pago del proveedor :',
@@ -244,7 +246,7 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
         controller: _countryController,
         // autofocus: true,
         decoration: InputDecoration(
-          labelText: 'Pais',
+          labelText: 'País',
           suffixIcon: IconButton(
             icon: const Icon(Icons.clear),
             onPressed: () {
@@ -257,7 +259,7 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       // maxHeight: _size.width * 0.9,
@@ -270,7 +272,7 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
       showSearchBox: true,
       selectedItem: _country,
       dropdownSearchDecoration: InputDecoration(
-        labelText: 'Pais :',
+        labelText: 'País :',
         labelStyle: smallTextStyle(context, color: _pc),
         filled: true,
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
@@ -301,7 +303,10 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
   }
 
   Widget _customPopupCountriesItemBuilder(
-      BuildContext context, CountriesModel? item, bool isSelected) {
+    BuildContext context,
+    CountriesModel? item,
+    bool isSelected,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
@@ -342,7 +347,7 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       // maxHeight: _size.width * 0.9,
@@ -389,7 +394,10 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
   }
 
   Widget _customPopupStatesItemBuilder(
-      BuildContext context, StatesModel item, bool isSelected) {
+    BuildContext context,
+    StatesModel item,
+    bool isSelected,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
@@ -430,7 +438,7 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       // maxHeight: _size.width * 0.9,
@@ -442,7 +450,7 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
       compareFn: (item, selectedItem) =>
           item?.descripcion == selectedItem?.descripcion,
       showSearchBox: true,
-      selectedItem: _citys,
+      selectedItem: _city,
       dropdownSearchDecoration: InputDecoration(
         labelText: 'Ciudad :',
         labelStyle: smallTextStyle(context, color: _pc),
@@ -451,14 +459,16 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onFind: (String? filter) => CitiesProvider.loadFromDB(
-          search: filter, departament: _states?.coddepartamento),
+        search: filter,
+        departament: _states?.coddepartamento,
+      ),
       onChanged: (data) async {
-        _citys = data;
+        _city = data;
         supplierBloc.getCustomer.city = data?.descripcion;
         supplierBloc.getCustomer.cityCode = data?.codigo;
       },
       // selectedItem: posBloc.getCustomer,
-      popupItemBuilder: _customPopupCitysItemBuilder,
+      popupItemBuilder: _customPopupCitiesItemBuilder,
       popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
@@ -467,8 +477,11 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
     );
   }
 
-  Widget _customPopupCitysItemBuilder(
-      BuildContext context, CitiesModel? item, bool isSelected) {
+  Widget _customPopupCitiesItemBuilder(
+    BuildContext context,
+    CitiesModel? item,
+    bool isSelected,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
@@ -487,57 +500,77 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
   }
 
   Widget _email() {
-    return textFormField(context, 'Correo electrónico', (value) {
-      supplierBloc.getCustomer.email = value;
-    }, (String? value) {
-      if (value == null || value == '') {
-        _e.requestFocus();
-        return 'El campo es necesario';
-      }
-      if (!emailRegex.hasMatch(value)) {
-        return 'Correo electrónico no valido';
-      }
-    }, () {
-      _p.requestFocus();
-    },
-            focus: _e,
-            controller: _emailController,
-            keyBType: TextInputType.emailAddress)
-        .paddingSymmetric(vertical: 5);
+    return textFormField(
+      context,
+      'Correo electrónico',
+      (value) {
+        supplierBloc.getCustomer.email = value;
+      },
+      (String? value) {
+        if (value == null || value == '') {
+          _e.requestFocus();
+          return 'El campo es necesario';
+        }
+        if (!emailRegex.hasMatch(value)) {
+          return 'Correo electrónico no valido';
+        }
+      },
+      () {
+        _p.requestFocus();
+      },
+      focus: _e,
+      controller: _emailController,
+      keyBType: TextInputType.emailAddress,
+    ).paddingSymmetric(vertical: 5);
   }
 
   Widget _phone() {
-    return textFormField(context, 'Telefono', (value) {
-      supplierBloc.getCustomer.phone = value;
-    }, (String? value) {
-      if (value == null || value == '') {
-        _p.requestFocus();
-        return 'El campo es necesario';
-      }
-      if (!isNumeric(value)) {
-        return 'Telefono no valido';
-      }
-    }, () async {
-      if (_formKey.currentState!.validate()) {
-        await const NewCustomerData3().launch(context);
-      }
-    }, focus: _p, controller: _phoneController, keyBType: TextInputType.phone)
-        .paddingSymmetric(vertical: 5);
+    return textFormField(
+      context,
+      'Teléfono',
+      (value) {
+        supplierBloc.getCustomer.phone = value;
+      },
+      (String? value) {
+        if (value == null || value == '') {
+          _p.requestFocus();
+          return 'El campo es necesario';
+        }
+        if (!isNumeric(value)) {
+          return 'Teléfono no valido';
+        }
+      },
+      () async {
+        if (_formKey.currentState!.validate()) {
+          await const NewCustomerData3().launch(context);
+        }
+      },
+      focus: _p,
+      controller: _phoneController,
+      keyBType: TextInputType.phone,
+    ).paddingSymmetric(vertical: 5);
   }
 
   Widget _address() {
-    return textFormField(context, 'Dirección', (value) {
-      supplierBloc.getCustomer.address = value;
-    }, (String? value) {
-      if (value == null || value == '') {
-        _d.requestFocus();
-        return 'El campo es necesario';
-      }
-    }, () {
-      final _currentFocus = FocusScope.of(context);
-      _currentFocus.unfocus();
-    }, focus: _d, controller: _addressController)
-        .paddingSymmetric(vertical: 5);
+    return textFormField(
+      context,
+      'Dirección',
+      (value) {
+        supplierBloc.getCustomer.address = value;
+      },
+      (String? value) {
+        if (value == null || value == '') {
+          _d.requestFocus();
+          return 'El campo es necesario';
+        }
+      },
+      () {
+        final _currentFocus = FocusScope.of(context);
+        _currentFocus.unfocus();
+      },
+      focus: _d,
+      controller: _addressController,
+    ).paddingSymmetric(vertical: 5);
   }
 
   Widget _sendNewCustomer() {
@@ -548,8 +581,10 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
         AppButton(
           child: Row(
             children: [
-              Text('Siguiente',
-                  style: buttonsSmallTextStyle(context, color: pColor)),
+              Text(
+                'Siguiente',
+                style: buttonsSmallTextStyle(context, color: pColor),
+              ),
               const Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: kIconSize,
@@ -560,7 +595,10 @@ class _NewSupplierPage2State extends State<NewSupplierPage2> {
           enabled: !_loading,
           onTap: () async {
             if (_formKey.currentState!.validate()) {
-               await CompaniesProvider.createSupplier(context, backToHome: widget.backToHome);
+              await CompaniesProvider.createSupplier(
+                context,
+                backToHome: widget.backToHome,
+              );
             }
           },
           color: Colors.white,

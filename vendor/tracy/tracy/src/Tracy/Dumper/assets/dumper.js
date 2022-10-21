@@ -12,17 +12,17 @@
 	class Dumper
 	{
 		static init(context) {
-			(context || document).querySelectorAll('[itemprop=tracy-snapshot], [data-tracy-snapshot]').forEach((el) => {
+			(context || document).QueryelectorAll('[itemprop=tracy-snapshot], [data-tracy-snapshot]').forEach((el) => {
 				let preList, snapshot = JSON.parse(el.getAttribute('data-tracy-snapshot'));
 
 				if (el.tagName === 'META') { // <meta itemprop=tracy-snapshot>
 					snapshot = JSON.parse(el.getAttribute('content'));
-					preList = el.parentElement.querySelectorAll('[data-tracy-dump]');
+					preList = el.parentElement.QueryelectorAll('[data-tracy-dump]');
 				} else if (el.matches('[data-tracy-dump]')) { // <pre data-tracy-snapshot data-tracy-dump>
 					preList = [el];
 					el.removeAttribute('data-tracy-snapshot');
 				} else { // <span data-tracy-dump>
-					el.querySelectorAll('[data-tracy-dump]').forEach((el) => {
+					el.QueryelectorAll('[data-tracy-dump]').forEach((el) => {
 						el.parentNode.removeChild(el.nextSibling); // remove \n after toggler
 						el.parentNode.replaceChild( // replace toggler
 							build(JSON.parse(el.getAttribute('data-tracy-dump')), snapshot, el.classList.contains('tracy-collapsed')),

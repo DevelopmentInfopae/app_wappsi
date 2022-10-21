@@ -60,7 +60,8 @@ class _ZoneSZoneSelectionState extends State<ZoneSZoneSelection> {
   Widget build(BuildContext context) {
     return AlertDialog(
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(alertBorderRadius)),
+        borderRadius: BorderRadius.circular(alertBorderRadius),
+      ),
       actionsPadding: EdgeInsets.zero,
       // insetPadding: EdgeInsets.zero,
       buttonPadding: EdgeInsets.zero,
@@ -68,20 +69,22 @@ class _ZoneSZoneSelectionState extends State<ZoneSZoneSelection> {
       actions: [
         GestureDetector(
           child: Container(
-              width: double.infinity,
-              height: 55,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(alertBorderRadius),
-                    bottomRight: Radius.circular(alertBorderRadius)),
-                color: loading ? greyColor : pColor.withOpacity(0.7),
+            width: double.infinity,
+            height: 55,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(alertBorderRadius),
+                bottomRight: Radius.circular(alertBorderRadius),
               ),
-              alignment: Alignment.center,
-              child: const Text(
-                'Aceptar',
-                style: TextStyle(color: Colors.white),
-                textAlign: TextAlign.center,
-              )),
+              color: loading ? greyColor : pColor.withOpacity(0.7),
+            ),
+            alignment: Alignment.center,
+            child: const Text(
+              'Aceptar',
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+          ),
           // enabled: !loading,
           onTap: () async {
             if (!loading) {
@@ -91,23 +94,26 @@ class _ZoneSZoneSelectionState extends State<ZoneSZoneSelection> {
               if (formKey.currentState?.validate() ?? false) {
                 final result =
                     await CustomerAddressesProvider.addZoneSZoneToAddress(
-                        context,
-                        addressId: widget.address.idCloud.toString(),
-                        zoneId: _selectedZone?.id,
-                        subzoneId: _selectedSZone?.id);
+                  context,
+                  addressId: widget.address.idCloud.toString(),
+                  zoneId: _selectedZone?.id,
+                  subzoneId: _selectedSZone?.id,
+                );
                 if (result) {
                   await confirmDialog(
-                      context,
-                      "Zona y subzona asignadas con exito.",
-                      'assets/images/success.png');
-                  await SyncDBProvider().syncOption(context, "Sucursales");
+                    context,
+                    'Zona y subzona asignadas con éxito.',
+                    'assets/images/success.png',
+                  );
+                  await SyncDBProvider().syncOption(context, 'Sucursales');
                 } else {
                   await confirmDialog(
-                      context,
-                      "Ha ocurrido un error al asignar zona y subzona a la sucursal.",
-                      'assets/images/dizzy-robot.png');
+                    context,
+                    'Ha ocurrido un error al asignar zona y subzona a la sucursal.',
+                    'assets/images/dizzy-robot.png',
+                  );
                 }
-                finish(context, {"reload_address": true});
+                finish(context, {'reload_address': true});
               }
             }
             // setState(() {
@@ -117,7 +123,7 @@ class _ZoneSZoneSelectionState extends State<ZoneSZoneSelection> {
         ),
       ],
       title: Text(
-        "Seleccione zona y barrio para la sucursal de cliente seleccionada",
+        'Seleccione zona y barrio para la sucursal de cliente seleccionada',
         style: normalTextStyle(context),
       ),
       content: Material(
@@ -137,27 +143,29 @@ class _ZoneSZoneSelectionState extends State<ZoneSZoneSelection> {
 
   Widget _zones() {
     return ZoneFutureDropDown(
-        selectedCityCode: widget.address.cityCode,
-        required: false,
-        onChange: (data) async {
-          if (_selectedZone?.zoneCode != data?.zoneCode) {
-            _selectedZone = data;
-            _subZoneDropDownKey.currentState?.changeSelectedItem(null);
-            await _loadSubzones();
-            // _subZoneDropDownKey.currentState?.openDropDownSearch();
-          }
-        },
-        selectedZone: _selectedZone?.id);
+      selectedCityCode: widget.address.cityCode,
+      required: false,
+      onChange: (data) async {
+        if (_selectedZone?.zoneCode != data?.zoneCode) {
+          _selectedZone = data;
+          _subZoneDropDownKey.currentState?.changeSelectedItem(null);
+          await _loadSubzones();
+          // _subZoneDropDownKey.currentState?.openDropDownSearch();
+        }
+      },
+      selectedZone: _selectedZone?.id,
+    );
   }
 
   Widget _subZones() {
     return SubZoneDropDown(
-        stream: _subzonesController.stream,
-        dropDownKey: _subZoneDropDownKey,
-        required: false,
-        onChange: (data) async {
-          _selectedSZone = data;
-        },
-        selectedSZoneCode: _selectedSZone?.id);
+      stream: _subzonesController.stream,
+      dropDownKey: _subZoneDropDownKey,
+      required: false,
+      onChange: (data) async {
+        _selectedSZone = data;
+      },
+      selectedSZoneCode: _selectedSZone?.id,
+    );
   }
 }

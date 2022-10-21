@@ -63,7 +63,7 @@ class _NewPurchaseState extends State<NewPurchase> {
     if (purchaseBloc.getDate() != null) {
       _dateController.text = purchaseBloc.getDate()!;
     } else {
-      String now = DateFormat("yyyy-MM-dd").format(DateTime.now());
+      String now = DateFormat('yyyy-MM-dd').format(DateTime.now());
       purchaseBloc.setDate(now);
       printConsole(purchaseBloc.getDate());
       _dateController.text = purchaseBloc.getDate() ?? now;
@@ -91,15 +91,17 @@ class _NewPurchaseState extends State<NewPurchase> {
     _pc = pColor;
     _size = MediaQuery.of(context).size;
     return WillPopScope(
-        onWillPop: () async {
-          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
-          // printConsole('here i am');
-          return true;
-        },
-        child: Scaffold(
-            // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-            appBar: _appBar(),
-            body: _body()));
+      onWillPop: () async {
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+        // printConsole('here i am');
+        return true;
+      },
+      child: Scaffold(
+        // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+        appBar: _appBar(),
+        body: _body(),
+      ),
+    );
   }
 
   Widget _body() {
@@ -167,8 +169,10 @@ class _NewPurchaseState extends State<NewPurchase> {
       height: dropDownHeight,
       child: FutureBuilder(
         future: DocumentsTypesProvider.loadFromDB(module: purchaseDocModule),
-        builder: (BuildContext context,
-            AsyncSnapshot<List<DocumentsTypes>> snapshot) {
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<List<DocumentsTypes>> snapshot,
+        ) {
           if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             purchaseBloc.setDocumentType(snapshot.data?.first);
 
@@ -185,7 +189,7 @@ class _NewPurchaseState extends State<NewPurchase> {
     return DropdownSearch<DocumentsTypes>(
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       // key: _documentTypeKey,
@@ -239,8 +243,9 @@ class _NewPurchaseState extends State<NewPurchase> {
         AppButton(
           padding: kButtonPadding,
           shapeBorder: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(32),
-              side: BorderSide(color: greyMediumLight)),
+            borderRadius: BorderRadius.circular(32),
+            side: BorderSide(color: greyMediumLight),
+          ),
           width: 20,
           child: const Icon(
             Icons.add,
@@ -271,59 +276,74 @@ class _NewPurchaseState extends State<NewPurchase> {
 
   Widget _consecutive() {
     if (dataBloc.settings?['management_consecutive_suppliers'] == 0) {
-      return textFormField(context, 'Numero de referencia', (value) async {
-        if (value != null && value != '') {
-          if (isNumericInt(value)) {
-            if (purchaseBloc.getSupplier?.idCloud != null && value != null) {
-              final valRef = await PurchaseProvider.valitateReference(
+      return textFormField(
+        context,
+        'Numero de referencia',
+        (value) async {
+          if (value != null && value != '') {
+            if (isNumericInt(value)) {
+              if (purchaseBloc.getSupplier?.idCloud != null && value != null) {
+                final valRef = await PurchaseProvider.validateReference(
                   purchaseBloc.getDocumentType!.salesPrefix + '-' + value,
-                  int.parse(purchaseBloc.getSupplier!.idCloud!));
+                  int.parse(purchaseBloc.getSupplier!.idCloud!),
+                );
+                setState(() {
+                  refIsVal = valRef;
+                });
+                if (refIsVal) {
+                  purchaseBloc.getPurchase?.referenceNo = value;
+                }
+              }
+            } else {
+              return 'Valor no valido';
+            }
+          }
+        },
+        (value) {
+          if (value != null && value != '' && !isNumericInt(value)) {
+            return 'El numero de referencia ingresado no es valido';
+          }
+          if (!refIsVal &&
+              value != null &&
+              value != '' &&
+              purchaseBloc.getSupplier?.idCloud != null) {
+            return 'El numero de referencia ya se encuentra uso';
+          }
+        },
+        (value) {},
+      );
+    } else {
+      return textFormField(
+        context,
+        'Consecutivo de proveedor',
+        (value) async {
+          if (value != null && value != '') {
+            if (purchaseBloc.getSupplier?.idCloud != null) {
+              final valRef = await PurchaseProvider.validateConsecutive(
+                value,
+                int.parse(purchaseBloc.getSupplier!.idCloud!),
+              );
               setState(() {
-                refIsVal = valRef;
+                cosSupIsVal = valRef;
               });
-              if (refIsVal) {
-                purchaseBloc.getPurchase?.referenceNo = value;
+              if (cosSupIsVal) {
+                purchaseBloc.getPurchase?.consecutiveSupplier = value;
               }
             }
           } else {
-            return 'Valor no valido';
+            return 'Debe suministrar un valor valido';
           }
-        }
-      }, (value) {
-        if (value != null && value != '' && !isNumericInt(value)) {
-          return 'El numero de referencia ingresado no es valido';
-        }
-        if (!refIsVal &&
-            value != null &&
-            value != '' &&
-            purchaseBloc.getSupplier?.idCloud != null) {
-          return 'El numero de referencia ya se encuentra uso';
-        }
-      }, (value) {});
-    } else {
-      return textFormField(context, 'Consecutivo de proveedor', (value) async {
-        if (value != null && value != '') {
-          if (purchaseBloc.getSupplier?.idCloud != null) {
-            final valRef = await PurchaseProvider.valitateConsecutive(
-                value, int.parse(purchaseBloc.getSupplier!.idCloud!));
-            setState(() {
-              cosSupIsVal = valRef;
-            });
-            if (cosSupIsVal) {
-              purchaseBloc.getPurchase?.consecutiveSupplier = value;
-            }
+        },
+        (value) {
+          if (value == null || value == '') {
+            return 'Debe ingresar el consecutivo del proveedor';
           }
-        } else {
-          return 'Debe suministrar un valor valido';
-        }
-      }, (value) {
-        if (value == null || value == '') {
-          return 'Debe ingresar el consecutivo del proveedor';
-        }
-        if (!cosSupIsVal && purchaseBloc.getSupplier?.idCloud != null) {
-          return 'El consecutivo de proveedor ya se encuentra uso';
-        }
-      }, (value) {});
+          if (!cosSupIsVal && purchaseBloc.getSupplier?.idCloud != null) {
+            return 'El consecutivo de proveedor ya se encuentra uso';
+          }
+        },
+        (value) {},
+      );
     }
   }
 
@@ -364,7 +384,7 @@ class _NewPurchaseState extends State<NewPurchase> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
       },
       // maxHeight: _size.width * 0.9,
       // dialogMaxWidth: _size.width * 0.8,

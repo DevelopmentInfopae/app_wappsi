@@ -30,13 +30,13 @@ class PrintFav extends StatefulWidget {
   final String image;
   final bool exitToNewOrder;
   final Map<dynamic, dynamic> printData;
-  const PrintFav(
-      {Key? key,
-      required this.printData,
-      this.back = false,
-      this.exitToNewOrder = true,
-      this.image = 'assets/images/printer.png'})
-      : super(key: key);
+  const PrintFav({
+    Key? key,
+    required this.printData,
+    this.back = false,
+    this.exitToNewOrder = true,
+    this.image = 'assets/images/printer.png',
+  }) : super(key: key);
   @override
   _PrintFavState createState() => _PrintFavState();
 }
@@ -53,7 +53,7 @@ class _PrintFavState extends State<PrintFav> {
   @override
   void initState() {
     printFormat = PrintFormat(productsList: widget.printData['products']);
-    // initSavetoPath();
+    // initSaveToPath();
     // initPlatformState();
     super.initState();
   }
@@ -107,7 +107,8 @@ class _PrintFavState extends State<PrintFav> {
               billerImage(widget.printData['company_data'].logo)
                   .paddingSymmetric(horizontal: 40)
                   .withHeight(
-                      _size.height * 0.09 > 60 ? _size.height * 0.09 : 60),
+                    _size.height * 0.09 > 60 ? _size.height * 0.09 : 60,
+                  ),
               legalInformation(textTheme, widget.printData),
               emptyLine(),
               emptyLine(),
@@ -116,7 +117,7 @@ class _PrintFavState extends State<PrintFav> {
                   .paddingSymmetric(horizontal: 10),
               emptyLine(),
 
-              productsFavs(widget.printData).withWidth(_size.width * 0.75),
+              productsFavorites(widget.printData).withWidth(_size.width * 0.75),
               emptyLine(),
               emptyLine(),
 
@@ -152,19 +153,21 @@ class _PrintFavState extends State<PrintFav> {
       enabled: !_printing,
       onTap: () async {
         final addresses = await CustomerAddressesProvider.loadCustomerAddresses(
-            widget.printData['customer']['id_cloud'].toString());
+          widget.printData['customer']['id_cloud'].toString(),
+        );
         // printConsole(addresses);
         if (addresses.length > 1) {
           final address = await showCupertinoDialog<CustomerAddressesModel?>(
-              barrierDismissible: true,
-              context: context,
-              useRootNavigator: false,
-              builder: (context) {
-                return SelectCustomerAddressAlert(
-                    customer:
-                        CompanyModel.fromJson(widget.printData['customer']),
-                    adresses: addresses);
-              });
+            barrierDismissible: true,
+            context: context,
+            useRootNavigator: false,
+            builder: (context) {
+              return SelectCustomerAddressAlert(
+                customer: CompanyModel.fromJson(widget.printData['customer']),
+                addresses: addresses,
+              );
+            },
+          );
           widget.printData['customer_address'] = address?.toJson();
         }
         bool isConnected;
@@ -184,14 +187,19 @@ class _PrintFavState extends State<PrintFav> {
           });
 
           scaffoldAlert(
-              context, 'Imprimiendo favoritos', const Duration(seconds: 3));
+            context,
+            'Imprimiendo favoritos',
+            const Duration(seconds: 3),
+          );
           String companyLogo = widget.printData['company_data'].logo;
           if (companyLogo.substring(companyLogo.length - 4) == '.png') {
             companyLogo =
                 companyLogo.substring(0, companyLogo.length - 4) + '.jpg';
           }
           final result = await printFormat.printFavOrder(
-              dataBloc.dirPath! + billerImgDir + companyLogo, widget.printData);
+            dataBloc.dirPath! + billerImgDir + companyLogo,
+            widget.printData,
+          );
           if (result ?? false) {
             await Future.delayed(const Duration(seconds: 1));
             hideCurrentScaffoldAlert(context);
@@ -200,7 +208,10 @@ class _PrintFavState extends State<PrintFav> {
             });
           } else {
             scaffoldAlert(
-                context, 'Error al imprimir', const Duration(seconds: 3));
+              context,
+              'Error al imprimir',
+              const Duration(seconds: 3),
+            );
           }
         } else {
           PrintSettings(

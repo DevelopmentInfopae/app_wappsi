@@ -1,6 +1,5 @@
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 
-
 /// To get sync option name with the table_name
 Map<String, String> tableNamesToSyncOpt = {
   'sma_products': 'Productos',
@@ -13,14 +12,14 @@ Map<String, String> tableNamesToSyncOpt = {
   'sma_customer_groups': 'Grupos de Clientes',
   'sma_warehouses_products': 'Productos de Sucursales',
   'sma_brands': 'Marcas',
-  'sma_payment_methods': 'Metodos de Pago',
-  'sma_settings': 'Parametros Generales',
+  'sma_payment_methods': 'Métodos de Pago',
+  'sma_settings': 'Parámetros Generales',
   'sma_groups': 'Grupos',
   'sma_tax_rates': 'Tasas de Impuesto',
   'sma_pos_settings': 'Ajustes POS',
   'sma_documentypes': 'Tipos de documento',
   'sma_documents_types': 'Documentos para operaciones',
-  'sma_categories': 'Categorias productos',
+  'sma_categories': 'Categorías productos',
   'sma_units': 'Unidades',
   'sma_warehouses': 'Bodegas',
   'sma_unit_prices': 'sma_unit_prices',
@@ -34,7 +33,7 @@ List<String> specialSync = [
   'Productos',
   'Cotizaciones',
   'Compras',
-  "Ventas",
+  'Ventas',
   'Preferencias de productos'
 ];
 
@@ -133,13 +132,13 @@ Map<String, Map<String, dynamic>> _options = {
     'sync_id': 11,
     'image': 'brand.png'
   },
-  'Metodos de Pago': {
+  'Métodos de Pago': {
     'path': 'sync/paymentMethods',
     'table': 'sma_payment_methods',
     'sync_id': 12,
     'image': 'wallet.png'
   },
-  'Parametros Generales': {
+  'Parámetros Generales': {
     'path': 'sync/settings',
     'table': 'sma_settings',
     'sync_id': 13,
@@ -175,7 +174,7 @@ Map<String, Map<String, dynamic>> _options = {
     'sync_id': 17,
     'image': 'document.png'
   },
-  'Categorias productos': {
+  'Categorías productos': {
     'path': 'sync/productCategories',
     'table': 'sma_categories',
     'sync_id': 18,

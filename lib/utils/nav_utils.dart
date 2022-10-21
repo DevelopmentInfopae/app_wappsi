@@ -18,7 +18,7 @@ void goHome(BuildContext context) {
   );
 }
 
-void gobackTwoTimes(BuildContext context) {
+void goBackTwoTimes(BuildContext context) {
   Navigator.pop(context);
   Navigator.pop(context);
 }

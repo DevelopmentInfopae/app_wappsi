@@ -51,16 +51,18 @@ class PrintFormat {
         await _posNote();
         await bluetooth.printNewLine();
         await bluetooth.printCustom(
-            _replaceSpecialCharacters(
-                posBloc.getPrintData!['sale_data']['resolucion']),
-            1,
-            1,
-            charset: 'ASCII');
+          _replaceSpecialCharacters(
+            posBloc.getPrintData!['sale_data']['resolucion'],
+          ),
+          1,
+          1,
+          charset: 'ASCII',
+        );
 
         await _footer();
         await bluetooth.printNewLine();
-        await bluetooth.printCustom("Impreso por Wappsi POS Movil", 1, 1);
-        await bluetooth.printCustom("www.wappsi.com", 1, 1);
+        await bluetooth.printCustom('Impreso por Wappsi POS Movil', 1, 1);
+        await bluetooth.printCustom('www.wappsi.com', 1, 1);
         await bluetooth.printNewLine();
         await bluetooth.printNewLine();
         await bluetooth.paperCut();
@@ -75,19 +77,32 @@ class PrintFormat {
     final customer = posBloc.getPrintData!['customer'];
     bluetooth.printCustom('Factura POS ', 1, 1, charset: 'UTF-8');
     bluetooth.printCustom(
-        _replaceSpecialCharacters(saleData['reference_no']), 2, 1,
-        charset: 'UTF-8');
+      _replaceSpecialCharacters(saleData['reference_no']),
+      2,
+      1,
+      charset: 'UTF-8',
+    );
 
     bluetooth.printNewLine();
-    bluetooth.printCustom('Fecha/hora: ' + saleData['date'], 1, 0,
-        charset: 'UTF-8');
+    bluetooth.printCustom(
+      'Fecha/hora: ' + saleData['date'],
+      1,
+      0,
+      charset: 'UTF-8',
+    );
 
     bluetooth.printCustom(
-        'Cliente: ' + _replaceSpecialCharacters(customer['name']), 1, 0,
-        charset: 'UTF-8');
+      'Cliente: ' + _replaceSpecialCharacters(customer['name']),
+      1,
+      0,
+      charset: 'UTF-8',
+    );
 
     bluetooth.printCustom(
-        'NIT/CC: ' + _replaceSpecialCharacters(customer['vat_no']), 1, 0);
+      'NIT/CC: ' + _replaceSpecialCharacters(customer['vat_no']),
+      1,
+      0,
+    );
 
     bluetooth.printCustom(
       'Tel: ' + _replaceSpecialCharacters(customer['phone']),
@@ -96,19 +111,21 @@ class PrintFormat {
     );
 
     bluetooth.printCustom(
-        'Direccion:' +
-            _replaceSpecialCharacters(customer['address']) +
-            '-' +
-            _replaceSpecialCharacters(customer['city']),
-        1,
-        0,
-        charset: 'UTF-8');
+      'Direccion:' +
+          _replaceSpecialCharacters(customer['address']) +
+          '-' +
+          _replaceSpecialCharacters(customer['city']),
+      1,
+      0,
+      charset: 'UTF-8',
+    );
 
     bluetooth.printCustom(_replaceSpecialCharacters(customer['email']), 1, 0);
     bluetooth.printCustom(
-        'Vendedor: ' + _replaceSpecialCharacters(dataBloc.userData!.sellerName),
-        1,
-        0);
+      'Vendedor: ' + _replaceSpecialCharacters(dataBloc.userData!.sellerName),
+      1,
+      0,
+    );
   }
 
   _posNote() async {
@@ -120,17 +137,18 @@ class PrintFormat {
                 _replaceSpecialCharacters(posBloc.getPrintData!['pos_note']),
             1,
             1,
-            charset: 'ASCII')
+            charset: 'ASCII',
+          )
         // ignore: unnecessary_statements
         : null;
   }
 
   _total() async {
-    await bluetooth.printCustom("________________________________", 1, 1);
+    await bluetooth.printCustom('________________________________', 1, 1);
     final total = getFormatedCurrency(posBloc.getPrintData!['total'])
         .toString()
         .substring(1);
-    await bluetooth.printLeftRight("Total a pagar:", total, 1);
+    await bluetooth.printLeftRight('Total a pagar:', total, 1);
   }
 
   _comercialName() async {
@@ -139,37 +157,47 @@ class PrintFormat {
     //     _replaceSpecialCharacters(_name?.first['nombre_comercial'] ?? ''), 1, 1,
     //     charset: 'UTF-8');
     await bluetooth.printCustom(
-        _replaceSpecialCharacters(settings?['razon_social'] ?? ''), 1, 1,
-        charset: 'UTF-8');
+      _replaceSpecialCharacters(settings?['razon_social'] ?? ''),
+      1,
+      1,
+      charset: 'UTF-8',
+    );
     await bluetooth.printCustom(
-        'NIT: ' +
-            _replaceSpecialCharacters(settings?['numero_documento'] ?? ''),
-        1,
-        1,
-        charset: 'UTF-8');
+      'NIT: ' + _replaceSpecialCharacters(settings?['numero_documento'] ?? ''),
+      1,
+      1,
+      charset: 'UTF-8',
+    );
     final regType = settings?['tipo_regimen'];
     await bluetooth.printCustom(
-        _replaceSpecialCharacters(regimenT[regType.toString()]!.name), 1, 1,
-        charset: 'UTF-8');
+      _replaceSpecialCharacters(regimenT[regType.toString()]!.name),
+      1,
+      1,
+      charset: 'UTF-8',
+    );
   }
 
   _billerData() async {
     final companyData = posBloc.getPrintData!['company_data'];
 
     final dir = _replaceSpecialCharacters(
-        (companyData!.address ?? '') + '-' + (companyData.city ?? ''));
+      (companyData!.address ?? '') + '-' + (companyData.city ?? ''),
+    );
     await bluetooth.printCustom(dir, 1, 1, charset: 'UTF-8');
     await bluetooth.printCustom(
-        'Telefono: ' + _replaceSpecialCharacters(companyData.phone ?? ''), 1, 1,
-        charset: 'UTF-8');
+      'Telefono: ' + _replaceSpecialCharacters(companyData.phone ?? ''),
+      1,
+      1,
+      charset: 'UTF-8',
+    );
     // final email = _replaceSpecialCharacters(_biller.email ?? '');
     // await bluetooth.printCustom('E-mail: ' + email, 1, 1, charset: 'UTF-8');
   }
 
   _products() async {
-    await bluetooth.printCustom("________________________________", 1, 1);
+    await bluetooth.printCustom('________________________________', 1, 1);
     await bluetooth.printCustom('Cant Producto        Valor', 1, 0);
-    await bluetooth.printCustom("--------------------------------", 1, 1);
+    await bluetooth.printCustom('--------------------------------', 1, 1);
     await Future.forEach(productsList, (Map element) async {
       List<String> formatedS = formatString(element['name'].toString());
       Future.forEach(formatedS, (String str) async {
@@ -179,15 +207,16 @@ class PrintFormat {
                   .toString()
                   .substring(1);
           bluetooth.printCustom(
-              element['quantity'].toString() +
-                  _getEmptySpaces(4 - element['quantity'].toString().length) +
-                  _replaceSpecialCharacters(str) +
-                  _getEmptySpaces(17 - str.length) +
-                  _getEmptySpaces(10 - value.length) +
-                  value,
-              1,
-              0,
-              charset: 'UTF-8');
+            element['quantity'].toString() +
+                _getEmptySpaces(4 - element['quantity'].toString().length) +
+                _replaceSpecialCharacters(str) +
+                _getEmptySpaces(17 - str.length) +
+                _getEmptySpaces(10 - value.length) +
+                value,
+            1,
+            0,
+            charset: 'UTF-8',
+          );
         } else {
           bluetooth.printCustom('    ' + _replaceSpecialCharacters(str), 1, 0);
         }
@@ -202,9 +231,8 @@ class PrintFormat {
         .substring(1);
     await bluetooth.printLeftRight('Valor recibido:', value, 1);
     final cambio = getFormatedCurrency(
-            (posBloc.getPrintData!['payment'] - posBloc.getPrintData!['total']))
-        .toString()
-        .substring(1);
+      (posBloc.getPrintData!['payment'] - posBloc.getPrintData!['total']),
+    ).toString().substring(1);
     await bluetooth.printLeftRight(
       'Cambio:',
       cambio,
@@ -213,7 +241,7 @@ class PrintFormat {
     final payMethod =
         posBloc.getPrintData!['payment_method']['name'].toString();
     await bluetooth.printLeftRight(
-      "Pagado en:",
+      'Pagado en:',
       payMethod,
       1,
     );
@@ -242,16 +270,17 @@ class PrintFormat {
 
       await bluetooth.printNewLine();
       await bluetooth.printCustom('Resumen de impuestos', 1, 1);
-      await bluetooth.printCustom("Tarifa     Base       Impuesto", 1, 0);
-      await bluetooth.printCustom("--------------------------------", 1, 1);
+      await bluetooth.printCustom('Tarifa     Base       Impuesto', 1, 0);
+      await bluetooth.printCustom('--------------------------------', 1, 1);
       await bluetooth.printCustom(
-          itemp['name'] +
-              _getEmptySpaces(13 - temp.length) +
-              temp +
-              _getEmptySpaces(11 - temp2.length) +
-              temp2,
-          1,
-          0);
+        itemp['name'] +
+            _getEmptySpaces(13 - temp.length) +
+            temp +
+            _getEmptySpaces(11 - temp2.length) +
+            temp2,
+        1,
+        0,
+      );
     });
   }
 

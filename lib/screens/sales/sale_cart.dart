@@ -85,9 +85,11 @@ class _SaleCartState extends State<SaleCart> {
 
   void _goToPage(int page) {
     if (pageController.hasClients) {
-      pageController.animateToPage(page,
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.fastOutSlowIn);
+      pageController.animateToPage(
+        page,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.fastOutSlowIn,
+      );
     }
   }
 
@@ -113,70 +115,79 @@ class _SaleCartState extends State<SaleCart> {
     // initialize search controller
 
     return WillPopScope(
-        child: Scaffold(
-            key: _scaffoldKey,
-            appBar: _appBar(context),
-            body: Column(
-              children: [
-                PageView(
-                  controller: pageController,
-                  children: [_searchbar(), buildFloatingSearchBar()],
-                ).expand(),
-                bottom(_bottom(), pColor, _size)
-              ],
-            )),
-        onWillPop: () async {
-          bool pop = false;
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: _appBar(context),
+        body: Column(
+          children: [
+            PageView(
+              controller: pageController,
+              children: [_searchbar(), buildFloatingSearchBar()],
+            ).expand(),
+            bottom(_bottom(), pColor, _size)
+          ],
+        ),
+      ),
+      onWillPop: () async {
+        bool pop = false;
 
-          if (index == 1) {
-            _goToPage(0);
+        if (index == 1) {
+          _goToPage(0);
+        } else {
+          if (_searchController.isOpen) {
+            _searchController.close();
           } else {
-            if (_searchController.isOpen) {
-              _searchController.close();
-            } else {
-              pop = true;
-            }
+            pop = true;
           }
+        }
 
-          return pop;
-        });
+        return pop;
+      },
+    );
   }
 
   PreferredSize _appBar(BuildContext context) {
-    return appBar(context, 'Venta POS',
-        elevation: false,
-        radius: 0,
-        leading: Tooltip(
-            message: "Favoritos",
-            child: AppBarLeading(
-                widget: Icon(
-                  Icons.favorite,
-                  size: leadingIconSize,
-                  color: index == 1 ? Colors.white : favColor,
-                ),
-                backgroundColor: index == 0 ? Colors.white : favColor,
-                onTap: () {
-                  // FocusScope.of(context).unfocus();
-                  if ((pageController.page ?? 0) == 0) {
-                    _searchController.close();
-                    _goToPage(1);
-                  } else {
-                    _goToPage(0);
-                  }
-                  _updateIndex();
-                })), onPop: () {
-      // FocusScope.of(context).unfocus();
-      if (index == 1) {
-        _goToPage(0);
-      } else {
-        if (_searchController.isOpen) {
-          _searchController.close();
+    return appBar(
+      context,
+      'Venta POS',
+      elevation: false,
+      radius: 0,
+      leading: Tooltip(
+        message: 'Favoritos',
+        child: AppBarLeading(
+          widget: Icon(
+            Icons.favorite,
+            size: leadingIconSize,
+            color: index == 1 ? Colors.white : favColor,
+          ),
+          backgroundColor: index == 0 ? Colors.white : favColor,
+          onTap: () {
+            // FocusScope.of(context).unfocus();
+            if ((pageController.page ?? 0) == 0) {
+              _searchController.close();
+              _goToPage(1);
+            } else {
+              _goToPage(0);
+            }
+            _updateIndex();
+          },
+        ),
+      ),
+      onPop: () {
+        // FocusScope.of(context).unfocus();
+        if (index == 1) {
+          _goToPage(0);
         } else {
-          Navigator.pop(context);
+          if (_searchController.isOpen) {
+            _searchController.close();
+          } else {
+            Navigator.pop(context);
+          }
+          _updateIndex();
         }
-        _updateIndex();
-      }
-    }, image: 'assets/images/add-to-cart.png');
+      },
+      image: 'assets/images/add-to-cart.png',
+    );
   }
 
   Widget _searchbar() {
@@ -199,22 +210,26 @@ class _SaleCartState extends State<SaleCart> {
         MediaQuery.of(context).orientation == Orientation.portrait;
 
     return FavoritesOrderSelection(
-        toSale: true,
-        isPortrait: isPortrait,
-        context: _scaffoldKey.currentContext ?? context);
+      toSale: true,
+      isPortrait: isPortrait,
+      context: _scaffoldKey.currentContext ?? context,
+    );
   }
 
   Container _searchHeight() {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(0.0, 1.0), //(x,y)
-          blurRadius: 2.0,
-        )
-      ]),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 2.0,
+          )
+        ],
+      ),
     );
   }
 
@@ -281,68 +296,71 @@ class _SaleCartState extends State<SaleCart> {
 
   Widget _products() {
     return Container(
-        // height:_size.height*0.78,
-        // to avoid overlap with floatingSearchBar
-        margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
-        padding: const EdgeInsets.only(top: 15),
-        child: StreamBuilder<Map<String, ProductModel>>(
-            stream: posBloc.productsStream,
-            builder: (context, snapshot) {
-              bool productRequestFocus = _productFocus();
+      // height:_size.height*0.78,
+      // to avoid overlap with floatingSearchBar
+      margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
+      padding: const EdgeInsets.only(top: 15),
+      child: StreamBuilder<Map<String, ProductModel>>(
+        stream: posBloc.productsStream,
+        builder: (context, snapshot) {
+          bool productRequestFocus = _productFocus();
 
-              if (_productsCount + 1 == snapshot.data?.length) {
-                _productsCount += 1;
-                _searchBarFocusManagement();
+          if (_productsCount + 1 == snapshot.data?.length) {
+            _productsCount += 1;
+            _searchBarFocusManagement();
+          }
+
+          if (snapshot.hasData &&
+              _searchController.isClosed &&
+              _productsCount == (posBloc.getProducts?.length ?? 0)) {
+            // _searchController.close();
+
+            // _productsCount += 1;
+            // _itemsCount += 1;
+            if (_productsCount == snapshot.data!.length) {
+              if (_scrollController.hasClients) {
+                _scrollController
+                    .jumpTo(_scrollController.position.minScrollExtent);
               }
+              // final xd = posBloc.settings['set_focus'];
+              // printConsole();
+            } else if (_productsCount - 2 == snapshot.data!.length) {
+              // Nothing to do when items are removed from cart
+            } else {
+              // _searchBarFocusManagement();
+              _productsCount = snapshot.data!.length;
+              // _itemsCount = posBloc.getItemsCount();
+            }
 
-              if (snapshot.hasData &&
-                  _searchController.isClosed &&
-                  _productsCount == (posBloc.getProducts?.length ?? 0)) {
-                // _searchController.close();
+            Map<String, ProductModel> saleProductsList = snapshot.data!;
+            final pCard = ProductsList(
+              key: pListKey,
+              productList: saleProductsList,
+              scrollController: _scrollController,
+              productRequestFocus: productRequestFocus,
+            );
+            productRequestFocus = false;
+            return pCard;
+          } else if (posBloc.getProducts?.isNotEmpty ?? false) {
+            return ProductsList(
+              key: pListKey,
+              productList: posBloc.getProducts ?? {},
+              scrollController: _scrollController,
+              productRequestFocus: false,
+              fromOrder: false,
+            );
+          } else if (snapshot.hasData && _searchController.isOpen) {
+            return Container();
+          } else {
+            // ignore: unnecessary_null_comparison
+            _productsCount = 0;
+            return Container();
 
-                // _productsCount += 1;
-                // _itemsCount += 1;
-                if (_productsCount == snapshot.data!.length) {
-                  if (_scrollController.hasClients) {
-                    _scrollController
-                        .jumpTo(_scrollController.position.minScrollExtent);
-                  }
-                  // final xd = posBloc.settings['set_focus'];
-                  // printConsole();
-                } else if (_productsCount - 2 == snapshot.data!.length) {
-                  // Nothing to do when items are removed from cart
-                } else {
-                  // _searchBarFocusManagement();
-                  _productsCount = snapshot.data!.length;
-                  // _itemsCount = posBloc.getItemsCount();
-                }
-
-                Map<String, ProductModel> saleProductsList = snapshot.data!;
-                final pCard = ProductsList(
-                    key: pListKey,
-                    productList: saleProductsList,
-                    scrollController: _scrollController,
-                    productRequestFocus: productRequestFocus);
-                productRequestFocus = false;
-                return pCard;
-              } else if (posBloc.getProducts?.isNotEmpty ?? false) {
-                return ProductsList(
-                  key: pListKey,
-                  productList: posBloc.getProducts ?? {},
-                  scrollController: _scrollController,
-                  productRequestFocus: false,
-                  fromOrder: false,
-                );
-              } else if (snapshot.hasData && _searchController.isOpen) {
-                return Container();
-              } else {
-                // ignore: unnecessary_null_comparison
-                _productsCount = 0;
-                return Container();
-
-                // return _empty(context).center();
-              }
-            }));
+            // return _empty(context).center();
+          }
+        },
+      ),
+    );
   }
 
   _searchBarFocusManagement() {
@@ -425,9 +443,10 @@ class _SaleCartState extends State<SaleCart> {
               // Icon(Icons.arrow_forward_ios_sharp),
 
               subTotal(
-                  large: false,
-                  color: pColor,
-                  defaultValue: posBloc.getSubTotal()),
+                large: false,
+                color: pColor,
+                defaultValue: posBloc.getSubTotal(),
+              ),
             ],
           ),
         ),
@@ -442,19 +461,21 @@ class _SaleCartState extends State<SaleCart> {
       padding: kButtonPadding,
       color: Colors.white,
       shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radius2),
-          side: const BorderSide(color: pColor)),
+        borderRadius: BorderRadius.circular(radius2),
+        side: const BorderSide(color: pColor),
+      ),
       width: 10,
       onTap: () async {
         if ((posBloc.getProducts?.length ?? 0) > 0) {
           _searchController.close();
           await showCupertinoDialog(
-              barrierDismissible: true,
-              context: context,
-              useRootNavigator: false,
-              builder: (context) {
-                return const SuspendSaleAlertDialog();
-              });
+            barrierDismissible: true,
+            context: context,
+            useRootNavigator: false,
+            builder: (context) {
+              return const SuspendSaleAlertDialog();
+            },
+          );
           // check if empty products then reload view
           if (posBloc.getProducts == {} || posBloc.getProducts == null) {
             _searchController.close();
@@ -472,8 +493,10 @@ class _SaleCartState extends State<SaleCart> {
         }
       },
       // child: Icon(FontAwesomeIcons.pause),
-      child: Text('Suspender',
-          style: buttonsSmallTextStyle(context, color: pColor)),
+      child: Text(
+        'Suspender',
+        style: buttonsSmallTextStyle(context, color: pColor),
+      ),
     );
   }
 
@@ -491,9 +514,12 @@ class _SaleCartState extends State<SaleCart> {
       if (res.isEmpty) {
         if ((query.length - _queryLen > 1)) {
           _searchController.clear();
-          scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
-              const Duration(seconds: 1, milliseconds: 500),
-              backGroundColor: Colors.red);
+          scaffoldAlert(
+            context,
+            'Producto ' + query + ' no encontrado',
+            const Duration(seconds: 1, milliseconds: 500),
+            backGroundColor: Colors.red,
+          );
           // _searchController.query='';
           _searchController.open();
           _queryLen = 0;
@@ -508,8 +534,11 @@ class _SaleCartState extends State<SaleCart> {
           if (productReq != {}) {
             final result = await posBloc.addProduct(productReq);
             if (result) {
-              scaffoldAlert(context, 'Producto ${temp.name} añadido',
-                  const Duration(seconds: 1));
+              scaffoldAlert(
+                context,
+                'Producto ${temp.name} añadido',
+                const Duration(seconds: 1),
+              );
             }
           }
 
@@ -534,9 +563,10 @@ class _SaleCartState extends State<SaleCart> {
       const SalePayment().launch(context);
     } else {
       confirmDialog(
-          context,
-          "Debe seleccionar productos antes de continuar al pago",
-          "assets/images/alert.png");
+        context,
+        'Debe seleccionar productos antes de continuar al pago',
+        'assets/images/alert.png',
+      );
     }
   }
 }

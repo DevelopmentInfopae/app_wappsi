@@ -21,11 +21,15 @@ class ProfileScreen extends StatelessWidget {
       },
       child: Scaffold(
         // backgroundColor: Colors.white,
-        appBar: appBar(context, 'Perfil', image: 'assets/images/user.png',
-            onPop: () {
-          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
-          Navigator.pop(context);
-        }),
+        appBar: appBar(
+          context,
+          'Perfil',
+          image: 'assets/images/user.png',
+          onPop: () {
+            dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+            Navigator.pop(context);
+          },
+        ),
         body: _body(context).paddingOnly(bottom: 5),
       ),
     );
@@ -66,11 +70,12 @@ class ProfileScreen extends StatelessWidget {
         //   content: dataBloc.userData!.documentTypeId.toString(),
         // ).paddingSymmetric(horizontal: 10, vertical: 5),
         FutureDecoratedLabeledContent(
-                label: 'Tipo de documento',
-                mapKey: 'nombre',
-                function: DocumentsTypesProvider.findDocumentsTypesById(
-                    dataBloc.userData!.documentTypeId.toString()))
-            .paddingSymmetric(horizontal: 10, vertical: 5),
+          label: 'Tipo de documento',
+          mapKey: 'nombre',
+          function: DocumentsTypesProvider.findDocumentsTypesById(
+            dataBloc.userData!.documentTypeId.toString(),
+          ),
+        ).paddingSymmetric(horizontal: 10, vertical: 5),
         DecoratedLabeledContent(
           label: 'Bodega',
           content: dataBloc.userData!.warehouseName,

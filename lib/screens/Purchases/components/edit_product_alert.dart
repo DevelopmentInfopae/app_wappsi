@@ -8,7 +8,7 @@ import 'package:pos_wappsi/components/input_decoration.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
-import 'package:pos_wappsi/utils/text_formating/currency_formater.dart';
+import 'package:pos_wappsi/utils/text_formating/currency_formatter.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 // import 'package:provider/single_child_widget.dart';
 
@@ -42,8 +42,9 @@ class EditProductAlertState extends State<EditProductAlert> {
     if (unit != null) {
       _value = product.cost;
       _valueController.text = getFormatedCurrency(
-          _value * (unit?.operationValue ?? 1),
-          decimals: 0);
+        _value * (unit?.operationValue ?? 1),
+        decimals: 0,
+      );
     }
 
     super.initState();
@@ -88,10 +89,11 @@ class EditProductAlertState extends State<EditProductAlert> {
                   controller: _valueController,
                   inputFormatters: [CurrencyInputFormatter()],
                   decoration: InputDecorations.authInputDecoration(
-                      hintText: '',
-                      labelText: unit != null
-                          ? 'Valor por ' + unit!.name
-                          : 'Valor unitario'),
+                    hintText: '',
+                    labelText: unit != null
+                        ? 'Valor por ' + unit!.name
+                        : 'Valor unitario',
+                  ),
                   textFieldType: TextFieldType.PHONE,
                   textStyle: Theme.of(context).textTheme.subtitle1,
                   autoFocus: false,
@@ -101,10 +103,12 @@ class EditProductAlertState extends State<EditProductAlert> {
                       return 'Debe suministrar un valor';
                     } else {
                       try {
-                        final val = double.parse(value
-                            .replaceAll('\$', '')
-                            .replaceAll(',', '')
-                            .replaceAll('.', ''));
+                        final val = double.parse(
+                          value
+                              .replaceAll('\$', '')
+                              .replaceAll(',', '')
+                              .replaceAll('.', ''),
+                        );
                         if (val == 0) {
                           return 'Valor no valido';
                         }
@@ -120,10 +124,12 @@ class EditProductAlertState extends State<EditProductAlert> {
                     setState(() {
                       if (value != '') {
                         try {
-                          final val = double.parse(value
-                              .replaceAll('\$', '')
-                              .replaceAll(',', '')
-                              .replaceAll('.', ''));
+                          final val = double.parse(
+                            value
+                                .replaceAll('\$', '')
+                                .replaceAll(',', '')
+                                .replaceAll('.', ''),
+                          );
                           if (unit != null) {
                             _value = val / unit!.operationValue;
                           } else {
@@ -149,7 +155,7 @@ class EditProductAlertState extends State<EditProductAlert> {
                 color: Colors.red.withOpacity(0.8),
                 child: CupertinoDialogAction(
                   child: const Text(
-                    "Cancelar",
+                    'Cancelar',
                     style: TextStyle(color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
@@ -163,7 +169,7 @@ class EditProductAlertState extends State<EditProductAlert> {
                 color: pColor.withOpacity(0.8),
                 child: CupertinoDialogAction(
                   child: const Text(
-                    "Aceptar",
+                    'Aceptar',
                     style: TextStyle(color: Colors.white),
                     textAlign: TextAlign.center,
                   ),

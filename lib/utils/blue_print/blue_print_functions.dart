@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter/services.dart';
@@ -9,12 +8,18 @@ import 'package:pos_wappsi/params/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/params/thermal_printer_params.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-// return bytes of two columns labes : values
-List<int> printLabeledValues(Generator generator, List<int> bytes,
-    List<String> labels, List<String> values, bool _innerPrinter, int chrLen,
-    {bool boldLabels = true,
-    PosAlign col1 = PosAlign.left,
-    PosAlign col2 = PosAlign.left}) {
+// return bytes of two columns labels : values
+List<int> printLabeledValues(
+  Generator generator,
+  List<int> bytes,
+  List<String> labels,
+  List<String> values,
+  bool _innerPrinter,
+  int chrLen, {
+  bool boldLabels = true,
+  PosAlign col1 = PosAlign.left,
+  PosAlign col2 = PosAlign.left,
+}) {
   generator.reset();
 
   for (var i = 0; i < labels.length; i++) {
@@ -60,8 +65,10 @@ List<int> printLabeledValues(Generator generator, List<int> bytes,
         ),
       ]);
     } else {
-      bytes += generator.text(label,
-          styles: PosStyles(align: col1, bold: boldLabels));
+      bytes += generator.text(
+        label,
+        styles: PosStyles(align: col1, bold: boldLabels),
+      );
     }
 
     if ((valueCol2Len - 1) > emptySpacesCol2Total) {
@@ -76,11 +83,16 @@ List<int> printLabeledValues(Generator generator, List<int> bytes,
   return bytes;
 }
 
-List<int> printLabelValues(Generator generator, List<int> bytes,
-    List<String> labels, List<String> values, bool innerPrinter,
-    {bool boldLabels = true,
-    PosAlign col1 = PosAlign.left,
-    PosAlign col2 = PosAlign.left}) {
+List<int> printLabelValues(
+  Generator generator,
+  List<int> bytes,
+  List<String> labels,
+  List<String> values,
+  bool innerPrinter, {
+  bool boldLabels = true,
+  PosAlign col1 = PosAlign.left,
+  PosAlign col2 = PosAlign.left,
+}) {
   generator.reset();
 
   for (var i = 0; i < labels.length; i++) {
@@ -132,51 +144,75 @@ List<int> printLabelValues(Generator generator, List<int> bytes,
 }
 
 // return bytes Info of current company
-List<int> legalInfo(List<int> bytes, Generator generator, bool _innerPrinter,
-    settings, regType, companyData) {
+List<int> legalInfo(
+  List<int> bytes,
+  Generator generator,
+  bool _innerPrinter,
+  settings,
+  regType,
+  companyData,
+) {
   bytes += generator.text(
-      _innerPrinter
-          ? replaceSpecialCharacters(settings?['razon_social'])
-          : settings?['razon_social'],
-      styles: const PosStyles(bold: true, align: PosAlign.center));
+    _innerPrinter
+        ? replaceSpecialCharacters(settings?['razon_social'])
+        : settings?['razon_social'],
+    styles: const PosStyles(bold: true, align: PosAlign.center),
+  );
 
   bytes += generator.emptyLines(1);
   bytes += generator.text(
-      'NIT:' +
-          (_innerPrinter
-              ? (replaceSpecialCharacters(settings?['numero_documento']))
-              : (((settings?['numero_documento'] ?? '').toString()))),
-      styles: const PosStyles(bold: false, align: PosAlign.center));
+    'NIT:' +
+        (_innerPrinter
+            ? (replaceSpecialCharacters(settings?['numero_documento']))
+            : (((settings?['numero_documento'] ?? '').toString()))),
+    styles: const PosStyles(bold: false, align: PosAlign.center),
+  );
   bytes += generator.text(
-      _innerPrinter
-          ? replaceSpecialCharacters(regimenT[regType.toString()]!.name)
-          : (regimenT[regType.toString()]!.name),
-      styles: const PosStyles(bold: true, align: PosAlign.center));
+    _innerPrinter
+        ? replaceSpecialCharacters(regimenT[regType.toString()]!.name)
+        : (regimenT[regType.toString()]!.name),
+    styles: const PosStyles(bold: true, align: PosAlign.center),
+  );
 
   final dir = _innerPrinter
-      ? capitalizeText(replaceSpecialCharacters(
-          (companyData!.address ?? '') + '-' + companyData.city ?? ''))
+      ? capitalizeText(
+          replaceSpecialCharacters(
+            (companyData!.address ?? '') + '-' + companyData.city ?? '',
+          ),
+        )
       : capitalizeText(
-          (companyData!.address ?? '') + '-' + (companyData.city ?? ''));
-  bytes += generator.text(dir,
-      styles: const PosStyles(bold: false, align: PosAlign.center));
+          (companyData!.address ?? '') + '-' + (companyData.city ?? ''),
+        );
   bytes += generator.text(
-      'Telefono:' +
-          (_innerPrinter
-              ? replaceSpecialCharacters(companyData.phone ?? '')
-              : (companyData.phone ?? '').toString()),
-      styles: const PosStyles(bold: false, align: PosAlign.center));
+    dir,
+    styles: const PosStyles(bold: false, align: PosAlign.center),
+  );
+  bytes += generator.text(
+    'Telefono:' +
+        (_innerPrinter
+            ? replaceSpecialCharacters(companyData.phone ?? '')
+            : (companyData.phone ?? '').toString()),
+    styles: const PosStyles(bold: false, align: PosAlign.center),
+  );
   return bytes;
 }
 
 // Returns bytes from sale reference
 List<int> invoiceData(
-    List<int> bytes, Generator generator, data, String title) {
-  bytes += generator.text(title,
-      styles: const PosStyles(bold: false, align: PosAlign.center));
+  List<int> bytes,
+  Generator generator,
+  data,
+  String title,
+) {
+  bytes += generator.text(
+    title,
+    styles: const PosStyles(bold: false, align: PosAlign.center),
+  );
   if (data != null) {
-    bytes += generator.text(data['reference_no'] ?? '',
-        styles: const PosStyles(bold: true, align: PosAlign.center));
+    bytes += generator.text(
+      data['reference_no'] ?? '',
+      styles: const PosStyles(bold: true, align: PosAlign.center),
+    );
   }
   return bytes;
 }
@@ -206,11 +242,14 @@ List<String> formatString(String v, {int chrSpaces = 16}) {
   }
 
   for (int i = 0; i < lines; i++) {
-    strList.add(v.substring(
+    strList.add(
+      v.substring(
         i == 0 ? 0 : (i * chrSpaces),
         i * chrSpaces + chrSpaces > v.length
             ? v.length
-            : i * chrSpaces + chrSpaces));
+            : i * chrSpaces + chrSpaces,
+      ),
+    );
   }
 
   return strList;
@@ -220,7 +259,9 @@ List<int> wappsiSpam(bool _innerPrinter, List<int> bytes, Generator generator) {
   final wappsiSpam = 'Impreso por Wappsi POS ' +
       (_innerPrinter ? 'Movil' : 'Móvil') +
       '\n www.wappsi.com';
-  bytes += generator.text(wappsiSpam,
-      styles: const PosStyles(bold: false, align: PosAlign.center));
+  bytes += generator.text(
+    wappsiSpam,
+    styles: const PosStyles(bold: false, align: PosAlign.center),
+  );
   return bytes;
 }

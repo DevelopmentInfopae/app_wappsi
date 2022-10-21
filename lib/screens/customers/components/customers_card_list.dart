@@ -8,9 +8,11 @@ import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 
 class CustomerCardList extends StatefulWidget {
-  const CustomerCardList(
-      {Key? key, required this.customer, required this.searchParams})
-      : super(key: key);
+  const CustomerCardList({
+    Key? key,
+    required this.customer,
+    required this.searchParams,
+  }) : super(key: key);
   final List<CompanyModel> customer;
   final Map searchParams;
 
@@ -75,10 +77,11 @@ class _CustomerCardListState extends State<CustomerCardList> {
 
       _loading = true;
       final res = await CompaniesProvider.findCustomer(
-          widget.searchParams['search'] ?? '',
-          offset: true,
-          limit: 30,
-          offsetValue: _page * 30);
+        widget.searchParams['search'] ?? '',
+        offset: true,
+        limit: 30,
+        offsetValue: _page * 30,
+      );
       if (res != null) {
         if (res.isNotEmpty) {
           setState(() {
@@ -95,7 +98,10 @@ class _CustomerCardListState extends State<CustomerCardList> {
         }
       } else {
         await confirmDialog(
-            context, 'Error al cargar datos', 'assets/images/dizzy-robot.png');
+          context,
+          'Error al cargar datos',
+          'assets/images/dizzy-robot.png',
+        );
         setState(() {
           _loading = false;
         });

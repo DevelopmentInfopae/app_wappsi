@@ -38,10 +38,12 @@ class ProductsProvider {
       ];
 
   /// Check if suspendedSaleProducts's prices are different of current
-  /// product's prices and return the price diff betwen them
+  /// product's prices and return the price diff between them
   static Future<Map<String, dynamic>> checkSuspPriceDif(
-      Map res, CompanyModel customer,
-      {UnitsModel? unit}) async {
+    Map res,
+    CompanyModel customer, {
+    UnitsModel? unit,
+  }) async {
     Map<String, dynamic> dif = {};
 
     final temp = ProductModel.fromJsonList([res]);
@@ -59,12 +61,13 @@ class ProductsProvider {
   }
 
   /// Return all rows in sma_products taking product quantities from warehouse
-  /// asigned to current user
-  static Future<List<Map>?> getAllProducts(
-      {bool overselling = true,
-      bool limit = true,
-      bool offset = false,
-      int offsetValue = 2}) async {
+  /// assigned to current user
+  static Future<List<Map>?> getAllProducts({
+    bool overselling = true,
+    bool limit = true,
+    bool offset = false,
+    int offsetValue = 2,
+  }) async {
     String sql = '';
     if (offset) limit = false;
     if (limit) offset = false;
@@ -90,7 +93,9 @@ class ProductsProvider {
   }
 
   static Future<ProductModel?> getProductDetails(
-      String id, bool overselling) async {
+    String id,
+    bool overselling,
+  ) async {
     String sql = '';
     if (overselling) {
       sql = '''
@@ -118,7 +123,7 @@ class ProductsProvider {
   }
 
   ///Function used to get products info based on a list of products IDs,
-  ///with innerjoint to sma_tax_rates to get value of tax
+  ///with interjoin to sma_tax_rates to get value of tax
   Future<List<Map>?> findProductsByIds(List<int> ids) async {
     String sql = '''
         SELECT p.${productColumns.join(',p.')},wp.quantity, tr.rate, tr.name as tax_rate_name 
@@ -131,9 +136,11 @@ class ProductsProvider {
   }
 
   ///Function used to get products info based on a list of products IDs,
-  ///with innerjoint to sma_tax_rates to get value of tax
+  ///with interjoin to sma_tax_rates to get value of tax
   Future<List<Map>?> findCustomerProductsByIds(
-      List<int> ids, String customerId) async {
+    List<int> ids,
+    String customerId,
+  ) async {
     String sql = '''
         SELECT p.${productColumns.join(',p.')},wp.quantity, tr.rate, tr.name as tax_rate_name 
         FROM sma_products p INNER JOIN sma_warehouses_products wp ON (wp.product_id = p.id_cloud AND 
@@ -161,23 +168,31 @@ class ProductsProvider {
 
   /// Load products of given suspended sale id
   static Future<Map<String, dynamic>> loadSuspSaleProducts(
-      String suspSaleId, CompanyModel customer) async {
+    String suspSaleId,
+    CompanyModel customer,
+  ) async {
     final res = await loadSuspendedSProducts(suspSaleId);
     List<Map<String, dynamic>> dif = [];
     List<ProductModel> products = [];
     List<UnitsModel?> units = [];
     if (res != null) {
       await Future.forEach(res, (Map p) async {
-        products.add(ProductModel.fromJsonList([p],
-                loadInitialQtty: true,
-                qttyKey: 'initial_qtty',
-                initalPrice: true,
-                inititalPriceKey: 'sp_price')
-            .first);
+        products.add(
+          ProductModel.fromJsonList(
+            [p],
+            loadInitialQtty: true,
+            qttyKey: 'initial_qtty',
+            initialPrice: true,
+            initialPriceKey: 'sp_price',
+          ).first,
+        );
         UnitsModel? unit;
         if (p['unit_id'] != null && p['unit_id'] != '') {
-          unit = await UnitsProvider.getPUnitSuspended(p['id_cloud'].toString(),
-              customer.priceGroupId!, p['unit_id'].toString());
+          unit = await UnitsProvider.getPUnitSuspended(
+            p['id_cloud'].toString(),
+            customer.priceGroupId!,
+            p['unit_id'].toString(),
+          );
           if (unit != null) {
             units.add(unit);
           }
@@ -214,33 +229,40 @@ class ProductsProvider {
     return result;
   }
 
-  /// To find products from sma_products, with and whitout search params
-  static Future<List<Map>?> findProducts(String? searchs,
-      {bool overselling = true,
-      bool limit = true,
-      bool offset = false,
-      int offsetValue = 2}) async {
-    if (searchs == null || searchs == '') {
+  /// To find products from sma_products, with and without search params
+  static Future<List<Map>?> findProducts(
+    String? search, {
+    bool overselling = true,
+    bool limit = true,
+    bool offset = false,
+    int offsetValue = 2,
+  }) async {
+    if (search == null || search == '') {
       return await getAllProducts(
-          limit: limit,
-          offset: offset,
-          offsetValue: offsetValue,
-          overselling: overselling);
+        limit: limit,
+        offset: offset,
+        offsetValue: offsetValue,
+        overselling: overselling,
+      );
     } else {
-      return await findProductsBySearch(searchs,
-          limit: limit,
-          offset: offset,
-          offsetValue: offsetValue,
-          overselling: overselling);
+      return await findProductsBySearch(
+        search,
+        limit: limit,
+        offset: offset,
+        offsetValue: offsetValue,
+        overselling: overselling,
+      );
     }
   }
 
   /// Given a string, search in sma_products fields (name,slug,code) LIKE string.
-  static Future<List<Map>?> findProductsBySearch(String searchs,
-      {bool overselling = true,
-      bool limit = true,
-      bool offset = false,
-      int offsetValue = 2}) async {
+  static Future<List<Map>?> findProductsBySearch(
+    String search, {
+    bool overselling = true,
+    bool limit = true,
+    bool offset = false,
+    int offsetValue = 2,
+  }) async {
     String sql = '';
     if (offset) limit = false;
     if (limit) offset = false;
@@ -249,8 +271,8 @@ class ProductsProvider {
               SELECT p.${productColumns.join(',p.')},wp.quantity, tr.rate, tr.name as tax_rate_name 
               FROM sma_products p INNER JOIN sma_warehouses_products wp ON (wp.product_id = p.id_cloud 
               AND wp.warehouse_id = ${dataBloc.userData!.warehouseId}) INNER JOIN sma_tax_rates tr 
-              ON tr.id_cloud = p.tax_rate WHERE p.discontinued = 0 AND (p.name LIKE '%$searchs%' OR 
-              p.slug LIKE '%$searchs%' OR p.code LIKE '%$searchs%') ${limit ? "LIMIT 30" : ""}
+              ON tr.id_cloud = p.tax_rate WHERE p.discontinued = 0 AND (p.name LIKE '%$search%' OR 
+              p.slug LIKE '%$search%' OR p.code LIKE '%$search%') ${limit ? "LIMIT 30" : ""}
               ${offset ? "LIMIT 30 offset " + offsetValue.toString() : ""}
           ''';
     } else {
@@ -258,8 +280,8 @@ class ProductsProvider {
           SELECT p.${productColumns.join(',p.')},wp.quantity, tr.rate,tr.name as tax_rate_name 
           FROM sma_products p INNER JOIN sma_warehouses_products wp ON (wp.product_id = p.id_cloud AND 
           wp.warehouse_id = ${dataBloc.userData!.warehouseId}) INNER JOIN sma_tax_rates tr ON tr.id_cloud 
-          = p.tax_rate WHERE p.discontinued = 0 AND wp.quantity > 0 AND (p.name LIKE '%$searchs%' OR 
-          p.slug LIKE '%$searchs%' OR p.code LIKE '%$searchs%') ${limit ? "LIMIT 30" : ""}
+          = p.tax_rate WHERE p.discontinued = 0 AND wp.quantity > 0 AND (p.name LIKE '%$search%' OR 
+          p.slug LIKE '%$search%' OR p.code LIKE '%$search%') ${limit ? "LIMIT 30" : ""}
           ${offset ? "LIMIT 30 offset " + offsetValue.toString() : ""}
       ''';
     }
@@ -310,33 +332,41 @@ class ProductsProvider {
 
   /// Get price of a product for a given priceGroupId
   static Future<Map?> findProductPrice(String id, String idPriceGroup) async {
-    return await DBProvider.db.sqlFirstQuery('sma_product_prices',
-        where: 'product_id = $id AND price_group_id = $idPriceGroup');
+    return await DBProvider.db.sqlFirstQuery(
+      'sma_product_prices',
+      where: 'product_id = $id AND price_group_id = $idPriceGroup',
+    );
   }
 
   /// Insert sale products data into DB
   static Future<bool> saveSuspSaleProducts(List<dynamic> query) async {
-    return await DBProvider.db.insertQuerys('suspended_sales_product', query);
+    return await DBProvider.db
+        .insertQueryJsonList('suspended_sales_product', query);
   }
 
   /// Insert sale data into DB and returns id of Row
   static Future<List<Map<String, dynamic>>?> loadSuspSaleProductsFromDB(
-      List<dynamic> idSSale) async {
-    return await DBProvider.db.sqlQuery('suspended_sales_product',
-        where: 'id_suspended_sale=$idSSale');
+    List<dynamic> idSSale,
+  ) async {
+    return await DBProvider.db.sqlQuery(
+      'suspended_sales_product',
+      where: 'id_suspended_sale=$idSSale',
+    );
   }
 
-  /// Returns map with product and its requirementes based on pricePolicy
+  /// Returns map with product and its requirement's based on pricePolicy
   static Future<Map<String, dynamic>> getProductRequirements(
-      BuildContext context, ProductModel product,
-      {bool showAllwaysUnitAlert = false,
-      bool fromOrder = false,
-      bool fromPurchase = false,
-      bool fromQuote = false}) async {
+    BuildContext context,
+    ProductModel product, {
+    bool showAlwaysUnitAlert = false,
+    bool fromOrder = false,
+    bool fromPurchase = false,
+    bool fromQuote = false,
+  }) async {
     final policyReq = PricePoliciesProvider.checkProductSelectionRequirements();
     Map<String, dynamic> req = {
-      "product": product,
-      "product_unit": null,
+      'product': product,
+      'product_unit': null,
       'product_prefs': null
     };
     Map<String, dynamic>? productDetails;
@@ -358,9 +388,12 @@ class ProductsProvider {
       }
 
       productDetails = await UnitsProvider.getProductUnitWithPrefs(
-          context, product, priceGroupId,
-          showAllwaysUnitAlert: showAllwaysUnitAlert,
-          showInvInstOfPrice: showInvInstOfPrice);
+        context,
+        product,
+        priceGroupId,
+        showAlwaysUnitAlert: showAlwaysUnitAlert,
+        showInvInstOfPrice: showInvInstOfPrice,
+      );
 
       if (productDetails != null) {
         final unit = productDetails['unit'];
@@ -373,8 +406,12 @@ class ProductsProvider {
       // get product prefs
       if (prefsSelection && req.isNotEmpty) {
         final prodPrefs = await ProductPreferencesProvider.getProductPrefs(
-            context, product, priceGroupId, req['product_unit'],
-            prefsSelection: true);
+          context,
+          product,
+          priceGroupId,
+          req['product_unit'],
+          prefsSelection: true,
+        );
         if (prodPrefs != null && (prodPrefs.isNotEmpty)) {
           req['product_prefs'] = prodPrefs;
         } else if (prodPrefs != null) {
@@ -386,19 +423,25 @@ class ProductsProvider {
   }
 
   /// Return ProductModel product with all it's prices in it
-  static Future<ProductModel> getProductPrices(ProductModel product,
-      {String? productKey,
-      String? customerId,
-      bool defaultPrice = false,
-      CompanyModel? customer,
-      UnitsModel? unit}) async {
+  static Future<ProductModel> getProductPrices(
+    ProductModel product, {
+    String? productKey,
+    String? customerId,
+    bool defaultPrice = false,
+    CompanyModel? customer,
+    UnitsModel? unit,
+  }) async {
     if (dataBloc.settings != null) {
-      final product2 = await PricePoliciesProvider.policyCases(product,
-          dataBloc.settings!['prioridad_precios_producto'], posBloc.getCustomer,
-          defaultPrice: defaultPrice, unit: unit);
+      final product2 = await PricePoliciesProvider.policyCases(
+        product,
+        dataBloc.settings!['prioridad_precios_producto'],
+        posBloc.getCustomer,
+        defaultPrice: defaultPrice,
+        unit: unit,
+      );
 
       return product2;
-      //aply discount
+      //apply discount
 
     } else {
       await dataBloc.getSettings();
@@ -407,11 +450,13 @@ class ProductsProvider {
   }
 
   /// Return ProductModel product with all it's prices in it
-  static Future<bool> getPOSProductPrices(String productKey,
-      {String? customerId,
-      bool defaultPrice = false,
-      bool toOrder = false,
-      bool toQuote = false}) async {
+  static Future<bool> getPOSProductPrices(
+    String productKey, {
+    String? customerId,
+    bool defaultPrice = false,
+    bool toOrder = false,
+    bool toQuote = false,
+  }) async {
     if (dataBloc.settings != null) {
       CompanyModel? customer;
       if (toOrder) {
@@ -421,12 +466,17 @@ class ProductsProvider {
       } else {
         customer = posBloc.getCustomer;
       }
-      final result = await PricePoliciesProvider.policyCasesPrice(productKey,
-          dataBloc.settings!['prioridad_precios_producto'], customer,
-          defaultPrice: defaultPrice, toOrder: toOrder, toQuote: toQuote);
+      final result = await PricePoliciesProvider.policyCasesPrice(
+        productKey,
+        dataBloc.settings!['prioridad_precios_producto'],
+        customer,
+        defaultPrice: defaultPrice,
+        toOrder: toOrder,
+        toQuote: toQuote,
+      );
       result;
       return result;
-      //aply discount
+      //apply discount
 
     } else {
       await dataBloc.getSettings();
@@ -435,17 +485,21 @@ class ProductsProvider {
   }
 
   /// Return ProductModel product with all it's prices in it
-  static Future<bool> getPOSOrderProductPrices(String productKey,
-      {String? customerId, bool defaultPrice = false}) async {
+  static Future<bool> getPOSOrderProductPrices(
+    String productKey, {
+    String? customerId,
+    bool defaultPrice = false,
+  }) async {
     if (dataBloc.settings != null) {
       final result = await PricePoliciesProvider.policyCasesPriceOrder(
-          productKey,
-          dataBloc.settings!['prioridad_precios_producto'],
-          posBloc.getCustomer,
-          defaultPrice: defaultPrice);
+        productKey,
+        dataBloc.settings!['prioridad_precios_producto'],
+        posBloc.getCustomer,
+        defaultPrice: defaultPrice,
+      );
 
       return result;
-      //aply discount
+      //apply discount
 
     } else {
       await dataBloc.getSettings();

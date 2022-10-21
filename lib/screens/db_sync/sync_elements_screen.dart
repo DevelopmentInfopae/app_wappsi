@@ -32,9 +32,12 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
   void initState() {
     // elements = syncDB.options.values.toList();
     keys = enabledOptions.keys.toList();
-    values = Map.fromIterable(keys, value: (value) {
-      return false;
-    });
+    values = Map.fromIterable(
+      keys,
+      value: (value) {
+        return false;
+      },
+    );
     super.initState();
   }
 
@@ -54,12 +57,15 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
     );
   }
 
-  PreferredSize _appBar(BuildContext context) =>
-      appBar(context, 'Sincronización',
-          image: 'assets/images/synchronization.png', onPop: () {
-        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
-        Navigator.pop(context);
-      });
+  PreferredSize _appBar(BuildContext context) => appBar(
+        context,
+        'Sincronización',
+        image: 'assets/images/synchronization.png',
+        onPop: () {
+          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+          Navigator.pop(context);
+        },
+      );
 
   Widget _body() {
     return Column(
@@ -91,8 +97,9 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
         });
       },
       shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-          side: BorderSide(color: values[key]! ? _pc : Colors.white, width: 2)),
+        borderRadius: BorderRadius.circular(5),
+        side: BorderSide(color: values[key]! ? _pc : Colors.white, width: 2),
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       child:
           _elementParts(key).withSize(width: size.width, height: size.height),
@@ -109,13 +116,12 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
             fit: BoxFit.fitWidth,
           ),
         ).paddingTop(4).flexible(flex: 6),
-        Text(key,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                style: Theme.of(context).textTheme.subtitle1)
-            .center()
-            .paddingBottom(4)
-            .flexible(flex: 4)
+        Text(
+          key,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          style: Theme.of(context).textTheme.subtitle1,
+        ).center().paddingBottom(4).flexible(flex: 4)
       ],
     );
   }
@@ -184,8 +190,11 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
             options: syncOptions,
           ).launch(context);
         } else {
-          confirmDialog(context, 'Sin elementos a sincronizar',
-              'assets/images/dizzy-robot.png');
+          confirmDialog(
+            context,
+            'Sin elementos a sincronizar',
+            'assets/images/dizzy-robot.png',
+          );
         }
       },
     );

@@ -15,12 +15,12 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 ///
 class SelectProductUnitDialog extends StatefulWidget {
   final List<UnitsModel> units;
-  const SelectProductUnitDialog(
-      {Key? key,
-      required this.product,
-      this.showInvInstOfPrice = false,
-      required this.units})
-      : super(key: key);
+  const SelectProductUnitDialog({
+    Key? key,
+    required this.product,
+    this.showInvInstOfPrice = false,
+    required this.units,
+  }) : super(key: key);
   final ProductModel product;
   final bool showInvInstOfPrice;
   @override
@@ -73,7 +73,9 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
         // insetPadding: EdgeInsets.zero,
         // contentPadding: EdgeInsets.zero,
         insetPadding: EdgeInsets.symmetric(
-            horizontal: hInsetPadding, vertical: vInsetPadding),
+          horizontal: hInsetPadding,
+          vertical: vInsetPadding,
+        ),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         title: _title1(context),
 
@@ -96,7 +98,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                 color: Colors.red.withOpacity(0.8),
                 child: CupertinoDialogAction(
                   child: const Text(
-                    "Cancelar",
+                    'Cancelar',
                     style: TextStyle(color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
@@ -111,7 +113,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                 color: pColor.withOpacity(0.8),
                 child: CupertinoDialogAction(
                   child: const Text(
-                    "Aceptar",
+                    'Aceptar',
                     style: TextStyle(color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
@@ -133,7 +135,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
 
   void _returnInfo(BuildContext context) {
     Navigator.of(context)
-        .pop({"unit": _selectUnition, "quantity": qtty == 0 ? 1.0 : qtty});
+        .pop({'unit': _selectUnition, 'quantity': qtty == 0 ? 1.0 : qtty});
   }
 
   Column _title1(BuildContext context) {
@@ -164,36 +166,38 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
           children: [
             _rmQty(),
             Container(
-                height: 40,
-                width: 55,
-                // padding: kButtonPadding,
-                decoration: BoxDecoration(
-                    // color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.grey,
-                        blurRadius: 2.0,
-                        spreadRadius: 0.0, // shadow direction: bottom right
-                      )
-                    ]),
-                child: Material(
-                  color: Colors.transparent,
-                  child: AppTextField(
-                    onChanged: (value) {
-                      if (isNumeric(value)) {
-                        qtty = double.tryParse(value) ?? 1.0;
-                      }
-                    },
-                    enabled: _selectUnition != null,
-                    controller: _valueController,
-                    textStyle: buttonsSmallTextStyle(context),
-                    textFieldType: TextFieldType.PHONE,
-                    textAlign: TextAlign.center,
-                    decoration:
-                        InputDecorations.noBorders(hintText: '', labelText: ''),
-                  ),
-                )),
+              height: 40,
+              width: 55,
+              // padding: kButtonPadding,
+              decoration: BoxDecoration(
+                // color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.grey,
+                    blurRadius: 2.0,
+                    spreadRadius: 0.0, // shadow direction: bottom right
+                  )
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: AppTextField(
+                  onChanged: (value) {
+                    if (isNumeric(value)) {
+                      qtty = double.tryParse(value) ?? 1.0;
+                    }
+                  },
+                  enabled: _selectUnition != null,
+                  controller: _valueController,
+                  textStyle: buttonsSmallTextStyle(context),
+                  textFieldType: TextFieldType.PHONE,
+                  textAlign: TextAlign.center,
+                  decoration:
+                      InputDecorations.noBorders(hintText: '', labelText: ''),
+                ),
+              ),
+            ),
             _addQty()
           ],
         ),
@@ -224,10 +228,12 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
               },
               color: greyLight,
               shapeBorder: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  side: BorderSide(
-                      color: u == _selectUnition ? pColor : Colors.white,
-                      width: 3)),
+                borderRadius: BorderRadius.circular(5),
+                side: BorderSide(
+                  color: u == _selectUnition ? pColor : Colors.white,
+                  width: 3,
+                ),
+              ),
               padding: EdgeInsets.zero,
               child: ListTile(
                 // horizontalTitleGap: 1,

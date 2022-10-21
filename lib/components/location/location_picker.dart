@@ -32,8 +32,9 @@ class _SearchPageState extends State<SearchLocationPage> {
     });
     super.initState();
     controller = PickerMapController(
-        initMapWithUserPosition: widget.geoLoc == null,
-        initPosition: widget.geoLoc);
+      initMapWithUserPosition: widget.geoLoc == null,
+      initPosition: widget.geoLoc,
+    );
     textEditingController.addListener(textOnChanged);
   }
 
@@ -59,11 +60,16 @@ class _SearchPageState extends State<SearchLocationPage> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: appBar(context, 'Seleccionar localización',
-            elevation: false, image: 'assets/images/checklist.png', onPop: () {
-          dataBloc.homeKey?.currentState?.changeResizeToAvoidBottomInset();
-          Navigator.pop(context);
-        }),
+        appBar: appBar(
+          context,
+          'Seleccionar localización',
+          elevation: false,
+          image: 'assets/images/checklist.png',
+          onPop: () {
+            dataBloc.homeKey?.currentState?.changeResizeToAvoidBottomInset();
+            Navigator.pop(context);
+          },
+        ),
         body: _locationPicker(context, size),
       ),
     );
@@ -115,8 +121,9 @@ class _SearchPageState extends State<SearchLocationPage> {
       // height: 30,
       padding: kButtonPadding,
       shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-          side: BorderSide(color: greyMediumLight)),
+        borderRadius: BorderRadius.circular(50),
+        side: BorderSide(color: greyMediumLight),
+      ),
       onTap: () async {
         GeoPoint p = await controller.selectAdvancedPositionPicker();
         Navigator.pop(context, p);
@@ -135,8 +142,9 @@ class _SearchPageState extends State<SearchLocationPage> {
       // height: 30,
       padding: kButtonPadding,
       shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-          side: BorderSide(color: greyMediumLight)),
+        borderRadius: BorderRadius.circular(50),
+        side: BorderSide(color: greyMediumLight),
+      ),
       onTap: () async {
         controller.osmBaseController.zoomIn();
       },
@@ -154,8 +162,9 @@ class _SearchPageState extends State<SearchLocationPage> {
       // height: 30,
       padding: kButtonPadding,
       shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-          side: BorderSide(color: greyMediumLight)),
+        borderRadius: BorderRadius.circular(50),
+        side: BorderSide(color: greyMediumLight),
+      ),
       onTap: () async {
         controller.osmBaseController.zoomOut();
       },
@@ -173,8 +182,9 @@ class _SearchPageState extends State<SearchLocationPage> {
       // height: 30,
       padding: kButtonPadding,
       shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-          side: BorderSide(color: greyMediumLight)),
+        borderRadius: BorderRadius.circular(50),
+        side: BorderSide(color: greyMediumLight),
+      ),
       onTap: () async {
         // await controller. ();
 
@@ -214,7 +224,9 @@ class _SearchPageState extends State<SearchLocationPage> {
         padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(radius2), color: greyLight),
+          borderRadius: BorderRadius.circular(radius2),
+          color: greyLight,
+        ),
         child: AppTextField(
           focus: searchFocus,
           controller: textEditingController,
@@ -237,7 +249,7 @@ class _SearchPageState extends State<SearchLocationPage> {
                 focusNode: FocusNode(),
                 onTap: () {
                   textEditingController.clear();
-                  controller.setSearchableText("");
+                  controller.setSearchableText('');
                   FocusScope.of(context).requestFocus(FocusNode());
                 },
                 child: Icon(
@@ -248,7 +260,7 @@ class _SearchPageState extends State<SearchLocationPage> {
             ),
             focusColor: Colors.black,
             filled: true,
-            hintText: "Buscar",
+            hintText: 'Buscar',
             border: InputBorder.none,
             enabledBorder: InputBorder.none,
             fillColor: greyLight,
@@ -274,9 +286,9 @@ class _TopSearchWidgetState extends State<TopSearchWidget> {
 
   late StreamController<List<SearchInfo>> streamSuggestion = StreamController();
   late Future<List<SearchInfo>> _futureSuggestionAddress;
-  String oldText = "";
+  String oldText = '';
   Timer? _timerToStartSuggestionReq;
-  final Key streamKey = Key("streamAddressSug");
+  final Key streamKey = Key('streamAddressSug');
 
   @override
   void initState() {

@@ -106,21 +106,27 @@ class SuspendedSalesProvider {
 
   /// Load suspended sale given a suspended sale id. Param getPrices is
   ///used to know if product prices should or not be calculated
-  static Future<List<Map<String, dynamic>>> loadSale(String id,
-      {bool getPrices = true}) async {
+  static Future<List<Map<String, dynamic>>> loadSale(
+    String id, {
+    bool getPrices = true,
+  }) async {
     final suspendedSale = await loadFromDB(id);
 
     final customer = await CompanyModel.getCompanyDetails(
-        suspendedSale!.idCustomer.toString());
+      suspendedSale!.idCustomer.toString(),
+    );
     final prodInfo = await ProductsProvider.loadSuspSaleProducts(id, customer!);
     final customerAdd = await CustomerAddressesProvider.loadCustomerAddress(
-        suspendedSale.idAddress.toString());
+      suspendedSale.idAddress.toString(),
+    );
 
     final payDocument = await DocumentsTypesProvider.loadPayDoc(
-        (suspendedSale.idPayDocument ?? '').toString());
+      (suspendedSale.idPayDocument ?? '').toString(),
+    );
 
     final payMethod = await PaymentMethodsProvider.loadPaymentM(
-        (suspendedSale.idPayMethod ?? '').toString());
+      (suspendedSale.idPayMethod ?? '').toString(),
+    );
 
     posBloc.setPaymentDocument(payDocument);
     posBloc.setPaymentMethod(payMethod);
@@ -132,13 +138,17 @@ class SuspendedSalesProvider {
     List<Map<String, dynamic>> errors = [];
     await Future.forEach(products, (ProductModel p) async {
       final index = products.indexOf(p);
-      // here we send getQttys = false to not get product inital qttys
+      // here we send getQttys = false to not get product initial qttys
       bool res = false;
       try {
-        res = await posBloc.addProduct({
-          'product': p,
-          'product_unit': units.isNotEmpty ? units[index] : null
-        }, getPrices: getPrices, getQttys: false);
+        res = await posBloc.addProduct(
+          {
+            'product': p,
+            'product_unit': units.isNotEmpty ? units[index] : null
+          },
+          getPrices: getPrices,
+          getQttys: false,
+        );
       } catch (e) {
         res = await posBloc
             .addProduct({'product': p}, getPrices: getPrices, getQttys: false);
@@ -152,20 +162,28 @@ class SuspendedSalesProvider {
   }
 
   static Future<Map<String, dynamic>> suspSaleInfo(
-      String id, String keyWord, double totalValue, int items) async {
+    String id,
+    String keyWord,
+    double totalValue,
+    int items,
+  ) async {
     final suspendedSale = await loadFromDB(id);
 
     final customer = await CompanyModel.getCompanyDetails(
-        suspendedSale!.idCustomer.toString());
+      suspendedSale!.idCustomer.toString(),
+    );
     final products = await ProductsProvider.loadSuspSaleProducts(id, customer!);
     final customerAdd = await CustomerAddressesProvider.loadCustomerAddress(
-        suspendedSale.idAddress.toString());
+      suspendedSale.idAddress.toString(),
+    );
 
     final payDocument = await DocumentsTypesProvider.loadPayDoc(
-        (suspendedSale.idPayDocument ?? '').toString());
+      (suspendedSale.idPayDocument ?? '').toString(),
+    );
 
     final payMethod = await PaymentMethodsProvider.loadPaymentM(
-        (suspendedSale.idPayMethod ?? '').toString());
+      (suspendedSale.idPayMethod ?? '').toString(),
+    );
 
     return {
       'suspended_sale': suspendedSale.id,

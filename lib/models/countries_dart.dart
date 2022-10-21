@@ -21,19 +21,19 @@ class CountriesModel {
   String? codigoIso;
 
   factory CountriesModel.fromJson(Map<String, dynamic> json) => CountriesModel(
-        codigo: json["CODIGO"],
-        nombre: json["NOMBRE"],
-        indicativo: json["INDICATIVO"],
-        moneda: int.parse(json["MONEDA"].toString()),
-        codigoIso: json["codigo_iso"],
+        codigo: json['CODIGO'],
+        nombre: json['NOMBRE'],
+        indicativo: json['INDICATIVO'],
+        moneda: int.parse(json['MONEDA'].toString()),
+        codigoIso: json['codigo_iso'],
       );
 
   Map<String, dynamic> toJson() => {
-        "CODIGO": codigo,
-        "NOMBRE": nombre,
-        "INDICATIVO": indicativo,
-        "MONEDA": moneda,
-        "codigo_iso": codigoIso,
+        'CODIGO': codigo,
+        'NOMBRE': nombre,
+        'INDICATIVO': indicativo,
+        'MONEDA': moneda,
+        'codigo_iso': codigoIso,
       };
 
   @override

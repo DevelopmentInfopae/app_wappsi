@@ -39,11 +39,15 @@ class _DBSyncElementsState extends State<DBSyncElements> {
         return true;
       },
       child: Scaffold(
-        appBar: appBar(context, 'Sincronización',
-            image: 'assets/images/sync.gif', onPop: () async {
-          Navigator.pop(context);
-          await dataBloc.refreshToken(context);
-        }),
+        appBar: appBar(
+          context,
+          'Sincronización',
+          image: 'assets/images/sync.gif',
+          onPop: () async {
+            Navigator.pop(context);
+            await dataBloc.refreshToken(context);
+          },
+        ),
         body: _body(),
       ),
     );
@@ -58,8 +62,8 @@ class _DBSyncElementsState extends State<DBSyncElements> {
   Widget _elementsLoading() {
     return SingleChildScrollView(
       child: Column(
-          children: widget.options.keys.map((option) {
-        return FutureBuilder(
+        children: widget.options.keys.map((option) {
+          return FutureBuilder(
             future: syncDB.syncOption(context, option),
             // future: null,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -71,41 +75,44 @@ class _DBSyncElementsState extends State<DBSyncElements> {
               } else {
                 return elementSync(option);
               }
-            });
-      }).toList()),
+            },
+          );
+        }).toList(),
+      ),
     );
   }
 
   Widget elementSync(String option, {bool completed = false}) {
     return ElementSync(
-            context: context,
-            status: completed,
-            optionInfo: enabledOptions[option]!,
-            optionName: option)
-        .paddingSymmetric(horizontal: 13, vertical: 7);
+      context: context,
+      status: completed,
+      optionInfo: enabledOptions[option]!,
+      optionName: option,
+    ).paddingSymmetric(horizontal: 13, vertical: 7);
   }
 
   Widget _bottom() {
     return bottom(
-        AppButton(
-          padding: kButtonPadding,
-          child: Text(
-            'Menu principal ',
-            style: buttonsTextStyle(context),
-          ),
-          color: pColor,
-          onTap: () async {
-            await dataBloc.refreshToken(context);
-
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              '/',
-              (route) => false,
-            );
-            dataBloc.homeKey?.currentState?.selectTab(TabItem.home);
-          },
+      AppButton(
+        padding: kButtonPadding,
+        child: Text(
+          'Menu principal ',
+          style: buttonsTextStyle(context),
         ),
-        _pc,
-        _size);
+        color: pColor,
+        onTap: () async {
+          await dataBloc.refreshToken(context);
+
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/',
+            (route) => false,
+          );
+          dataBloc.homeKey?.currentState?.selectTab(TabItem.home);
+        },
+      ),
+      _pc,
+      _size,
+    );
   }
 }

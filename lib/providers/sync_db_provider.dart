@@ -37,8 +37,12 @@ class SyncDBProvider {
         'last_sync': updateDate,
         'first_time': firstTime
       };
-      res = await api.postPetition(options['path'], body, dataBloc.getHeaders(),
-          awaitTime: 150);
+      res = await api.postPetition(
+        options['path'],
+        body,
+        dataBloc.getHeaders(),
+        awaitTime: 150,
+      );
     } else {
       res = await api.getPetition(options['path'], dataBloc.getHeaders());
     }
@@ -71,8 +75,10 @@ class SyncDBProvider {
     bool isSpecial = false,
     bool post = true,
   }) async {
-    final res = await _getUpdates(selectedOption ?? enabledOptions[option]!,
-        isPost: post);
+    final res = await _getUpdates(
+      selectedOption ?? enabledOptions[option]!,
+      isPost: post,
+    );
     //check if JWT is ok, if not logout
     if (res['status'] == -1) {
       return {
@@ -91,18 +97,22 @@ class SyncDBProvider {
 
         if (specialSync.contains(option)) {
           final optionInfo = enabledOptions[option];
-          result = await _specialWriteIntoLocalDB(res,
-              deleteBefore: optionInfo!['delete_before'],
-              independentTable: optionInfo['independent_table'],
-              dependentTable: optionInfo['dependent_table'],
-              dependentTable2: optionInfo['dependent_table_2'],
-              idKey: optionInfo['id_key'],
-              idKey2: optionInfo['id_key_2'],
-              columnName: optionInfo['column_name'],
-              columnName2: optionInfo['column_name_2']);
+          result = await _specialWriteIntoLocalDB(
+            res,
+            deleteBefore: optionInfo!['delete_before'],
+            independentTable: optionInfo['independent_table'],
+            dependentTable: optionInfo['dependent_table'],
+            dependentTable2: optionInfo['dependent_table_2'],
+            idKey: optionInfo['id_key'],
+            idKey2: optionInfo['id_key_2'],
+            columnName: optionInfo['column_name'],
+            columnName2: optionInfo['column_name_2'],
+          );
         } else {
           result = await _writeIntoLocalDB(
-              res, (selectedOption ?? enabledOptions[option])!['table']);
+            res,
+            (selectedOption ?? enabledOptions[option])!['table'],
+          );
         }
 
         if ((selectedOption ?? enabledOptions[option])!['table'] ==
@@ -114,8 +124,10 @@ class SyncDBProvider {
         if (result) {
           // syncBloc.setProgressMessage('Estableciendo fecha de ultima actualización para $option');
 
-          await DBProvider.db.setUpdateDate(res['body']['server_date_time'],
-              (selectedOption ?? enabledOptions[option])!['sync_id']);
+          await DBProvider.db.setUpdateDate(
+            res['body']['server_date_time'],
+            (selectedOption ?? enabledOptions[option])!['sync_id'],
+          );
 
           // syncBloc.setProgressMessage('$option sincronizados');
           return {
@@ -148,8 +160,11 @@ class SyncDBProvider {
     Map<String, dynamic> body = {'biller_id': dataBloc.userData!.billerId};
 
     Map<String, dynamic> res = await api.postPetition(
-        billerSync['path_data'], body, dataBloc.getHeaders(),
-        awaitTime: 150);
+      billerSync['path_data'],
+      body,
+      dataBloc.getHeaders(),
+      awaitTime: 150,
+    );
 
     bool result = false;
 
@@ -171,8 +186,11 @@ class SyncDBProvider {
     }
     if (result) {
       res = await api.postPetition(
-          billerSync['path_documents_data'], body, dataBloc.getHeaders(),
-          awaitTime: 150);
+        billerSync['path_documents_data'],
+        body,
+        dataBloc.getHeaders(),
+        awaitTime: 150,
+      );
       if (res['status'] == 1) {
         result =
             await _writeIntoLocalDB(res, billerSync['table_documents_data']);
@@ -230,29 +248,31 @@ class SyncDBProvider {
   Future<bool> _writeIntoLocalDB(Map<String, dynamic> res, String table) async {
     bool result = false;
     if ((res['body']['data'] != null) ||
-        (res['body']['data'] != "[]") ||
+        (res['body']['data'] != '[]') ||
         (res['body']['data'] != [])) {
       result =
-          await DBProvider.db.insertOrUpdateQuerys(table, res['body']['data']);
+          await DBProvider.db.insertOrUpdateQuery(table, res['body']['data']);
     }
     return result;
   }
 
   ///This function is used to sync tables who have tables directly related, like sma_order_sales and
-  ///sma_order_sale_items. If we dont have a unique constraint, we can delete before insert using delete_before
+  ///sma_order_sale_items. If we don't have a unique constraint, we can delete before insert using delete_before
   ///param, with that we need to specify the identifierKey (id) and the columnName to build delete query.
-  static Future<bool> _specialWriteIntoLocalDB(Map res,
-      {bool deleteBefore = false,
-      String? idKey,
-      String? independentTable,
-      String? dependentTable,
-      String? dependentTable2,
-      String? columnName,
-      String? columnName2,
-      String? idKey2}) async {
+  static Future<bool> _specialWriteIntoLocalDB(
+    Map res, {
+    bool deleteBefore = false,
+    String? idKey,
+    String? independentTable,
+    String? dependentTable,
+    String? dependentTable2,
+    String? columnName,
+    String? columnName2,
+    String? idKey2,
+  }) async {
     bool result = true;
     if ((res['body']['data'] != null) ||
-        (res['body']['data'] != "[]") ||
+        (res['body']['data'] != '[]') ||
         (res['body']['data'] != [])) {
       final data = res['body']['data'];
 
@@ -268,33 +288,39 @@ class SyncDBProvider {
                 final idValue2 = data?[key]?[i]?[idKey2];
                 if (idValue != null) {
                   await DBProvider.db
-                      .deleteQuerys(dependentTable!, '$columnName=$idValue');
+                      .deleteQuery(dependentTable!, '$columnName=$idValue');
                   if (dependentTable2 != null) {
-                    await DBProvider.db.deleteQuerys(dependentTable2,
-                        '${columnName2 ?? columnName}=${idValue2 ?? idValue}');
+                    await DBProvider.db.deleteQuery(
+                      dependentTable2,
+                      '${columnName2 ?? columnName}=${idValue2 ?? idValue}',
+                    );
                   }
                   // printConsole(res);
                 }
               }
             }
           }
-          result = await DBProvider.db.insertOrUpdateQuerys(key, data[key]);
+          result = await DBProvider.db.insertOrUpdateQuery(key, data[key]);
         });
       }
     }
-    print(result);
+    // print(result);
     return result;
   }
 
-  Future syncOption(BuildContext context, String option,
-      {bool deleteBefore = false}) async {
+  Future syncOption(
+    BuildContext context,
+    String option, {
+    bool deleteBefore = false,
+  }) async {
     if (option == 'Datos de Facturación') {
       final res = await updateBillerData(context);
       if (res['status'] == -1) {
         await reloadDialog(
-            context,
-            'Sesión expirada, es necesario a iniciar sesión',
-            'assets/images/warning.png');
+          context,
+          'Sesión expirada, es necesario a iniciar sesión',
+          'assets/images/warning.png',
+        );
       } else {
         if (res['error'] == true) {
           return await syncOption(context, option);
@@ -305,13 +331,17 @@ class SyncDBProvider {
       final res = await update(option);
       if (res['status'] == -1) {
         await reloadDialog(
-            context,
-            'Sesión expirada, es necesario a iniciar sesión',
-            'assets/images/warning.png');
+          context,
+          'Sesión expirada, es necesario a iniciar sesión',
+          'assets/images/warning.png',
+        );
       } else {
         if (res['error'] == true) {
-          final choice = await choiceAlert(context,
-              res['message'] + '¿Reintentar?', 'assets/images/warning.png');
+          final choice = await choiceAlert(
+            context,
+            res['message'] + '¿Intentar nuevamente?',
+            'assets/images/warning.png',
+          );
 
           if (choice) {
             return await syncOption(context, option);
@@ -328,8 +358,11 @@ class SyncDBProvider {
     }
   }
 
-  Future<bool> synSelectedOption(Map<String, dynamic> option, context,
-      {bool isPost = true}) async {
+  Future<bool> synSelectedOption(
+    Map<String, dynamic> option,
+    context, {
+    bool isPost = true,
+  }) async {
     final res = await update(
       '',
       selectedOption: option,
@@ -337,16 +370,18 @@ class SyncDBProvider {
     );
     if (res['status'] == -1) {
       await reloadDialog(
-          context,
-          'Sesión expirada, es necesario a iniciar sesión',
-          'assets/images/warning.png');
+        context,
+        'Sesión expirada, es necesario a iniciar sesión',
+        'assets/images/warning.png',
+      );
       return false;
     } else {
       if (res['error'] == true) {
         final choice = await choiceAlert(
-            context,
-            res['message'] + '¿Intentar de nuevo?',
-            'assets/images/warning.png');
+          context,
+          res['message'] + '¿Intentar de nuevo?',
+          'assets/images/warning.png',
+        );
 
         if (choice) {
           return await synSelectedOption(option, context, isPost: isPost);
@@ -356,32 +391,41 @@ class SyncDBProvider {
     return true;
   }
 
-  Future<bool> syncSpecialSelectedOption(String option, context,
-      {bool isPost = true}) async {
+  Future<bool> syncSpecialSelectedOption(
+    String option,
+    context, {
+    bool isPost = true,
+  }) async {
     bool result = false;
     final res = await _getUpdates(enabledOptions[option]!, isPost: isPost);
     if (res['status'] == -1) {
       await reloadDialog(
-          context,
-          'Sesión expirada, es necesario a iniciar sesión',
-          'assets/images/warning.png');
+        context,
+        'Sesión expirada, es necesario a iniciar sesión',
+        'assets/images/warning.png',
+      );
     } else {
       if (res['error'] == true) {
-        final choice = await choiceAlert(context,
-            res['message'] + '¿Reintentar?', 'assets/images/warning.png');
+        final choice = await choiceAlert(
+          context,
+          res['message'] + '¿Intentar nuevamente?',
+          'assets/images/warning.png',
+        );
 
         if (choice) {
           return await syncSpecialSelectedOption(option, context);
         }
       } else {
         final optionInfo = enabledOptions[option];
-        return await _specialWriteIntoLocalDB(res,
-            deleteBefore: optionInfo!['delete_before'],
-            independentTable: optionInfo['independent_table'],
-            dependentTable: optionInfo['dependent_table'],
-            dependentTable2: optionInfo['dependent_table2'],
-            idKey: optionInfo['id_key'],
-            columnName: optionInfo['column_name']);
+        return await _specialWriteIntoLocalDB(
+          res,
+          deleteBefore: optionInfo!['delete_before'],
+          independentTable: optionInfo['independent_table'],
+          dependentTable: optionInfo['dependent_table'],
+          dependentTable2: optionInfo['dependent_table2'],
+          idKey: optionInfo['id_key'],
+          columnName: optionInfo['column_name'],
+        );
       }
     }
     return result;
@@ -389,13 +433,15 @@ class SyncDBProvider {
 
   static Future<bool> addNewDataOnSpecialOption(String option, Map data) async {
     final optionInfo = enabledOptions[option]!;
-    return await _specialWriteIntoLocalDB(data,
-        deleteBefore: false,
-        independentTable: optionInfo['independent_table'],
-        dependentTable: optionInfo['dependent_table'],
-        dependentTable2: optionInfo['dependent_table2'],
-        idKey: optionInfo['id_key'],
-        columnName: optionInfo['column_name']);
+    return await _specialWriteIntoLocalDB(
+      data,
+      deleteBefore: false,
+      independentTable: optionInfo['independent_table'],
+      dependentTable: optionInfo['dependent_table'],
+      dependentTable2: optionInfo['dependent_table2'],
+      idKey: optionInfo['id_key'],
+      columnName: optionInfo['column_name'],
+    );
   }
 
   // static Future<bool> writeNewDataOnOption(
@@ -414,12 +460,18 @@ class SyncDBProvider {
     final res = await updateBillerTables();
 
     if (res['status'] == -1) {
-      reloadDialog(context, 'Sesión expirada, es necesario a iniciar sesión',
-          'assets/images/warning.png');
+      reloadDialog(
+        context,
+        'Sesión expirada, es necesario a iniciar sesión',
+        'assets/images/warning.png',
+      );
     } else {
       if (res['error'] == true) {
-        final choice = await choiceAlert(context,
-            res['message'] + '¿Reintentar?', 'assets/images/warning.png');
+        final choice = await choiceAlert(
+          context,
+          res['message'] + '¿Intentar nuevamente?',
+          'assets/images/warning.png',
+        );
 
         if (choice) {
           return await updateBillerData(context);

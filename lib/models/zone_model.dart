@@ -25,18 +25,17 @@ class ZoneModel {
   String toRawJson() => json.encode(toJson());
 
   factory ZoneModel.fromJson(Map json) => ZoneModel(
-        codigoCiudad: json["codigo_ciudad"],
-        zoneName: json["zone_name"],
-        zoneCode: json["zone_code"],
-        id: parsingToInt(json["id"]),
-
+        codigoCiudad: json['codigo_ciudad'],
+        zoneName: json['zone_name'],
+        zoneCode: json['zone_code'],
+        id: parsingToInt(json['id']),
       );
 
   Map<String, dynamic> toJson() => {
-        "codigo_ciudad": codigoCiudad,
-        "zone_name": zoneName,
-        "zone_code": zoneCode,
-        "id":id
+        'codigo_ciudad': codigoCiudad,
+        'zone_name': zoneName,
+        'zone_code': zoneCode,
+        'id': id
       };
   static List<ZoneModel> fromJsonList(List data) {
     List<ZoneModel> list = [];
@@ -53,7 +52,7 @@ class ZoneModel {
     // prString(temp);
   }
 
-  String capitalizeZoneName(){
+  String capitalizeZoneName() {
     return capitalizeText(zoneName);
   }
 

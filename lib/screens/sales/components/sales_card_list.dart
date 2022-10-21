@@ -11,9 +11,11 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import '../../../constant.dart';
 
 class SalesCardList extends StatefulWidget {
-  const SalesCardList(
-      {Key? key, required this.sales, required this.searchParams})
-      : super(key: key);
+  const SalesCardList({
+    Key? key,
+    required this.sales,
+    required this.searchParams,
+  }) : super(key: key);
   final List<SalesModel> sales;
   final Map searchParams;
 
@@ -78,10 +80,11 @@ class _SalesCardListState extends State<SalesCardList> {
 
       _loading = true;
       final res = await LocalSalesProvider.listLocalSales(
-          search: widget.searchParams['search'] ?? '',
-          offset: true,
-          limit: 30,
-          offsetValue: _page * 30);
+        search: widget.searchParams['search'] ?? '',
+        offset: true,
+        limit: 30,
+        offsetValue: _page * 30,
+      );
       if (res != null) {
         if (res.isNotEmpty) {
           setState(() {
@@ -98,7 +101,10 @@ class _SalesCardListState extends State<SalesCardList> {
         }
       } else {
         await confirmDialog(
-            context, 'Error al cargar datos', 'assets/images/dizzy-robot.png');
+          context,
+          'Error al cargar datos',
+          'assets/images/dizzy-robot.png',
+        );
         setState(() {
           _loading = false;
         });
@@ -107,7 +113,7 @@ class _SalesCardListState extends State<SalesCardList> {
   }
 }
 
-// class to show customer indormation in form of a card
+// class to show customer information in form of a card
 
 class SalesCard extends StatelessWidget {
   final SalesModel sale;
@@ -144,55 +150,82 @@ class SalesCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          labelContentH('Cliente:', capitalizeText(sale.customer), context,
-              withInnerPading: false,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
-          labelContentH('Fecha:', sale.registrationDate ?? '', context,
-              withInnerPading: false,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
-          labelContentH('Numero:', sale.referenceNo ?? '', context,
-              withInnerPading: false,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
+          labelContentH(
+            'Cliente:',
+            capitalizeText(sale.customer),
+            context,
+            withInnerPadding: false,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          ),
+          labelContentH(
+            'Fecha:',
+            sale.registrationDate ?? '',
+            context,
+            withInnerPadding: false,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          ),
+          labelContentH(
+            'Numero:',
+            sale.referenceNo ?? '',
+            context,
+            withInnerPadding: false,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          ),
           Container(
             decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(radius2)),
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(radius2),
+            ),
             padding: const EdgeInsets.all(4),
             child: Column(
               children: [
                 Row(
                   children: [
                     labelContentH(
-                            'Plazo de pagos:',
-                            (sale.paymentTerm == 0 ? '--' : sale.paymentTerm)
-                                .toString(),
-                            context,
-                            withInnerPading: false,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2))
-                        .flexible(flex: 2),
+                      'Plazo de pagos:',
+                      (sale.paymentTerm == 0 ? '--' : sale.paymentTerm)
+                          .toString(),
+                      context,
+                      withInnerPadding: false,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                    ).flexible(flex: 2),
                     labelContentH(
-                            'Items:', (sale.totalItems).toString(), context,
-                            withInnerPading: false,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2))
-                        .flexible(flex: 2),
+                      'Items:',
+                      (sale.totalItems).toString(),
+                      context,
+                      withInnerPadding: false,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                    ).flexible(flex: 2),
                   ],
                 ),
                 Row(
                   children: [
                     labelContentH(
-                            'Total:', value.substring(0, value.length), context,
-                            withInnerPading: false,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2))
-                        .flexible(flex: 2),
-                    labelContentH('Pagado:', value.substring(0, value.length),
-                            context,
-                            withInnerPading: false,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2))
-                        .flexible(flex: 2),
+                      'Total:',
+                      value.substring(0, value.length),
+                      context,
+                      withInnerPadding: false,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                    ).flexible(flex: 2),
+                    labelContentH(
+                      'Pagado:',
+                      value.substring(0, value.length),
+                      context,
+                      withInnerPadding: false,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                    ).flexible(flex: 2),
                   ],
                 ),
               ],

@@ -14,12 +14,12 @@ import 'package:pos_wappsi/utils/text_formating/order_status_mapping.dart';
 import '../../../constant.dart';
 
 class OrdersCardList extends StatefulWidget {
-  const OrdersCardList(
-      {Key? key,
-      required this.orders,
-      required this.searchParams,
-      this.filters = const []})
-      : super(key: key);
+  const OrdersCardList({
+    Key? key,
+    required this.orders,
+    required this.searchParams,
+    this.filters = const [],
+  }) : super(key: key);
   final List<OrderModel> orders;
   final List<String> filters;
   final Map searchParams;
@@ -133,16 +133,17 @@ class _OrdersCardListState extends State<OrdersCardList> {
 
   Future<List<OrderModel>> _findOrders({bool offset = true}) async {
     final res = await LocalOrdersProvider.listLocalOrders(
-        search: widget.searchParams['search'] ?? '',
-        filters: widget.filters,
-        offset: offset,
-        limit: 30,
-        offsetValue: _page * 30);
+      search: widget.searchParams['search'] ?? '',
+      filters: widget.filters,
+      offset: offset,
+      limit: 30,
+      offsetValue: _page * 30,
+    );
     return res;
   }
 }
 
-// class to show customer indormation in form of a card
+// class to show customer information in form of a card
 
 class OrdersCard extends StatelessWidget {
   final OrderModel order;
@@ -184,38 +185,57 @@ class OrdersCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _status(context).paddingSymmetric(horizontal: 8),
-          labelContentH('Cliente:', capitalizeText(order.customer), context,
-              withInnerPading: false,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
           labelContentH(
-              'Fecha:',
-              capitalizeText(parseDateStrES(order.registrationDate ?? '') +
+            'Cliente:',
+            capitalizeText(order.customer),
+            context,
+            withInnerPadding: false,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          ),
+          labelContentH(
+            'Fecha:',
+            capitalizeText(
+              parseDateStrES(order.registrationDate ?? '') +
                   ' ' +
-                  parseTimeStrES(order.registrationDate ?? '')),
-              context,
-              withInnerPading: false,
-              flexCol1: 1,
-              flexCol2: 3,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
-          labelContentH('Referencia No:', order.referenceNo ?? '', context,
-              withInnerPading: false,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
+                  parseTimeStrES(order.registrationDate ?? ''),
+            ),
+            context,
+            withInnerPadding: false,
+            flexCol1: 1,
+            flexCol2: 3,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          ),
+          labelContentH(
+            'Referencia No:',
+            order.referenceNo ?? '',
+            context,
+            withInnerPadding: false,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          ),
           Container(
             decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(radius2)),
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(radius2),
+            ),
             padding: const EdgeInsets.all(4),
             child: Column(
               children: [
-                labelContentH('Items:', (order.totalItems).toString(), context,
-                    withInnerPading: false,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
                 labelContentH(
-                    'Total:', value.substring(0, value.length - 1), context,
-                    withInnerPading: false,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2))
+                  'Items:',
+                  (order.totalItems).toString(),
+                  context,
+                  withInnerPadding: false,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                ),
+                labelContentH(
+                  'Total:',
+                  value.substring(0, value.length - 1),
+                  context,
+                  withInnerPadding: false,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                )
               ],
             ),
           ),
@@ -241,13 +261,17 @@ class OrdersCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 6),
           width: 110,
           decoration: BoxDecoration(
-              color: cardColors['background'],
-              borderRadius: BorderRadius.circular(radius2)),
+            color: cardColors['background'],
+            borderRadius: BorderRadius.circular(radius2),
+          ),
           child: Text(
             mapStatusText(order.saleStatus),
             textAlign: TextAlign.center,
-            style: normalTextStyle(context,
-                fontWeightDelta: 2, color: cardColors['text']),
+            style: normalTextStyle(
+              context,
+              fontWeightDelta: 2,
+              color: cardColors['text'],
+            ),
           ),
         ),
       ],

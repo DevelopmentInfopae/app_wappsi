@@ -23,7 +23,8 @@ import 'package:pos_wappsi/utils/print_errors.dart';
 
 class PrintRegisterClose extends StatefulWidget {
   final Map<String, String> closeRegisterInfo;
-  const PrintRegisterClose({Key? key, required this.closeRegisterInfo}) : super(key: key);
+  const PrintRegisterClose({Key? key, required this.closeRegisterInfo})
+      : super(key: key);
   @override
   _PrintRegisterCloseState createState() => _PrintRegisterCloseState();
 }
@@ -41,7 +42,7 @@ class _PrintRegisterCloseState extends State<PrintRegisterClose> {
   @override
   void initState() {
     printFormat = PrintFormat(registerCloseInfo: widget.closeRegisterInfo);
-    // initSavetoPath();
+    // initSaveToPath();
     // initPlatformState();
     super.initState();
   }
@@ -57,11 +58,16 @@ class _PrintRegisterCloseState extends State<PrintRegisterClose> {
         return true;
       },
       child: Scaffold(
-        appBar: appBar(context, 'Movimientos',
-            back: true, image: 'assets/images/cash-register.png', onPop: () {
-          // dataBloc.homeKey?.currentState?.changeBottomIndex(1);
-          Navigator.pop(context);
-        }),
+        appBar: appBar(
+          context,
+          'Movimientos',
+          back: true,
+          image: 'assets/images/cash-register.png',
+          onPop: () {
+            // dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+            Navigator.pop(context);
+          },
+        ),
         body: _body(),
       ),
     );
@@ -90,11 +96,15 @@ class _PrintRegisterCloseState extends State<PrintRegisterClose> {
               billerImage(dataBloc.getBillerCompany!.logo!)
                   .paddingSymmetric(horizontal: 40)
                   .withHeight(
-                      _size.height * 0.08 > 60 ? _size.height * 0.08 : 60),
+                    _size.height * 0.08 > 60 ? _size.height * 0.08 : 60,
+                  ),
               socialReason(dataBloc.settings?['razon_social'], textTheme),
               emptyLine(),
               emptyLine(),
-              Text('Cierre de caja', style: normalTextStyle(context, color: greyDarkerColor),),
+              Text(
+                'Cierre de caja',
+                style: normalTextStyle(context, color: greyDarkerColor),
+              ),
               emptyLine(),
               emptyLine(),
               closeRegisterDetails(context, widget.closeRegisterInfo),
@@ -146,15 +156,19 @@ class _PrintRegisterCloseState extends State<PrintRegisterClose> {
             _printing = true;
           });
 
-          scaffoldAlert(context, 'Imprimiendo comprobante de movimiento',
-              const Duration(seconds: 3));
+          scaffoldAlert(
+            context,
+            'Imprimiendo comprobante de movimiento',
+            const Duration(seconds: 3),
+          );
           String companyLogo = dataBloc.getBillerCompany!.logo!;
           if (companyLogo.substring(companyLogo.length - 4) == '.png') {
             companyLogo =
                 companyLogo.substring(0, companyLogo.length - 4) + '.jpg';
           }
-          final result = await printFormat
-              .printRegisterClose(dataBloc.dirPath! + billerImgDir + companyLogo);
+          final result = await printFormat.printRegisterClose(
+            dataBloc.dirPath! + billerImgDir + companyLogo,
+          );
           if (result ?? false) {
             await Future.delayed(const Duration(seconds: 3));
             hideCurrentScaffoldAlert(context);
@@ -163,7 +177,10 @@ class _PrintRegisterCloseState extends State<PrintRegisterClose> {
             });
           } else {
             scaffoldAlert(
-                context, 'Error al imprimir', const Duration(seconds: 3));
+              context,
+              'Error al imprimir',
+              const Duration(seconds: 3),
+            );
           }
         } else {
           PrintSettings(
@@ -178,7 +195,10 @@ class _PrintRegisterCloseState extends State<PrintRegisterClose> {
             'Imprimir ',
             style: buttonsSmallTextStyle(context, color: pColor),
           ),
-          const Icon(Icons.print, color: pColor,)
+          const Icon(
+            Icons.print,
+            color: pColor,
+          )
         ],
       ),
     );
@@ -199,7 +219,10 @@ class _PrintRegisterCloseState extends State<PrintRegisterClose> {
             'Salir ',
             style: buttonsSmallTextStyle(context, color: pColor),
           ),
-          const Icon(Icons.exit_to_app, color: pColor,)
+          const Icon(
+            Icons.exit_to_app,
+            color: pColor,
+          )
         ],
       ),
     );
@@ -208,8 +231,10 @@ class _PrintRegisterCloseState extends State<PrintRegisterClose> {
   Widget _signatureStamp() {
     return Column(
       children: [
-        Text('____________________________________',
-            style: normalTextStyle(context)),
+        Text(
+          '____________________________________',
+          style: normalTextStyle(context),
+        ),
         Text('Firma y sello', style: normalTextStyle(context))
       ],
     );

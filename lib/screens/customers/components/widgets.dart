@@ -8,37 +8,56 @@ import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-Widget descRichText(String label, String? desc, BuildContext context,
-    {double fontsizeF = 0.9, int fontW = 1, Color color = Colors.black}) {
+Widget descRichText(
+  String label,
+  String? desc,
+  BuildContext context, {
+  double fontSizeFactor = 0.9,
+  int fontW = 1,
+  Color color = Colors.black,
+}) {
   return RichText(
     text: TextSpan(
-        text: label,
-        style: buttonsTextStyle(context,
-            fontSizeFactor: fontsizeF, fontWeightDelta: 4, color: color),
-        children: [
-          TextSpan(
-            text: capitalizeText(desc ?? ''),
-            // overflow: TextOverflow.ellipsis,
-            // maxLines: 2,
-            style: buttonsTextStyle(context,
-                fontSizeFactor: fontsizeF, color: color),
-          )
-        ]),
+      text: label,
+      style: buttonsTextStyle(
+        context,
+        fontSizeFactor: fontSizeFactor,
+        fontWeightDelta: 4,
+        color: color,
+      ),
+      children: [
+        TextSpan(
+          text: capitalizeText(desc ?? ''),
+          // overflow: TextOverflow.ellipsis,
+          // maxLines: 2,
+          style: buttonsTextStyle(
+            context,
+            fontSizeFactor: fontSizeFactor,
+            color: color,
+          ),
+        )
+      ],
+    ),
     // style: textTheme,
   );
 }
 
-Widget descText(String? desc, BuildContext context,
-    {int maxLines = 1,
-    double fontSizeFactor = 0.82,
-    int fweigth = 1,
-    Color? color,
-    TextAlign? textAlign,
-    TextStyle? textStyle}) {
-  textStyle ??= buttonsTextStyle(context,
-      fontSizeFactor: fontSizeFactor,
-      color: color ?? greyColor,
-      fontWeightDelta: fweigth);
+Widget descText(
+  String? desc,
+  BuildContext context, {
+  int maxLines = 1,
+  double fontSizeFactor = 0.82,
+  int fweigth = 1,
+  Color? color,
+  TextAlign? textAlign,
+  TextStyle? textStyle,
+}) {
+  textStyle ??= buttonsTextStyle(
+    context,
+    fontSizeFactor: fontSizeFactor,
+    color: color ?? greyColor,
+    fontWeightDelta: fweigth,
+  );
   return Text(
     // ignore: unnecessary_null_comparison
     capitalizeText(desc ?? ''),
@@ -49,16 +68,21 @@ Widget descText(String? desc, BuildContext context,
   );
 }
 
-Widget textFormField(BuildContext context, String label, Function function,
-    Function validation, Function onEditingComplete,
-    {TextInputType keyBType = TextInputType.name,
-    bool readOnly = false,
-    TextEditingController? controller,
-    FocusNode? focus,
-    AutovalidateMode autovalidateMode = AutovalidateMode.onUserInteraction,
-    Color labelColor = pColor,
-    int? maxLines,
-    TextStyle? style}) {
+Widget textFormField(
+  BuildContext context,
+  String label,
+  Function function,
+  Function validation,
+  Function onEditingComplete, {
+  TextInputType keyBType = TextInputType.name,
+  bool readOnly = false,
+  TextEditingController? controller,
+  FocusNode? focus,
+  AutovalidateMode autovalidateMode = AutovalidateMode.onUserInteraction,
+  Color labelColor = pColor,
+  int? maxLines,
+  TextStyle? style,
+}) {
   return TextFormField(
     focusNode: focus,
     readOnly: readOnly,
@@ -86,13 +110,14 @@ Widget customerPhotoAndName(BuildContext context, CompanyModel customer) {
   return Card(
     elevation: 1,
     child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          customerPhoto(customer.customerProfilePhoto ?? '')
-              .withSize(width: 120,height: 120),
-          customerDesc(context, customer).expand()
-        ]),
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        customerPhoto(customer.customerProfilePhoto ?? '')
+            .withSize(width: 120, height: 120),
+        customerDesc(context, customer).expand()
+      ],
+    ),
   );
 }
 
@@ -104,24 +129,39 @@ Widget customerDesc(BuildContext context, CompanyModel customer) {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // SizedBox(height: 8,),
-        descText(customer.company ?? customer.name, context,
-                maxLines: 2, fontSizeFactor: 1.1, fweigth: 2)
-            .paddingSymmetric(vertical: 1),
+        descText(
+          customer.company ?? customer.name,
+          context,
+          maxLines: 2,
+          fontSizeFactor: 1.1,
+          fweigth: 2,
+        ).paddingSymmetric(vertical: 1),
         descText(customer.name, context, fontSizeFactor: 0.75)
             .paddingSymmetric(vertical: 1),
-        descRichText('NIT/CC : ', customer.vatNo, context,
-                fontsizeF: 0.75, fontW: 2)
-            .paddingSymmetric(vertical: 1),
-        descRichText('Telefono : ', customer.phone, context,
-                fontW: 2, fontsizeF: 0.75)
-            .paddingSymmetric(vertical: 1),
+        descRichText(
+          'NIT/CC : ',
+          customer.vatNo,
+          context,
+          fontSizeFactor: 0.75,
+          fontW: 2,
+        ).paddingSymmetric(vertical: 1),
+        descRichText(
+          'Telefono : ',
+          customer.phone,
+          context,
+          fontW: 2,
+          fontSizeFactor: 0.75,
+        ).paddingSymmetric(vertical: 1),
       ],
     ).paddingRight(6),
   );
 }
 
-Widget addressDesc(BuildContext context, CompanyModel customer,
-    CustomerAddressesModel address) {
+Widget addressDesc(
+  BuildContext context,
+  CompanyModel customer,
+  CustomerAddressesModel address,
+) {
   String stateCity = '';
   if (address.state != null) {
     stateCity = address.state! + ' - ';
@@ -136,15 +176,21 @@ Widget addressDesc(BuildContext context, CompanyModel customer,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // SizedBox(height: 8,),
-        descText(address.sucursal??'', context,
-                maxLines: 2,
-                fontSizeFactor: 1.05,
-                fweigth: 2,
-                color: greyDarkerColor)
-            .paddingSymmetric(vertical: 1),
-        descText(customer.name??'', context, fontSizeFactor: 0.75, maxLines: 1, )
-            .paddingSymmetric(vertical: 1),
-        descText(address.direccion??'', context, fontSizeFactor: 0.75)
+        descText(
+          address.sucursal ?? '',
+          context,
+          maxLines: 2,
+          fontSizeFactor: 1.05,
+          fweigth: 2,
+          color: greyDarkerColor,
+        ).paddingSymmetric(vertical: 1),
+        descText(
+          customer.name ?? '',
+          context,
+          fontSizeFactor: 0.75,
+          maxLines: 1,
+        ).paddingSymmetric(vertical: 1),
+        descText(address.direccion ?? '', context, fontSizeFactor: 0.75)
             .paddingSymmetric(vertical: 1),
         descText(stateCity, context, fontSizeFactor: 0.75)
             .paddingSymmetric(vertical: 1),

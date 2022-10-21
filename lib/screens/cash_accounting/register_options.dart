@@ -35,11 +35,15 @@ class _RegisterOptionsState extends State<RegisterOptions> {
         return true;
       },
       child: Scaffold(
-        appBar: appBar(context, 'Caja',
-            image: 'assets/images/cash-register.png', onPop: () {
-          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
-          Navigator.pop(context);
-        }),
+        appBar: appBar(
+          context,
+          'Caja',
+          image: 'assets/images/cash-register.png',
+          onPop: () {
+            dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+            Navigator.pop(context);
+          },
+        ),
         body: _body(context),
       ),
     );
@@ -50,15 +54,21 @@ class _RegisterOptionsState extends State<RegisterOptions> {
     return SingleChildScrollView(
       child: SettingSection(
         title: RichText(
-          text: TextSpan(children: [
-            TextSpan(
+          text: TextSpan(
+            children: [
+              TextSpan(
                 text: 'Estado de caja: ',
-                style:  buttonsSmallTextStyle(context,)),
-            TextSpan(
+                style: buttonsSmallTextStyle(
+                  context,
+                ),
+              ),
+              TextSpan(
                 text: registerStatus ? 'Abierta' : 'Cerrada',
-                style:  buttonsSmallTextStyle(context)
-                    .apply(color: registerStatus ? Colors.green : Colors.red)),
-          ]),
+                style: buttonsSmallTextStyle(context)
+                    .apply(color: registerStatus ? Colors.green : Colors.red),
+              ),
+            ],
+          ),
         ),
         subTitle:
             Text('Operaciones de caja', style: primaryTextStyle()), // Optional
@@ -77,50 +87,58 @@ class _RegisterOptionsState extends State<RegisterOptions> {
         ? 'Cerrar caja actual y generar comprobante de cierre'
         : 'Abrir caja con una base determinada';
     return SettingItemWidget(
-        title: title,
-        subTitle: subTitle,
-        decoration: BoxDecoration(borderRadius: radius()),
-        trailing: Icon(Icons.keyboard_arrow_right_rounded,
-            color: context.dividerColor),
-        onTap: () async {
-          await _controlRegister(registerStatus ? 'close' : 'open');
+      title: title,
+      subTitle: subTitle,
+      decoration: BoxDecoration(borderRadius: radius()),
+      trailing: Icon(
+        Icons.keyboard_arrow_right_rounded,
+        color: context.dividerColor,
+      ),
+      onTap: () async {
+        await _controlRegister(registerStatus ? 'close' : 'open');
 
-          
-          /// update JWT token
-          await dataBloc.refreshToken(context);
-          setState(() {
-            registerStatus = dataBloc.registerData?.status == 'open';
-          });
+        /// update JWT token
+        await dataBloc.refreshToken(context);
+        setState(() {
+          registerStatus = dataBloc.registerData?.status == 'open';
         });
+      },
+    );
   }
 
   SettingItemWidget _registerMovements(BuildContext context) {
     return SettingItemWidget(
-        title: 'Realizar movimiento de caja',
-        subTitle: 'Transfiere efectivo de caja sin cerrarla',
-        decoration: BoxDecoration(
-            borderRadius: radius(),
-            color: registerStatus ? null : Colors.red[100]),
-        trailing: Icon(Icons.keyboard_arrow_right_rounded,
-            color: context.dividerColor),
-        onTap: registerStatus
-            ? () {
-                const RegisterMovements().launch(context);
-              }
-            : null);
+      title: 'Realizar movimiento de caja',
+      subTitle: 'Transfiere efectivo de caja sin cerrarla',
+      decoration: BoxDecoration(
+        borderRadius: radius(),
+        color: registerStatus ? null : Colors.red[100],
+      ),
+      trailing: Icon(
+        Icons.keyboard_arrow_right_rounded,
+        color: context.dividerColor,
+      ),
+      onTap: registerStatus
+          ? () {
+              const RegisterMovements().launch(context);
+            }
+          : null,
+    );
   }
 
   _controlRegister(String action) async {
     return await showCupertinoDialog(
-        barrierDismissible: true,
-        useRootNavigator: false,
-        context: context,
-        builder: (context) {
-          return ChangeNotifierProvider(
-              create: (_) => RegisterFormProvider(),
-              child: RegisterAlertDialog(
-                action: action,
-              ));
-        });
+      barrierDismissible: true,
+      useRootNavigator: false,
+      context: context,
+      builder: (context) {
+        return ChangeNotifierProvider(
+          create: (_) => RegisterFormProvider(),
+          child: RegisterAlertDialog(
+            action: action,
+          ),
+        );
+      },
+    );
   }
 }

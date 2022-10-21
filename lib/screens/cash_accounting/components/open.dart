@@ -20,7 +20,6 @@ class OpenForm extends StatefulWidget {
 class _OpenFormState extends State<OpenForm> {
   late FocusNode _value;
 
-  
   @override
   void initState() {
     super.initState();
@@ -48,8 +47,12 @@ class _OpenFormState extends State<OpenForm> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          registerInput(context, cashAccForm, _value,
-              style: const TextStyle(fontSize: 20)),
+          registerInput(
+            context,
+            cashAccForm,
+            _value,
+            style: const TextStyle(fontSize: 20),
+          ),
           const SizedBox(height: 15.0),
           _button(context, cashAccForm),
         ],
@@ -58,10 +61,12 @@ class _OpenFormState extends State<OpenForm> {
   }
 
   ButtonGlobalWithoutIcon _button(
-      BuildContext context, RegisterFormProvider cashAccForm) {
+    BuildContext context,
+    RegisterFormProvider cashAccForm,
+  ) {
     return ButtonGlobalWithoutIcon(
-      buttontext: 'Abrir',
-      onPressed: () async{
+      buttonText: 'Abrir',
+      onPressed: () async {
         cashAccForm.loading
             // ignore: unnecessary_statements
             ? null

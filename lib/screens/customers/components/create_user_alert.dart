@@ -73,7 +73,7 @@ class CreateUserAlertDialogState extends State<CreateUserAlertDialog> {
           color: pColor.withOpacity(0.8),
           child: CupertinoDialogAction(
             child: const Text(
-              "Aceptar",
+              'Aceptar',
               style: TextStyle(color: Colors.white),
               textAlign: TextAlign.center,
             ),

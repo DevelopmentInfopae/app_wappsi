@@ -31,17 +31,17 @@ class PrintSettings extends StatefulWidget {
   final String? imagePath;
 
   // ignore: use_key_in_widget_constructors
-  /// Receive an string `print` wich could be ['settings','movement','pos'], with that, print
-  /// diferent things depending on the `print`, also receive `movementInfo` wich is required when tryint
+  /// Receive an string `print` which could be ['settings','movement','pos'], with that, print
+  /// different things depending on the `print`, also receive `movementInfo` which is required when trying
   /// to print movement receipt
-  const PrintSettings(
-      {Key? key,
-      this.print = 'settings',
-      this.movementInfo,
-      this.registerCloseInfo,
-      this.posPrintData,
-      this.imagePath})
-      : super(key: key);
+  const PrintSettings({
+    Key? key,
+    this.print = 'settings',
+    this.movementInfo,
+    this.registerCloseInfo,
+    this.posPrintData,
+    this.imagePath,
+  }) : super(key: key);
   @override
   _PrintSettingsState createState() => _PrintSettingsState();
 }
@@ -53,7 +53,7 @@ class _PrintSettingsState extends State<PrintSettings> {
   BluetoothDevice? _device;
   bool _connected = false;
   bool _printing = false;
-  bool _conecting = false;
+  bool _connecting = false;
   late String pathImage;
   late PrintFormat? printFormat;
   late Color _pc;
@@ -66,31 +66,35 @@ class _PrintSettingsState extends State<PrintSettings> {
 
     if (widget.print == 'pos') {
       printFormat = PrintFormat(
-          productsList: widget.posPrintData?['products'] ?? [],
-          movementInfo: widget.movementInfo);
-      initSavetoPath(widget.posPrintData?['company_data'].logo);
+        productsList: widget.posPrintData?['products'] ?? [],
+        movementInfo: widget.movementInfo,
+      );
+      initSaveToPath(widget.posPrintData?['company_data'].logo);
     } else if (widget.print == 'order') {
       printFormat = PrintFormat(
-          productsList: widget.posPrintData?['products'] ?? [],
-          movementInfo: widget.movementInfo);
-      initSavetoPath(widget.posPrintData?['company_data'].logo);
+        productsList: widget.posPrintData?['products'] ?? [],
+        movementInfo: widget.movementInfo,
+      );
+      initSaveToPath(widget.posPrintData?['company_data'].logo);
     } else if (widget.print == 'quote') {
       printFormat = PrintFormat(
-          productsList: widget.posPrintData?['products'] ?? [],
-          movementInfo: widget.movementInfo);
-      initSavetoPath(widget.posPrintData?['company_data'].logo);
+        productsList: widget.posPrintData?['products'] ?? [],
+        movementInfo: widget.movementInfo,
+      );
+      initSaveToPath(widget.posPrintData?['company_data'].logo);
     } else if (widget.print == 'favorites') {
       printFormat = PrintFormat(
-          productsList: widget.posPrintData?['products'] ?? [],
-          movementInfo: widget.movementInfo);
-      initSavetoPath(widget.posPrintData?['company_data'].logo);
+        productsList: widget.posPrintData?['products'] ?? [],
+        movementInfo: widget.movementInfo,
+      );
+      initSaveToPath(widget.posPrintData?['company_data'].logo);
     } else if (widget.print == 'movement') {
       String companyLogo = dataBloc.getBillerCompany!.logo!;
       if (companyLogo.substring(companyLogo.length - 4) == '.png') {
         companyLogo = companyLogo.substring(0, companyLogo.length - 4) + '.jpg';
       }
 
-      initSavetoPath(companyLogo);
+      initSaveToPath(companyLogo);
       printFormat = PrintFormat(movementInfo: widget.movementInfo);
     } else if (widget.print == 'register_close') {
       String companyLogo = dataBloc.getBillerCompany!.logo!;
@@ -98,14 +102,14 @@ class _PrintSettingsState extends State<PrintSettings> {
         companyLogo = companyLogo.substring(0, companyLogo.length - 4) + '.jpg';
       }
 
-      initSavetoPath(companyLogo);
+      initSaveToPath(companyLogo);
       printFormat = PrintFormat(registerCloseInfo: widget.registerCloseInfo);
-    }else {
+    } else {
       printFormat = PrintFormat();
     }
   }
 
-  initSavetoPath(String image) async {
+  initSaveToPath(String image) async {
     final filename = image;
     String imgURL = dataBloc.userData!.hostUrl +
         dataBloc.userData!.companyFolder +
@@ -116,13 +120,13 @@ class _PrintSettingsState extends State<PrintSettings> {
     //if img is png convert to png
     if (img.substring(img.length - 4) == '.png') {
       imgURL = dataBloc.userData!.hostUrl +
-          "/wappsi_apis/utils/pngToJpg?img=" +
+          '/wappsi_apis/utils/pngToJpg?img=' +
           imgURL;
     }
 
     String dir = (await getApplicationDocumentsDirectory()).path;
     if (!(await io.File('$dir/$filename').exists())) {
-      var bytes = await NetworkAssetBundle(Uri.parse(imgURL)).load("");
+      var bytes = await NetworkAssetBundle(Uri.parse(imgURL)).load('');
       writeToFile(bytes, '$dir/$filename');
       setState(() {
         pathImage = '$dir/$filename';
@@ -193,8 +197,11 @@ class _PrintSettingsState extends State<PrintSettings> {
     _size = MediaQuery.of(context).size;
     _pc = pColor;
     return Scaffold(
-      appBar: appBar(context, 'Dispositivos',
-          image: 'assets/images/printer-settings.png'),
+      appBar: appBar(
+        context,
+        'Dispositivos',
+        image: 'assets/images/printer-settings.png',
+      ),
       body: _body(),
     );
   }
@@ -226,7 +233,7 @@ class _PrintSettingsState extends State<PrintSettings> {
       _noDeviceSelected('Dispositivo no seleccionado.');
     } else {
       setState(() {
-        _conecting = true;
+        _connecting = true;
       });
       final res = await bluetooth.isConnected;
 
@@ -237,30 +244,39 @@ class _PrintSettingsState extends State<PrintSettings> {
           if (res) {
             setState(() {
               _connected = true;
-              _conecting = false;
+              _connecting = false;
               printerBloc.setPrinterDevice(_device);
             });
           } else {
             setState(() {
               _connected = false;
-              _conecting = false;
+              _connecting = false;
             });
-            confirmDialog(context, 'Error al conectarse al dispositivo',
-                'assets/images/warning.png');
+            confirmDialog(
+              context,
+              'Error al conectarse al dispositivo',
+              'assets/images/warning.png',
+            );
           }
         } catch (e) {
-          await logError(e, from: 'Conecting to printing device');
+          await logError(e, from: 'Connecting to printing device');
 
           setState(() {
             _connected = false;
-            _conecting = false;
+            _connecting = false;
           });
-          confirmDialog(context, 'Error al conectarse al dispositivo',
-              'assets/images/warning.png');
+          confirmDialog(
+            context,
+            'Error al conectarse al dispositivo',
+            'assets/images/warning.png',
+          );
         }
       } else {
-        confirmDialog(context, 'Ya se encuentra conectado a un dispositivo',
-            'assets/images/warning.png');
+        confirmDialog(
+          context,
+          'Ya se encuentra conectado a un dispositivo',
+          'assets/images/warning.png',
+        );
       }
     }
   }
@@ -271,7 +287,7 @@ class _PrintSettingsState extends State<PrintSettings> {
       printConsole(res);
       setState(() => _connected = false);
     } catch (e) {
-      await logError(e, from: 'Disconect printer');
+      await logError(e, from: 'Disconnect printer');
 
       // printConsole(e);
     }
@@ -281,7 +297,8 @@ class _PrintSettingsState extends State<PrintSettings> {
   Future<void> writeToFile(ByteData data, String path) {
     final buffer = data.buffer;
     return io.File(path).writeAsBytes(
-        buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+      buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
+    );
   }
 
   _noDeviceSelected(String message) {
@@ -311,7 +328,7 @@ class _PrintSettingsState extends State<PrintSettings> {
         AppButton(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           color: Colors.white,
-          enabled: !_conecting,
+          enabled: !_connecting,
           onTap: _connected ? _disconnect : _connect,
           child: Text(
             _connected ? 'Desconectar' : 'Conectar',
@@ -326,7 +343,7 @@ class _PrintSettingsState extends State<PrintSettings> {
     return DropdownSearch<DropdDownSItem>(
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       maxHeight: _size.width * 0.9,
@@ -369,13 +386,16 @@ class _PrintSettingsState extends State<PrintSettings> {
       dropdownBuilder: (context, selectedItem) {
         return Row(
           children: [
-            Icon(selectedItem?.name == "InnerPrinter"
-                    ? Icons.print_outlined
-                    : FontAwesomeIcons.bluetooth)
-                .paddingRight(10),
-            Text(selectedItem?.name == "InnerPrinter"
-                ? 'Impresora integrada'
-                : (selectedItem?.name ?? '')),
+            Icon(
+              selectedItem?.name == 'InnerPrinter'
+                  ? Icons.print_outlined
+                  : FontAwesomeIcons.bluetooth,
+            ).paddingRight(10),
+            Text(
+              selectedItem?.name == 'InnerPrinter'
+                  ? 'Impresora integrada'
+                  : (selectedItem?.name ?? ''),
+            ),
           ],
         );
       },
@@ -411,7 +431,10 @@ class _PrintSettingsState extends State<PrintSettings> {
   }
 
   Widget popupCustomItemBuilder(
-      BuildContext context, BluetoothDevice? item, bool isSelected) {
+    BuildContext context,
+    BluetoothDevice? item,
+    bool isSelected,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
@@ -423,14 +446,18 @@ class _PrintSettingsState extends State<PrintSettings> {
             ),
       child: ListTile(
         selected: isSelected,
-        title: Text(item?.name == "InnerPrinter"
-            ? 'Impresora integrada'
-            : (item?.name ?? '')),
+        title: Text(
+          item?.name == 'InnerPrinter'
+              ? 'Impresora integrada'
+              : (item?.name ?? ''),
+        ),
         subtitle: Text(item?.name ?? ''),
         leading: CircleAvatar(
-          child: Icon(item?.name == "InnerPrinter"
-              ? FontAwesomeIcons.print
-              : FontAwesomeIcons.bluetooth),
+          child: Icon(
+            item?.name == 'InnerPrinter'
+                ? FontAwesomeIcons.print
+                : FontAwesomeIcons.bluetooth,
+          ),
         ),
       ),
     );
@@ -480,11 +507,11 @@ class _PrintSettingsState extends State<PrintSettings> {
 
           if ((_connected)) {
             try {
-              // just to get an error if pathimage is not initialized
+              // just to get an error if pathImage is not initialized
               pathImage += '';
             } catch (e) {
               try {
-                await initSavetoPath(widget.posPrintData?['company_data'].logo);
+                await initSaveToPath(widget.posPrintData?['company_data'].logo);
               } catch (e) {
                 printConsole(e);
                 // await logError(e, from: 'init');
@@ -497,7 +524,10 @@ class _PrintSettingsState extends State<PrintSettings> {
             if (widget.print == 'settings') {
               printFormat = PrintFormat(productsList: []);
               scaffoldAlert(
-                  context, 'Impresión de prueba', const Duration(seconds: 2));
+                context,
+                'Impresión de prueba',
+                const Duration(seconds: 2),
+              );
               printFormat!.printTest();
               await Future.delayed(const Duration(seconds: 3));
               hideCurrentScaffoldAlert(context);
@@ -507,8 +537,11 @@ class _PrintSettingsState extends State<PrintSettings> {
               // to print movement info
             } else if (widget.print == 'movement' &&
                 widget.movementInfo != null) {
-              scaffoldAlert(context, 'Imprimiendo comprobante de movimiento',
-                  const Duration(seconds: 10));
+              scaffoldAlert(
+                context,
+                'Imprimiendo comprobante de movimiento',
+                const Duration(seconds: 10),
+              );
 
               final result = await printFormat!
                   .printMovement(widget.imagePath ?? pathImage);
@@ -520,12 +553,18 @@ class _PrintSettingsState extends State<PrintSettings> {
                 });
               } else {
                 scaffoldAlert(
-                    context, 'Error al imprimir', const Duration(seconds: 3));
+                  context,
+                  'Error al imprimir',
+                  const Duration(seconds: 3),
+                );
               }
             } else if (widget.print == 'register_close' &&
                 widget.registerCloseInfo != null) {
-              scaffoldAlert(context, 'Imprimiendo comprobante cierre de caja',
-                  const Duration(seconds: 10));
+              scaffoldAlert(
+                context,
+                'Imprimiendo comprobante cierre de caja',
+                const Duration(seconds: 10),
+              );
 
               final result = await printFormat!
                   .printRegisterClose(widget.imagePath ?? pathImage);
@@ -537,11 +576,17 @@ class _PrintSettingsState extends State<PrintSettings> {
                 });
               } else {
                 scaffoldAlert(
-                    context, 'Error al imprimir', const Duration(seconds: 3));
+                  context,
+                  'Error al imprimir',
+                  const Duration(seconds: 3),
+                );
               }
-            }else if (widget.print == 'pos') {
-              scaffoldAlert(context, 'Imprimiendo comprobante',
-                  const Duration(seconds: 2));
+            } else if (widget.print == 'pos') {
+              scaffoldAlert(
+                context,
+                'Imprimiendo comprobante',
+                const Duration(seconds: 2),
+              );
 
               final result = await printFormat!
                   .printPOS(widget.imagePath ?? pathImage, widget.posPrintData);
@@ -553,14 +598,22 @@ class _PrintSettingsState extends State<PrintSettings> {
                 });
               } else {
                 scaffoldAlert(
-                    context, 'Error al imprimir', const Duration(seconds: 3));
+                  context,
+                  'Error al imprimir',
+                  const Duration(seconds: 3),
+                );
               }
             } else if (widget.print == 'order') {
-              scaffoldAlert(context, 'Imprimiendo comprobante',
-                  const Duration(seconds: 2));
+              scaffoldAlert(
+                context,
+                'Imprimiendo comprobante',
+                const Duration(seconds: 2),
+              );
 
               final result = await printFormat!.printOrder(
-                  widget.imagePath ?? pathImage, widget.posPrintData);
+                widget.imagePath ?? pathImage,
+                widget.posPrintData,
+              );
               if (result ?? false) {
                 await Future.delayed(const Duration(seconds: 3));
                 hideCurrentScaffoldAlert(context);
@@ -569,14 +622,22 @@ class _PrintSettingsState extends State<PrintSettings> {
                 });
               } else {
                 scaffoldAlert(
-                    context, 'Error al imprimir', const Duration(seconds: 3));
+                  context,
+                  'Error al imprimir',
+                  const Duration(seconds: 3),
+                );
               }
             } else if (widget.print == 'quote') {
-              scaffoldAlert(context, 'Imprimiendo comprobante',
-                  const Duration(seconds: 2));
+              scaffoldAlert(
+                context,
+                'Imprimiendo comprobante',
+                const Duration(seconds: 2),
+              );
 
               final result = await printFormat!.printQuote(
-                  widget.imagePath ?? pathImage, widget.posPrintData);
+                widget.imagePath ?? pathImage,
+                widget.posPrintData,
+              );
               if (result ?? false) {
                 await Future.delayed(const Duration(seconds: 3));
                 hideCurrentScaffoldAlert(context);
@@ -585,14 +646,22 @@ class _PrintSettingsState extends State<PrintSettings> {
                 });
               } else {
                 scaffoldAlert(
-                    context, 'Error al imprimir', const Duration(seconds: 3));
+                  context,
+                  'Error al imprimir',
+                  const Duration(seconds: 3),
+                );
               }
             } else if (widget.print == 'favorites') {
               scaffoldAlert(
-                  context, 'Imprimiendo favoritos', const Duration(seconds: 2));
+                context,
+                'Imprimiendo favoritos',
+                const Duration(seconds: 2),
+              );
 
               final result = await printFormat!.printFavOrder(
-                  widget.imagePath ?? pathImage, widget.posPrintData);
+                widget.imagePath ?? pathImage,
+                widget.posPrintData,
+              );
               if (result ?? false) {
                 await Future.delayed(const Duration(seconds: 3));
                 hideCurrentScaffoldAlert(context);
@@ -601,14 +670,18 @@ class _PrintSettingsState extends State<PrintSettings> {
                 });
               } else {
                 scaffoldAlert(
-                    context, 'Error al imprimir', const Duration(seconds: 3));
+                  context,
+                  'Error al imprimir',
+                  const Duration(seconds: 3),
+                );
               }
             }
           } else {
             confirmDialog(
-                context,
-                'Impresora no conectada, seleccione una y intente nuevamente',
-                'assets/images/alert.png');
+              context,
+              'Impresora no conectada, seleccione una y intente nuevamente',
+              'assets/images/alert.png',
+            );
           }
         } catch (e) {
           // printConsole(e);

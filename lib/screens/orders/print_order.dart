@@ -26,13 +26,13 @@ class PrintOrder extends StatefulWidget {
   final String image;
   final bool exitToNewOrder;
   final Map<dynamic, dynamic> printData;
-  const PrintOrder(
-      {Key? key,
-      required this.printData,
-      this.back = false,
-      this.exitToNewOrder = true,
-      this.image = 'assets/images/printer.png'})
-      : super(key: key);
+  const PrintOrder({
+    Key? key,
+    required this.printData,
+    this.back = false,
+    this.exitToNewOrder = true,
+    this.image = 'assets/images/printer.png',
+  }) : super(key: key);
   @override
   _PrintOrderState createState() => _PrintOrderState();
 }
@@ -52,7 +52,7 @@ class _PrintOrderState extends State<PrintOrder> {
   @override
   void initState() {
     printFormat = PrintFormat(productsList: widget.printData['products']);
-    // initSavetoPath();
+    // initSaveToPath();
     // initPlatformState();
     cancellable = widget.printData['order_data']['status'] == 'pending';
     super.initState();
@@ -78,36 +78,40 @@ class _PrintOrderState extends State<PrintOrder> {
           image: widget.image,
           leading: cancellable
               ? Tooltip(
-                  message: "Cancelar orden de pedido",
+                  message: 'Cancelar orden de pedido',
                   child: IconButton(
-                      onPressed: () async {
-                        final result = await choiceAlert(
+                    onPressed: () async {
+                      final result = await choiceAlert(
+                        context,
+                        '¿Desea cancelar esta orden de pedido?',
+                        'assets/images/alert.png',
+                      );
+                      if (result) {
+                        final res = await OrdersProvider.cancelPendingOrder(
+                          context,
+                          widget.printData['order_data']['order_id'],
+                        );
+                        if (res) {
+                          setState(() {
+                            cancellable = false;
+                            gotCancelled = true;
+                          });
+                          await confirmDialog(
                             context,
-                            '¿Desea cancelar esta orden de pedido?',
-                            'assets/images/alert.png');
-                        if (result) {
-                          final res = await OrdersProvider.cancelPendingOrder(
-                              context,
-                              widget.printData['order_data']['order_id']);
-                          if (res) {
-                            setState(() {
-                              cancellable = false;
-                              gotCancelled = true;
-                            });
-                            await confirmDialog(
-                                context,
-                                'Orden cancelada exitosamente',
-                                'assets/images/success.png');
-                          }
+                            'Orden cancelada exitosamente',
+                            'assets/images/success.png',
+                          );
                         }
-                      },
-                      icon: const Icon(
-                        Icons.cancel_outlined,
-                        color: errorColor,
-                        size: 30,
-                      )),
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.cancel_outlined,
+                      color: errorColor,
+                      size: 30,
+                    ),
+                  ),
                 )
-              : SizedBox(
+              : const SizedBox(
                   width: 20,
                 ),
         ),
@@ -138,7 +142,8 @@ class _PrintOrderState extends State<PrintOrder> {
               billerImage(widget.printData['company_data'].logo)
                   .paddingSymmetric(horizontal: 40)
                   .withHeight(
-                      _size.height * 0.09 > 60 ? _size.height * 0.09 : 60),
+                    _size.height * 0.09 > 60 ? _size.height * 0.09 : 60,
+                  ),
               legalInformation(textTheme, widget.printData),
               emptyLine(),
               orderRef(textTheme, widget.printData),
@@ -147,10 +152,10 @@ class _PrintOrderState extends State<PrintOrder> {
                   .withWidth(_size.width * 0.85)
                   .paddingSymmetric(horizontal: 10),
               emptyLine(),
-              products(widget.printData,
-                      pricePolicy:
-                          dataBloc.settings!['prioridad_precios_producto'])
-                  .withWidth(_size.width * 0.85),
+              products(
+                widget.printData,
+                pricePolicy: dataBloc.settings!['prioridad_precios_producto'],
+              ).withWidth(_size.width * 0.85),
               emptyLine(),
               emptyLine(),
               taxRatesValues(textTheme, widget.printData)
@@ -211,14 +216,19 @@ class _PrintOrderState extends State<PrintOrder> {
           });
 
           scaffoldAlert(
-              context, 'Imprimiendo comprobante', const Duration(seconds: 3));
+            context,
+            'Imprimiendo comprobante',
+            const Duration(seconds: 3),
+          );
           String companyLogo = widget.printData['company_data'].logo;
           if (companyLogo.substring(companyLogo.length - 4) == '.png') {
             companyLogo =
                 companyLogo.substring(0, companyLogo.length - 4) + '.jpg';
           }
           final result = await printFormat.printOrder(
-              dataBloc.dirPath! + billerImgDir + companyLogo, widget.printData);
+            dataBloc.dirPath! + billerImgDir + companyLogo,
+            widget.printData,
+          );
           if (result ?? false) {
             await Future.delayed(const Duration(seconds: 1));
             hideCurrentScaffoldAlert(context);
@@ -227,7 +237,10 @@ class _PrintOrderState extends State<PrintOrder> {
             });
           } else {
             scaffoldAlert(
-                context, 'Error al imprimir', const Duration(seconds: 3));
+              context,
+              'Error al imprimir',
+              const Duration(seconds: 3),
+            );
           }
         } else {
           PrintSettings(
@@ -278,13 +291,18 @@ class _PrintOrderState extends State<PrintOrder> {
       },
       child: Row(
         children: [
-          const Icon(Icons.arrow_back_ios_rounded,
-              size: kIconSize, color: pColor),
-          Text(' Salir',
-              style: buttonsSmallTextStyle(
-                context,
-                color: pColor,
-              )),
+          const Icon(
+            Icons.arrow_back_ios_rounded,
+            size: kIconSize,
+            color: pColor,
+          ),
+          Text(
+            ' Salir',
+            style: buttonsSmallTextStyle(
+              context,
+              color: pColor,
+            ),
+          ),
         ],
       ),
     );

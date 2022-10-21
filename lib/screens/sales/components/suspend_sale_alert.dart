@@ -49,7 +49,7 @@ class SuspendSaleAlertDialogState extends State<SuspendSaleAlertDialog> {
             style: buttonsSmallTextStyle(context).apply(fontSizeDelta: 1.2),
           ).paddingBottom(10),
           Text(
-            'A continuación digite una palabra clave para identificar la venta suspendida:',
+            'A continuación ingrese una palabra clave para identificar la venta suspendida:',
             style: buttonsSmallTextStyle(context).apply(color: kGreyTextColor),
           ),
         ],
@@ -73,7 +73,7 @@ class SuspendSaleAlertDialogState extends State<SuspendSaleAlertDialog> {
           color: pColor.withOpacity(0.8),
           child: CupertinoDialogAction(
             child: const Text(
-              "Aceptar",
+              'Aceptar',
               style: TextStyle(color: Colors.white),
               textAlign: TextAlign.center,
             ),
@@ -92,9 +92,10 @@ class SuspendSaleAlertDialogState extends State<SuspendSaleAlertDialog> {
                 const NewSale().launch(context);
               } else {
                 confirmDialog(
-                    context,
-                    'Hubo un error al suspender la venta, intente nuevamente.',
-                    'assets/images/warning.png');
+                  context,
+                  'Hubo un error al suspender la venta, intente nuevamente.',
+                  'assets/images/warning.png',
+                );
               }
             },
           ),
@@ -117,7 +118,9 @@ class SuspendSaleAlertDialogState extends State<SuspendSaleAlertDialog> {
               });
             },
             decoration: InputDecorations.formInputDecoration(
-                hintText: '', labelText: 'Palabra clave'),
+              hintText: '',
+              labelText: 'Palabra clave',
+            ),
           )
         ],
       ),

@@ -8,9 +8,13 @@ import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 
-sendRegisterAction(BuildContext context, RegisterFormProvider registerProvider,
-    FocusNode valueFocus,
-    {bool syncDB = true, String action = 'open'}) async {
+sendRegisterAction(
+  BuildContext context,
+  RegisterFormProvider registerProvider,
+  FocusNode valueFocus, {
+  bool syncDB = true,
+  String action = 'open',
+}) async {
   valueFocus.unfocus();
 
   if (registerProvider.isValidForm()) {
@@ -20,9 +24,10 @@ sendRegisterAction(BuildContext context, RegisterFormProvider registerProvider,
 
     if (registerProvider.value == '' || registerProvider.value == '0') {
       await confirmDialog(
-          context,
-          'Debe suministrar un valor valido para continuar',
-          'assets/images/warning.png');
+        context,
+        'Debe suministrar un valor valido para continuar',
+        'assets/images/warning.png',
+      );
       valueFocus.requestFocus();
     } else {
       return await _executeAction(action, context, registerProvider, syncDB);
@@ -30,8 +35,12 @@ sendRegisterAction(BuildContext context, RegisterFormProvider registerProvider,
   }
 }
 
-_executeAction(String action, BuildContext context,
-    RegisterFormProvider registerProvider, bool syncDB) async {
+_executeAction(
+  String action,
+  BuildContext context,
+  RegisterFormProvider registerProvider,
+  bool syncDB,
+) async {
   if (action == 'open') {
     await _open(context, registerProvider, syncDB);
   } else if (action == 'movement') {
@@ -44,13 +53,19 @@ _executeAction(String action, BuildContext context,
   }
 }
 
-_movement(BuildContext context, RegisterFormProvider registerProvider,
-    bool syncDB) async {
+_movement(
+  BuildContext context,
+  RegisterFormProvider registerProvider,
+  bool syncDB,
+) async {
   // loading(context);
   scaffoldAlert(
-      context, 'Realizando movimiento...', const Duration(seconds: 10));
+    context,
+    'Realizando movimiento...',
+    const Duration(seconds: 10),
+  );
 
-  // diable login button
+  // disable login button
   registerProvider.isLoading = true;
 
   // await Future.delayed(Duration(seconds: 4));
@@ -71,11 +86,14 @@ _movement(BuildContext context, RegisterFormProvider registerProvider,
   } else {
     registerProvider.isLoading = false;
 
-    // to handle error first time usign token
+    // to handle error first time using token
 
     if (res['status'] == -1) {
-      reloadDialog(context, 'Sesión expirada, es necesario a iniciar sesión',
-          'assets/images/warning.png');
+      reloadDialog(
+        context,
+        'Sesión expirada, es necesario a iniciar sesión',
+        'assets/images/warning.png',
+      );
     }
 
     if (res['body']['message'] != null) {
@@ -84,25 +102,35 @@ _movement(BuildContext context, RegisterFormProvider registerProvider,
       // confirmDialog(
       //     context, res['body']['message'], 'assets/images/dizzy-robot.png');
 
-      scaffoldAlert(context, res['body']['message'], const Duration(seconds: 1),
-          backGroundColor: errorColor);
+      scaffoldAlert(
+        context,
+        res['body']['message'],
+        const Duration(seconds: 1),
+        backGroundColor: errorColor,
+      );
     } else {
       // Navigator.pop(context);
       hideCurrentScaffoldAlert(context);
-      confirmDialog(context, 'Error en la respuesta del servidor',
-          'assets/images/dizzy-robot.png');
+      confirmDialog(
+        context,
+        'Error en la respuesta del servidor',
+        'assets/images/dizzy-robot.png',
+      );
     }
     return null;
   }
 }
 
-_open(BuildContext context, RegisterFormProvider registerProvider,
-    bool syncDB) async {
+_open(
+  BuildContext context,
+  RegisterFormProvider registerProvider,
+  bool syncDB,
+) async {
   // loading(context);
 
   scaffoldAlert(context, 'Abriendo caja...', const Duration(seconds: 4));
 
-  // diable login button
+  // disable login button
   registerProvider.isLoading = true;
 
   // await Future.delayed(Duration(seconds: 4));
@@ -123,7 +151,8 @@ _open(BuildContext context, RegisterFormProvider registerProvider,
     scaffoldAlert(context, res['body']['message'], const Duration(seconds: 1));
     if (res['body']['register_data']['status'] == 'open') {
       dataBloc.setRegisterData(
-          RegisterModel.fromJson(res['body']['register_data']));
+        RegisterModel.fromJson(res['body']['register_data']),
+      );
     }
 
     // await Future.delayed(const Duration(milliseconds: 300));
@@ -131,18 +160,24 @@ _open(BuildContext context, RegisterFormProvider registerProvider,
       syncDB
           ? WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.pushNamedAndRemoveUntil(
-                  context, '/db_sync', (route) => false);
+                context,
+                '/db_sync',
+                (route) => false,
+              );
             })
           : null;
     }
   } else {
     registerProvider.isLoading = false;
     // Navigator.pop(context);
-    // to handle error first time usign token
+    // to handle error first time using token
 
     if (res['status'] == -1) {
-      reloadDialog(context, 'Sesión expirada, es necesario a iniciar sesión',
-          'assets/images/warning.png');
+      reloadDialog(
+        context,
+        'Sesión expirada, es necesario a iniciar sesión',
+        'assets/images/warning.png',
+      );
     }
 
     if (res['body']['message'] != null) {
@@ -168,8 +203,12 @@ _open(BuildContext context, RegisterFormProvider registerProvider,
     } else {
       // confirmDialog(context, res['body']['message'].toString(),
       //     'assets/images/dizzy-robot.png');
-      scaffoldAlert(context, res['body']['message'], const Duration(seconds: 1),
-          backGroundColor: errorColor);
+      scaffoldAlert(
+        context,
+        res['body']['message'],
+        const Duration(seconds: 1),
+        backGroundColor: errorColor,
+      );
     }
   }
 }

@@ -57,7 +57,7 @@
 //                   ),
 //                 ),
 //                 ButtonGlobalWithoutIcon(
-//                     buttontext: 'Send OTP',
+//                     buttonText: 'Send OTP',
 //                     buttonDecoration:
 //                         kButtonDecoration.copyWith(color: pColor),
 //                     onPressed: () {

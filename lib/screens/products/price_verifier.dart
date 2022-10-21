@@ -61,12 +61,17 @@ class _ProductPriceState extends State<ProductPrice> {
     _size = MediaQuery.of(context).size;
     // _pc = pColor;
     return Scaffold(
-      appBar: appBar(context, 'Verificador',
-          elevation: false, image: 'assets/images/give-money.png', onPop: () {
-        dataBloc.homeKey?.currentState?.selectTab(TabItem.home);
-        // _searchFocusNode.unfocus();
-        _searchController.close();
-      }),
+      appBar: appBar(
+        context,
+        'Verificador',
+        elevation: false,
+        image: 'assets/images/give-money.png',
+        onPop: () {
+          dataBloc.homeKey?.currentState?.selectTab(TabItem.home);
+          // _searchFocusNode.unfocus();
+          _searchController.close();
+        },
+      ),
       body: _body(),
     );
   }
@@ -80,22 +85,22 @@ class _ProductPriceState extends State<ProductPrice> {
 
   Widget products() {
     return StreamBuilder<List<Map>?>(
-        stream: _productsStream.stream,
-        builder: (BuildContext context, AsyncSnapshot<List<Map>?> snapshot) {
-          if (snapshot.hasData) {
-            return ListView(
-                    children:
-                        ProductModel.fromJsonList(snapshot.data!).map((e) {
+      stream: _productsStream.stream,
+      builder: (BuildContext context, AsyncSnapshot<List<Map>?> snapshot) {
+        if (snapshot.hasData) {
+          return ListView(
+            children: ProductModel.fromJsonList(snapshot.data!).map((e) {
               return ProductCard(
                 product: e,
                 action: 'price_verifier',
               );
-            }).toList())
-                .expand();
-          } else {
-            return Container();
-          }
-        });
+            }).toList(),
+          ).expand();
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 
   Widget _searchBar() {
@@ -119,13 +124,16 @@ class _ProductPriceState extends State<ProductPrice> {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(0.0, 1.0), //(x,y)
-          blurRadius: 2.0,
-        )
-      ]),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 2.0,
+          )
+        ],
+      ),
     );
   }
 
@@ -145,30 +153,32 @@ class _ProductPriceState extends State<ProductPrice> {
       // alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
-          color: greyLight,
-          borderRadius: const BorderRadius.all(Radius.circular(radius2))),
+        color: greyLight,
+        borderRadius: const BorderRadius.all(Radius.circular(radius2)),
+      ),
       child: FloatingSearchAppBar(
-          // color: _theme.primar,
-          // color: Colors.black12,
+        // color: _theme.primar,
+        // color: Colors.black12,
 
-          alwaysOpened: true,
-          controller: _searchController,
-          hint: 'Buscar producto',
-          transitionDuration: const Duration(milliseconds: 800),
-          clearQueryOnClose: true,
-          hideKeyboardOnDownScroll: true,
-          onQueryChanged: _onQueryChanged,
-          // height: _size.height * 0.078<55?55:_size.height * 0.078,
-          padding: const EdgeInsets.all(8),
-          elevation: 0,
-          actions: [Container(width: _size.width * 0.15)],
-          leadingActions: const [Icon(Icons.search)],
-          automaticallyImplyBackButton: false,
-          color: Colors.grey[100],
-          // colorOnScroll: _theme.primaryColor,
-          // iconColor: Colors.white,
+        alwaysOpened: true,
+        controller: _searchController,
+        hint: 'Buscar producto',
+        transitionDuration: const Duration(milliseconds: 800),
+        clearQueryOnClose: true,
+        hideKeyboardOnDownScroll: true,
+        onQueryChanged: _onQueryChanged,
+        // height: _size.height * 0.078<55?55:_size.height * 0.078,
+        padding: const EdgeInsets.all(8),
+        elevation: 0,
+        actions: [Container(width: _size.width * 0.15)],
+        leadingActions: const [Icon(Icons.search)],
+        automaticallyImplyBackButton: false,
+        color: Colors.grey[100],
+        // colorOnScroll: _theme.primaryColor,
+        // iconColor: Colors.white,
 
-          body: null),
+        body: null,
+      ),
     );
   }
 
@@ -182,9 +192,12 @@ class _ProductPriceState extends State<ProductPrice> {
       if ((res ?? []).isEmpty) {
         if ((query.length - _currentQueryLen > 1)) {
           _searchController.clear();
-          scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
-              const Duration(seconds: 1, milliseconds: 500),
-              backGroundColor: Colors.red);
+          scaffoldAlert(
+            context,
+            'Producto ' + query + ' no encontrado',
+            const Duration(seconds: 1, milliseconds: 500),
+            backGroundColor: Colors.red,
+          );
           _searchController.open();
           // posBloc.getSearchBarController.query='';
           _currentQueryLen = 0;

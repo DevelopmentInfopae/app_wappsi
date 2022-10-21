@@ -17,7 +17,8 @@ import 'package:pos_wappsi/utils/manage_server_resp.dart';
 class WishlistProvider {
   /// given a list of product ids, load them into
   static Future<List<ProductModel>> loadCustomerFavorites(
-      CompanyModel customer) async {
+    CompanyModel customer,
+  ) async {
     final products = await getCustomerFavFromDB(customer.id.toString());
     if (products?.isEmpty ?? true) {
       return [];
@@ -25,7 +26,7 @@ class WishlistProvider {
       final temp = ProductModel.fromJsonList(products!);
       // List<ProductModel> pM = [];
       // await Future.forEach(temp, (ProductModel p) async {
-      //   // here we can get price policy prices if it's neccesary
+      //   // here we can get price policy prices if it's necessary
       //   pM.add(p);
       // });
 
@@ -34,7 +35,8 @@ class WishlistProvider {
   }
 
   static Future<List<Map<String, dynamic>>?> getCustomerFavFromDB(
-      String customerId) async {
+    String customerId,
+  ) async {
     // String sql = '''
     //     SELECT p.${_productColumns.join(',p.')},wp.quantity, tr.rate, tr.name as tax_rate_name
     //     FROM sma_products p INNER JOIN sma_warehouses_products wp ON (wp.product_id = p.id_cloud AND
@@ -59,8 +61,10 @@ class WishlistProvider {
     }
   }
 
-  static Future<bool> reloadCustomerFavs(
-      BuildContext context, CompanyModel customer) async {
+  static Future<bool> reloadCustomerFavorites(
+    BuildContext context,
+    CompanyModel customer,
+  ) async {
     // get favorites from Cloud(
     final fav = await getCustomerFav(customer, context);
     bool result = false;
@@ -73,11 +77,16 @@ class WishlistProvider {
   }
 
   static Future<List<Map>> getCustomerFav(
-      CompanyModel customer, BuildContext context) async {
+    CompanyModel customer,
+    BuildContext context,
+  ) async {
     var dataProvider = DataProvider();
 
-    final res = await dataProvider.postPetition(getCustomerWishListEndP,
-        {'company_id': customer.idCloud}, dataBloc.getHeaders());
+    final res = await dataProvider.postPetition(
+      getCustomerWishListEndP,
+      {'company_id': customer.idCloud},
+      dataBloc.getHeaders(),
+    );
 
     manageResponseAlerts(res, context);
     try {
@@ -86,7 +95,10 @@ class WishlistProvider {
         return fav;
       } else {
         confirmDialog(
-            context, res['body']['message'], 'assets/images/alert.png');
+          context,
+          res['body']['message'],
+          'assets/images/alert.png',
+        );
         return [{}];
       }
     } catch (e) {
@@ -97,9 +109,11 @@ class WishlistProvider {
   }
 
   static Future<bool> saveCustomerFav(
-      CompanyModel customer, List<Map> favorites) async {
+    CompanyModel customer,
+    List<Map> favorites,
+  ) async {
     if (favorites.isNotEmpty) {
-      await deleteLocalCustomerFavs(customer);
+      await deleteLocalCustomerFavorites(customer);
 
       if (favorites.isNotEmpty) {
         final query = [];
@@ -111,12 +125,12 @@ class WishlistProvider {
             'customer_id': customer.id,
           });
         }
-        return await DBProvider.db.insertOrUpdateQuerys('sma_wishlist', query);
+        return await DBProvider.db.insertOrUpdateQuery('sma_wishlist', query);
       } else {
         return true;
       }
     } else {
-      // whithout favorites to save
+      // without favorites to save
       // delete current favorites from local
 
       return true;
@@ -124,7 +138,9 @@ class WishlistProvider {
   }
 
   static Future<bool> saveCustomerFavFromLocal(
-      String customerId, List<int> favorites) async {
+    String customerId,
+    List<int> favorites,
+  ) async {
     if (favorites.isNotEmpty) {
       final List<Map> query = [];
       for (var p in favorites) {
@@ -135,9 +151,9 @@ class WishlistProvider {
           'customer_id': customerId,
         });
       }
-      return await DBProvider.db.insertQuerys('sma_wishlist', query);
+      return await DBProvider.db.insertQueryJsonList('sma_wishlist', query);
     } else {
-      // whithout favorites to save
+      // without favorites to save
       // delete current favorites from local
 
       return true;
@@ -145,7 +161,9 @@ class WishlistProvider {
   }
 
   static Future<List<Map>> getFavoritesId(
-      CompanyModel customer, List<ProductModel> products) async {
+    CompanyModel customer,
+    List<ProductModel> products,
+  ) async {
     if (products.isNotEmpty) {
       String pIds = '(';
       for (var p in products) {
@@ -157,9 +175,11 @@ class WishlistProvider {
         }
       }
 
-      final res = await DBProvider.db.sqlQuery('sma_wishlist',
-          where: 'customer_id=${customer.id} AND product_id IN $pIds',
-          columns: ['id', 'id_cloud']);
+      final res = await DBProvider.db.sqlQuery(
+        'sma_wishlist',
+        where: 'customer_id=${customer.id} AND product_id IN $pIds',
+        columns: ['id', 'id_cloud'],
+      );
       return res ?? [];
     } else {
       return [];
@@ -169,13 +189,15 @@ class WishlistProvider {
   /// Delete local favorites in List of favorites, and return a list of favorites id
   /// who are also stored in cloud db
   static Future<List> deleteLocalFav(
-      CompanyModel customer, List<Map> favorites) async {
+    CompanyModel customer,
+    List<Map> favorites,
+  ) async {
     if (favorites.isNotEmpty) {
       // delete all selected favorites from local db
       final temp1 = getKeyValuesOfListMap(favorites, 'id');
-      final res = await deleteLocalSelectedCustomerFavs(customer, temp1);
+      final res = await deleteLocalSelectedCustomerFavorites(customer, temp1);
       if (res) {
-        printConsole('Favorites deleted sucessfully');
+        printConsole('Favorites deleted successfully');
       }
 
       return getKeyValuesOfListMap(favorites, 'id_cloud');
@@ -184,27 +206,39 @@ class WishlistProvider {
     }
   }
 
-  static Future<Map<String, dynamic>> deleteCustomerFavsOnServer(
-      String customerId, List favorites) async {
+  static Future<Map<String, dynamic>> deleteCustomerFavoritesOnServer(
+    String customerId,
+    List favorites,
+  ) async {
     final data = {'company_id': customerId, 'favorites': favorites};
     var dataProvider = DataProvider();
 
     final res = dataProvider.postPetition(
-        deleteCompanyFavEndP, data, dataBloc.getHeaders());
+      deleteCompanyFavEndP,
+      data,
+      dataBloc.getHeaders(),
+    );
     return res;
   }
 
-  static Future<Map<String, dynamic>> addCustomerFavsToServer(
-      String customerId, List favorites) async {
+  static Future<Map<String, dynamic>> addCustomerFavoritesToServer(
+    String customerId,
+    List favorites,
+  ) async {
     final data = {'company_id': customerId, 'favorites': favorites};
     var dataProvider = DataProvider();
 
     final res = dataProvider.postPetition(
-        deleteCompanyFavEndP, data, dataBloc.getHeaders());
+      deleteCompanyFavEndP,
+      data,
+      dataBloc.getHeaders(),
+    );
     return res;
   }
 
-  static Future<bool> deleteLocalCustomerFavs(CompanyModel customer) async {
+  static Future<bool> deleteLocalCustomerFavorites(
+    CompanyModel customer,
+  ) async {
     String where = '''
         customer_id=${customer.id} 
         ''';
@@ -213,8 +247,10 @@ class WishlistProvider {
   }
 
   /// Delete all favorites i List favorites for a given customer
-  static Future<bool> deleteLocalSelectedCustomerFavs(
-      CompanyModel customer, List favoritesIds) async {
+  static Future<bool> deleteLocalSelectedCustomerFavorites(
+    CompanyModel customer,
+    List favoritesIds,
+  ) async {
     String where =
         "customer_id=${customer.id} AND id IN (${favoritesIds.join(',')})";
 
@@ -222,7 +258,9 @@ class WishlistProvider {
   }
 
   static Future<Map> buildPrintDataMap(
-      CompanyModel customer, List<ProductModel> products) async {
+    CompanyModel customer,
+    List<ProductModel> products,
+  ) async {
     final billerId = dataBloc.userData!.billerId.toString();
     final biller = await CompaniesProvider.getCompanyById(billerId);
     final billerData = await BillerDataProvider.loadBillerDataId(billerId);
@@ -237,12 +275,12 @@ class WishlistProvider {
     }).toList();
 
     return {
-      "products": productsInfo,
-      "customer": customer.toJson(),
+      'products': productsInfo,
+      'customer': customer.toJson(),
       // "customer_address": customerAddress?.toJson() ?? {},
-      "company_data": biller,
-      "biller_data": billerData,
-      "settings": settings
+      'company_data': biller,
+      'biller_data': billerData,
+      'settings': settings
     };
   }
 }

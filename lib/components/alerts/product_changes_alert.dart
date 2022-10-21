@@ -17,14 +17,14 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 /// to close action = 'close'
 ///
 class ProductChangesAlert extends StatefulWidget {
-  const ProductChangesAlert(
-      {Key? key,
-      required this.product,
-      required this.productKey,
-      this.qttyDiff = false,
-      this.fromSale = true,
-      this.priceDiff = false})
-      : super(key: key);
+  const ProductChangesAlert({
+    Key? key,
+    required this.product,
+    required this.productKey,
+    this.qttyDiff = false,
+    this.fromSale = true,
+    this.priceDiff = false,
+  }) : super(key: key);
 
   final ProductModel? product;
   final String productKey;
@@ -48,7 +48,7 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
 
   bool prefsSelection = false;
 
-  Map<PreferenceCategoryModel, List<PreferenceModel>> productrefs = {};
+  Map<PreferenceCategoryModel, List<PreferenceModel>> productPrefs = {};
 
   double qtty = 1;
 
@@ -93,12 +93,14 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
         // insetPadding: EdgeInsets.zero,
         // contentPadding: EdgeInsets.zero,
         insetPadding: EdgeInsets.symmetric(
-            horizontal: hInsetPadding, vertical: vInsetPadding),
+          horizontal: hInsetPadding,
+          vertical: vInsetPadding,
+        ),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         title: Column(
           children: [
             Text(
-              "Se han detectado cambios en el siguiente producto:",
+              'Se han detectado cambios en el siguiente producto:',
               textAlign: TextAlign.center,
               style: buttonsSmallTextStyle(context, fontSizeFactor: 1),
             ).paddingTop(8),
@@ -126,7 +128,7 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
             color: pColor.withOpacity(0.8),
             child: CupertinoDialogAction(
               child: const Text(
-                "Aceptar",
+                'Aceptar',
                 style: TextStyle(color: Colors.white),
                 textAlign: TextAlign.center,
               ),
@@ -138,7 +140,9 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
                     if (widget.fromSale) {
                       // reload product on sale products list
                       await posBloc.reloadOnlyProductPrice(
-                          widget.productKey, selectedP!);
+                        widget.productKey,
+                        selectedP!,
+                      );
                     }
                   }
                   // set not verify prices param to sale if price selected is
@@ -196,8 +200,9 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
                 padding: kButtonPadding,
                 margin: EdgeInsets.zero,
                 decoration: BoxDecoration(
-                    border: Border.all(color: errorColor),
-                    borderRadius: BorderRadius.circular(radius2)),
+                  border: Border.all(color: errorColor),
+                  borderRadius: BorderRadius.circular(radius2),
+                ),
               ).flexible(flex: 1),
               Icon(
                 Icons.arrow_forward_ios_rounded,
@@ -219,8 +224,9 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
                 padding: kButtonPadding,
                 margin: EdgeInsets.zero,
                 decoration: BoxDecoration(
-                    border: Border.all(color: pColor),
-                    borderRadius: BorderRadius.circular(radius2)),
+                  border: Border.all(color: pColor),
+                  borderRadius: BorderRadius.circular(radius2),
+                ),
               ).flexible(flex: 1),
             ],
           ),
@@ -254,10 +260,12 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
               padding: EdgeInsets.zero,
               margin: EdgeInsets.zero,
               shapeBorder: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  side: BorderSide(
-                      color: selectedP == oProduct ? pColor : Colors.white,
-                      width: 2)),
+                borderRadius: BorderRadius.circular(5),
+                side: BorderSide(
+                  color: selectedP == oProduct ? pColor : Colors.white,
+                  width: 2,
+                ),
+              ),
               onTap: () {
                 setState(() {
                   selectedP = oProduct;
@@ -271,11 +279,12 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
                 backgroundColor: Colors.white,
               ),
               shapeBorder: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  side: BorderSide(
-                      color:
-                          selectedP == widget.product ? pColor : Colors.white,
-                      width: 2)),
+                borderRadius: BorderRadius.circular(5),
+                side: BorderSide(
+                  color: selectedP == widget.product ? pColor : Colors.white,
+                  width: 2,
+                ),
+              ),
               padding: EdgeInsets.zero,
               elevation: 4,
               margin: EdgeInsets.zero,

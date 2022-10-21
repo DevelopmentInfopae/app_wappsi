@@ -40,7 +40,7 @@ class NewCustomerData3 extends StatefulWidget {
 class _NewCustomerData3State extends State<NewCustomerData3> {
   late Size _size;
   late Color _pc;
-  bool _adduUser = false;
+  bool _addUser = false;
   bool _addFavorites = false;
 
   final TextEditingController _customerGroupController =
@@ -78,8 +78,11 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
   }
 
   PreferredSize _appBar() {
-    return appBar(context, 'Crear Cliente POS',
-        image: 'assets/images/add-user.png');
+    return appBar(
+      context,
+      'Crear Cliente POS',
+      image: 'assets/images/add-user.png',
+    );
   }
 
   Widget _body() {
@@ -101,8 +104,8 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
                 : _priceGroups().paddingSymmetric(vertical: 3),
             _customerGroups().paddingSymmetric(vertical: 3),
             _createCustomerUserCheck(),
-            _adduUser ? _user() : Container(),
-            _adduUser ? _password() : Container(),
+            _addUser ? _user() : Container(),
+            _addUser ? _password() : Container(),
             _addFavoritesCheck(),
             _customerImage().paddingSymmetric(vertical: 3),
             _locationSelector().paddingSymmetric(vertical: 3),
@@ -133,8 +136,10 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
                       // size: kIconSize,
                       color: pColor,
                     ),
-                    Text(' Seleccionar Imagen',
-                        style: buttonsSmallTextStyle(context, color: pColor)),
+                    Text(
+                      ' Seleccionar Imagen',
+                      style: buttonsSmallTextStyle(context, color: pColor),
+                    ),
                   ]
                 : [
                     const Icon(
@@ -142,8 +147,10 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
                       size: kIconSize,
                       color: pColor,
                     ),
-                    Text(' Ver imagen seleccionada',
-                        style: buttonsSmallTextStyle(context, color: pColor)),
+                    Text(
+                      ' Ver imagen seleccionada',
+                      style: buttonsSmallTextStyle(context, color: pColor),
+                    ),
                   ],
           ),
           onTap: () async {
@@ -228,15 +235,16 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
                 color: pColor,
               ),
               Text(
-                  customerBloc.getLocation != null
-                      ? 'Lat: ' +
-                          roundDouble(customerBloc.getLocation!.latitude, 3)
-                              .toString() +
-                          ', Lon: ' +
-                          roundDouble(customerBloc.getLocation!.longitude, 3)
-                              .toString()
-                      : ' Añadir localización',
-                  style: buttonsSmallTextStyle(context, color: pColor)),
+                customerBloc.getLocation != null
+                    ? 'Lat: ' +
+                        roundDouble(customerBloc.getLocation!.latitude, 3)
+                            .toString() +
+                        ', Lon: ' +
+                        roundDouble(customerBloc.getLocation!.longitude, 3)
+                            .toString()
+                    : ' Añadir localización',
+                style: buttonsSmallTextStyle(context, color: pColor),
+              ),
             ],
           ),
           onTap: () async {
@@ -272,7 +280,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
           ),
         ).paddingRight(4),
         Tooltip(
-          message: 'Selecionar localización',
+          message: 'Seleccionar localización',
           child: AppButton(
             // color: greyLight,
             width: 35,
@@ -310,13 +318,13 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
 
   CheckboxListTile _createCustomerUserCheck() {
     return CheckboxListTile(
-      value: _adduUser,
+      value: _addUser,
       title: Text('Crear usuario', style: normalTextStyle(context)),
       secondary: const Icon(FontAwesomeIcons.userCheck, size: kIconSize),
       onChanged: (value) {
         setState(() {
-          _adduUser = !_adduUser;
-          if (!_adduUser) _addFavorites = false;
+          _addUser = !_addUser;
+          if (!_addUser) _addFavorites = false;
         });
       },
     );
@@ -334,7 +342,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
         setState(() {
           _addFavorites = !_addFavorites;
 
-          _adduUser = _addFavorites;
+          _addUser = _addFavorites;
         });
       },
     );
@@ -348,8 +356,10 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
         AppButton(
           child: Row(
             children: [
-              Text('Siguiente',
-                  style: buttonsSmallTextStyle(context, color: pColor)),
+              Text(
+                'Siguiente',
+                style: buttonsSmallTextStyle(context, color: pColor),
+              ),
               const Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: kIconSize,
@@ -394,11 +404,12 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
 
   Widget _customerGroups() {
     return FutureBuilder(
-      // load customer group if already defined in customerdata, if not load default country
+      // load customer group if already defined in customerData, if not load default country
       future: customerBloc.getCustomer.customerGroupId == null
           ? null
           : CustomerGroupsProvider.loadCustomerGroup(
-              customerBloc.getCustomer.customerGroupId!),
+              customerBloc.getCustomer.customerGroupId!,
+            ),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           _customerGroup = snapshot.data;
@@ -429,7 +440,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
 
@@ -467,11 +478,12 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
 
   Widget _priceGroups() {
     return FutureBuilder(
-      // load price group if already defined in customerdata, if not load default country
+      // load price group if already defined in customerData, if not load default country
       future: customerBloc.getCustomer.priceGroupId == null
           ? null
           : PriceGroupsProvider.loadPriceGroup(
-              customerBloc.getCustomer.priceGroupId!),
+              customerBloc.getCustomer.priceGroupId!,
+            ),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           _priceGroup = snapshot.data;
@@ -502,7 +514,7 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       maxHeight: _size.width * 0.9,
@@ -538,28 +550,40 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
   }
 
   Widget _user() {
-    return textFormField(context, 'Nombre de usuario', (value) {
-      customerBloc.setUserName(value);
-    }, (String? value) {
-      if ((value?.length ?? 0) == 0) {
-        return 'Debe suministrar un nombre de usuario';
-      }
-    }, () {
-      _passwdFocus.requestFocus();
-    }, focus: _unameFocus)
-        .paddingSymmetric(vertical: 5);
+    return textFormField(
+      context,
+      'Nombre de usuario',
+      (value) {
+        customerBloc.setUserName(value);
+      },
+      (String? value) {
+        if ((value?.length ?? 0) == 0) {
+          return 'Debe suministrar un nombre de usuario';
+        }
+      },
+      () {
+        _passwdFocus.requestFocus();
+      },
+      focus: _unameFocus,
+    ).paddingSymmetric(vertical: 5);
   }
 
   Widget _password() {
-    return textFormField(context, 'Contraseña', (value) {
-      customerBloc.setPassword(value);
-    }, (String? value) {
-      if ((value?.length ?? 0) < 6) {
-        return 'Contraseña valida';
-      }
-    }, () {
-      _passwdFocus.unfocus();
-    }, focus: _passwdFocus)
-        .paddingSymmetric(vertical: 5);
+    return textFormField(
+      context,
+      'Contraseña',
+      (value) {
+        customerBloc.setPassword(value);
+      },
+      (String? value) {
+        if ((value?.length ?? 0) < 6) {
+          return 'Contraseña valida';
+        }
+      },
+      () {
+        _passwdFocus.unfocus();
+      },
+      focus: _passwdFocus,
+    ).paddingSymmetric(vertical: 5);
   }
 }

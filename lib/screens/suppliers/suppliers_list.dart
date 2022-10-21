@@ -55,19 +55,24 @@ class _ProductsState extends State<Suppliers> {
   }
 
   PreferredSize _appBar(BuildContext context) {
-    return appBar(context, 'Proveedores',
-        elevation: false,
-        radius: 0,
-        image: 'assets/images/enterprise.png', onPop: () {
-      dataBloc.homeKey?.currentState?.selectTab(TabItem.home);
-      _searchController.close();
-    },
-        leading: AppBarLeading(
-            widget: Icon(Icons.add, size: leadingIconSize, color: pColor),
-            onTap: () async {
-              await dataBloc.refreshToken(context);
-              const NewSupplier().launch(context);
-            }));
+    return appBar(
+      context,
+      'Proveedores',
+      elevation: false,
+      radius: 0,
+      image: 'assets/images/enterprise.png',
+      onPop: () {
+        dataBloc.homeKey?.currentState?.selectTab(TabItem.home);
+        _searchController.close();
+      },
+      leading: AppBarLeading(
+        widget: Icon(Icons.add, size: leadingIconSize, color: pColor),
+        onTap: () async {
+          await dataBloc.refreshToken(context);
+          const NewSupplier().launch(context);
+        },
+      ),
+    );
   }
 
   Widget _body() {
@@ -89,13 +94,16 @@ class _ProductsState extends State<Suppliers> {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(0.0, 1.0), //(x,y)
-          blurRadius: 2.0,
-        )
-      ]),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 2.0,
+          )
+        ],
+      ),
     );
   }
 
@@ -103,25 +111,27 @@ class _ProductsState extends State<Suppliers> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: const BorderRadius.all(Radius.circular(radius2))),
+        color: Colors.grey[200],
+        borderRadius: const BorderRadius.all(Radius.circular(radius2)),
+      ),
       child: FloatingSearchAppBar(
-          hint: 'Buscar proveedor',
-          controller: _searchController,
-          transitionDuration: const Duration(milliseconds: 800),
-          clearQueryOnClose: true,
-          // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-          // alwaysOpened: true,
-          titleStyle: buttonsSmallTextStyle(context),
-          hintStyle: buttonsSmallTextStyle(context),
-          hideKeyboardOnDownScroll: true,
-          onQueryChanged: _onQueryChanged,
-          // height: _size.height * 0.078 < 55 ? 55 : _size.height * 0.078,
-          elevation: 0,
-          actions: [FloatingSearchBarAction.searchToClear()],
-          automaticallyImplyBackButton: false,
-          color: Colors.grey[200],
-          body: null),
+        hint: 'Buscar proveedor',
+        controller: _searchController,
+        transitionDuration: const Duration(milliseconds: 800),
+        clearQueryOnClose: true,
+        // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+        // alwaysOpened: true,
+        titleStyle: buttonsSmallTextStyle(context),
+        hintStyle: buttonsSmallTextStyle(context),
+        hideKeyboardOnDownScroll: true,
+        onQueryChanged: _onQueryChanged,
+        // height: _size.height * 0.078 < 55 ? 55 : _size.height * 0.078,
+        elevation: 0,
+        actions: [FloatingSearchBarAction.searchToClear()],
+        automaticallyImplyBackButton: false,
+        color: Colors.grey[200],
+        body: null,
+      ),
     );
   }
 
@@ -129,41 +139,43 @@ class _ProductsState extends State<Suppliers> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: FutureBuilder<List<Map>?>(
-          future: CompaniesProvider.getAllSuppliers(limit: 50),
-          builder: (BuildContext context, AsyncSnapshot<List<Map>?> snapshot) {
-            if (snapshot.hasData) {
-              return StreamBuilder<List<CompanyModel>?>(
-                  stream: _suppliersStream.stream,
-                  builder:
-                      (context, AsyncSnapshot<List<CompanyModel>?> snapshot2) {
-                    if (snapshot2.hasData) {
-                      return RefreshIndicator(
-                        onRefresh: () async {
-                          final res = await CompaniesProvider.getAllSuppliers(
-                              limit: 50);
-                          _suppliersStream.sink
-                              .add(CompanyModel.fromJsonList(res!));
-                        },
-                        child: SuppliersCardList(
-                          customer: snapshot2.data!,
-                          searchParams: _searchParams,
-                        ),
+        future: CompaniesProvider.getAllSuppliers(limit: 50),
+        builder: (BuildContext context, AsyncSnapshot<List<Map>?> snapshot) {
+          if (snapshot.hasData) {
+            return StreamBuilder<List<CompanyModel>?>(
+              stream: _suppliersStream.stream,
+              builder: (context, AsyncSnapshot<List<CompanyModel>?> snapshot2) {
+                if (snapshot2.hasData) {
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      final res = await CompaniesProvider.getAllSuppliers(
+                        limit: 50,
                       );
-                    } else {
                       _suppliersStream.sink
-                          .add(CompanyModel.fromJsonList(snapshot.data!));
+                          .add(CompanyModel.fromJsonList(res!));
+                    },
+                    child: SuppliersCardList(
+                      customer: snapshot2.data!,
+                      searchParams: _searchParams,
+                    ),
+                  );
+                } else {
+                  _suppliersStream.sink
+                      .add(CompanyModel.fromJsonList(snapshot.data!));
 
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  });
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          }),
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
     );
   }
 

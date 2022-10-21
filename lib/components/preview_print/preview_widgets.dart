@@ -10,7 +10,7 @@ import 'package:pos_wappsi/params/regimen_person_type_form_params.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/utils/text_formating/date_to_text.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
-import 'package:pos_wappsi/utils/text_formating/hmtl_formating.dart';
+import 'package:pos_wappsi/utils/text_formating/html_formating.dart';
 
 Widget legalInformation(TextTheme textTheme, Map<dynamic, dynamic> printData) {
   final companyData = printData['company_data'];
@@ -20,14 +20,17 @@ Widget legalInformation(TextTheme textTheme, Map<dynamic, dynamic> printData) {
     children: [
       socialReason(settings['razon_social'], textTheme),
       RichText(
-          text: TextSpan(
-              text: 'NIT: ',
-              style: textTheme.bodyText1!.apply(fontWeightDelta: 2),
-              children: [
+        text: TextSpan(
+          text: 'NIT: ',
+          style: textTheme.bodyText1!.apply(fontWeightDelta: 2),
+          children: [
             TextSpan(
-                text: settings['numero_documento'] ?? '',
-                style: textTheme.bodyText1)
-          ])),
+              text: settings['numero_documento'] ?? '',
+              style: textTheme.bodyText1,
+            )
+          ],
+        ),
+      ),
       Text(
         regimenT[settings['tipo_regimen'].toString()]?.name ?? '',
         style: textTheme.bodyText1!.apply(fontWeightDelta: 2),
@@ -35,19 +38,23 @@ Widget legalInformation(TextTheme textTheme, Map<dynamic, dynamic> printData) {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Text(
-          capitalizeText((companyData?.address ?? '') +
-              ' - ' +
-              (printData['company_data']?.city ?? '')),
+          capitalizeText(
+            (companyData?.address ?? '') +
+                ' - ' +
+                (printData['company_data']?.city ?? ''),
+          ),
           textAlign: TextAlign.center,
         ),
       ),
       RichText(
-          text: TextSpan(
-              text: 'Telefono: ',
-              style: textTheme.bodyText1!.apply(fontWeightDelta: 2),
-              children: [
+        text: TextSpan(
+          text: 'Teléfono: ',
+          style: textTheme.bodyText1!.apply(fontWeightDelta: 2),
+          children: [
             TextSpan(text: companyData?.phone ?? '', style: textTheme.bodyText1)
-          ])),
+          ],
+        ),
+      ),
     ],
   );
 }
@@ -131,87 +138,107 @@ Widget headerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       RichText(
-          text: TextSpan(
-              text: 'Fecha/hora: ',
-              style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
-              children: [
+        text: TextSpan(
+          text: 'Fecha/hora: ',
+          style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+          children: [
             TextSpan(
-                text: parseDateStrES(date) + ' ' + parseTimeStrES(date),
-                style: textTheme.bodyText1)
-          ])),
+              text: parseDateStrES(date) + ' ' + parseTimeStrES(date),
+              style: textTheme.bodyText1,
+            )
+          ],
+        ),
+      ),
       RichText(
-          text: TextSpan(
-              text: 'Cliente: ',
-              style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
-              children: [
+        text: TextSpan(
+          text: 'Cliente: ',
+          style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+          children: [
             TextSpan(
-                text: capitalizeText(customer['name'] ?? ''),
-                style: textTheme.bodyText1)
-          ])),
+              text: capitalizeText(customer['name'] ?? ''),
+              style: textTheme.bodyText1,
+            )
+          ],
+        ),
+      ),
       RichText(
-          text: TextSpan(
-              text: 'NIT/CC: ',
-              style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
-              children: [
+        text: TextSpan(
+          text: 'NIT/CC: ',
+          style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+          children: [
             TextSpan(text: customer['vat_no'] ?? '', style: textTheme.bodyText1)
-          ])),
+          ],
+        ),
+      ),
       RichText(
-          text: TextSpan(
-              text: 'Tel: ',
-              style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
-              children: [
+        text: TextSpan(
+          text: 'Tel: ',
+          style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+          children: [
             TextSpan(text: customer['phone'] ?? '', style: textTheme.bodyText1)
-          ])),
+          ],
+        ),
+      ),
       zoneSzoneData.isNotEmpty
           ? Column(
               children: [
                 RichText(
-                    text: TextSpan(
-                        text: 'Zona: ',
-                        style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
-                        children: [
+                  text: TextSpan(
+                    text: 'Zona: ',
+                    style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+                    children: [
                       TextSpan(
-                          text: capitalizeText((zoneSzoneData['zone_data']
-                                  ?["zone_name"] ??
-                              '--')),
-                          style: textTheme.bodyText1)
-                    ])),
+                        text: capitalizeText(
+                          (zoneSzoneData['zone_data']?['zone_name'] ?? '--'),
+                        ),
+                        style: textTheme.bodyText1,
+                      )
+                    ],
+                  ),
+                ),
                 RichText(
-                    text: TextSpan(
-                        text: 'Barrio: ',
-                        style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
-                        children: [
+                  text: TextSpan(
+                    text: 'Barrio: ',
+                    style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+                    children: [
                       TextSpan(
-                          text: capitalizeText((zoneSzoneData['subzone_data']
-                                  ?["subzone_name"] ??
-                              '--')),
-                          style: textTheme.bodyText1)
-                    ])),
+                        text: capitalizeText(
+                          (zoneSzoneData['subzone_data']?['subzone_name'] ??
+                              '--'),
+                        ),
+                        style: textTheme.bodyText1,
+                      )
+                    ],
+                  ),
+                ),
               ],
             )
           : Container(),
       RichText(
-          text: TextSpan(
-              text: 'Dirección: ',
-              style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
-              children: [
+        text: TextSpan(
+          text: 'Dirección: ',
+          style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+          children: [
             TextSpan(
-                text: capitalizeText((customer['address'] ?? '') +
-                    ' - ' +
-                    (customer['city'] ?? '')),
-                style: textTheme.bodyText1)
-          ])),
+              text: capitalizeText(
+                (customer['address'] ?? '') + ' - ' + (customer['city'] ?? ''),
+              ),
+              style: textTheme.bodyText1,
+            )
+          ],
+        ),
+      ),
       Text(
         customer['email'] ?? '',
         style: textTheme.bodyText1?.apply(fontWeightDelta: 2),
       ),
       RichText(
-          text: TextSpan(
-              text: 'Vendedor: ',
-              style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
-              children: [
-            TextSpan(text: sellerName, style: textTheme.bodyText1)
-          ])),
+        text: TextSpan(
+          text: 'Vendedor: ',
+          style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+          children: [TextSpan(text: sellerName, style: textTheme.bodyText1)],
+        ),
+      ),
     ],
   );
 }
@@ -231,7 +258,7 @@ Widget products(Map<dynamic, dynamic> printData, {int? pricePolicy}) {
   );
 }
 
-Widget productsFavs(Map<dynamic, dynamic> printData) {
+Widget productsFavorites(Map<dynamic, dynamic> printData) {
   // final size = MediaQuery.of(context).size;
   final List<Map> products = printData['products'];
   final Map<String, dynamic> customerInfo = printData['customer'];
@@ -250,22 +277,26 @@ Widget productsFavs(Map<dynamic, dynamic> printData) {
     pFavList.add(pName);
     final units = FutureBuilder(
       future: UnitsProvider.getProductUnits(
-          element['id_cloud'].toString(), customerInfo['price_group_id']),
+        element['id_cloud'].toString(),
+        customerInfo['price_group_id'],
+      ),
       builder:
           (BuildContext context, AsyncSnapshot<List<UnitsModel>> snapshot) {
         if (snapshot.hasData) {
           final List<Widget> uDesc = [];
           for (var element in snapshot.data!) {
-            uDesc.add(Row(
-              children: [
-                Text(
-                  element.name,
-                  // maxLines: 2,
-                ).expand(),
-                Text(getFormatedCurrency(element.unitValue)),
-                const Text('  _______'),
-              ],
-            ));
+            uDesc.add(
+              Row(
+                children: [
+                  Text(
+                    element.name,
+                    // maxLines: 2,
+                  ).expand(),
+                  Text(getFormatedCurrency(element.unitValue)),
+                  const Text('  _______'),
+                ],
+              ),
+            );
           }
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,27 +320,35 @@ List<DataRow> _products(List<Map<dynamic, dynamic>> products) {
   List<DataRow> rows = [];
   for (var p in products) {
     String value = getFormatedCurrency(p['quantity'] * p['price']);
-    rows.add(DataRow(
-      cells: <DataCell>[
-        DataCell(Text(getRoundedQtty(p['quantity']))),
-        DataCell(Text(
-          capitalizeText(p['name']),
-          maxLines: 3,
-        )),
-        DataCell(
-          Text(
-            value,
-            textAlign: TextAlign.right,
+    rows.add(
+      DataRow(
+        cells: <DataCell>[
+          DataCell(Text(getRoundedQtty(p['quantity']))),
+          DataCell(
+            Text(
+              capitalizeText(p['name']),
+              maxLines: 3,
+            ),
           ),
-        ),
-      ],
-    ));
+          DataCell(
+            Text(
+              value,
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      ),
+    );
     if (p['preferences'] != null && p['preferences'] != '') {
-      rows.add(DataRow(cells: <DataCell>[
-        const DataCell(Text('')),
-        DataCell(Text(capitalizeText(p['preferences'] ?? ''))),
-        const DataCell(Text('')),
-      ]));
+      rows.add(
+        DataRow(
+          cells: <DataCell>[
+            const DataCell(Text('')),
+            DataCell(Text(capitalizeText(p['preferences'] ?? ''))),
+            const DataCell(Text('')),
+          ],
+        ),
+      );
     }
   }
   return rows;
@@ -336,36 +375,49 @@ List<DataRow> _productsWUnit(List<Map<dynamic, dynamic>> products) {
     //       capitalizeText(p['preferences']);
     // }
 
-    rows.add(DataRow(
-      cells: <DataCell>[
-        DataCell(Text(getRoundedQtty(qtty))),
-        DataCell(Text(
-          capitalizeText(unit['code']),
-          maxLines: 3,
-        )),
-        DataCell(Text(text)),
-        DataCell(
-          Text(
-            valueS,
-            textAlign: TextAlign.right,
+    rows.add(
+      DataRow(
+        cells: <DataCell>[
+          DataCell(Text(getRoundedQtty(qtty))),
+          DataCell(
+            Text(
+              capitalizeText(unit['code']),
+              maxLines: 3,
+            ),
           ),
-        ),
-      ],
-    ));
+          DataCell(Text(text)),
+          DataCell(
+            Text(
+              valueS,
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      ),
+    );
 
     if (p['base_unit'] != null) {
       final bUnit = p['base_unit'];
       final bUnitValue = value / unit['operation_value'];
       final bUnitValueS = getFormatedCurrency(bUnitValue);
-      rows.add(DataRow(cells: <DataCell>[
-        const DataCell(Text('')),
-        const DataCell(Text('')),
-        DataCell(Text(capitalizeText(
-                (bUnit['code'] ?? unit['code']) + ' x ' + bUnitValueS) +
-            '. ' +
-            capitalizeText(p['preferences'] ?? ''))),
-        const DataCell(Text('')),
-      ]));
+      rows.add(
+        DataRow(
+          cells: <DataCell>[
+            const DataCell(Text('')),
+            const DataCell(Text('')),
+            DataCell(
+              Text(
+                capitalizeText(
+                      (bUnit['code'] ?? unit['code']) + ' x ' + bUnitValueS,
+                    ) +
+                    '. ' +
+                    capitalizeText(p['preferences'] ?? ''),
+              ),
+            ),
+            const DataCell(Text('')),
+          ],
+        ),
+      );
     }
   }
 
@@ -490,7 +542,9 @@ Widget paymentDetails(TextTheme textTheme, Map<dynamic, dynamic> printData) {
 }
 
 Widget ordQuotValueDetails(
-    TextTheme textTheme, Map<dynamic, dynamic> printData) {
+  TextTheme textTheme,
+  Map<dynamic, dynamic> printData,
+) {
   final total = getFormatedCurrency(printData['total']);
   final discount = getFormatedCurrency(printData['total_discount']);
   final grandTotal = getFormatedCurrency(printData['grand_total']);
@@ -600,10 +654,12 @@ List<DataRow> _taxValuesRows(Map taxValues) {
     return DataRow(
       cells: <DataCell>[
         DataCell(Text(itemp['name'])),
-        DataCell(Text(
-          temp,
-          maxLines: 3,
-        )),
+        DataCell(
+          Text(
+            temp,
+            maxLines: 3,
+          ),
+        ),
         DataCell(Text(temp2)),
       ],
     );
@@ -620,7 +676,9 @@ Widget posNote(TextTheme textTheme, Map<dynamic, dynamic> printData) {
               data: htmlFormating(posNote.toString()),
               style: {
                 'p': Style(
-                    textAlign: TextAlign.justify, fontSize: FontSize.medium)
+                  textAlign: TextAlign.justify,
+                  fontSize: FontSize.medium,
+                )
               },
             ),
             emptyLine(),
@@ -645,24 +703,26 @@ Widget deliveryInfo(BuildContext context, Map<dynamic, dynamic> printData) {
   final String? deliveryTime = printData['order_data']['delivery_text'];
 
   return day != null
-      ? Column(children: [
-          const Text(
-            'Fecha de entrega ',
-            // style: normalTextStyle(context, color: greyDarkerColor),
-          ),
-          Text(
-            capitalizeText(dateString),
-            style: buttonsSmallTextStyle(context, color: black),
-          ).paddingBottom(10),
-          const Text(
-            'Franja Horaria',
-            // style: normalTextStyle(context, color: greyDarkerColor),
-          ),
-          Text(
-            deliveryTime ?? '',
-            style: buttonsSmallTextStyle(context, color: black),
-          ),
-        ])
+      ? Column(
+          children: [
+            const Text(
+              'Fecha de entrega ',
+              // style: normalTextStyle(context, color: greyDarkerColor),
+            ),
+            Text(
+              capitalizeText(dateString),
+              style: buttonsSmallTextStyle(context, color: black),
+            ).paddingBottom(10),
+            const Text(
+              'Franja Horaria',
+              // style: normalTextStyle(context, color: greyDarkerColor),
+            ),
+            Text(
+              deliveryTime ?? '',
+              style: buttonsSmallTextStyle(context, color: black),
+            ),
+          ],
+        )
       : Container();
 }
 

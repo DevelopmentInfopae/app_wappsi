@@ -73,25 +73,26 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
     // initialize search controller
 
     return WillPopScope(
-        child: Scaffold(
-          key: _scaffoldKey,
-          appBar: buildAppBar(context),
-          body: Column(
-            children: [_searchbar().expand(), bottom(_bottom(), pColor, _size)],
-          ),
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: buildAppBar(context),
+        body: Column(
+          children: [_searchbar().expand(), bottom(_bottom(), pColor, _size)],
         ),
-        onWillPop: () async {
-          bool pop = false;
-          setState(() {
-            if (_searchController.isOpen) {
-              _searchController.close();
-            } else {
-              pop = true;
-            }
-          });
-
-          return pop;
+      ),
+      onWillPop: () async {
+        bool pop = false;
+        setState(() {
+          if (_searchController.isOpen) {
+            _searchController.close();
+          } else {
+            pop = true;
+          }
         });
+
+        return pop;
+      },
+    );
   }
 
   PreferredSize buildAppBar(BuildContext context) {
@@ -133,23 +134,27 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
         MediaQuery.of(context).orientation == Orientation.portrait;
 
     return FavoritesOrderSelection(
-        isPortrait: isPortrait,
-        // toOrder: false,
-        toQuote: true,
-        context: _scaffoldKey.currentContext ?? context);
+      isPortrait: isPortrait,
+      // toOrder: false,
+      toQuote: true,
+      context: _scaffoldKey.currentContext ?? context,
+    );
   }
 
   Container _searchHeight() {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(0.0, 1.0), //(x,y)
-          blurRadius: 2.0,
-        )
-      ]),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 2.0,
+          )
+        ],
+      ),
     );
   }
 
@@ -201,7 +206,9 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
       transition: CircularFloatingSearchBarTransition(),
       physics: const BouncingScrollPhysics(),
       builder: (context, _) => buildBody(
-          stream: purchaseBloc.productSearchStream, action: 'add_to_purchase'),
+        stream: purchaseBloc.productSearchStream,
+        action: 'add_to_purchase',
+      ),
       title: Text(
         'Buscar producto',
         style: buttonsSmallTextStyle(context),
@@ -214,75 +221,77 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
 
   Widget _products() {
     return Container(
-        // height:_size.height*0.78,
-        // to avoid overlap with floatingSearchBar
-        margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
-        padding: const EdgeInsets.only(top: 15),
-        child: _productsStream());
+      // height:_size.height*0.78,
+      // to avoid overlap with floatingSearchBar
+      margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
+      padding: const EdgeInsets.only(top: 15),
+      child: _productsStream(),
+    );
   }
 
   StreamBuilder<Map<String, ProductModel>> _productsStream() {
     return StreamBuilder<Map<String, ProductModel>>(
-        stream: purchaseBloc.productsStream,
-        builder: (context, snapshot) {
-          // _searchBarFocusManagement();
-          bool productRequestFocus = _productFocus();
-          if (_productsCount + 1 == snapshot.data?.length) {
-            _productsCount += 1;
-            _searchBarFocusManagement();
-          }
-          if (snapshot.hasData &&
-              _searchController.isClosed &&
-              _productsCount == (purchaseBloc.getProducts?.length ?? 0)) {
-            if (purchaseBloc.getItemsCount() == 0) {
-              _productsCount = 0;
-              // _itemsCount = 0;
-              return Container();
-              //
-              // return _empty(context).center();
-            } else {
-              // _itemsCount += 1;
-
-              if (_productsCount == snapshot.data!.length) {
-                if (_scrollController.hasClients) {
-                  _scrollController
-                      .jumpTo(_scrollController.position.minScrollExtent);
-                }
-              } else if (_productsCount - 2 == snapshot.data!.length) {
-                // Nothing to do when items are removed from cart
-              } else {
-                // _searchBarFocusManagement();
-                _productsCount = snapshot.data!.length;
-                // _itemsCount = purchaseBloc.getItemsCount();
-              }
-            }
-            Map<String, ProductModel> saleProductsList = snapshot.data!;
-            return ProductsList(
-              key: pListKey,
-              productList: saleProductsList,
-              scrollController: _scrollController,
-              productRequestFocus: productRequestFocus,
-              fromPurchase: true,
-            );
-          } else if (purchaseBloc.getProducts?.isNotEmpty ?? false) {
-            return ProductsList(
-              key: pListKey,
-              productList: purchaseBloc.getProducts!,
-              scrollController: _scrollController,
-              productRequestFocus: false,
-              fromPurchase: true,
-            );
-          } else if (snapshot.hasData && _searchController.isOpen) {
-            return Container();
-          } else {
-            // ignore: unnecessary_null_comparison
-            //reset product count if empty
+      stream: purchaseBloc.productsStream,
+      builder: (context, snapshot) {
+        // _searchBarFocusManagement();
+        bool productRequestFocus = _productFocus();
+        if (_productsCount + 1 == snapshot.data?.length) {
+          _productsCount += 1;
+          _searchBarFocusManagement();
+        }
+        if (snapshot.hasData &&
+            _searchController.isClosed &&
+            _productsCount == (purchaseBloc.getProducts?.length ?? 0)) {
+          if (purchaseBloc.getItemsCount() == 0) {
             _productsCount = 0;
+            // _itemsCount = 0;
             return Container();
-
+            //
             // return _empty(context).center();
+          } else {
+            // _itemsCount += 1;
+
+            if (_productsCount == snapshot.data!.length) {
+              if (_scrollController.hasClients) {
+                _scrollController
+                    .jumpTo(_scrollController.position.minScrollExtent);
+              }
+            } else if (_productsCount - 2 == snapshot.data!.length) {
+              // Nothing to do when items are removed from cart
+            } else {
+              // _searchBarFocusManagement();
+              _productsCount = snapshot.data!.length;
+              // _itemsCount = purchaseBloc.getItemsCount();
+            }
           }
-        });
+          Map<String, ProductModel> saleProductsList = snapshot.data!;
+          return ProductsList(
+            key: pListKey,
+            productList: saleProductsList,
+            scrollController: _scrollController,
+            productRequestFocus: productRequestFocus,
+            fromPurchase: true,
+          );
+        } else if (purchaseBloc.getProducts?.isNotEmpty ?? false) {
+          return ProductsList(
+            key: pListKey,
+            productList: purchaseBloc.getProducts!,
+            scrollController: _scrollController,
+            productRequestFocus: false,
+            fromPurchase: true,
+          );
+        } else if (snapshot.hasData && _searchController.isOpen) {
+          return Container();
+        } else {
+          // ignore: unnecessary_null_comparison
+          //reset product count if empty
+          _productsCount = 0;
+          return Container();
+
+          // return _empty(context).center();
+        }
+      },
+    );
   }
 
   _searchBarFocusManagement() {
@@ -342,10 +351,11 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         subTotal(
-            large: true,
-            stream: purchaseBloc.subTotalCostStream,
-            defaultValue: purchaseBloc.getSubTotalCost(),
-            color: Colors.white),
+          large: true,
+          stream: purchaseBloc.subTotalCostStream,
+          defaultValue: purchaseBloc.getSubTotalCost(),
+          color: Colors.white,
+        ),
         _sendOrder(),
       ],
 
@@ -358,8 +368,9 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
       padding: kButtonPadding,
       color: Colors.white,
       shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radius2),
-          side: const BorderSide(color: pColor)),
+        borderRadius: BorderRadius.circular(radius2),
+        side: const BorderSide(color: pColor),
+      ),
       width: 10,
       onTap: () async {
         _send();
@@ -367,8 +378,10 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
       // child: Icon(FontAwesomeIcons.pause),
       child: Row(
         children: [
-          Text('Siguiente',
-              style: buttonsSmallTextStyle(context, color: pColor)),
+          Text(
+            'Siguiente',
+            style: buttonsSmallTextStyle(context, color: pColor),
+          ),
           const Icon(
             Icons.arrow_forward_ios_rounded,
             size: kIconSize,
@@ -394,9 +407,12 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
         if (res.isEmpty) {
           if ((query.length - _queryLen > 1)) {
             _searchController.clear();
-            scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
-                const Duration(seconds: 1, milliseconds: 500),
-                backGroundColor: Colors.red);
+            scaffoldAlert(
+              context,
+              'Producto ' + query + ' no encontrado',
+              const Duration(seconds: 1, milliseconds: 500),
+              backGroundColor: Colors.red,
+            );
             _searchController.open();
 
             // _searchController.query='';
@@ -408,13 +424,18 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
           if (res.length == 1) {
             final temp = ProductModel.fromJson(res.first);
             final productReq = await ProductsProvider.getProductRequirements(
-                context, temp,
-                fromPurchase: true);
+              context,
+              temp,
+              fromPurchase: true,
+            );
             if (productReq != {}) {
               final result = await purchaseBloc.addProduct(productReq);
               if (result) {
-                scaffoldAlert(context, 'Producto ${temp.name} añadido',
-                    const Duration(seconds: 1));
+                scaffoldAlert(
+                  context,
+                  'Producto ${temp.name} añadido',
+                  const Duration(seconds: 1),
+                );
               }
             }
 
@@ -439,8 +460,11 @@ class _PurchaseProductsState extends State<PurchaseProducts> {
     if ((purchaseBloc.getProducts?.keys.length ?? 0) > 0) {
       const PurchaseOtherData().launch(context);
     } else {
-      confirmDialog(context, "Debe seleccionar productos antes de continuar",
-          "assets/images/alert.png");
+      confirmDialog(
+        context,
+        'Debe seleccionar productos antes de continuar',
+        'assets/images/alert.png',
+      );
     }
   }
 }

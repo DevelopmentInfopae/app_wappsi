@@ -7,7 +7,7 @@ import 'package:pos_wappsi/utils/validation_encoding/encode_pass.dart';
 
 class LoginFormProvider extends ChangeNotifier {
   String user = '';
-  String passsword = '';
+  String password = '';
 
   // to enable or disable send loginFormData to backend while waiting for response
 
@@ -33,7 +33,7 @@ class LoginFormProvider extends ChangeNotifier {
 
   //   final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
 
-  //   final encrypted = encrypter.encrypt(passsword, iv: iv);
+  //   final encrypted = encrypter.encrypt(password, iv: iv);
 
   //   // printConsole(encrypted.base64);
 
@@ -51,7 +51,7 @@ class LoginFormProvider extends ChangeNotifier {
   Map<String, dynamic> _toJson(bool override) {
     return {
       'username': user.replaceAll(' ', ''),
-      'password': encodePass(passsword),
+      'password': encodePass(password),
       'override_login': override
     };
   }

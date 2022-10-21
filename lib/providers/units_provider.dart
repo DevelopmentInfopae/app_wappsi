@@ -7,7 +7,9 @@ import 'package:pos_wappsi/utils/print_errors.dart';
 
 class UnitsProvider {
   static Future<List<UnitsModel>> getProductUnits(
-      String productId, String priceGroupId) async {
+    String productId,
+    String priceGroupId,
+  ) async {
     final res = await getProductUnitsRaw(productId, priceGroupId);
     List<UnitsModel> units = [];
     if (res != null && res.isNotEmpty) {
@@ -17,7 +19,9 @@ class UnitsProvider {
   }
 
   static Future<List<Map<String, dynamic>>?> getProductUnitsRaw(
-      String productId, String priceGroupId) async {
+    String productId,
+    String priceGroupId,
+  ) async {
     String sql = '''SELECT u.id as id,u.id_cloud as id_cloud,u.name as name,
     u.code as code ,u.operator as operator,u.base_unit as base_unit,u.operation_value 
     as operation_value,up.valor_unitario as valor_unitario,u.unit_value as unit_value,
@@ -34,7 +38,7 @@ class UnitsProvider {
 
   static Future<UnitsModel?> getUnitInfo(int? unitId) async {
     final res = await DBProvider.db
-        .sqlFirstQuery('sma_units', where: "id_cloud=$unitId");
+        .sqlFirstQuery('sma_units', where: 'id_cloud=$unitId');
     if (res != null) {
       return UnitsModel.fromJson(res);
     } else {
@@ -43,7 +47,10 @@ class UnitsProvider {
   }
 
   static Future<UnitsModel?> getPUnitSuspended(
-      String productId, String priceGroupId, String unitId) async {
+    String productId,
+    String priceGroupId,
+    String unitId,
+  ) async {
     String sql = '''SELECT u.id as id,u.id_cloud as id_cloud,u.name as name,
     u.code as code ,u.operator as operator,u.base_unit as base_unit,u.operation_value 
     as operation_value,up.valor_unitario as valor_unitario,u.unit_value as unit_value,
@@ -62,29 +69,35 @@ class UnitsProvider {
   }
 
   static Future<Map<String, dynamic>?> getProductUnitWithPrefs(
-      BuildContext context, ProductModel product, String priceGroupId,
-      {bool showAllwaysUnitAlert = false,
-      bool showInvInstOfPrice = false,
-      bool prefsSelection = false}) async {
+    BuildContext context,
+    ProductModel product,
+    String priceGroupId, {
+    bool showAlwaysUnitAlert = false,
+    bool showInvInstOfPrice = false,
+    bool prefsSelection = false,
+  }) async {
     final units = await UnitsProvider.getProductUnits(
-        product.idCloud.toString(), priceGroupId);
+      product.idCloud.toString(),
+      priceGroupId,
+    );
     printConsole(units.first.name);
 
-    if (units.length > 1 || showAllwaysUnitAlert) {
+    if (units.length > 1 || showAlwaysUnitAlert) {
       return await showCupertinoDialog<Map<String, dynamic>?>(
-          // to make selection of product unit required
-          barrierDismissible: false,
-          // useRootNavigator: false,
-          context: context,
-          builder: (context) {
-            return SelectProductUnitDialog(
-              product: product,
-              units: units,
-              showInvInstOfPrice: showInvInstOfPrice,
-            );
-          });
+        // to make selection of product unit required
+        barrierDismissible: false,
+        // useRootNavigator: false,
+        context: context,
+        builder: (context) {
+          return SelectProductUnitDialog(
+            product: product,
+            units: units,
+            showInvInstOfPrice: showInvInstOfPrice,
+          );
+        },
+      );
     } else {
-      return {"unit": units.first, "quantity": 1};
+      return {'unit': units.first, 'quantity': 1};
     }
   }
 }

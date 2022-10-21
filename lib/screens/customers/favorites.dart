@@ -61,35 +61,38 @@ class _ListFavoritesState extends State<ListFavorites> {
   }
 
   PreferredSize _buildAppBar(BuildContext context) {
-    return appBar(context, 'Favoritos',
-        elevation: false,
-        radius: 0,
-        image: 'assets/images/star.png',
-        leading: AppBarLeading(
-          onTap: () async {
-            await _reload(context);
-          },
-          enabled: !_reloading,
-          padding: _reloading ? const EdgeInsets.all(8) : kIconButtonPadding,
-          widget: _reloading
-              ? FittedBox(
-                  child: Loader(
-                    decoration: const BoxDecoration(),
-                  ),
-                )
-              : Icon(
-                  Icons.refresh,
-                  size: leadingIconSize,
-                  color: pColor,
+    return appBar(
+      context,
+      'Favoritos',
+      elevation: false,
+      radius: 0,
+      image: 'assets/images/star.png',
+      leading: AppBarLeading(
+        onTap: () async {
+          await _reload(context);
+        },
+        enabled: !_reloading,
+        padding: _reloading ? const EdgeInsets.all(8) : kIconButtonPadding,
+        widget: _reloading
+            ? FittedBox(
+                child: Loader(
+                  decoration: const BoxDecoration(),
                 ),
-        ));
+              )
+            : Icon(
+                Icons.refresh,
+                size: leadingIconSize,
+                color: pColor,
+              ),
+      ),
+    );
   }
 
   Future<void> _reload(BuildContext context) async {
     setState(() {
       _reloading = true;
     });
-    await WishlistProvider.reloadCustomerFavs(context, widget.customer);
+    await WishlistProvider.reloadCustomerFavorites(context, widget.customer);
     final pFav = await WishlistProvider.loadCustomerFavorites(widget.customer);
 
     setState(() {
@@ -107,70 +110,74 @@ class _ListFavoritesState extends State<ListFavorites> {
 
   Widget _products() {
     return Container(
-        padding: const EdgeInsets.only(top: 4),
-        child: FutureBuilder<List<ProductModel>?>(
-            future: WishlistProvider.loadCustomerFavorites(widget.customer),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                // setState(() {
-                if (favoritesToDelete.isEmpty) {
-                  favorites = snapshot.data!;
-                }
-                // });
-                if (favorites.isNotEmpty) {
-                  return _favoritesList(context);
-                } else {
-                  return _empty(context).center();
-                }
-              } else {
-                // ignore: unnecessary_null_comparison
-                return _empty(context).center();
-              }
-            }));
+      padding: const EdgeInsets.only(top: 4),
+      child: FutureBuilder<List<ProductModel>?>(
+        future: WishlistProvider.loadCustomerFavorites(widget.customer),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            // setState(() {
+            if (favoritesToDelete.isEmpty) {
+              favorites = snapshot.data!;
+            }
+            // });
+            if (favorites.isNotEmpty) {
+              return _favoritesList(context);
+            } else {
+              return _empty(context).center();
+            }
+          } else {
+            // ignore: unnecessary_null_comparison
+            return _empty(context).center();
+          }
+        },
+      ),
+    );
   }
 
   Widget _favoritesList(BuildContext context) {
     return RefreshIndicator(
-        onRefresh: () async {
-          await _reload(context);
+      onRefresh: () async {
+        await _reload(context);
+      },
+      child: ListView.builder(
+        itemCount: favorites.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Dismissible(
+            key: UniqueKey(),
+            onDismissed: (direction) {
+              favoritesToDelete.add(favorites[index]);
+              setState(() {
+                favorites.removeWhere((element) => element == favorites[index]);
+              });
+            },
+            background: Container(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(radius2),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.delete,
+                    size: iconSize(context),
+                    color: Colors.white,
+                  ).paddingOnly(left: 16, right: 8),
+                  Text(
+                    'Remover favorito',
+                    style: buttonsTextStyle(context, fontSizeFactor: 1.05),
+                  )
+                ],
+              ),
+            ).paddingSymmetric(vertical: 8),
+            child: ProductCard(
+              action: 'details',
+              product: favorites[index],
+            ),
+          );
         },
-        child: ListView.builder(
-            itemCount: favorites.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Dismissible(
-                key: UniqueKey(),
-                onDismissed: (direction) {
-                  favoritesToDelete.add(favorites[index]);
-                  setState(() {
-                    favorites
-                        .removeWhere((element) => element == favorites[index]);
-                  });
-                },
-                background: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(radius2)),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.delete,
-                        size: iconSize(context),
-                        color: Colors.white,
-                      ).paddingOnly(left: 16, right: 8),
-                      Text(
-                        'Remover favorito',
-                        style: buttonsTextStyle(context, fontSizeFactor: 1.05),
-                      )
-                    ],
-                  ),
-                ).paddingSymmetric(vertical: 8),
-                child: ProductCard(
-                  action: 'details',
-                  product: favorites[index],
-                ),
-              );
-            }));
+      ),
+    );
   }
 
   Widget _empty(BuildContext context) {
@@ -197,37 +204,41 @@ class _ListFavoritesState extends State<ListFavorites> {
 
   Widget _bottom() {
     return bottom(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _saveChanges(context),
-            _printFavorites(context),
-            _addFavorites(context),
-          ],
-        ),
-        _pc,
-        _size);
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _saveChanges(context),
+          _printFavorites(context),
+          _addFavorites(context),
+        ],
+      ),
+      _pc,
+      _size,
+    );
   }
 
   AppButton _addFavorites(BuildContext context) {
     return AppButton(
       onTap: () async {
         final verifyUserE = await UserProvider.verifyIfCompanyHaveUser(
-            context, widget.customer.idCloud.toString());
+          context,
+          widget.customer.idCloud.toString(),
+        );
         if (!verifyUserE) {
           AddFavorites(
-                  currentAction: 'adding_fav_to_customer',
-                  customer: widget.customer)
-              .launch(context);
+            currentAction: 'adding_fav_to_customer',
+            customer: widget.customer,
+          ).launch(context);
         } else {
           final choice = await showCupertinoDialog(
-              barrierDismissible: true,
-              context: context,
-              builder: (context) {
-                return CreateUserAlertDialog(
-                  customer: widget.customer,
-                );
-              });
+            barrierDismissible: true,
+            context: context,
+            builder: (context) {
+              return CreateUserAlertDialog(
+                customer: widget.customer,
+              );
+            },
+          );
           if (choice) {
             AddFavorites(
               currentAction: 'adding_fav_to_customer',
@@ -270,25 +281,40 @@ class _ListFavoritesState extends State<ListFavorites> {
             temp.add(p.toJson());
           }
           final choice = await listInfoDialogChoice(
-              context, temp, 'code', 'name', 'Codigo', 'Nombre',
-              title: 'Los siguientes productos se eliminaran de favoritos: ',
-              flexCol1: 1,
-              flexCol2: 4);
+            context,
+            temp,
+            'code',
+            'name',
+            'Codigo',
+            'Nombre',
+            title: 'Los siguientes productos se eliminaran de favoritos: ',
+            flexCol1: 1,
+            flexCol2: 4,
+          );
           if (choice) {
-            // Get favorites Ids of favoristesToDelete
+            // Get favorites Ids of favoritesToDelete
             final favoritesIds = await WishlistProvider.getFavoritesId(
-                widget.customer, favoritesToDelete);
+              widget.customer,
+              favoritesToDelete,
+            );
             // Delete them locally and return it's cloud_id to delete it in server
             final favServerIds = await WishlistProvider.deleteLocalFav(
-                widget.customer, favoritesIds);
-            final res = await WishlistProvider.deleteCustomerFavsOnServer(
-                widget.customer.idCloud.toString(), favServerIds);
+              widget.customer,
+              favoritesIds,
+            );
+            final res = await WishlistProvider.deleteCustomerFavoritesOnServer(
+              widget.customer.idCloud.toString(),
+              favServerIds,
+            );
             manageResponseAlerts(res, context);
             if (!res['error']) {
               // Navigator.pop(context);
               favoritesToDelete = [];
               confirmDialog(
-                  context, res['body']['message'], 'assets/images/success.png');
+                context,
+                res['body']['message'],
+                'assets/images/success.png',
+              );
             } else {
               await _reload(context);
             }
@@ -326,7 +352,9 @@ class _ListFavoritesState extends State<ListFavorites> {
     return AppButton(
       onTap: () async {
         final printData = await WishlistProvider.buildPrintDataMap(
-            widget.customer, favorites);
+          widget.customer,
+          favorites,
+        );
         PrintFav(printData: printData).launch(context);
       },
       color: Colors.white,

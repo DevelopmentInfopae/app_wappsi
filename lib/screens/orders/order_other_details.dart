@@ -5,7 +5,6 @@
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
@@ -36,28 +35,27 @@ import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/sale_functions/percent_formating.dart';
-import 'package:pos_wappsi/utils/text_formating/currency_formater.dart';
+import 'package:pos_wappsi/utils/text_formating/currency_formatter.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
-import 'package:time_picker_widget/time_picker_widget.dart';
 
 class OrderOtherDetails extends StatefulWidget {
   const OrderOtherDetails({Key? key}) : super(key: key);
 
   @override
-  _OrderOtherDetailsState createState() => _OrderOtherDetailsState();
+  Validations createState() => Validations();
 }
 
-class _OrderOtherDetailsState extends State<OrderOtherDetails> {
-  // to disable paybutton when awaiting for response
-  bool _sending = false;
+class Validations extends State<OrderOtherDetails> {
+  // to disable payButton when awaiting for response
+  bool sending = false;
   // TextEditingController _paymentDocumentController =
   //     TextEditingController();
 
-  // form key to valitations
+  // form key to validations
   final GlobalKey<FormState> _inputsKey = GlobalKey<FormState>();
 
-  /// to controll send order button
+  /// to control send order button
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
 
@@ -72,10 +70,10 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
   final TextEditingController _orderDController = TextEditingController();
   // final TextEditingController _dateController = TextEditingController();
 
-  List<DeliveryTime> delivTimes = [];
-  bool delvTimeRequired = false;
+  List<DeliveryTime> deliveryTimes = [];
+  bool deliveryTimeRequired = false;
 
-  DeliveryTime? selectedDelvTime;
+  DeliveryTime? selectedDeliveryTime;
 
   @override
   void initState() {
@@ -90,7 +88,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       _orderNController.text = orderBloc.getOrderNote!;
     }
 
-    selectedDelvTime = orderBloc.getDeliveryTime;
+    selectedDeliveryTime = orderBloc.getDeliveryTime;
     super.initState();
   }
 
@@ -107,8 +105,11 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
     _size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: appBar(context, 'Agregar pedido',
-          image: 'assets/images/add-order.png'),
+      appBar: appBar(
+        context,
+        'Agregar pedido',
+        image: 'assets/images/add-order.png',
+      ),
       body: _body(),
     );
   }
@@ -150,64 +151,74 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
 
   Widget _productsInfo() {
     final totalBeforeDisc = getFormatedCurrency(
-        orderBloc.getSubTotalWithoutDiscount(),
-        decimals: 1);
+      orderBloc.getSubTotalWithoutDiscount(),
+      decimals: 1,
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(children: [
-          Text(
-            'Cantidad de items: ',
-            style: buttonsTextStyle(context, color: pColor),
-          ),
-          const Spacer(),
-          Text('${orderBloc.getItemsCount()}', style: numbersTextStyle())
-        ]
-            // style: textTheme,
+        Row(
+          children: [
+            Text(
+              'Cantidad de items: ',
+              style: buttonsTextStyle(context, color: pColor),
             ),
-        Row(children: [
-          Text(
-            'Subtotal: ',
-            style: buttonsTextStyle(context, color: pColor),
-          ),
-          const Spacer(),
-          Text(totalBeforeDisc, style: numbersTextStyle())
-        ]),
+            const Spacer(),
+            Text('${orderBloc.getItemsCount()}', style: numbersTextStyle())
+          ],
+          // style: textTheme,
+        ),
+        Row(
+          children: [
+            Text(
+              'Subtotal: ',
+              style: buttonsTextStyle(context, color: pColor),
+            ),
+            const Spacer(),
+            Text(totalBeforeDisc, style: numbersTextStyle())
+          ],
+        ),
         StreamBuilder<double?>(
-            stream: orderBloc.orderDiscountStream,
-            builder: (context, snapshot) {
-              return Row(
-                children: [
-                  Text(
-                    'Descuento: ',
-                    style: buttonsTextStyle(context, color: pColor),
+          stream: orderBloc.orderDiscountStream,
+          builder: (context, snapshot) {
+            return Row(
+              children: [
+                Text(
+                  'Descuento: ',
+                  style: buttonsTextStyle(context, color: pColor),
 
-                    // style: textTheme,
-                  ),
-                  const Spacer(),
-                  Text(getFormatedCurrency(snapshot.data ?? 0),
-                      style: numbersTextStyle())
-                ],
-              );
-            }),
+                  // style: textTheme,
+                ),
+                const Spacer(),
+                Text(
+                  getFormatedCurrency(snapshot.data ?? 0),
+                  style: numbersTextStyle(),
+                )
+              ],
+            );
+          },
+        ),
         StreamBuilder<double?>(
-            stream: orderBloc.subTotalStream,
-            initialData: orderBloc.getSubTotalWithoutDiscount(),
-            builder: (context, snapshot) {
-              return Row(
-                children: [
-                  Text(
-                    'Total: ',
-                    style: buttonsTextStyle(context, color: pColor),
+          stream: orderBloc.subTotalStream,
+          initialData: orderBloc.getSubTotalWithoutDiscount(),
+          builder: (context, snapshot) {
+            return Row(
+              children: [
+                Text(
+                  'Total: ',
+                  style: buttonsTextStyle(context, color: pColor),
 
-                    // style: textTheme,
-                  ),
-                  const Spacer(),
-                  Text(getFormatedCurrency(snapshot.data ?? 0),
-                      style: numbersTextStyle())
-                ],
-              );
-            }),
+                  // style: textTheme,
+                ),
+                const Spacer(),
+                Text(
+                  getFormatedCurrency(snapshot.data ?? 0),
+                  style: numbersTextStyle(),
+                )
+              ],
+            );
+          },
+        ),
       ],
     );
   }
@@ -237,7 +248,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
     return DropdownSearch<DocumentsTypes>(
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       // key: _documentTypeKey,
@@ -294,7 +305,9 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       inputFormatters:
           _discountTSelected == '1' ? [CurrencyInputFormatter()] : null,
       decoration: InputDecorations.authInputDecoration(
-          hintText: '', labelText: 'Descuento'),
+        hintText: '',
+        labelText: 'Descuento',
+      ),
 
       textFieldType: TextFieldType.PHONE,
       textStyle: Theme.of(context).textTheme.subtitle1,
@@ -334,10 +347,12 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
               orderBloc.setOrderDiscount(0);
             }
             try {
-              final valueD = double.parse((value == '' ? '0' : value)
-                  .replaceAll('\$', '')
-                  .replaceAll(',', '')
-                  .replaceAll('.', ''));
+              final valueD = double.parse(
+                (value == '' ? '0' : value)
+                    .replaceAll('\$', '')
+                    .replaceAll(',', '')
+                    .replaceAll('.', ''),
+              );
               orderBloc.setOrderDiscount(valueD);
             } catch (e) {
               // orderBloc.setOrderDiscount(0);
@@ -357,7 +372,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
 
             orderBloc.setOrderDiscount(oDiscount);
 
-            // ubdate subtotal
+            // update subtotal
 
           }
         }
@@ -413,26 +428,29 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
     return Container(
       // height: 60,
       decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(radius2),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.grey,
-              offset: Offset(0.0, 1.0), //(x,y)
-              blurRadius: 2.0,
-            )
-          ]),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(radius2),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 2.0,
+          )
+        ],
+      ),
       padding: kButtonHPadding2,
       child: DateTimePicker(
         type: DateTimePickerType.date,
         firstDate: DateTime.now(),
         decoration: const InputDecoration(
-            border: InputBorder.none, labelText: 'Fecha de entrega'),
+          border: InputBorder.none,
+          labelText: 'Fecha de entrega',
+        ),
         style: normalTextStyle(context),
         // controller: _dateController,
         // dateHintText: "Fe",
         // inputFormatters: [
-        //   Formater()
+        //   Formatter()
         // ],
         // locale: const Locale('ES'),
         lastDate: DateTime(
@@ -450,29 +468,32 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
               // reset deliveryTime value
               _updateDeliveryTime(null);
               if (orderBloc.getCustomerAddresses!.location != null) {
-                // get deliverytimes avaible for selected delivery date
-                await loadDelivTimes(value);
+                // get deliveryTimes available for selected delivery date
+                await loadDeliveryTimes(value);
               } else {
                 await confirmDialog(
-                    context,
-                    "No se encontro zona configurada para la sucursal de cliente seleccionada.",
-                    "assets/images/dizzy-robot.png");
+                  context,
+                  'No se encontró zona configurada para la sucursal de cliente seleccionada.',
+                  'assets/images/dizzy-robot.png',
+                );
                 // if (orderBloc.getCustomerAddresses != null) {
                 final reloadAddress = await showDialog<Map<String, dynamic>?>(
-                    barrierDismissible: false,
-                    // useRootNavigator: false,
-                    context: context,
-                    builder: (context) {
-                      return ZoneSZoneSelection(
-                          address: orderBloc.getCustomerAddresses!);
-                    });
-                if (reloadAddress?["reload_address"] == true) {
-                  final reloadedAdrres =
+                  barrierDismissible: false,
+                  // useRootNavigator: false,
+                  context: context,
+                  builder: (context) {
+                    return ZoneSZoneSelection(
+                      address: orderBloc.getCustomerAddresses!,
+                    );
+                  },
+                );
+                if (reloadAddress?['reload_address'] == true) {
+                  final reloadedAddres =
                       await CustomerAddressesProvider.loadCustomerAddress(
-                          (orderBloc.getCustomerAddresses?.idCloud ?? "")
-                              .toString());
-                  orderBloc.setCustomerAddresses(reloadedAdrres);
-                  await loadDelivTimes(value);
+                    (orderBloc.getCustomerAddresses?.idCloud ?? '').toString(),
+                  );
+                  orderBloc.setCustomerAddresses(reloadedAddres);
+                  await loadDeliveryTimes(value);
                 }
                 // }
               }
@@ -483,14 +504,18 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
     );
   }
 
-  Future<void> loadDelivTimes(String value) async {
-    delivTimes = await DeliveryTimeProvider.getAvaibleDelivTimes(
-        context, value, orderBloc.getCustomerAddresses!.location);
-    if (delivTimes.isEmpty) {
+  Future<void> loadDeliveryTimes(String value) async {
+    deliveryTimes = await DeliveryTimeProvider.getAvailableDeliveryTimes(
+      context,
+      value,
+      orderBloc.getCustomerAddresses!.location,
+    );
+    if (deliveryTimes.isEmpty) {
       await confirmDialog(
-          context,
-          "No se encontraron franjas horarias para la zona de sucursal de cliente.",
-          'assets/images/dizzy-robot.png');
+        context,
+        'No se encontraron franjas horarias para la zona de sucursal de cliente.',
+        'assets/images/dizzy-robot.png',
+      );
     } else {
       setState(() {});
     }
@@ -501,40 +526,43 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
 
     // String timeText = '--:-- A --:--';
 
-    // if (selectedDelvTime != null) {
-    //   timeText = selectedDelvTime!.getDelvTimeText();
+    // if (selectedDeliveryTime != null) {
+    //   timeText = selectedDeliveryTime!.getDeliveryTimeText();
     // }
 
     List<Widget> widgets = [];
-    for (var delivTime in delivTimes) {
-      final bool isSelected = selectedDelvTime?.id == delivTime.id;
+    for (var deliveryTime in deliveryTimes) {
+      final bool isSelected = selectedDeliveryTime?.id == deliveryTime.id;
       final choiceCard = AppButton(
         onTap: () async {
-          orderBloc.setDeliveryTime(delivTime);
-          selectedDelvTime = delivTime;
+          orderBloc.setDeliveryTime(deliveryTime);
+          selectedDeliveryTime = deliveryTime;
           setState(() {});
         },
         width: 0,
         height: 0,
         shapeBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(radius1)),
+          borderRadius: BorderRadius.circular(radius1),
+        ),
         padding: EdgeInsets.zero,
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(radius1),
-              border: isSelected ? Border.all(color: pColor) : null
-              // color: isSelected ? primary : Colors.white
-              ),
+            borderRadius: BorderRadius.circular(radius1),
+            border: isSelected ? Border.all(color: pColor) : null,
+            // color: isSelected ? primary : Colors.white
+          ),
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
           width: 90,
           height: 80,
           child: Text(
-            (delivTime.toString()),
-            style: normalTextStyle(context,
-                // color: !isSelected ? null : Colors.white,
-                fontWeightDelta: !isSelected ? 1 : 2),
+            (deliveryTime.toString()),
+            style: normalTextStyle(
+              context,
+              // color: !isSelected ? null : Colors.white,
+              fontWeightDelta: !isSelected ? 1 : 2,
+            ),
             textAlign: TextAlign.center,
           ),
         ),
@@ -548,17 +576,17 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
         children: widgets,
       ),
     );
-    // return delivTimes.isEmpty
+    // return deliveryTimes.isEmpty
     //     ? Container(
     //         decoration: BoxDecoration(
     //             color: Colors.white,
-    //             border: delvTimeRequired ? Border.all(color: errorColor) : null,
+    //             border: deliveryTimeRequired ? Border.all(color: errorColor) : null,
     //             borderRadius: BorderRadius.circular(normalBorderRadius)),
     //         child: labelContent('Franja Horaria', timeText,
     //             capitalize: false, labelColor: pColor, labelBold: false))
     //     : DropdownButton<DeliveryTime?>(
-    //         value: selectedDelvTime,
-    //         items: delivTimes.map((e) {
+    //         value: selectedDeliveryTime,
+    //         items: deliveryTimes.map((e) {
     //           return DropdownMenuItem<DeliveryTime?>(
     //             child: labelContent('Franja Horaria', timeText,
     //                 capitalize: false, labelColor: pColor, labelBold: false),
@@ -578,7 +606,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
     //   child: Container(
     //       decoration: BoxDecoration(
     //           color: Colors.white,
-    //           border: delvTimeRequired ? Border.all(color: errorColor) : null,
+    //           border: deliveryTimeRequired ? Border.all(color: errorColor) : null,
     //           borderRadius: BorderRadius.circular(normalBorderRadius)),
     //       child: labelContent('Franja Horaria', timeText,
     //           capitalize: false, labelColor: pColor, labelBold: false)),
@@ -591,7 +619,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
     //         initialTime: const TimeOfDay(hour: 6, minute: 0),
     //         selectableTimePredicate: (time) {
     //           // return true;
-    //           return delivTimes.where((element) {
+    //           return deliveryTimes.where((element) {
     //             return element.time1 == time;
     //           }).isNotEmpty;
     //           //   _availableHours.indexOf(time.hour) != -1 &&
@@ -600,34 +628,50 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
     //         });
     //     _updateDeliveryTime(time);
     //   },
-    //   enabled: delivTimes.isNotEmpty,
+    //   enabled: deliveryTimes.isNotEmpty,
     // );
   }
 
   void _updateDeliveryTime(TimeOfDay? time) {
     setState(() {
       if (time != null) {
-        delvTimeRequired = false;
-        selectedDelvTime = delivTimes.where((element) {
+        deliveryTimeRequired = false;
+        selectedDeliveryTime = deliveryTimes.where((element) {
           return element.time1 == time;
         }).first;
       } else {
-        selectedDelvTime = null;
+        selectedDeliveryTime = null;
       }
     });
-    orderBloc.setDeliveryTime(selectedDelvTime);
+    orderBloc.setDeliveryTime(selectedDeliveryTime);
   }
 
   Widget _invoiceNote() {
-    return textFormField(context, 'Nota de venta', (String value) {
-      orderBloc.setOrderNote(value);
-    }, (String value) {}, () {}, controller: _internalNController, maxLines: 4);
+    return textFormField(
+      context,
+      'Nota de venta',
+      (String value) {
+        orderBloc.setOrderNote(value);
+      },
+      (String value) {},
+      () {},
+      controller: _internalNController,
+      maxLines: 4,
+    );
   }
 
   Widget _dispatchNote() {
-    return textFormField(context, 'Nota interna', (String value) {
-      orderBloc.setInternalNote(value);
-    }, (String value) {}, () {}, controller: _orderNController, maxLines: 4);
+    return textFormField(
+      context,
+      'Nota interna',
+      (String value) {
+        orderBloc.setInternalNote(value);
+      },
+      (String value) {},
+      () {},
+      controller: _orderNController,
+      maxLines: 4,
+    );
   }
 
   Widget _sendAndPrint() {
@@ -635,12 +679,11 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         subTotal(
-                stream: orderBloc.subTotalStream,
-                large: true,
-                color: Colors.white,
-                defaultValue: orderBloc.getSubTotal())
-            .paddingLeft(8)
-            .expand(),
+          stream: orderBloc.subTotalStream,
+          large: true,
+          color: Colors.white,
+          defaultValue: orderBloc.getSubTotal(),
+        ).paddingLeft(8).expand(),
         sendButton().flexible(),
       ],
     );
@@ -658,7 +701,7 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
         // await Future.delayed(Duration(seconds: 5));
         if ((_inputsKey.currentState?.validate() ?? false) &&
             orderBloc.getDeliveryTime != null &&
-            !_sending) {
+            !sending) {
           final res = await OrdersProvider.sendOrderData(context);
           if (res) {
             /// update JWT token
@@ -684,13 +727,14 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
           }
         } else if (orderBloc.getDeliveryTime == null) {
           setState(() {
-            delvTimeRequired = true;
+            deliveryTimeRequired = true;
           });
           scaffoldAlert(
-              context,
-              'Debe seleccionar una franja horaria para la entrega del pedido',
-              const Duration(seconds: 1),
-              backGroundColor: errorColor);
+            context,
+            'Debe seleccionar una franja horaria para la entrega del pedido',
+            const Duration(seconds: 1),
+            backGroundColor: errorColor,
+          );
           await _errorAnimation();
         } else {
           await _errorAnimation();
@@ -706,10 +750,16 @@ class _OrderOtherDetailsState extends State<OrderOtherDetails> {
         height: 50,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(radius3)),
-        child: Text('Finalizar pedido',
-            style: buttonsSmallTextStyle(context,
-                color: !_sending ? pColor : greyColor)),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(radius3),
+        ),
+        child: Text(
+          'Finalizar pedido',
+          style: buttonsSmallTextStyle(
+            context,
+            color: !sending ? pColor : greyColor,
+          ),
+        ),
       ),
       width: 145,
       errorColor: errorColor,

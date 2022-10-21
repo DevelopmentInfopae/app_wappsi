@@ -40,7 +40,7 @@ class _OtpPageState extends State<OtpPage> {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Text(
-        "Digite el valor con el que desea abrir la caja (COP)",
+        'Ingrese el valor con el que desea abrir la caja (COP)',
         maxLines: 3,
         overflow: TextOverflow.ellipsis,
         textAlign: TextAlign.center,

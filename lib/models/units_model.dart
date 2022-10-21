@@ -35,31 +35,33 @@ class UnitsModel {
   String lastUpdate;
 
   factory UnitsModel.fromJson(Map<String, dynamic> json) => UnitsModel(
-        id: json["id"],
-        idCloud: json["id_cloud"],
-        code: json["code"],
-        name: json["name"],
-        baseUnit: int.tryParse(json["base_unit"].toString()),
-        operator: json["operator"]??'',
+        id: json['id'],
+        idCloud: json['id_cloud'],
+        code: json['code'],
+        name: json['name'],
+        baseUnit: int.tryParse(json['base_unit'].toString()),
+        operator: json['operator'] ?? '',
         unitValue: double.tryParse(
-            (json['valor_unitario'] ?? json["unit_value"]??'').toString()) ?? 1.0,
-        operationValue:double.tryParse((json["operation_value"]??'').toString())??1.0,
-           
+              (json['valor_unitario'] ?? json['unit_value'] ?? '').toString(),
+            ) ??
+            1.0,
+        operationValue:
+            double.tryParse((json['operation_value'] ?? '').toString()) ?? 1.0,
         priceGroupId:
-            json["price_group_id"] == '' ? null : json["price_group_id"],
-        lastUpdate: json["last_update"],
+            json['price_group_id'] == '' ? null : json['price_group_id'],
+        lastUpdate: json['last_update'],
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "id_cloud": idCloud,
-        "code": code,
-        "base_unit": baseUnit,
-        "operator": operator,
-        "unit_value": unitValue,
-        "operation_value": operationValue,
-        "price_group_id": priceGroupId,
-        "last_update": lastUpdate,
+        'id': id,
+        'id_cloud': idCloud,
+        'code': code,
+        'base_unit': baseUnit,
+        'operator': operator,
+        'unit_value': unitValue,
+        'operation_value': operationValue,
+        'price_group_id': priceGroupId,
+        'last_update': lastUpdate,
       };
   factory UnitsModel.fromRawJson(String str) =>
       UnitsModel.fromJson(json.decode(str));

@@ -25,23 +25,23 @@ import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/sale_functions/percent_formating.dart';
-import 'package:pos_wappsi/utils/text_formating/currency_formater.dart';
+import 'package:pos_wappsi/utils/text_formating/currency_formatter.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class PurchaseOtherData extends StatefulWidget {
   const PurchaseOtherData({Key? key}) : super(key: key);
 
   @override
-  _QuotePurchaseDataState createState() => _QuotePurchaseDataState();
+  Validations createState() => Validations();
 }
 
-class _QuotePurchaseDataState extends State<PurchaseOtherData> {
-  // to disable paybutton when awaiting for response
+class Validations extends State<PurchaseOtherData> {
+  // to disable payButton when awaiting for response
   bool _sending = false;
   // TextEditingController _paymentDocumentController =
   //     TextEditingController();
 
-  // form key to valitations
+  // form key to validations
   final GlobalKey<FormState> _inputsKey = GlobalKey<FormState>();
 
   late Size _size;
@@ -114,29 +114,33 @@ class _QuotePurchaseDataState extends State<PurchaseOtherData> {
 
   Widget _productsInfo() {
     final totalBeforeDisc = getFormatedCurrency(
-        purchaseBloc.getSubTotalCostWithoutDiscount(),
-        decimals: 1);
+      purchaseBloc.getSubTotalCostWithoutDiscount(),
+      decimals: 1,
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(children: [
-          Text(
-            'Cantidad de items: ',
-            style: buttonsTextStyle(context, color: pColor),
-          ),
-          const Spacer(),
-          Text('${purchaseBloc.getItemsCount()}', style: numbersTextStyle())
-        ]
-            // style: textTheme,
+        Row(
+          children: [
+            Text(
+              'Cantidad de items: ',
+              style: buttonsTextStyle(context, color: pColor),
             ),
-        Row(children: [
-          Text(
-            'Subtotal: ',
-            style: buttonsTextStyle(context, color: pColor),
-          ),
-          const Spacer(),
-          Text(totalBeforeDisc, style: numbersTextStyle())
-        ]),
+            const Spacer(),
+            Text('${purchaseBloc.getItemsCount()}', style: numbersTextStyle())
+          ],
+          // style: textTheme,
+        ),
+        Row(
+          children: [
+            Text(
+              'Subtotal: ',
+              style: buttonsTextStyle(context, color: pColor),
+            ),
+            const Spacer(),
+            Text(totalBeforeDisc, style: numbersTextStyle())
+          ],
+        ),
         // StreamBuilder<double?>(
         //     stream: purchaseBloc.discountStream,
         //     builder: (context, snapshot) {
@@ -155,23 +159,26 @@ class _QuotePurchaseDataState extends State<PurchaseOtherData> {
         //       );
         //     }),
         StreamBuilder<double?>(
-            stream: purchaseBloc.subTotalCostStream,
-            initialData: purchaseBloc.getSubTotalCostWithoutDiscount(),
-            builder: (context, snapshot) {
-              return Row(
-                children: [
-                  Text(
-                    'Total: ',
-                    style: buttonsTextStyle(context, color: pColor),
+          stream: purchaseBloc.subTotalCostStream,
+          initialData: purchaseBloc.getSubTotalCostWithoutDiscount(),
+          builder: (context, snapshot) {
+            return Row(
+              children: [
+                Text(
+                  'Total: ',
+                  style: buttonsTextStyle(context, color: pColor),
 
-                    // style: textTheme,
-                  ),
-                  const Spacer(),
-                  Text(getFormatedCurrency(snapshot.data ?? 0),
-                      style: numbersTextStyle())
-                ],
-              );
-            }),
+                  // style: textTheme,
+                ),
+                const Spacer(),
+                Text(
+                  getFormatedCurrency(snapshot.data ?? 0),
+                  style: numbersTextStyle(),
+                )
+              ],
+            );
+          },
+        ),
 
         // RichText(
         //   text: TextSpan(
@@ -203,7 +210,9 @@ class _QuotePurchaseDataState extends State<PurchaseOtherData> {
       inputFormatters:
           _discountTSelected == '1' ? [CurrencyInputFormatter()] : null,
       decoration: InputDecorations.authInputDecoration(
-          hintText: '', labelText: 'Descuento'),
+        hintText: '',
+        labelText: 'Descuento',
+      ),
 
       textFieldType: TextFieldType.PHONE,
       textStyle: Theme.of(context).textTheme.subtitle1,
@@ -243,10 +252,12 @@ class _QuotePurchaseDataState extends State<PurchaseOtherData> {
               purchaseBloc.setDiscount(0);
             }
             try {
-              final valueD = double.parse((value == '' ? '0' : value)
-                  .replaceAll('\$', '')
-                  .replaceAll(',', '')
-                  .replaceAll('.', ''));
+              final valueD = double.parse(
+                (value == '' ? '0' : value)
+                    .replaceAll('\$', '')
+                    .replaceAll(',', '')
+                    .replaceAll('.', ''),
+              );
               purchaseBloc.setDiscount(valueD);
             } catch (e) {
               // purchaseBloc.setDiscount(0);
@@ -266,7 +277,7 @@ class _QuotePurchaseDataState extends State<PurchaseOtherData> {
 
             purchaseBloc.setDiscount(oDiscount);
 
-            // ubdate subtotal
+            // update subtotal
 
           }
         }
@@ -318,9 +329,17 @@ class _QuotePurchaseDataState extends State<PurchaseOtherData> {
   }
 
   Widget _note() {
-    return textFormField(context, 'Nota', (String value) {
-      purchaseBloc.setPayrNote(value);
-    }, (String value) {}, () {}, controller: _internalNController, maxLines: 4);
+    return textFormField(
+      context,
+      'Nota',
+      (String value) {
+        purchaseBloc.setPayNote(value);
+      },
+      (String value) {},
+      () {},
+      controller: _internalNController,
+      maxLines: 4,
+    );
   }
 
   Widget _sendAndPrint() {
@@ -328,12 +347,11 @@ class _QuotePurchaseDataState extends State<PurchaseOtherData> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         subTotal(
-                stream: purchaseBloc.subTotalCostStream,
-                large: true,
-                color: Colors.white,
-                defaultValue: purchaseBloc.getSubTotalCost())
-            .paddingLeft(8)
-            .expand(),
+          stream: purchaseBloc.subTotalCostStream,
+          large: true,
+          color: Colors.white,
+          defaultValue: purchaseBloc.getSubTotalCost(),
+        ).paddingLeft(8).expand(),
         sendButton().flexible(),
       ],
     );
@@ -383,9 +401,13 @@ class _QuotePurchaseDataState extends State<PurchaseOtherData> {
                 }
               }
             },
-      child: Text('Finalizar compra',
-          style: buttonsSmallTextStyle(context,
-              color: !_sending ? pColor : greyColor)),
+      child: Text(
+        'Finalizar compra',
+        style: buttonsSmallTextStyle(
+          context,
+          color: !_sending ? pColor : greyColor,
+        ),
+      ),
     );
   }
 }

@@ -43,23 +43,38 @@ class ErrorsProvider {
     };
 
     scaffoldAlert(
-        context, 'Enviando reporte de error', const Duration(seconds: 1),
-        key: UniqueKey());
+      context,
+      'Enviando reporte de error',
+      const Duration(seconds: 1),
+      key: UniqueKey(),
+    );
     final apiProvider = DataProvider();
     final res = await apiProvider.postPetition(
-        sendErrorEndP, body, dataBloc.getHeaders());
+      sendErrorEndP,
+      body,
+      dataBloc.getHeaders(),
+    );
     bool sendOk = false;
     hideCurrentScaffoldAlert(context);
     if (res['status'] == -1) {
       await reloadDialog(
-          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+        context,
+        res['body']['message'],
+        'assets/images/dizzy-robot.png',
+      );
     } else if (res['error']) {
       confirmDialog(
-          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+        context,
+        res['body']['message'],
+        'assets/images/dizzy-robot.png',
+      );
     } else if (!res['error']) {
       scaffoldAlert(
-          context, 'Reporte de errores exitoso', const Duration(seconds: 1),
-          key: UniqueKey());
+        context,
+        'Reporte de errores exitoso',
+        const Duration(seconds: 1),
+        key: UniqueKey(),
+      );
       sendOk = true;
       await deleteAllErrors();
       // Navigator.pop(context);

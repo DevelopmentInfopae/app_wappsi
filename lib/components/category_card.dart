@@ -30,7 +30,7 @@
 //           Expanded(
 //             flex: 1,
 //             child: ButtonGlobalWithoutIcon(
-//               buttontext: 'Select',
+//               buttonText: 'Select',
 //               buttonDecoration: kButtonDecoration.copyWith(color: kDarkWhite),
 //               onPressed: pressed,
 //               buttonTextColor: Colors.black,

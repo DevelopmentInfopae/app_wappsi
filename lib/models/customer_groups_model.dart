@@ -23,18 +23,18 @@ class CustomerGroupsModel {
 
   factory CustomerGroupsModel.fromJson(Map<String, dynamic> json) =>
       CustomerGroupsModel(
-        id: json["id"].toString(),
-        idCloud: json["id_cloud"].toString(),
-        name: json["name"].toString(),
-        percent: json["percent"].toString(),
-        lastUpdate: json["last_update"].toString(),
+        id: json['id'].toString(),
+        idCloud: json['id_cloud'].toString(),
+        name: json['name'].toString(),
+        percent: json['percent'].toString(),
+        lastUpdate: json['last_update'].toString(),
       );
 
   Map<String, dynamic> toJson() => {
-        "id_cloud": idCloud,
-        "name": name,
-        "percent": percent,
-        "last_update": lastUpdate,
+        'id_cloud': idCloud,
+        'name': name,
+        'percent': percent,
+        'last_update': lastUpdate,
       };
 
   @override

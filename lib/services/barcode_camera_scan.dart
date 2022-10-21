@@ -4,7 +4,11 @@ import 'package:pos_wappsi/utils/print_errors.dart';
 
 Future<void> startBarcodeScanStream() async {
   FlutterBarcodeScanner.getBarcodeStreamReceiver(
-          '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
+    '#ff6666',
+    'Cancel',
+    true,
+    ScanMode.BARCODE,
+  )!
       .listen((barcode) => printConsole(barcode));
 }
 
@@ -14,7 +18,11 @@ Future<String?> scanBarcodeNormal() async {
   // Platform messages may fail, so we use a try/catch PlatformException.
   try {
     barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-        '#ff6666', 'Cancelar', true, ScanMode.BARCODE);
+      '#ff6666',
+      'Cancelar',
+      true,
+      ScanMode.BARCODE,
+    );
     printConsole(barcodeScanRes);
   } on PlatformException {
     barcodeScanRes = 'Fallo al obtener versión de plataforma.';

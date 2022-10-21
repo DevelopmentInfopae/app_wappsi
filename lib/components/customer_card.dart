@@ -7,7 +7,7 @@ import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/screens/customers/customer_details.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-// class to show customer indormation in form of a card
+// class to show customer information in form of a card
 
 class CustomerCard extends StatelessWidget {
   final CompanyModel customer;
@@ -31,9 +31,10 @@ class CustomerCard extends StatelessWidget {
         elevation: 5,
         child: Row(
           children: [
-            customerPhoto(customer.customerProfilePhoto ?? '',
-                    fit: BoxFit.cover)
-                .withSize(height: 90, width: 90),
+            customerPhoto(
+              customer.customerProfilePhoto ?? '',
+              fit: BoxFit.cover,
+            ).withSize(height: 90, width: 90),
             vDivider(width: 2, heigh: 80),
             _description(context).flexible(flex: 7)
           ],

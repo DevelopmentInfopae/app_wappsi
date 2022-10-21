@@ -36,17 +36,21 @@ class StatesProvider {
       // printConsole(e);
     }
 
-    return await DBProvider.db.insertOrUpdateQuerys('sma_states', data);
+    return await DBProvider.db.insertOrUpdateQuery('sma_states', data);
   }
 
-  static Future<List<StatesModel>> loadFromDB(
-      {String? search, String? country}) async {
+  static Future<List<StatesModel>> loadFromDB({
+    String? search,
+    String? country,
+  }) async {
     List<Map<String, dynamic>>? data = [];
     if (country != null) {
-      data = await DBProvider.db.sqlQuery('sma_states',
-          where:
-              "PAIS=$country AND (DEPARTAMENTO LIKE '%$search%' OR DESADICIONAL LIKE '%$search%')",
-          limit: 20);
+      data = await DBProvider.db.sqlQuery(
+        'sma_states',
+        where:
+            "PAIS=$country AND (DEPARTAMENTO LIKE '%$search%' OR DESADICIONAL LIKE '%$search%')",
+        limit: 20,
+      );
     } else {
       return [];
     }
@@ -78,9 +82,9 @@ class StatesProvider {
   }
 
   /// Load state given a state departamento
-  static Future<StatesModel?> loadState(String detartamento) async {
+  static Future<StatesModel?> loadState(String departamento) async {
     final res = await DBProvider.db
-        .sqlFirstQuery('sma_states', where: "DEPARTAMENTO = '$detartamento'");
+        .sqlFirstQuery('sma_states', where: "DEPARTAMENTO = '$departamento'");
     if (res == null) {
       return null;
     } else {

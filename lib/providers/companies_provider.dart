@@ -74,10 +74,12 @@ class CompaniesProvider {
     return [];
   }
 
-  /// Write customer and his address created locally into local DB with ids comming from cloud
+  /// Write customer and his address created locally into local DB with ids coming from cloud
   /// DB
   static Future<bool> writeCustomerInLDB(
-      Map<String, dynamic> body, Map<String, dynamic> res) async {
+    Map<String, dynamic> body,
+    Map<String, dynamic> res,
+  ) async {
     // ignore: prefer_typing_uninitialized_variables
     var customerId;
     bool result = false;
@@ -90,9 +92,11 @@ class CompaniesProvider {
       body.remove('geo_location');
       body.remove('favorites');
     } catch (e) {
-      await logError(e,
-          from:
-              'Removing unsused info on writing customer on localDB from local customer creation data');
+      await logError(
+        e,
+        from:
+            'Removing unused info on writing customer on localDB from local customer creation data',
+      );
       // printConsole(e);
     }
 
@@ -126,7 +130,9 @@ class CompaniesProvider {
       try {
         // if (favorites != []) {
         final favRes = await WishlistProvider.saveCustomerFavFromLocal(
-            customerId.toString(), favorites);
+          customerId.toString(),
+          favorites,
+        );
         printConsole(favRes);
         // }
       } catch (e) {
@@ -144,11 +150,12 @@ class CompaniesProvider {
   //-----------------------------------------------------------------------------
 
   /// Return all rows in sma_companies with group_id=3 (customers) and status = 1
-  static Future<List<Map<String, dynamic>>?> getAllCustomers(
-      {int? limit,
-      String orderBy = 'name',
-      bool offset = false,
-      int? offsetValue}) async {
+  static Future<List<Map<String, dynamic>>?> getAllCustomers({
+    int? limit,
+    String orderBy = 'name',
+    bool offset = false,
+    int? offsetValue,
+  }) async {
     if (offset) {
       limit = 50;
     }
@@ -160,10 +167,10 @@ class CompaniesProvider {
     }
     String? idDefaultCustomer = dataBloc.getBIllerData!.defaultCustomerId;
 
-    final defCustm = ' OR id_cloud=$idDefaultCustomer';
+    final defCustomer = ' OR id_cloud=$idDefaultCustomer';
 
     final sellerIdFilter = dataBloc.userData?.viewRight == 0
-        ? ' AND customer_seller_id_assigned=${dataBloc.userData!.sellerId}$defCustm'
+        ? ' AND customer_seller_id_assigned=${dataBloc.userData!.sellerId}$defCustomer'
         : '';
     return await DBProvider.db.sqlQuery(
       'sma_companies',
@@ -174,24 +181,29 @@ class CompaniesProvider {
     );
   }
 
-  /// Find costumers from sma_companies, with and withoud search params.
-  static Future<List<Map<String, dynamic>>?> findCustomer(String? searchs,
-      {int? limit,
-      String orderBy = 'name',
-      bool offset = false,
-      int offsetValue = 1}) async {
-    if (searchs == null || searchs == '') {
+  /// Find costumers from sma_companies, with and without search params.
+  static Future<List<Map<String, dynamic>>?> findCustomer(
+    String? search, {
+    int? limit,
+    String orderBy = 'name',
+    bool offset = false,
+    int offsetValue = 1,
+  }) async {
+    if (search == null || search == '') {
       return await getAllCustomers(
-          limit: limit,
-          orderBy: orderBy,
-          offset: true,
-          offsetValue: offsetValue);
+        limit: limit,
+        orderBy: orderBy,
+        offset: true,
+        offsetValue: offsetValue,
+      );
     } else {
-      return (await findCustomerBySearch(searchs,
-              limit: limit,
-              orderBy: orderBy,
-              offset: offset,
-              offsetValue: offsetValue)) ??
+      return (await findCustomerBySearch(
+            search,
+            limit: limit,
+            orderBy: orderBy,
+            offset: offset,
+            offsetValue: offsetValue,
+          )) ??
           [];
     }
   }
@@ -199,22 +211,25 @@ class CompaniesProvider {
   /// Return all rows in sma_companies with group_id=3 (customers) and fields
   /// (name,company,vat_no ) LIKE given string
   static Future<List<Map<String, dynamic>>?> findCustomerBySearch(
-      String searchs,
-      {int? limit,
-      String orderBy = 'name',
-      bool offset = false,
-      int offsetValue = 1}) async {
+    String search, {
+    int? limit,
+    String orderBy = 'name',
+    bool offset = false,
+    int offsetValue = 1,
+  }) async {
     final sellerIdFilter = dataBloc.userData?.viewRight == 0
         ? ' AND customer_seller_id_assigned=${dataBloc.userData!.sellerId}'
         : '';
-    return await DBProvider.db.sqlQuery('sma_companies',
-        where:
-            '''group_id = 3 AND status=1$sellerIdFilter AND (name LIKE "%$searchs%" OR company 
-            LIKE "%$searchs%" OR vat_no LIKE "%$searchs%" OR first_name LIKE "%$searchs%" 
-            OR second_name LIKE "%$searchs%" OR first_lastname LIKE "%$searchs%"
-            OR second_lastname LIKE "%$searchs%") ${offset ? "LIMIT 50 offset " + offsetValue.toString() : ""}''',
-        limit: limit,
-        orderBy: orderBy);
+    return await DBProvider.db.sqlQuery(
+      'sma_companies',
+      where:
+          '''group_id = 3 AND status=1$sellerIdFilter AND (name LIKE "%$search%" OR company 
+            LIKE "%$search%" OR vat_no LIKE "%$search%" OR first_name LIKE "%$search%" 
+            OR second_name LIKE "%$search%" OR first_lastname LIKE "%$search%"
+            OR second_lastname LIKE "%$search%") ${offset ? "LIMIT 50 offset " + offsetValue.toString() : ""}''',
+      limit: limit,
+      orderBy: orderBy,
+    );
   }
 
   //-----------------------------------------------------------------------------
@@ -223,11 +238,12 @@ class CompaniesProvider {
   //-----------------------------------------------------------------------------
 
   /// Return all rows in sma_companies with group_id=3 (customers) and status = 1
-  static Future<List<Map<String, dynamic>>?> getAllSuppliers(
-      {int? limit,
-      String orderBy = 'name',
-      bool offset = false,
-      int? offsetValue}) async {
+  static Future<List<Map<String, dynamic>>?> getAllSuppliers({
+    int? limit,
+    String orderBy = 'name',
+    bool offset = false,
+    int? offsetValue,
+  }) async {
     if (offset) {
       limit = 50;
     }
@@ -241,24 +257,29 @@ class CompaniesProvider {
     );
   }
 
-  /// Find costumers from sma_companies, with and withoud search params.
-  static Future<List<Map<String, dynamic>>?> findSupplier(String? searchs,
-      {int? limit,
-      String orderBy = 'name',
-      bool offset = false,
-      int offsetValue = 1}) async {
-    if (searchs == null || searchs == '') {
+  /// Find costumers from sma_companies, with and without search params.
+  static Future<List<Map<String, dynamic>>?> findSupplier(
+    String? search, {
+    int? limit,
+    String orderBy = 'name',
+    bool offset = false,
+    int offsetValue = 1,
+  }) async {
+    if (search == null || search == '') {
       return await getAllSuppliers(
-          limit: limit,
-          orderBy: orderBy,
-          offset: true,
-          offsetValue: offsetValue);
+        limit: limit,
+        orderBy: orderBy,
+        offset: true,
+        offsetValue: offsetValue,
+      );
     } else {
-      return (await findSupplierBySearch(searchs,
-              limit: limit,
-              orderBy: orderBy,
-              offset: offset,
-              offsetValue: offsetValue)) ??
+      return (await findSupplierBySearch(
+            search,
+            limit: limit,
+            orderBy: orderBy,
+            offset: offset,
+            offsetValue: offsetValue,
+          )) ??
           [];
     }
   }
@@ -266,40 +287,49 @@ class CompaniesProvider {
   /// Return all rows in sma_companies with group_id=3 (customers) and fields
   /// (name,company,vat_no ) LIKE given string
   static Future<List<Map<String, dynamic>>?> findSupplierBySearch(
-      String searchs,
-      {int? limit,
-      String orderBy = 'name',
-      bool offset = false,
-      int offsetValue = 1}) async {
-    return await DBProvider.db.sqlQuery('sma_companies',
-        where:
-            '''group_name = "supplier" AND status=1 AND (name LIKE "%$searchs%" OR company 
-            LIKE "%$searchs%" OR vat_no LIKE "%$searchs%" OR first_name LIKE "%$searchs%" 
-            OR second_name LIKE "%$searchs%" OR first_lastname LIKE "%$searchs%"
-            OR second_lastname LIKE "%$searchs%") ${offset ? "LIMIT 50 offset " + offsetValue.toString() : ""}''',
-        limit: limit,
-        orderBy: orderBy);
+    String search, {
+    int? limit,
+    String orderBy = 'name',
+    bool offset = false,
+    int offsetValue = 1,
+  }) async {
+    return await DBProvider.db.sqlQuery(
+      'sma_companies',
+      where:
+          '''group_name = "supplier" AND status=1 AND (name LIKE "%$search%" OR company 
+            LIKE "%$search%" OR vat_no LIKE "%$search%" OR first_name LIKE "%$search%" 
+            OR second_name LIKE "%$search%" OR first_lastname LIKE "%$search%"
+            OR second_lastname LIKE "%$search%") ${offset ? "LIMIT 50 offset " + offsetValue.toString() : ""}''',
+      limit: limit,
+      orderBy: orderBy,
+    );
   }
 
   /// Return a row of sma_companies given an id
   static Future<Map<String, dynamic>?> findCompanyById(String id) async {
-    return await DBProvider.db.sqlFirstQuery('sma_companies',
-        // columns: _customerColumns,
-        where: "id_cloud = $id");
+    return await DBProvider.db.sqlFirstQuery(
+      'sma_companies',
+      // columns: _customerColumns,
+      where: 'id_cloud = $id',
+    );
   }
 
   /// Return a row of sma_companies given an id
   static Future<Map<String, dynamic>?> verifyDocNum(String docNum) async {
-    return await DBProvider.db.sqlFirstQuery('sma_companies',
-        // columns: _customerColumns,
-        where: "vat_no = $docNum");
+    return await DBProvider.db.sqlFirstQuery(
+      'sma_companies',
+      // columns: _customerColumns,
+      where: 'vat_no = $docNum',
+    );
   }
 
   /// Return a CompanyModel object given a company ID
   static Future<CompanyModel?> getCompanyById(String id) async {
-    final res = await DBProvider.db.sqlFirstQuery('sma_companies',
-        // columns: _customerColumns,
-        where: "id_cloud = $id");
+    final res = await DBProvider.db.sqlFirstQuery(
+      'sma_companies',
+      // columns: _customerColumns,
+      where: 'id_cloud = $id',
+    );
     if (res != null) {
       return CompanyModel.fromJson(res);
     } else {
@@ -313,7 +343,7 @@ class CompaniesProvider {
       final res = await DBProvider.db.sqlFirstQuery(
         'sma_biller_data',
         columns: ['default_customer_id'],
-        where: "biller_id=$billerId",
+        where: 'biller_id=$billerId',
       );
       int? customerId;
       if (res != null) {
@@ -345,22 +375,25 @@ class CompaniesProvider {
   /// Return all data in sma_customer_groups of a given id
   static Future<Map<String, dynamic>?> findCustomerDiscount(String id) async {
     return await DBProvider.db
-        .sqlFirstQuery('sma_customer_groups', where: "id_cloud = $id");
+        .sqlFirstQuery('sma_customer_groups', where: 'id_cloud = $id');
   }
 
-  static sendCustomerInfo(BuildContext context,
-      {bool createUser = true}) async {
+  static sendCustomerInfo(
+    BuildContext context, {
+    bool createUser = true,
+  }) async {
     final customerGroup = await GroupsProvider.loadCustomerGroup();
     // bool closeLoading = false;
-    final addrss = CustomerAddressesModel(
-        id: '',
-        direccion: '',
-        vatNo: '',
-        idCloud: 0,
-        customerGroupId: '',
-        sucursal: '',
-        companyId: '',
-        priceGroupId: '');
+    final address = CustomerAddressesModel(
+      id: '',
+      direccion: '',
+      vatNo: '',
+      idCloud: 0,
+      customerGroupId: '',
+      sucursal: '',
+      companyId: '',
+      priceGroupId: '',
+    );
 
     final apiProvider = DataProvider();
     if (customerGroup == null) {
@@ -382,7 +415,7 @@ class CompaniesProvider {
     customerBloc.getCustomer.customerSellerIdAssigned =
         dataBloc.userData?.sellerId;
     Map<String, dynamic> body = {};
-    body["company_data"] = customerBloc.getCustomer.customerToJson();
+    body['company_data'] = customerBloc.getCustomer.customerToJson();
 
     if (createUser) {
       if (customerBloc.getUserName != null &&
@@ -396,7 +429,7 @@ class CompaniesProvider {
         temp['email'] = customerBloc.getCustomer.email;
         temp['phone'] = customerBloc.getCustomer.phone;
         temp['group_id'] = customerBloc.getCustomer.groupId;
-        temp['active'] = "1";
+        temp['active'] = '1';
         body['user_data'] = temp;
       }
 
@@ -418,34 +451,38 @@ class CompaniesProvider {
 
     // data for address creation
 
-    addrss.city = customerBloc.getCustomer.city;
-    addrss.cityCode = customerBloc.getCustomer.cityCode;
-    addrss.latitude = customerBloc.getLocation?.latitude;
-    addrss.longitude = customerBloc.getLocation?.longitude;
-    addrss.direccion = customerBloc.getCustomer.address;
-    addrss.sucursal = customerBloc.getCustomer.buildName();
-    addrss.customerAddressSellerIdAssigned =
+    address.city = customerBloc.getCustomer.city;
+    address.cityCode = customerBloc.getCustomer.cityCode;
+    address.latitude = customerBloc.getLocation?.latitude;
+    address.longitude = customerBloc.getLocation?.longitude;
+    address.direccion = customerBloc.getCustomer.address;
+    address.sucursal = customerBloc.getCustomer.buildName();
+    address.customerAddressSellerIdAssigned =
         customerBloc.getCustomer.customerSellerIdAssigned;
-    addrss.city = customerBloc.getCustomer.city;
-    addrss.state = customerBloc.getCustomer.state;
-    addrss.country = customerBloc.getCustomer.country;
-    addrss.phone = customerBloc.getCustomer.phone;
-    addrss.customerGroupId = customerBloc.getCustomer.customerGroupId;
-    addrss.customerGroupName = customerBloc.getCustomer.customerGroupName;
-    addrss.priceGroupId = customerBloc.getCustomer.priceGroupId ?? "";
-    addrss.priceGroupName = customerBloc.getCustomer.priceGroupName;
-    addrss.email = customerBloc.getCustomer.email;
-    addrss.location = customerBloc.getCustomer.location;
-    addrss.subzone = customerBloc.getCustomer.subzone;
-    addrss.code = (customerBloc.getCustomer.vatNo ?? "") + "- 01";
+    address.city = customerBloc.getCustomer.city;
+    address.state = customerBloc.getCustomer.state;
+    address.country = customerBloc.getCustomer.country;
+    address.phone = customerBloc.getCustomer.phone;
+    address.customerGroupId = customerBloc.getCustomer.customerGroupId;
+    address.customerGroupName = customerBloc.getCustomer.customerGroupName;
+    address.priceGroupId = customerBloc.getCustomer.priceGroupId ?? '';
+    address.priceGroupName = customerBloc.getCustomer.priceGroupName;
+    address.email = customerBloc.getCustomer.email;
+    address.location = customerBloc.getCustomer.location;
+    address.subzone = customerBloc.getCustomer.subzone;
+    address.code = (customerBloc.getCustomer.vatNo ?? '') + '- 01';
 
-    // add addres data to data
+    // add Addres data to data
 
-    body["address_data"] = addrss.toJson(toCreate: true);
+    body['address_data'] = address.toJson(toCreate: true);
 
     try {
-      scaffoldAlert(context, 'Registrando cliente', const Duration(seconds: 10),
-          key: UniqueKey());
+      scaffoldAlert(
+        context,
+        'Registrando cliente',
+        const Duration(seconds: 10),
+        key: UniqueKey(),
+      );
     } catch (e) {
       // printConsole(e);
       await logError(e, from: 'SendCustomerInfo');
@@ -455,7 +492,10 @@ class CompaniesProvider {
     }
 
     final res = await apiProvider.postPetition(
-        addCompanyEndP, body, dataBloc.getHeaders());
+      addCompanyEndP,
+      body,
+      dataBloc.getHeaders(),
+    );
 
     hideCurrentScaffoldAlert(context);
     // if(closeLoading){
@@ -463,10 +503,16 @@ class CompaniesProvider {
     //   }
     if (res['status'] == -1) {
       await reloadDialog(
-          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+        context,
+        res['body']['message'],
+        'assets/images/dizzy-robot.png',
+      );
     } else if (res['error']) {
       confirmDialog(
-          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+        context,
+        res['body']['message'],
+        'assets/images/dizzy-robot.png',
+      );
     } else {
       // update local DB with company info
 
@@ -480,13 +526,19 @@ class CompaniesProvider {
         // ).launch(context);
         await dataBloc.syncElements(['Terceros', 'Sucursales'], context);
         confirmDialog(
-            context, res['body']['message'], 'assets/images/success.png');
+          context,
+          res['body']['message'],
+          'assets/images/success.png',
+        );
       } else {
         // if local db update success, go to home
         goHomeAndEmptyCustomerBloc(context);
         // dataBloc.homeKey?.currentState?.selectTab(TabItem.clients);
         confirmDialog(
-            context, res['body']['message'], 'assets/images/success.png');
+          context,
+          res['body']['message'],
+          'assets/images/success.png',
+        );
       }
 
       // Navigator.pop(context);
@@ -510,11 +562,14 @@ class CompaniesProvider {
     }
 
     final body =
-        supplierBloc.getCustomer.customerToJson(defaultCustGroup: null);
+        supplierBloc.getCustomer.customerToJson(defaultCustomerGroup: null);
     try {
       scaffoldAlert(
-          context, 'Registrando proveedor', const Duration(seconds: 10),
-          key: UniqueKey());
+        context,
+        'Registrando proveedor',
+        const Duration(seconds: 10),
+        key: UniqueKey(),
+      );
     } catch (e) {
       // printConsole(e);
       await logError(e, from: 'Creating provider');
@@ -524,7 +579,10 @@ class CompaniesProvider {
     }
 
     final res = await apiProvider.postPetition(
-        addSupplierEndP, body, dataBloc.getHeaders());
+      addSupplierEndP,
+      body,
+      dataBloc.getHeaders(),
+    );
 
     hideCurrentScaffoldAlert(context);
     // if(closeLoading){
@@ -532,10 +590,16 @@ class CompaniesProvider {
     //   }
     if (res['status'] == -1) {
       await reloadDialog(
-          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+        context,
+        res['body']['message'],
+        'assets/images/dizzy-robot.png',
+      );
     } else if (res['error']) {
       confirmDialog(
-          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+        context,
+        res['body']['message'],
+        'assets/images/dizzy-robot.png',
+      );
     } else {
       // update local DB with company info
 
@@ -559,7 +623,10 @@ class CompaniesProvider {
         // ).launch(context);
         await dataBloc.syncElements(['Terceros', 'Sucursales'], context);
         confirmDialog(
-            context, res['body']['message'], 'assets/images/success.png');
+          context,
+          res['body']['message'],
+          'assets/images/success.png',
+        );
       } else {
         // if local db update success, go to home
         supplierBloc.dispose();
@@ -575,14 +642,20 @@ class CompaniesProvider {
         }
         // dataBloc.homeKey?.currentState?.selectTab(TabItem.clients);
         confirmDialog(
-            context, res['body']['message'], 'assets/images/success.png');
+          context,
+          res['body']['message'],
+          'assets/images/success.png',
+        );
       }
 
       // Navigator.pop(context);
     }
   }
 
-  static addCompanyFavs(BuildContext context, CompanyModel customer) async {
+  static addCompanyFavorites(
+    BuildContext context,
+    CompanyModel customer,
+  ) async {
     final Map<String, dynamic> body = {};
 
     if (customerBloc.getUserName != null && customerBloc.getPassword != null) {
@@ -596,7 +669,7 @@ class CompaniesProvider {
       temp['phone'] = customer.phone;
       temp['email'] = customer.email;
       temp['group_id'] = customer.groupId;
-      temp['avtive'] = 1;
+      temp['active'] = 1;
 
       body['user_data'] = temp;
     }
@@ -613,23 +686,36 @@ class CompaniesProvider {
     // add customer id
     body['company_id'] = customer.idCloud;
 
-    scaffoldAlert(context, 'Añadiendo favoritos', const Duration(seconds: 10),
-        key: UniqueKey());
+    scaffoldAlert(
+      context,
+      'Añadiendo favoritos',
+      const Duration(seconds: 10),
+      key: UniqueKey(),
+    );
     final apiProvider = DataProvider();
     final res = await apiProvider.postPetition(
-        addCompanyFavEndP, body, dataBloc.getHeaders());
+      addCompanyFavEndP,
+      body,
+      dataBloc.getHeaders(),
+    );
 
     hideCurrentScaffoldAlert(context);
     if (res['status'] == -1) {
       await reloadDialog(
-          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+        context,
+        res['body']['message'],
+        'assets/images/dizzy-robot.png',
+      );
     } else if (res['error']) {
       confirmDialog(
-          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+        context,
+        res['body']['message'],
+        'assets/images/dizzy-robot.png',
+      );
     } else if (!res['error']) {
       // update local DB with company info
       bool dbUpdated =
-          await WishlistProvider.reloadCustomerFavs(context, customer);
+          await WishlistProvider.reloadCustomerFavorites(context, customer);
 
       // if fails we force DB sync
       if (!dbUpdated) {
@@ -639,14 +725,20 @@ class CompaniesProvider {
         // ).launch(context);
         await dataBloc.syncElements(['Terceros', 'Sucursales'], context);
         confirmDialog(
-            context, res['body']['message'], 'assets/images/success.png');
+          context,
+          res['body']['message'],
+          'assets/images/success.png',
+        );
       } else {
         // if local db update success, go to home
 
         customerBloc.dispose();
         // dataBloc.homeKey?.currentState?.selectTab(TabItem.clients);
         confirmDialog(
-            context, res['body']['message'], 'assets/images/success.png');
+          context,
+          res['body']['message'],
+          'assets/images/success.png',
+        );
       }
 
       // Navigator.pop(context);

@@ -21,7 +21,7 @@
 
 		static sort(tcell) {
 			let tbody = tcell.closest('table').tBodies[0];
-			let preserveFirst = !tcell.closest('thead') && !tcell.parentNode.querySelectorAll('td').length;
+			let preserveFirst = !tcell.closest('thead') && !tcell.parentNode.QueryelectorAll('td').length;
 			let asc = !(tbody.tracyAsc === tcell.cellIndex);
 			tbody.tracyAsc = asc ? tcell.cellIndex : null;
 			let getText = (cell) => { return cell ? cell.innerText : ''; };

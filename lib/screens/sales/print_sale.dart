@@ -24,13 +24,13 @@ class PrintSale extends StatefulWidget {
   final String image;
   final bool exitToNewSale;
   final Map<dynamic, dynamic> printData;
-  const PrintSale(
-      {Key? key,
-      required this.printData,
-      this.back = false,
-      this.exitToNewSale = true,
-      this.image = 'assets/images/printer.png'})
-      : super(key: key);
+  const PrintSale({
+    Key? key,
+    required this.printData,
+    this.back = false,
+    this.exitToNewSale = true,
+    this.image = 'assets/images/printer.png',
+  }) : super(key: key);
   @override
   _PrintSaleState createState() => _PrintSaleState();
 }
@@ -47,7 +47,7 @@ class _PrintSaleState extends State<PrintSale> {
   @override
   void initState() {
     printFormat = PrintFormat(productsList: widget.printData['products']);
-    // initSavetoPath();
+    // initSaveToPath();
     // initPlatformState();
     super.initState();
   }
@@ -96,7 +96,8 @@ class _PrintSaleState extends State<PrintSale> {
               billerImage(widget.printData['company_data']?.logo ?? '')
                   .paddingSymmetric(horizontal: 40)
                   .withHeight(
-                      _size.height * 0.09 > 60 ? _size.height * 0.09 : 60),
+                    _size.height * 0.09 > 60 ? _size.height * 0.09 : 60,
+                  ),
               legalInformation(textTheme, widget.printData),
               emptyLine(),
               invoiceRef(textTheme, widget.printData),
@@ -105,10 +106,10 @@ class _PrintSaleState extends State<PrintSale> {
                   .withWidth(_size.width * 0.75)
                   .paddingSymmetric(horizontal: 10),
               emptyLine(),
-              products(widget.printData,
-                      pricePolicy:
-                          dataBloc.settings!['prioridad_precios_producto'])
-                  .withWidth(_size.width * 0.75),
+              products(
+                widget.printData,
+                pricePolicy: dataBloc.settings!['prioridad_precios_producto'],
+              ).withWidth(_size.width * 0.75),
               emptyLine(),
               paymentDetails(textTheme, widget.printData)
                   .withWidth(_size.width * 0.75)
@@ -168,7 +169,10 @@ class _PrintSaleState extends State<PrintSale> {
           });
 
           scaffoldAlert(
-              context, 'Imprimiendo comprobante', const Duration(seconds: 3));
+            context,
+            'Imprimiendo comprobante',
+            const Duration(seconds: 3),
+          );
           String? companyLogo = widget.printData['company_data']?.logo;
           bool? result;
           if (companyLogo != null && companyLogo != '') {
@@ -177,8 +181,9 @@ class _PrintSaleState extends State<PrintSale> {
                   companyLogo.substring(0, companyLogo.length - 4) + '.jpg';
             }
             result = await printFormat.printPOS(
-                dataBloc.dirPath! + billerImgDir + companyLogo,
-                widget.printData);
+              dataBloc.dirPath! + billerImgDir + companyLogo,
+              widget.printData,
+            );
           }
           if (result ?? false) {
             await Future.delayed(const Duration(seconds: 3));
@@ -192,7 +197,10 @@ class _PrintSaleState extends State<PrintSale> {
             });
           } else {
             scaffoldAlert(
-                context, 'Error al imprimir', const Duration(seconds: 3));
+              context,
+              'Error al imprimir',
+              const Duration(seconds: 3),
+            );
           }
         } else {
           PrintSettings(
@@ -243,8 +251,11 @@ class _PrintSaleState extends State<PrintSale> {
       },
       child: Row(
         children: [
-          const Icon(Icons.arrow_back_ios_new_rounded,
-              size: kIconSize, color: pColor),
+          const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            size: kIconSize,
+            color: pColor,
+          ),
           Text(
             ' Salir',
             style: buttonsSmallTextStyle(context, color: pColor),

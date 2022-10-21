@@ -44,7 +44,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
     passwordFocusNode = FocusNode();
   }
 
-  Widget _pasword(BuildContext context, LoginFormProvider loginForm) {
+  Widget _password(BuildContext context, LoginFormProvider loginForm) {
     return TextFormField(
       // controller: TextEditingController(), // Optional
       // textFieldType: TextFieldType.PASSWORD,
@@ -53,16 +53,16 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
       focusNode: passwordFocusNode,
       obscureText: true,
       style: Theme.of(context).textTheme.subtitle1,
-      initialValue: loginForm.passsword,
+      initialValue: loginForm.password,
       keyboardType: TextInputType.visiblePassword,
       validator: (value) {
         if (value!.length < 6) {
-          return "La contraseña debe tener minimo 6 caracteres";
+          return 'La contraseña debe tener mínimo 6 caracteres';
         }
         return null;
       },
       onChanged: (value) {
-        loginForm.passsword = value;
+        loginForm.password = value;
       },
       onFieldSubmitted: (_) {
         loginForm.loading
@@ -71,9 +71,10 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
             : _login(loginForm, context);
       },
       decoration: InputDecorations.authInputDecoration(
-          hintText: '',
-          labelText: 'Contraseña',
-          prefixIcon: FontAwesomeIcons.key),
+        hintText: '',
+        labelText: 'Contraseña',
+        prefixIcon: FontAwesomeIcons.key,
+      ),
     );
   }
 
@@ -90,7 +91,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
 
       validator: (value) {
         if (value!.isEmpty) {
-          return "Debe suministrar un nombre de usuario";
+          return 'Debe suministrar un nombre de usuario';
         }
         return null;
       },
@@ -101,36 +102,44 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
         passwordFocusNode.requestFocus();
       },
       decoration: InputDecorations.authInputDecoration(
-          hintText: '',
-          labelText: 'Nombre de usuario',
-          prefixIcon: FontAwesomeIcons.user),
+        hintText: '',
+        labelText: 'Nombre de usuario',
+        prefixIcon: FontAwesomeIcons.user,
+      ),
     );
   }
 
   ButtonGlobalWithoutIcon _loginButton(
-      BuildContext context, LoginFormProvider loginForm) {
+    BuildContext context,
+    LoginFormProvider loginForm,
+  ) {
     return ButtonGlobalWithoutIcon(
-        buttontext: 'Iniciar sesión',
-        buttonDecoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(5),
-            ),
-            // to change color based on _isloading property
-            color: loginForm.loading ? Colors.grey : pColor),
-        onPressed: loginForm.loading
-            ? () {}
-            : () async => await _login(loginForm, context));
+      buttonText: 'Iniciar sesión',
+      buttonDecoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(
+          Radius.circular(5),
+        ),
+        // to change color based on _isLoading property
+        color: loginForm.loading ? Colors.grey : pColor,
+      ),
+      onPressed: loginForm.loading
+          ? () {}
+          : () async => await _login(loginForm, context),
+    );
   }
 
-  _login(LoginFormProvider loginForm, BuildContext context,
-      {bool override = false}) async {
+  _login(
+    LoginFormProvider loginForm,
+    BuildContext context, {
+    bool override = false,
+  }) async {
     if (loginForm.isValidForm()) {
       // hide keyboard
       passwordFocusNode.unfocus();
 
       loading(context);
 
-      // diable login button
+      // disable login button
       loginForm.isLoading = true;
 
       final res = await loginForm.login(override: override);
@@ -144,7 +153,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
     }
   }
 
-  Future<void> _saveData(Map res) async{
+  Future<void> _saveData(Map res) async {
     //______________________________________________________________________________________________________________
     //
     //                                    SAVE DATA INTO USER PROVIDER
@@ -152,9 +161,9 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
 
     dataBloc.setUserData(UserModel.fromJson(res['body']['user_data']));
 
-    /// set current logged user id on sharedprefs
-    // set current user value 
-    await setValue("current_user",dataBloc.userData?.id);
+    /// set current logged user id on sharedPrefs
+    // set current user value
+    await setValue('current_user', dataBloc.userData?.id);
 
     //______________________________________________________________________________________________________________
     //
@@ -171,17 +180,22 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
 
     if (res['body']['register_data']['status'] == 'open') {
       dataBloc.setRegisterData(
-          RegisterModel.fromJson(res['body']['register_data']));
+        RegisterModel.fromJson(res['body']['register_data']),
+      );
     }
   }
 
   void _overrideLogin(
-      LoginFormProvider loginForm, BuildContext context, Map res) async {
+    LoginFormProvider loginForm,
+    BuildContext context,
+    Map res,
+  ) async {
     bool override = await choiceAlert(
-        context,
-        res['body']['message'] + '¿Desea iniciar sesión igualmente?',
-        'assets/images/warning.png',
-        skipeable: false);
+      context,
+      res['body']['message'] + '¿Desea iniciar sesión igualmente?',
+      'assets/images/warning.png',
+      skipeable: false,
+    );
 
     if (override) {
       await _login(loginForm, context, override: override);
@@ -195,8 +209,12 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
   //                                 WHAT TO DO IN ANY RESPONSE STATUS
   //_______________________________________________________________________________________________________________
 
-  Future<void> _action(Map res, LoginFormProvider loginForm, BuildContext context,
-      bool override) async{
+  Future<void> _action(
+    Map res,
+    LoginFormProvider loginForm,
+    BuildContext context,
+    bool override,
+  ) async {
     if (res['body']['logged'] ?? false) {
       // ScaffoldMessenger.of(context).hideCurrentSnackBar();
       Navigator.pop(context);
@@ -214,7 +232,6 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
       loginForm.isLoading = false;
       userFocusNode.requestFocus();
     } else if (res['status'] == 1) {
-      
       _navigate(context, res);
     } else {
       // hide loading snackbar
@@ -225,7 +242,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
     }
   }
 
-  Future<void> _navigate(BuildContext context, Map res) async{
+  Future<void> _navigate(BuildContext context, Map res) async {
     // ScaffoldMessenger.of(context).hideCurrentSnackBar();
     Navigator.pop(context);
 
@@ -262,7 +279,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
               children: [
                 _userName(loginForm),
                 SizedBox(height: loginFormSpacer(context)),
-                _pasword(context, loginForm),
+                _password(context, loginForm),
               ],
             ).flexible(flex: 7),
             _loginButton(context, loginForm).flexible(flex: 3)

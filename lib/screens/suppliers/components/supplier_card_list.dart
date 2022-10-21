@@ -9,9 +9,11 @@ import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class SuppliersCardList extends StatefulWidget {
-  const SuppliersCardList(
-      {Key? key, required this.customer, required this.searchParams})
-      : super(key: key);
+  const SuppliersCardList({
+    Key? key,
+    required this.customer,
+    required this.searchParams,
+  }) : super(key: key);
   final List<CompanyModel> customer;
   final Map searchParams;
 
@@ -75,10 +77,11 @@ class _SupplierCardListState extends State<SuppliersCardList> {
 
       _loading = true;
       final res = await CompaniesProvider.findCustomer(
-          widget.searchParams['search'] ?? '',
-          offset: true,
-          limit: 30,
-          offsetValue: _page * 30);
+        widget.searchParams['search'] ?? '',
+        offset: true,
+        limit: 30,
+        offsetValue: _page * 30,
+      );
       if (res != null) {
         if (res.isNotEmpty) {
           setState(() {
@@ -95,15 +98,16 @@ class _SupplierCardListState extends State<SuppliersCardList> {
         }
       } else {
         await confirmDialog(
-            context, 'Error al cargar datos', 'assets/images/dizzy-robot.png');
+          context,
+          'Error al cargar datos',
+          'assets/images/dizzy-robot.png',
+        );
         setState(() {
           _loading = false;
         });
       }
     }
   }
-
-  
 }
 
 class SuppliersCard extends StatefulWidget {
@@ -133,9 +137,11 @@ class _SuppliersCardState extends State<SuppliersCard> {
         elevation: 5,
         child: Row(
           children: [
-            customerPhoto(widget.customer.customerProfilePhoto??'', fit: BoxFit.cover)
-                .withSize(height: 90, width: 90),
-            vDivider(width: 2,heigh: 80 ),
+            customerPhoto(
+              widget.customer.customerProfilePhoto ?? '',
+              fit: BoxFit.cover,
+            ).withSize(height: 90, width: 90),
+            vDivider(width: 2, heigh: 80),
             _description().flexible(flex: 7),
           ],
         ).withHeight(100),
@@ -168,6 +174,7 @@ class _SuppliersCardState extends State<SuppliersCard> {
       overflow: TextOverflow.ellipsis,
     );
   }
+
   Text _phone() {
     return Text(
       'Tel : ${widget.customer.phone}',

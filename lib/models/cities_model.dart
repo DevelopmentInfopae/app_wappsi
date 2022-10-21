@@ -25,21 +25,19 @@ class CitiesModel {
   String? descripcion;
 
   factory CitiesModel.fromJson(Map<String, dynamic> json) => CitiesModel(
-        pais: json["PAIS"],
-        coddepartamento:
-            json["CODDEPARTAMENTO"],
-        departamento:
-            json["DEPARTAMENTO"],
-        codigo: json["CODIGO"],
-        descripcion: json["DESCRIPCION"],
+        pais: json['PAIS'],
+        coddepartamento: json['CODDEPARTAMENTO'],
+        departamento: json['DEPARTAMENTO'],
+        codigo: json['CODIGO'],
+        descripcion: json['DESCRIPCION'],
       );
 
   Map<String, dynamic> toJson() => {
-        "PAIS": pais,
-        "CODDEPARTAMENTO": coddepartamento,
-        "DEPARTAMENTO": departamento,
-        "CODIGO": codigo,
-        "DESCRIPCION": descripcion,
+        'PAIS': pais,
+        'CODDEPARTAMENTO': coddepartamento,
+        'DEPARTAMENTO': departamento,
+        'CODIGO': codigo,
+        'DESCRIPCION': descripcion,
       };
 
   @override

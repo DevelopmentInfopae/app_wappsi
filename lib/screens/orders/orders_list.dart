@@ -63,13 +63,17 @@ class _ProductsState extends State<OrdersList> {
       },
       child: Scaffold(
         key: _scaffoldKey,
-        appBar: appBar(context, 'Listado de pedidos',
-            elevation: false,
-            radius: 0,
-            image: 'assets/images/order-list.png', onPop: () {
-          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
-          Navigator.pop(context);
-        }),
+        appBar: appBar(
+          context,
+          'Listado de pedidos',
+          elevation: false,
+          radius: 0,
+          image: 'assets/images/order-list.png',
+          onPop: () {
+            dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+            Navigator.pop(context);
+          },
+        ),
         body: _body(),
       ),
     );
@@ -80,31 +84,37 @@ class _ProductsState extends State<OrdersList> {
       children: [
         _searchBar(),
         AnimatedCrossFade(
-            firstChild: _filterList(),
-            secondChild: SizedBox(),
-            crossFadeState: showFilters
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            duration: Duration(milliseconds: 200)),
+          firstChild: _filterList(),
+          secondChild: SizedBox(),
+          crossFadeState: showFilters
+              ? CrossFadeState.showFirst
+              : CrossFadeState.showSecond,
+          duration: Duration(milliseconds: 200),
+        ),
         // _ordersList(),
 
         // showFilters ? _filterList() : const SizedBox(),
         GestureDetector(
           child: RefreshIndicator(
-              displacement: 0,
-              onRefresh: () async {
-                /// sync sma_order_sales
-                final dbProvider = SyncDBProvider();
+            displacement: 0,
+            onRefresh: () async {
+              /// sync sma_order_sales
+              final dbProvider = SyncDBProvider();
 
-                final result = await dbProvider.syncOption(
-                    context, tableNamesToSyncOpt['sma_order_sales']!);
-                if (result) {
-                  final orders = await LocalOrdersProvider.listLocalOrders(
-                      search: _searchParams['search'] ?? '', filters: _filters);
-                  _ordersListStream.sink.add(orders);
-                }
-              },
-              child: _ordersList()),
+              final result = await dbProvider.syncOption(
+                context,
+                tableNamesToSyncOpt['sma_order_sales']!,
+              );
+              if (result) {
+                final orders = await LocalOrdersProvider.listLocalOrders(
+                  search: _searchParams['search'] ?? '',
+                  filters: _filters,
+                );
+                _ordersListStream.sink.add(orders);
+              }
+            },
+            child: _ordersList(),
+          ),
           onVerticalDragStart: (val) {
             if (showFilters) {
               setState(() {
@@ -126,13 +136,16 @@ class _ProductsState extends State<OrdersList> {
 
   Widget _filterList() {
     return Container(
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(0.0, 1.0), //(x,y)
-          blurRadius: 2.0,
-        )
-      ]),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 2.0,
+          )
+        ],
+      ),
       width: double.infinity,
       child: FutureBuilder(
         future: LocalOrdersProvider.orderStatus(),
@@ -192,16 +205,17 @@ class _ProductsState extends State<OrdersList> {
       height: searchHeight + 8,
       width: _size.width,
       decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: showFilters
-              ? null
-              : [
-                  const BoxShadow(
-                    color: Colors.grey,
-                    offset: Offset(0.0, 1.0), //(x,y)
-                    blurRadius: 2.0,
-                  )
-                ]),
+        color: Colors.white,
+        boxShadow: showFilters
+            ? null
+            : [
+                const BoxShadow(
+                  color: Colors.grey,
+                  offset: Offset(0.0, 1.0), //(x,y)
+                  blurRadius: 2.0,
+                )
+              ],
+      ),
     );
   }
 
@@ -209,38 +223,41 @@ class _ProductsState extends State<OrdersList> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: const BorderRadius.all(Radius.circular(radius2))),
+        color: Colors.grey[200],
+        borderRadius: const BorderRadius.all(Radius.circular(radius2)),
+      ),
       child: FloatingSearchAppBar(
-          hint: 'Buscar pedido',
-          transitionDuration: const Duration(milliseconds: 800),
-          clearQueryOnClose: true,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-          // alwaysOpened: true,
-          titleStyle: buttonsSmallTextStyle(context),
-          hintStyle: buttonsSmallTextStyle(context),
-          hideKeyboardOnDownScroll: true,
-          onQueryChanged: _onQueryChanged,
-          // height: _size.height * 0.078 < 55 ? 55 : _size.height * 0.078,
-          elevation: 0,
-          actions: [
-            FloatingSearchBarAction.searchToClear(
-                // showIfClosed: false,
-                ),
-            FloatingSearchBarAction.icon(
-                showIfOpened: true,
-                icon: showFilters
-                    ? Icons.filter_alt_rounded
-                    : Icons.filter_alt_outlined,
-                onTap: () {
-                  setState(() {
-                    showFilters = !showFilters;
-                  });
-                })
-          ],
-          automaticallyImplyBackButton: false,
-          color: Colors.grey[200],
-          body: null),
+        hint: 'Buscar pedido',
+        transitionDuration: const Duration(milliseconds: 800),
+        clearQueryOnClose: true,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+        // alwaysOpened: true,
+        titleStyle: buttonsSmallTextStyle(context),
+        hintStyle: buttonsSmallTextStyle(context),
+        hideKeyboardOnDownScroll: true,
+        onQueryChanged: _onQueryChanged,
+        // height: _size.height * 0.078 < 55 ? 55 : _size.height * 0.078,
+        elevation: 0,
+        actions: [
+          FloatingSearchBarAction.searchToClear(
+              // showIfClosed: false,
+              ),
+          FloatingSearchBarAction.icon(
+            showIfOpened: true,
+            icon: showFilters
+                ? Icons.filter_alt_rounded
+                : Icons.filter_alt_outlined,
+            onTap: () {
+              setState(() {
+                showFilters = !showFilters;
+              });
+            },
+          )
+        ],
+        automaticallyImplyBackButton: false,
+        color: Colors.grey[200],
+        body: null,
+      ),
     );
   }
 
@@ -248,33 +265,37 @@ class _ProductsState extends State<OrdersList> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 7),
       child: FutureBuilder<List<OrderModel>?>(
-          future: LocalOrdersProvider.listLocalOrders(filters: _filters),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<OrderModel>?> snapshot) {
-            if (snapshot.hasData) {
-              return StreamBuilder<List<OrderModel>>(
-                  stream: _ordersListStream.stream,
-                  builder:
-                      (context, AsyncSnapshot<List<OrderModel>> snapshot2) {
-                    if (snapshot2.hasData) {
-                      return OrdersCardList(
-                          orders: snapshot2.data!,
-                          searchParams: _searchParams,
-                          filters: _filters);
-                    } else {
-                      _ordersListStream.sink.add(snapshot.data!);
+        future: LocalOrdersProvider.listLocalOrders(filters: _filters),
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<List<OrderModel>?> snapshot,
+        ) {
+          if (snapshot.hasData) {
+            return StreamBuilder<List<OrderModel>>(
+              stream: _ordersListStream.stream,
+              builder: (context, AsyncSnapshot<List<OrderModel>> snapshot2) {
+                if (snapshot2.hasData) {
+                  return OrdersCardList(
+                    orders: snapshot2.data!,
+                    searchParams: _searchParams,
+                    filters: _filters,
+                  );
+                } else {
+                  _ordersListStream.sink.add(snapshot.data!);
 
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  });
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          }),
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
     );
   }
 
@@ -282,17 +303,21 @@ class _ProductsState extends State<OrdersList> {
     _searchParams['search'] = query;
 
     List<OrderModel> res = await LocalOrdersProvider.listLocalOrders(
-        search: query ?? '', filters: _filters);
+      search: query ?? '',
+      filters: _filters,
+    );
     if (res.length < 30) {
       final findNewInServer = await OrdersProvider.getOrdersFromServer(
         context,
-        search: query ?? "",
+        search: query ?? '',
         filters: _filters,
       );
       if (findNewInServer) {
         // _page =0;
         res = await LocalOrdersProvider.listLocalOrders(
-            search: query ?? '', filters: _filters);
+          search: query ?? '',
+          filters: _filters,
+        );
       } else {}
     }
     _ordersListStream.sink.add(res);

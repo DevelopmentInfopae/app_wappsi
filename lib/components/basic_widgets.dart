@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-Widget imgTumbnail({String image = 'assets/images/wappsi.png'}) {
+Widget imgThumbnail({String image = 'assets/images/wappsi.png'}) {
   return Image(
     image: AssetImage(image),
     fit: BoxFit.cover,
@@ -10,14 +10,18 @@ Widget imgTumbnail({String image = 'assets/images/wappsi.png'}) {
   );
 }
 
-Widget informationText(String description, String information,
-    {Color descColor = const Color.fromRGBO(0, 97, 224, 1)}) {
+Widget informationText(
+  String description,
+  String information, {
+  Color descColor = const Color.fromRGBO(0, 97, 224, 1),
+}) {
   return TextFormField(
     initialValue: capitalizeText(description),
     // expands: ,
     enabled: false,
     decoration: InputDecoration(
-        labelText: information,
-        labelStyle: TextStyle(color: descColor, fontSize: 20)),
+      labelText: information,
+      labelStyle: TextStyle(color: descColor, fontSize: 20),
+    ),
   );
 }

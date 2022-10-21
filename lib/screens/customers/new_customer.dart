@@ -66,7 +66,7 @@ class _NewCustomerState extends State<NewCustomer> {
 
     super.initState();
     customerBloc.getCustomer.typePerson =
-        customerBloc.getCustomer.typePerson ?? "1";
+        customerBloc.getCustomer.typePerson ?? '1';
     _nameController.text = customerBloc.getCustomer.firstName ?? '';
     _name2Controller.text = customerBloc.getCustomer.secondName ?? '';
     _lastNameController.text = customerBloc.getCustomer.firstLastname ?? '';
@@ -102,20 +102,26 @@ class _NewCustomerState extends State<NewCustomer> {
     _pc = pColor;
     _size = MediaQuery.of(context).size;
     return WillPopScope(
-        onWillPop: () async {
-          final _currentFocus = FocusScope.of(context);
-          _currentFocus.unfocus();
-          return true;
-        },
-        child: Scaffold(appBar: _appBar(), key: _scaffoldKey, body: _body()));
+      onWillPop: () async {
+        final _currentFocus = FocusScope.of(context);
+        _currentFocus.unfocus();
+        return true;
+      },
+      child: Scaffold(appBar: _appBar(), key: _scaffoldKey, body: _body()),
+    );
   }
 
   PreferredSize _appBar() {
-    return appBar(context, 'Crear Cliente POS',
-        back: true, image: 'assets/images/add-user.png', onPop: () {
-      dataBloc.homeKey?.currentState?.changeBottomIndex(1);
-      Navigator.pop(context);
-    });
+    return appBar(
+      context,
+      'Crear Cliente POS',
+      back: true,
+      image: 'assets/images/add-user.png',
+      onPop: () {
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+        Navigator.pop(context);
+      },
+    );
   }
 
   Widget _body() {
@@ -170,7 +176,7 @@ class _NewCustomerState extends State<NewCustomer> {
     return DropdownSearch<DropdDownSItem>(
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       maxHeight: _size.width * 0.9,
@@ -180,7 +186,7 @@ class _NewCustomerState extends State<NewCustomer> {
       showSelectedItems: true,
       compareFn: (item, selectedItem) => item?.name == selectedItem?.name,
       items: (personT.values.toList()),
-      selectedItem: personT[customerBloc.getCustomer.typePerson ?? "1"],
+      selectedItem: personT[customerBloc.getCustomer.typePerson ?? '1'],
       dropdownSearchDecoration: InputDecoration(
         labelText: 'Tipo de persona :',
         labelStyle: TextStyle(color: _pc),
@@ -205,58 +211,73 @@ class _NewCustomerState extends State<NewCustomer> {
   }
 
   Widget _nameFirst() {
-    return textFormField(context, 'Primer nombre', (value) {
-      setState(() {
-        customerBloc.getCustomer.firstName = value;
-      });
-    }, (String? value) {
-      if (value == null || value == '') {
-        _n1.requestFocus();
-        return 'El campo es necesario';
-      }
-    }, () {
-      _n2.requestFocus();
-    }, focus: _n1, controller: _nameController, keyBType: TextInputType.name)
-        .paddingSymmetric(vertical: 5);
+    return textFormField(
+      context,
+      'Primer nombre',
+      (value) {
+        setState(() {
+          customerBloc.getCustomer.firstName = value;
+        });
+      },
+      (String? value) {
+        if (value == null || value == '') {
+          _n1.requestFocus();
+          return 'El campo es necesario';
+        }
+      },
+      () {
+        _n2.requestFocus();
+      },
+      focus: _n1,
+      controller: _nameController,
+      keyBType: TextInputType.name,
+    ).paddingSymmetric(vertical: 5);
   }
 
   Widget _docNum() {
-    return textFormField(context, 'NIT/CC', (value) async {
-      _docNumError = await _validateDocNum(value);
+    return textFormField(
+      context,
+      'NIT/CC',
+      (value) async {
+        _docNumError = await _validateDocNum(value);
 
-      final res = getVerificationCode(value);
-      if (res['error']) {
-        _documentNController.selection = TextSelection(
-            baseOffset: 0, extentOffset: _documentNController.text.length);
-        _verificationCodeController.text = '';
-      } else {
-        setState(() {
-          _verificationCodeController.text = res['value'];
-          customerBloc.getCustomer.vatNo = value;
-          if (_doc?.nombre == 'NIT') {
-            customerBloc.getCustomer.digitoVerificacion = res['value'] ?? '';
-          } else {
-            customerBloc.getCustomer.digitoVerificacion = '';
-          }
-        });
-      }
-    }, (String? value) {
-      try {
-        int.parse(value!);
-      } catch (e) {
-        _d.requestFocus();
-        return 'El valor suministrado no es valido';
-      }
-      if (_docNumError != null) {
-        return _docNumError;
-      }
-    }, () {
-      _n1.requestFocus();
-    },
-            keyBType: TextInputType.number,
-            focus: _d,
-            controller: _documentNController)
-        .paddingSymmetric(vertical: 5);
+        final res = getVerificationCode(value);
+        if (res['error']) {
+          _documentNController.selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: _documentNController.text.length,
+          );
+          _verificationCodeController.text = '';
+        } else {
+          setState(() {
+            _verificationCodeController.text = res['value'];
+            customerBloc.getCustomer.vatNo = value;
+            if (_doc?.nombre == 'NIT') {
+              customerBloc.getCustomer.digitoVerificacion = res['value'] ?? '';
+            } else {
+              customerBloc.getCustomer.digitoVerificacion = '';
+            }
+          });
+        }
+      },
+      (String? value) {
+        try {
+          int.parse(value!);
+        } catch (e) {
+          _d.requestFocus();
+          return 'El valor suministrado no es valido';
+        }
+        if (_docNumError != null) {
+          return _docNumError;
+        }
+      },
+      () {
+        _n1.requestFocus();
+      },
+      keyBType: TextInputType.number,
+      focus: _d,
+      controller: _documentNController,
+    ).paddingSymmetric(vertical: 5);
   }
 
   Future<String?> _validateDocNum(String? value) async {
@@ -274,82 +295,112 @@ class _NewCustomerState extends State<NewCustomer> {
   }
 
   Widget _nameSecond() {
-    return textFormField(context, 'Segundo nombre', (value) {
-      setState(() {
-        customerBloc.getCustomer.secondName = value;
-      });
-    }, (value) {
-      // if (value == null || value == '') {
-      //   _n2.requestFocus();
-      //   return 'El campo es necesario';
-      // }
-    }, () {
-      _ln1.requestFocus();
-    }, focus: _n2, controller: _name2Controller, keyBType: TextInputType.name)
-        .paddingSymmetric(vertical: 5);
+    return textFormField(
+      context,
+      'Segundo nombre',
+      (value) {
+        setState(() {
+          customerBloc.getCustomer.secondName = value;
+        });
+      },
+      (value) {
+        // if (value == null || value == '') {
+        //   _n2.requestFocus();
+        //   return 'El campo es necesario';
+        // }
+      },
+      () {
+        _ln1.requestFocus();
+      },
+      focus: _n2,
+      controller: _name2Controller,
+      keyBType: TextInputType.name,
+    ).paddingSymmetric(vertical: 5);
   }
 
   Widget _verificationCode() {
     return textFormField(
-            context, 'Dígito de verificación', (value) {}, (value) {}, () {},
-            controller: _verificationCodeController, readOnly: true)
-        .paddingSymmetric(vertical: 5);
+      context,
+      'Dígito de verificación',
+      (value) {},
+      (value) {},
+      () {},
+      controller: _verificationCodeController,
+      readOnly: true,
+    ).paddingSymmetric(vertical: 5);
   }
 
   Widget _comercialName() {
-    return textFormField(context, 'Nombre comercial', (value) {
-      setState(() {
-        customerBloc.getCustomer.company = value;
-      });
-    }, (String? value) {
-      if (value == null || value == '') {
+    return textFormField(
+      context,
+      'Nombre comercial',
+      (value) {
+        setState(() {
+          customerBloc.getCustomer.company = value;
+        });
+      },
+      (String? value) {
+        if (value == null || value == '') {
+          _cN.requestFocus();
+          return 'El campo es necesario';
+        }
+      },
+      () {
         _cN.requestFocus();
-        return 'El campo es necesario';
-      }
-    }, () {
-      _cN.requestFocus();
-    }, focus: _cN, controller: _comercialNameController)
-        .paddingSymmetric(vertical: 5);
+      },
+      focus: _cN,
+      controller: _comercialNameController,
+    ).paddingSymmetric(vertical: 5);
   }
 
   Widget _lastNm1() {
-    return textFormField(context, 'Primer Apellido', (value) {
-      setState(() {
-        customerBloc.getCustomer.firstLastname = value;
-      });
-    }, (String? value) {
-      if (value == null || value == '') {
-        _ln1.requestFocus();
-        return 'El campo es necesario';
-      }
-    }, () {
-      _ln2.requestFocus();
-    },
-            focus: _ln1,
-            controller: _lastNameController,
-            keyBType: TextInputType.name)
-        .paddingSymmetric(vertical: 5);
+    return textFormField(
+      context,
+      'Primer Apellido',
+      (value) {
+        setState(() {
+          customerBloc.getCustomer.firstLastname = value;
+        });
+      },
+      (String? value) {
+        if (value == null || value == '') {
+          _ln1.requestFocus();
+          return 'El campo es necesario';
+        }
+      },
+      () {
+        _ln2.requestFocus();
+      },
+      focus: _ln1,
+      controller: _lastNameController,
+      keyBType: TextInputType.name,
+    ).paddingSymmetric(vertical: 5);
   }
 
   Widget _lastNm2() {
-    return textFormField(context, 'Segundo Apellido', (value) {
-      setState(() {
-        customerBloc.getCustomer.secondLastname = value;
-      });
-    }, (value) {
-      // if (value == null || value == '') {
-      //   _ln2.requestFocus();
-      //   return 'El campo es necesario';
-      // }
-    }, () {
-      if (_formKey.currentState?.validate() ?? false) {
-        const NewCustomerData2().launch(context);
-      }
-    },
-            focus: _ln2,
-            controller: _lastName2Controller,
-            keyBType: TextInputType.name)
-        .paddingSymmetric(vertical: 5);
+    return textFormField(
+      context,
+      'Segundo Apellido',
+      (value) {
+        setState(() {
+          customerBloc.getCustomer.secondLastname = value;
+        });
+      },
+      (value) {
+        // if (value == null || value == '') {
+        //   _ln2.requestFocus();
+        //   return 'El campo es necesario';
+        // }
+      },
+      () {
+        if (_formKey.currentState?.validate() ?? false) {
+          const NewCustomerData2().launch(context);
+        }
+      },
+      focus: _ln2,
+      controller: _lastName2Controller,
+      keyBType: TextInputType.name,
+    ).paddingSymmetric(vertical: 5);
   }
 
   Widget _customerConfig() {
@@ -360,8 +411,10 @@ class _NewCustomerState extends State<NewCustomer> {
         AppButton(
           child: Row(
             children: [
-              Text('Siguiente',
-                  style: buttonsSmallTextStyle(context, color: pColor)),
+              Text(
+                'Siguiente',
+                style: buttonsSmallTextStyle(context, color: pColor),
+              ),
               const Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: kIconSize,
@@ -388,9 +441,10 @@ class _NewCustomerState extends State<NewCustomer> {
   Widget _documents() {
     return FutureBuilder(
       future: customerBloc.getCustomer.tipoDocumento == null
-          ? DocumenttypesProvider.defaultDocument()
-          : DocumenttypesProvider.loadDocument(
-              customerBloc.getCustomer.tipoDocumento!),
+          ? DocumentTypesProvider.defaultDocument()
+          : DocumentTypesProvider.loadDocument(
+              customerBloc.getCustomer.tipoDocumento!,
+            ),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData && _doc == null) {
           _doc = snapshot.data;
@@ -426,7 +480,7 @@ class _NewCustomerState extends State<NewCustomer> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       maxHeight: _size.width * 0.9,
@@ -446,7 +500,7 @@ class _NewCustomerState extends State<NewCustomer> {
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onFind: (String? filter) =>
-          DocumenttypesProvider.loadFromDB(search: filter),
+          DocumentTypesProvider.loadFromDB(search: filter),
       onChanged: (data) async {
         customerBloc.getCustomer.tipoDocumento = data?.idCloud.toString();
         customerBloc.getCustomer.documentCode = data?.codigoDoc.toString();
@@ -466,7 +520,10 @@ class _NewCustomerState extends State<NewCustomer> {
   }
 
   Widget _customPopupCustomerItemBuilder(
-      BuildContext context, DocumentypeModel? item, bool isSelected) {
+    BuildContext context,
+    DocumentypeModel? item,
+    bool isSelected,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected

@@ -41,32 +41,33 @@ class UnitPricesModel {
 
   factory UnitPricesModel.fromJson(Map<String, dynamic> json) =>
       UnitPricesModel(
-          id: json["id"],
-          idCloud: json["id_cloud"],
-          code: json["code"],
-          valorUnitario: json["valor_unitario"].toDouble(),
-          label: json["label"],
-          unidad: json["unidad"],
-          cantidad: json["cantidad"].toDouble(),
-          unitId: json["unit_id"],
-          idProduct: json["id_product"],
-          priceGroupId: json["price_group_id"],
-          lastUpdate: json["last_update"],
-          unitPriceId: json["unit_price_id"] ?? 0);
+        id: json['id'],
+        idCloud: json['id_cloud'],
+        code: json['code'],
+        valorUnitario: json['valor_unitario'].toDouble(),
+        label: json['label'],
+        unidad: json['unidad'],
+        cantidad: json['cantidad'].toDouble(),
+        unitId: json['unit_id'],
+        idProduct: json['id_product'],
+        priceGroupId: json['price_group_id'],
+        lastUpdate: json['last_update'],
+        unitPriceId: json['unit_price_id'] ?? 0,
+      );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "id_cloud": idCloud,
-        "code": code,
-        "valor_unitario": valorUnitario,
-        "label": label,
-        "unidad": unidad,
-        "cantidad": cantidad,
-        "unit_id": unitId,
-        "id_product": idProduct,
-        "price_group_id": priceGroupId,
-        "unit_price_id": unitPriceId,
-        "last_update": lastUpdate,
+        'id': id,
+        'id_cloud': idCloud,
+        'code': code,
+        'valor_unitario': valorUnitario,
+        'label': label,
+        'unidad': unidad,
+        'cantidad': cantidad,
+        'unit_id': unitId,
+        'id_product': idProduct,
+        'price_group_id': priceGroupId,
+        'unit_price_id': unitPriceId,
+        'last_update': lastUpdate,
       };
   factory UnitPricesModel.fromRawJson(String str) =>
       UnitPricesModel.fromJson(json.decode(str));

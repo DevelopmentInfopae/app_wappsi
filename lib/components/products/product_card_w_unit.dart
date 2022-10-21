@@ -16,7 +16,7 @@ import 'package:pos_wappsi/screens/products/product_price_verifier.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-// class to show product indormation in form of a card
+// class to show product information in form of a card
 
 class ProductCardWUnit extends StatefulWidget {
   final ProductModel product;
@@ -24,13 +24,13 @@ class ProductCardWUnit extends StatefulWidget {
   final String action;
   final bool searchPrice;
 
-  const ProductCardWUnit(
-      {Key? key,
-      required this.product,
-      required this.action,
-      this.searchPrice = true,
-      required this.unit})
-      : super(key: key);
+  const ProductCardWUnit({
+    Key? key,
+    required this.product,
+    required this.action,
+    this.searchPrice = true,
+    required this.unit,
+  }) : super(key: key);
 
   @override
   _ProductCardWUnitState createState() => _ProductCardWUnitState();
@@ -51,41 +51,45 @@ class _ProductCardWUnitState extends State<ProductCardWUnit> {
   Widget build(BuildContext context) {
     // _textTheme = Theme.of(context).textTheme;
     return AppButton(
-        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-        padding: EdgeInsets.zero,
-        elevation: 5,
-        child: Row(
-          children: [
-            productPhoto(widget.product.image == ''
-                    ? 'no_image.png'
-                    : widget.product.image)
-                .flexible(flex: 2),
-            _productInfo().flexible(flex: 7)
-          ],
-        ),
-        onTap: () async {
-          if (widget.action == 'add_to_cart') {
-            final productReq = await ProductsProvider.getProductRequirements(
-                context, widget.product);
-            if (productReq != {}) {
-              final result = await posBloc.addProduct(productReq);
-              printConsole(result);
-            }
-
-            // Navigator.pop(context);
-          } else if (widget.action == 'price_verifier') {
-            ProductPriceVerifier(product: widget.product).launch(context);
-          } else if (widget.action == 'add_to_favorites') {
-            customerBloc.addProductToFav(
-                widget.product, widget.product.idCloud.toString());
-          } else {
-            // null;
-            ProductDetails(
-              product: widget.product,
-              searchPrice: widget.searchPrice,
-            ).launch(context);
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+      padding: EdgeInsets.zero,
+      elevation: 5,
+      child: Row(
+        children: [
+          productPhoto(
+            widget.product.image == '' ? 'no_image.png' : widget.product.image,
+          ).flexible(flex: 2),
+          _productInfo().flexible(flex: 7)
+        ],
+      ),
+      onTap: () async {
+        if (widget.action == 'add_to_cart') {
+          final productReq = await ProductsProvider.getProductRequirements(
+            context,
+            widget.product,
+          );
+          if (productReq != {}) {
+            final result = await posBloc.addProduct(productReq);
+            printConsole(result);
           }
-        });
+
+          // Navigator.pop(context);
+        } else if (widget.action == 'price_verifier') {
+          ProductPriceVerifier(product: widget.product).launch(context);
+        } else if (widget.action == 'add_to_favorites') {
+          customerBloc.addProductToFav(
+            widget.product,
+            widget.product.idCloud.toString(),
+          );
+        } else {
+          // null;
+          ProductDetails(
+            product: widget.product,
+            searchPrice: widget.searchPrice,
+          ).launch(context);
+        }
+      },
+    );
   }
 
   Widget _productInfo() {
@@ -117,34 +121,38 @@ class _ProductCardWUnitState extends State<ProductCardWUnit> {
       },
     );
     final tValue = getFormatedCurrency(
-        widget.unit?.unitValue ?? widget.product.quantity * uValue);
+      widget.unit?.unitValue ?? widget.product.quantity * uValue,
+    );
 
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // _productCode(),
-          Text(
-            widget.unit?.name ?? '',
-            style: normalTextStyle(context, fontWeightDelta: 2),
-          ),
-          Text(
-            'Cantidad: ${widget.product.quantity}',
-            style: normalTextStyle(context),
-          ),
-        ],
-      ),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            tValue.substring(0, tValue.length),
-            style: normalTextStyle(context),
-          ),
-          uValueWidget
-        ],
-      ),
-    ]);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // _productCode(),
+            Text(
+              widget.unit?.name ?? '',
+              style: normalTextStyle(context, fontWeightDelta: 2),
+            ),
+            Text(
+              'Cantidad: ${widget.product.quantity}',
+              style: normalTextStyle(context),
+            ),
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              tValue.substring(0, tValue.length),
+              style: normalTextStyle(context),
+            ),
+            uValueWidget
+          ],
+        ),
+      ],
+    );
   }
 
   // Text _productCode() {

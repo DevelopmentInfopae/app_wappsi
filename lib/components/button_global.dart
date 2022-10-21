@@ -5,20 +5,24 @@ import 'package:pos_wappsi/constant.dart';
 // ignore: must_be_immutable
 class ButtonGlobal extends StatelessWidget {
   IconData iconWidget;
-  final String buttontext;
+  final String buttonText;
   final Decoration buttonDecoration;
   Function onPressed;
 
-  ButtonGlobal(
-      {Key? key, required this.iconWidget,
-      required this.buttontext,
-      required this.buttonDecoration,
-      required this.onPressed}) : super(key: key);
+  ButtonGlobal({
+    Key? key,
+    required this.iconWidget,
+    required this.buttonText,
+    required this.buttonDecoration,
+    required this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: (){onPressed();},
+      onPressed: () {
+        onPressed();
+      },
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -27,7 +31,7 @@ class ButtonGlobal extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              buttontext,
+              buttonText,
               style: GoogleFonts.jost(
                 fontSize: 20.0,
                 color: Theme.of(context).primaryTextTheme.button!.color,
@@ -46,12 +50,13 @@ class ButtonGlobal extends StatelessWidget {
 
 // ignore: must_be_immutable
 class ButtonGlobalWithoutIcon extends StatelessWidget {
-  final String buttontext;
+  final String buttonText;
   final Decoration buttonDecoration;
   Function onPressed;
 
-  ButtonGlobalWithoutIcon({Key? key, 
-    required this.buttontext,
+  ButtonGlobalWithoutIcon({
+    Key? key,
+    required this.buttonText,
     required this.buttonDecoration,
     required this.onPressed,
   }) : super(key: key);
@@ -59,7 +64,7 @@ class ButtonGlobalWithoutIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: (){
+      onPressed: () {
         onPressed();
       },
       child: Container(
@@ -70,7 +75,7 @@ class ButtonGlobalWithoutIcon extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              buttontext,
+              buttonText,
               style: GoogleFonts.jost(
                 fontSize: 20.0,
                 color: Theme.of(context).primaryTextTheme.button!.color,

@@ -53,8 +53,9 @@ class LoginMobileView extends StatelessWidget {
             )
           ],
         ).withSize(
-            height: _size.height * 0.98,
-            width: _size.width > 500 ? 500 : _size.width),
+          height: _size.height * 0.98,
+          width: _size.width > 500 ? 500 : _size.width,
+        ),
       ),
     );
   }
@@ -68,25 +69,26 @@ class CurrentVersion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<PackageInfo>(
-        future: PackageInfo.fromPlatform(),
-        builder: (context, AsyncSnapshot<PackageInfo> snapshot) {
-          String appName = '';
-          // String packageName = '';
-          String version = '';
-          // String buildNumber = '';
-          if (snapshot.hasData) {
-            // packageName = packageInfo.packageName;
-            appName = snapshot.data!.appName;
-            version = snapshot.data!.version;
-            // buildNumber = snapshot.data!.buildNumber;
-          }
-          return Text(
-            '$appName v $version',
-            style: normalTextStyle(
-              context,
-              fontSizeFactor: 0.8,
-            ),
-          );
-        });
+      future: PackageInfo.fromPlatform(),
+      builder: (context, AsyncSnapshot<PackageInfo> snapshot) {
+        String appName = '';
+        // String packageName = '';
+        String version = '';
+        // String buildNumber = '';
+        if (snapshot.hasData) {
+          // packageName = packageInfo.packageName;
+          appName = snapshot.data!.appName;
+          version = snapshot.data!.version;
+          // buildNumber = snapshot.data!.buildNumber;
+        }
+        return Text(
+          '$appName v $version',
+          style: normalTextStyle(
+            context,
+            fontSizeFactor: 0.8,
+          ),
+        );
+      },
+    );
   }
 }

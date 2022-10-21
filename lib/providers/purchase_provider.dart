@@ -17,7 +17,7 @@ import 'local_db_provider.dart';
 
 class PurchaseProvider {
   /// Send current pos data to server, if there is any changes between local db and server,
-  /// server response will contain those changes and they'll be writen into local db, then
+  /// server response will contain those changes and they'll be written into local db, then
   /// reload POS data
   ///
   static Future<bool> sendPurchaseData(BuildContext context) async {
@@ -28,9 +28,10 @@ class PurchaseProvider {
 
     List<Map<String, dynamic>> purchaseItems =
         PurchaseItemsModel.buildPurchaseSaleItems(
-            purchaseBloc.getProducts!.keys.toList(),
-            dataBloc.userData!,
-            purchaseBloc.getPurchase!.date!);
+      purchaseBloc.getProducts!.keys.toList(),
+      dataBloc.userData!,
+      purchaseBloc.getPurchase!.date!,
+    );
     // final debug = sale.toString();
 
     final data = {'purchase': purchase, 'purchase_items': purchaseItems};
@@ -38,29 +39,39 @@ class PurchaseProvider {
 
     try {
       scaffoldAlert(
-          context, 'Registrando compra...', const Duration(seconds: 5));
+        context,
+        'Registrando compra...',
+        const Duration(seconds: 5),
+      );
       final res =
           await api.postPetition(addPurchaseEndP, data, dataBloc.getHeaders());
       hideCurrentScaffoldAlert(context);
       if (res['status'] == -1) {
         reloadDialog(
-            context,
-            (res['body']['error_message'] ?? res['body']['message'] ?? ''),
-            'assets/images/dizzy-robot.png');
+          context,
+          (res['body']['error_message'] ?? res['body']['message'] ?? ''),
+          'assets/images/dizzy-robot.png',
+        );
       } else {
         if (res['error'] ?? true) {
-          // sometimes trying to hide an unexisting scaffoldAlert
+          // sometimes trying to hide an un-existing scaffoldAlert
           try {
             hideCurrentScaffoldAlert(context);
           } catch (e) {
             printConsole(e);
           }
 
-          confirmDialog(context, res['body']['message'] ?? res['message'],
-              'assets/images/browser.png');
+          confirmDialog(
+            context,
+            res['body']['message'] ?? res['message'],
+            'assets/images/browser.png',
+          );
         } else {
           scaffoldAlert(
-              context, 'Compra registrada', const Duration(seconds: 1));
+            context,
+            'Compra registrada',
+            const Duration(seconds: 1),
+          );
           // final purchaseId = res['body']['data']['purchase_sale_id'];
           // purchase['reference_no'] = res['body']['data']['reference_no'];
           // purchase['registration_date'] = res['body']['data']['server_date'];
@@ -74,8 +85,11 @@ class PurchaseProvider {
           // if (purchaseSaveR && purchaseItemsSaveR) {
           // }
           await dataBloc.syncElements(['Compras'], context);
-          scaffoldAlert(context, 'Compra registrada exitosamente',
-              const Duration(seconds: 2));
+          scaffoldAlert(
+            context,
+            'Compra registrada exitosamente',
+            const Duration(seconds: 2),
+          );
           // get purchase print data
 
           result = true;
@@ -92,13 +106,16 @@ class PurchaseProvider {
     return result;
   }
 
-  static Future<bool> valitateReference(
-      String reference, int supplierId) async {
+  static Future<bool> validateReference(
+    String reference,
+    int supplierId,
+  ) async {
     final dProv = DataProvider();
     final res = await dProv.postPetition(
-        checkPuRefEndP,
-        {"reference_no": reference, "supplier_id": supplierId},
-        dataBloc.getHeaders());
+      checkPuRefEndP,
+      {'reference_no': reference, 'supplier_id': supplierId},
+      dataBloc.getHeaders(),
+    );
     if (res['error'] ?? true) {
       return false;
     } else {
@@ -106,13 +123,16 @@ class PurchaseProvider {
     }
   }
 
-  static Future<bool> valitateConsecutive(
-      String consecutiveSup, int supplierId) async {
+  static Future<bool> validateConsecutive(
+    String consecutiveSup,
+    int supplierId,
+  ) async {
     final dProv = DataProvider();
     final res = await dProv.postPetition(
-        checkPuSupConsEndP,
-        {"consecutive_supplier": consecutiveSup, "supplier_id": supplierId},
-        dataBloc.getHeaders());
+      checkPuSupConsEndP,
+      {'consecutive_supplier': consecutiveSup, 'supplier_id': supplierId},
+      dataBloc.getHeaders(),
+    );
     if (res['error'] ?? true) {
       return false;
     } else {
@@ -120,13 +140,14 @@ class PurchaseProvider {
     }
   }
 
-  static Future<List<PurchaseModel>?> listLocalPurchases(
-      {String search = '',
-      int? limit,
-      String orderBy = 'name',
-      List<String>? filters,
-      bool offset = false,
-      int offsetValue = 1}) async {
+  static Future<List<PurchaseModel>?> listLocalPurchases({
+    String search = '',
+    int? limit,
+    String orderBy = 'name',
+    List<String>? filters,
+    bool offset = false,
+    int offsetValue = 1,
+  }) async {
     String? filter;
     if (filters != null) {
       if (filters.isNotEmpty) {
@@ -137,7 +158,7 @@ class PurchaseProvider {
         ? 'AND p.created_by=${dataBloc.userData!.id}'
         : '';
 
-    final pagination = offset ? " LIMIT 30 OFFSET $offsetValue" : "";
+    final pagination = offset ? ' LIMIT 30 OFFSET $offsetValue' : '';
     final currentBiller = dataBloc.userData!.billerId;
     final sql = '''select * from sma_purchases p 
         WHERE (p.supplier LIKE "%$search%" OR p.note LIKE "%$search%"

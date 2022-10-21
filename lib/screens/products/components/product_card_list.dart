@@ -10,9 +10,11 @@ import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 
 class ProductCardList extends StatefulWidget {
-  const ProductCardList(
-      {Key? key, required this.products, required this.searchParams})
-      : super(key: key);
+  const ProductCardList({
+    Key? key,
+    required this.products,
+    required this.searchParams,
+  }) : super(key: key);
   final List<ProductModel> products;
   final Map searchParams;
 
@@ -41,36 +43,38 @@ class _ProductCardListState extends State<ProductCardList> {
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
-    return Stack(children: [
-      ListView.separated(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        controller: _controller,
-        padding: EdgeInsets.zero,
-        addAutomaticKeepAlives: false,
-        physics: const ClampingScrollPhysics(),
-        itemCount: widget.products.length + (_allLoaded ? 1 : 0),
-        separatorBuilder: (context, index) => const Divider(
-          height: 5,
-        ),
-        itemBuilder: (context, index) {
-          if (index < widget.products.length) {
-            return ProductCard(
-              product: widget.products[index],
-              action: 'product_details',
-            );
-          } else {
-            return Container(
-              width: _size.width,
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: const Text('Sin elementos que mostrar').center(),
-            );
-          }
+    return Stack(
+      children: [
+        ListView.separated(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          controller: _controller,
+          padding: EdgeInsets.zero,
+          addAutomaticKeepAlives: false,
+          physics: const ClampingScrollPhysics(),
+          itemCount: widget.products.length + (_allLoaded ? 1 : 0),
+          separatorBuilder: (context, index) => const Divider(
+            height: 5,
+          ),
+          itemBuilder: (context, index) {
+            if (index < widget.products.length) {
+              return ProductCard(
+                product: widget.products[index],
+                action: 'product_details',
+              );
+            } else {
+              return Container(
+                width: _size.width,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: const Text('Sin elementos que mostrar').center(),
+              );
+            }
 
-          // return Container();
-        },
-      ),
-      if (_loading) ...[loadingIndicator(_size.width)]
-    ]);
+            // return Container();
+          },
+        ),
+        if (_loading) ...[loadingIndicator(_size.width)]
+      ],
+    );
   }
 
   void infinityScrollListener() async {
@@ -83,9 +87,10 @@ class _ProductCardListState extends State<ProductCardList> {
 
       _loading = true;
       final res = await ProductsProvider.findProducts(
-          widget.searchParams['search'] ?? '',
-          offset: true,
-          offsetValue: _page * 30);
+        widget.searchParams['search'] ?? '',
+        offset: true,
+        offsetValue: _page * 30,
+      );
       if (res != null) {
         if (res.isNotEmpty) {
           setState(() {
@@ -102,7 +107,10 @@ class _ProductCardListState extends State<ProductCardList> {
         }
       } else {
         await confirmDialog(
-            context, 'Error al cargar datos', 'assets/images/dizzy-robot.png');
+          context,
+          'Error al cargar datos',
+          'assets/images/dizzy-robot.png',
+        );
         setState(() {
           _loading = false;
         });

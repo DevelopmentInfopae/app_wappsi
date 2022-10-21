@@ -6,7 +6,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 
 // function to save files into local storage form a url in a desired folder
-initSavetoPath(String file, String folder, String url) async {
+initSaveToPath(String file, String folder, String url) async {
   //read and write
   // image max 300px X 300px
   String pathImage = '';
@@ -27,8 +27,7 @@ initSavetoPath(String file, String folder, String url) async {
   }
   if (!(await io.File('$dir/$folder/$filename').exists())) {
     try {
-      
-      var bytes = await NetworkAssetBundle(Uri.parse(imgURL)).load("");
+      var bytes = await NetworkAssetBundle(Uri.parse(imgURL)).load('');
       writeToFile(bytes, '$dir/$folder/$filename');
     } catch (e) {
       // printConsole(e);
@@ -42,11 +41,12 @@ initSavetoPath(String file, String folder, String url) async {
   return pathImage;
 }
 
-Future<void> writeToFile(ByteData data, String path) async{
+Future<void> writeToFile(ByteData data, String path) async {
   final buffer = data.buffer;
   try {
     await io.File(path).writeAsBytes(
-        buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+      buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
+    );
   } catch (e) {
     await logError(e, from: 'writeToFile');
     // printConsole(e);

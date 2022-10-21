@@ -16,15 +16,15 @@ class ProductPreferencesProvider {
         '''select * from sma_product_preferences WHERE (product_id = $productId)''';
     final pp = await DBProvider.db.sqlRawQuery(sql);
 
-    final procesedCategories = {};
+    final processedCategories = {};
 
     if (pp != null) {
       for (var item in pp) {
         final prefId = item['preference_id'];
         final prefCatId = item['preference_category_id'];
 
-        if (procesedCategories.keys.contains(prefCatId)) {
-          final catTemp = procesedCategories[prefCatId];
+        if (processedCategories.keys.contains(prefCatId)) {
+          final catTemp = processedCategories[prefCatId];
 
           final sql2 = '''select * from sma_preferences WHERE (id = $prefId)''';
           final t = await DBProvider.db.sqlFirstRawQuery(sql2);
@@ -39,7 +39,7 @@ class ProductPreferencesProvider {
 
           if (t != null) {
             final cat = PreferenceCategoryModel.fromJson(t);
-            procesedCategories[prefCatId] = cat;
+            processedCategories[prefCatId] = cat;
             final sql3 =
                 '''select * from sma_preferences WHERE (id = $prefId)''';
             final t2 = await DBProvider.db.sqlFirstRawQuery(sql3);
@@ -57,27 +57,33 @@ class ProductPreferencesProvider {
 
   /// If returns null it means that prefs is not required or there is no prefs for product
   static Future<Map<PreferenceCategoryModel, List<PreferenceModel>>?>
-      getProductPrefs(BuildContext context, ProductModel product,
-          String priceGroupId, UnitsModel? unit,
-          {bool prefsSelection = false}) async {
+      getProductPrefs(
+    BuildContext context,
+    ProductModel product,
+    String priceGroupId,
+    UnitsModel? unit, {
+    bool prefsSelection = false,
+  }) async {
     if (prefsSelection) {
       final productPrefs =
           await ProductPreferencesProvider.listProductPreferences(
-              product.idCloud);
+        product.idCloud,
+      );
       if (productPrefs.isNotEmpty) {
         return await showCupertinoDialog<
-                Map<PreferenceCategoryModel, List<PreferenceModel>>?>(
-            // to make selection of product unit required
-            barrierDismissible: false,
-            // useRootNavigator: false,
-            context: context,
-            builder: (context) {
-              return SelectProductPrefsDialog(
-                product: product,
-                unit: unit,
-                productPrefs: productPrefs,
-              );
-            });
+            Map<PreferenceCategoryModel, List<PreferenceModel>>?>(
+          // to make selection of product unit required
+          barrierDismissible: false,
+          // useRootNavigator: false,
+          context: context,
+          builder: (context) {
+            return SelectProductPrefsDialog(
+              product: product,
+              unit: unit,
+              productPrefs: productPrefs,
+            );
+          },
+        );
       } else {
         return null;
       }

@@ -77,7 +77,6 @@ const double radius1 = 5;
 const double radius2 = 10;
 const double radius3 = 30;
 
-
 final otpInputDecoration = InputDecoration(
   contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 5),
   border: outlineInputBorder(),
@@ -88,16 +87,24 @@ final otpInputDecoration = InputDecoration(
   enabledBorder: outlineInputBorder(),
 );
 
-TextStyle buttonsTextStyle(BuildContext context,
-    {fontSizeFactor = 1.2, fontWeightDelta = 1, color = Colors.white}) {
+TextStyle buttonsTextStyle(
+  BuildContext context, {
+  fontSizeFactor = 1.2,
+  fontWeightDelta = 1,
+  color = Colors.white,
+}) {
   return Theme.of(context).primaryTextTheme.headline6!.apply(
-      fontSizeFactor: fontSizeFactor,
-      color: color,
-      fontWeightDelta: fontWeightDelta);
+        fontSizeFactor: fontSizeFactor,
+        color: color,
+        fontWeightDelta: fontWeightDelta,
+      );
 }
 
-TextStyle buttonsSmallTextStyle(BuildContext context,
-    {double fontSizeFactor = 0.95, Color? color}) {
+TextStyle buttonsSmallTextStyle(
+  BuildContext context, {
+  double fontSizeFactor = 0.95,
+  Color? color,
+}) {
   return Theme.of(context)
       .primaryTextTheme
       .headline6!
@@ -108,28 +115,43 @@ TextStyle appBarTextStyle({double fontSizeFactor = 1}) {
   return TextStyle(fontWeight: FontWeight.w900, fontSize: 20 * fontSizeFactor);
 }
 
-TextStyle normalTextStyle(BuildContext context,
-    {fontSizeFactor = 1.03, int fontWeightDelta = 0, Color? color}) {
+TextStyle normalTextStyle(
+  BuildContext context, {
+  fontSizeFactor = 1.03,
+  int fontWeightDelta = 0,
+  Color? color,
+}) {
   return Theme.of(context).primaryTextTheme.subtitle1!.apply(
-      fontSizeFactor: fontSizeFactor,
-      color: color ?? greyDarkerColor,
-      fontWeightDelta: fontWeightDelta);
+        fontSizeFactor: fontSizeFactor,
+        color: color ?? greyDarkerColor,
+        fontWeightDelta: fontWeightDelta,
+      );
 }
 
-TextStyle smallTextStyle(BuildContext context,
-    {fontSizeFactor = 1.28, int fontWeightDelta = 0, Color? color}) {
+TextStyle smallTextStyle(
+  BuildContext context, {
+  fontSizeFactor = 1.28,
+  int fontWeightDelta = 0,
+  Color? color,
+}) {
   return Theme.of(context).primaryTextTheme.caption!.apply(
-      fontSizeFactor: fontSizeFactor,
-      color: color ?? greyDarkerColor,
-      fontWeightDelta: fontWeightDelta);
+        fontSizeFactor: fontSizeFactor,
+        color: color ?? greyDarkerColor,
+        fontWeightDelta: fontWeightDelta,
+      );
 }
 
-TextStyle smallTextStyle2(BuildContext context,
-    {fontSizeFactor = 1.15, int fontWeightDelta = 0, Color? color}) {
+TextStyle smallTextStyle2(
+  BuildContext context, {
+  fontSizeFactor = 1.15,
+  int fontWeightDelta = 0,
+  Color? color,
+}) {
   return Theme.of(context).primaryTextTheme.caption!.apply(
-      fontSizeFactor: fontSizeFactor,
-      color: color ?? greyDarkerColor,
-      fontWeightDelta: fontWeightDelta);
+        fontSizeFactor: fontSizeFactor,
+        color: color ?? greyDarkerColor,
+        fontWeightDelta: fontWeightDelta,
+      );
 }
 
 double bottomBarIconSize(BuildContext context) {
@@ -177,7 +199,7 @@ Color greyDarkerColor = Colors.grey[800]!;
 /// Default padding for bottom widget
 double bottomPadding = 20;
 
-double bottomWigetHeight(BuildContext context) {
+double bottomWidgetHeight(BuildContext context) {
   Size size = MediaQuery.of(context).size;
   return size.height * 0.1 > 66
       ? (size.height * 0.1 > 70 ? 70 : size.height * 0.1)
@@ -215,11 +237,15 @@ Size gridItemSize(BuildContext context) {
 }
 
 /// Big numbers text theme
-TextStyle numbersTextStyle(
-    {double fontSizeFactor = 1, fontWeight = FontWeight.w900, Color? color}) {
+TextStyle numbersTextStyle({
+  double fontSizeFactor = 1,
+  fontWeight = FontWeight.w900,
+  Color? color,
+}) {
   return TextStyle(
-      fontFamily: 'Arial',
-      fontSize: 20 * fontSizeFactor,
-      fontWeight: fontWeight,
-      color: color ?? greyColor);
+    fontFamily: 'Arial',
+    fontSize: 20 * fontSizeFactor,
+    fontWeight: fontWeight,
+    color: color ?? greyColor,
+  );
 }

@@ -43,7 +43,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   late Size _size;
   late Color _pc;
 
-  TextEditingController personTypeypeController = TextEditingController();
+  TextEditingController personTypeController = TextEditingController();
   final _statesDropDownKey = GlobalKey<DropdownSearchState<StatesModel?>>();
   final _citiesDropDownKey = GlobalKey<DropdownSearchState<CitiesModel?>>();
   final _zonesDropDownKey = GlobalKey<DropdownSearchState<ZoneModel?>>();
@@ -59,7 +59,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
 
   CountriesModel? _country;
   StatesModel? _states;
-  CitiesModel? _citys;
+  CitiesModel? _city;
 
   bool subzoneLoaded = false;
 
@@ -83,8 +83,8 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
 
   @override
   void initState() {
-    customerBloc.getCustomer.tipoRegimen ??= regimenT["1"]!.value.toString();
-    customerBloc.getCustomer.typePerson ??= personT["1"]!.value.toString();
+    customerBloc.getCustomer.tipoRegimen ??= regimenT['1']!.value.toString();
+    customerBloc.getCustomer.typePerson ??= personT['1']!.value.toString();
 
     _loadCityZones(init: true);
     _loadSubzones();
@@ -101,7 +101,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
     _zoneController.dispose();
     _zonesController.close();
     _subzonesController.close();
-    personTypeypeController.dispose();
+    personTypeController.dispose();
     _countryController.dispose();
     _stateController.dispose();
     _cityController.dispose();
@@ -112,16 +112,16 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   Future<void> _loadCityZones({bool init = false}) async {
     String? cityCode;
     if (init) {
-      if ( customerBloc.getCustomer.cityCode == null) {
+      if (customerBloc.getCustomer.cityCode == null) {
         final city = await CitiesProvider.defaultCity();
         cityCode = city?.codigo;
       } else {
-        cityCode =  customerBloc.getCustomer.cityCode;
+        cityCode = customerBloc.getCustomer.cityCode;
       }
     } else {
-      cityCode =  customerBloc.getCustomer.cityCode;
+      cityCode = customerBloc.getCustomer.cityCode;
     }
-    final zones = await ZonesProvider.loadCityZones(cityCode ?? "");
+    final zones = await ZonesProvider.loadCityZones(cityCode ?? '');
     _zonesController.sink.add(zones);
   }
 
@@ -139,8 +139,11 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   }
 
   PreferredSize _appBar() {
-    return appBar(context, 'Crear cliente POS',
-        image: 'assets/images/add-user.png');
+    return appBar(
+      context,
+      'Crear cliente POS',
+      image: 'assets/images/add-user.png',
+    );
   }
 
   Widget _body() {
@@ -182,8 +185,10 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
         AppButton(
           child: Row(
             children: [
-              Text('Siguiente',
-                  style: buttonsSmallTextStyle(context, color: pColor)),
+              Text(
+                'Siguiente',
+                style: buttonsSmallTextStyle(context, color: pColor),
+              ),
               const Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: kIconSize,
@@ -207,7 +212,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
 
   Widget _countries() {
     return FutureBuilder<CountriesModel?>(
-      // load country if already defined in customerdata, if not load default country
+      // load country if already defined in customerData, if not load default country
       future: customerBloc.getCustomer.country == null
           ? CountriesProvider.defaultCountry()
           : CountriesProvider.loadCountry(customerBloc.getCustomer.country!),
@@ -249,10 +254,10 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
           : CitiesProvider.loadCity(customerBloc.getCustomer.city!),
       builder: (BuildContext context, AsyncSnapshot<CitiesModel?> snapshot) {
         if (snapshot.hasData &&
-            _citys == null &&
+            _city == null &&
             _states != null &&
             _country != null) {
-          _citys = snapshot.data;
+          _city = snapshot.data;
 
           customerBloc.getCustomer.city = snapshot.data!.descripcion;
           customerBloc.getCustomer.cityCode = snapshot.data!.codigo;
@@ -266,43 +271,45 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
 
   Widget _zones() {
     return ZoneDropDown(
-        stream: _zonesController.stream,
-        dropDownKey: _zonesDropDownKey,
-        required: false,
-        onChange: (data) async {
-          if (data != null) {
-            if (data.id != customerBloc.getCustomer.location) {
-              customerBloc.getCustomer.location = data.id;
-              await _loadSubzones();
-              _subZoneDropDownKey.currentState?.changeSelectedItem(null);
-              await Future.delayed(const Duration(milliseconds: 500));
-              _subZoneDropDownKey.currentState?.openDropDownSearch();
-            }
-          } else {
-            customerBloc.getCustomer.location = data?.id;
-
+      stream: _zonesController.stream,
+      dropDownKey: _zonesDropDownKey,
+      required: false,
+      onChange: (data) async {
+        if (data != null) {
+          if (data.id != customerBloc.getCustomer.location) {
+            customerBloc.getCustomer.location = data.id;
+            await _loadSubzones();
             _subZoneDropDownKey.currentState?.changeSelectedItem(null);
+            await Future.delayed(const Duration(milliseconds: 500));
+            _subZoneDropDownKey.currentState?.openDropDownSearch();
           }
-        },
-        selectedZone: customerBloc.getCustomer.location);
+        } else {
+          customerBloc.getCustomer.location = data?.id;
+
+          _subZoneDropDownKey.currentState?.changeSelectedItem(null);
+        }
+      },
+      selectedZone: customerBloc.getCustomer.location,
+    );
   }
 
   Widget _subZones() {
     return SubZoneDropDown(
-        stream: _subzonesController.stream,
-        dropDownKey: _subZoneDropDownKey,
-        required: false,
-        onChange: (data) async {
-          customerBloc.getCustomer.subzone = data?.id;
-        },
-        selectedSZoneCode: customerBloc.getCustomer.subzone);
+      stream: _subzonesController.stream,
+      dropDownKey: _subZoneDropDownKey,
+      required: false,
+      onChange: (data) async {
+        customerBloc.getCustomer.subzone = data?.id;
+      },
+      selectedSZoneCode: customerBloc.getCustomer.subzone,
+    );
   }
 
   Widget _regimenTypeDropdown() {
     return DropdownSearch<DropdDownSItem>(
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
 
@@ -313,7 +320,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       showSelectedItems: true,
       compareFn: (item, selectedItem) => item?.name == selectedItem?.name,
       items: regimenT.values.toList(),
-      selectedItem: regimenT[customerBloc.getCustomer.tipoRegimen ?? "1"],
+      selectedItem: regimenT[customerBloc.getCustomer.tipoRegimen ?? '1'],
       // selectedItem: _doc,
       dropdownSearchDecoration: InputDecoration(
         labelText: 'Tipo de regimen :',
@@ -342,7 +349,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
         controller: _countryController,
         // autofocus: true,
         decoration: InputDecoration(
-          labelText: 'Pais',
+          labelText: 'País',
           suffixIcon: IconButton(
             icon: const Icon(Icons.clear),
             onPressed: () {
@@ -355,7 +362,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       maxHeight: _size.width * 0.9,
@@ -368,7 +375,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       showSearchBox: true,
       selectedItem: _country,
       dropdownSearchDecoration: InputDecoration(
-        labelText: 'Pais :',
+        labelText: 'País :',
         labelStyle: TextStyle(color: _pc),
         filled: true,
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
@@ -401,7 +408,10 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   }
 
   Widget _customPopupCountriesItemBuilder(
-      BuildContext context, CountriesModel? item, bool isSelected) {
+    BuildContext context,
+    CountriesModel? item,
+    bool isSelected,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
@@ -442,7 +452,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       maxHeight: _size.width * 0.9,
@@ -491,7 +501,10 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   }
 
   Widget _customPopupStatesItemBuilder(
-      BuildContext context, StatesModel item, bool isSelected) {
+    BuildContext context,
+    StatesModel item,
+    bool isSelected,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
@@ -532,7 +545,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       maxHeight: _size.width * 0.9,
@@ -544,7 +557,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       compareFn: (item, selectedItem) =>
           item?.descripcion == selectedItem?.descripcion,
       showSearchBox: true,
-      selectedItem: _citys,
+      selectedItem: _city,
       dropdownSearchDecoration: InputDecoration(
         labelText: 'Ciudad :',
         labelStyle: TextStyle(color: _pc),
@@ -553,7 +566,9 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onFind: (String? filter) => CitiesProvider.loadFromDB(
-          search: filter, departament: _states?.coddepartamento),
+        search: filter,
+        departament: _states?.coddepartamento,
+      ),
       onChanged: (data) async {
         if (data != null) {
           if (data.codigo != customerBloc.getCustomer.cityCode) {
@@ -576,7 +591,7 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
         }
       },
       // selectedItem: posBloc.getCustomer,
-      popupItemBuilder: _customPopupCitysItemBuilder,
+      popupItemBuilder: _customPopupCityItemBuilder,
       popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
@@ -585,8 +600,11 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
     );
   }
 
-  Widget _customPopupCitysItemBuilder(
-      BuildContext context, CitiesModel? item, bool isSelected) {
+  Widget _customPopupCityItemBuilder(
+    BuildContext context,
+    CitiesModel? item,
+    bool isSelected,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
@@ -605,56 +623,76 @@ class _NewCustomerData2State extends State<NewCustomerData2> {
   }
 
   Widget _email() {
-    return textFormField(context, 'Correo electrónico', (value) {
-      customerBloc.getCustomer.email = value;
-    }, (String? value) {
-      if (value == null || value == '') {
-        _e.requestFocus();
-        return 'El campo es necesario';
-      }
-      if (!emailRegex.hasMatch(value)) {
-        return 'Correo electrónico no valido';
-      }
-    }, () {
-      _p.requestFocus();
-    },
-            focus: _e,
-            controller: _emailController,
-            keyBType: TextInputType.emailAddress)
-        .paddingSymmetric(vertical: 5);
+    return textFormField(
+      context,
+      'Correo electrónico',
+      (value) {
+        customerBloc.getCustomer.email = value;
+      },
+      (String? value) {
+        if (value == null || value == '') {
+          _e.requestFocus();
+          return 'El campo es necesario';
+        }
+        if (!emailRegex.hasMatch(value)) {
+          return 'Correo electrónico no valido';
+        }
+      },
+      () {
+        _p.requestFocus();
+      },
+      focus: _e,
+      controller: _emailController,
+      keyBType: TextInputType.emailAddress,
+    ).paddingSymmetric(vertical: 5);
   }
 
   Widget _phone() {
-    return textFormField(context, 'Telefono', (value) {
-      customerBloc.getCustomer.phone = value;
-    }, (String? value) {
-      if (value == null || value == '') {
-        _p.requestFocus();
-        return 'El campo es necesario';
-      }
-      if (!isNumeric(value)) {
-        return 'Telefono no valido';
-      }
-    }, () async {
-      if (_formKey.currentState!.validate()) {
-        await const NewCustomerData3().launch(context);
-      }
-    }, focus: _p, controller: _phoneController, keyBType: TextInputType.phone)
-        .paddingSymmetric(vertical: 5);
+    return textFormField(
+      context,
+      'Teléfono',
+      (value) {
+        customerBloc.getCustomer.phone = value;
+      },
+      (String? value) {
+        if (value == null || value == '') {
+          _p.requestFocus();
+          return 'El campo es necesario';
+        }
+        if (!isNumeric(value)) {
+          return 'Teléfono no valido';
+        }
+      },
+      () async {
+        if (_formKey.currentState!.validate()) {
+          await const NewCustomerData3().launch(context);
+        }
+      },
+      focus: _p,
+      controller: _phoneController,
+      keyBType: TextInputType.phone,
+    ).paddingSymmetric(vertical: 5);
   }
 
   Widget _address() {
-    return textFormField(context, 'Dirección', (value) {
-      customerBloc.getCustomer.address = value;
-    }, (String? value) {
-      if (value == null || value == '') {
-        _d.requestFocus();
-        return 'El campo es necesario';
-      }
-    }, () {
-      final _currentFocus = FocusScope.of(context);
-      _currentFocus.unfocus();
-    }, focus: _d, controller: _addressController)
-        .paddingSymmetric(vertical: 5);
+    return textFormField(
+      context,
+      'Dirección',
+      (value) {
+        customerBloc.getCustomer.address = value;
+      },
+      (String? value) {
+        if (value == null || value == '') {
+          _d.requestFocus();
+          return 'El campo es necesario';
+        }
+      },
+      () {
+        final _currentFocus = FocusScope.of(context);
+        _currentFocus.unfocus();
+      },
+      focus: _d,
+      controller: _addressController,
+    ).paddingSymmetric(vertical: 5);
   }
 }

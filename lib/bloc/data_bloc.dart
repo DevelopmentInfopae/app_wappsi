@@ -135,8 +135,12 @@ class DataBloc {
       }
       dataBloc.homeKey?.currentState?.syncLoader(false);
       if (res != null) {
-        reloadDialog(context, res['body']['message'] ?? '',
-            'assets/images/dizzy-robot.png');
+        // ignore: require_trailing_commas
+        reloadDialog(
+          context,
+          res['body']['message'] ?? '',
+          'assets/images/dizzy-robot.png',
+        );
       }
     }
   }

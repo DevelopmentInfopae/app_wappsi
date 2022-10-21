@@ -13,17 +13,22 @@ import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class ProductDetails extends StatelessWidget {
-  const ProductDetails(
-      {required this.product, Key? key, this.searchPrice = true})
-      : super(key: key);
+  const ProductDetails({
+    required this.product,
+    Key? key,
+    this.searchPrice = true,
+  }) : super(key: key);
   final bool searchPrice;
   final ProductModel product;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(context, 'Detalle de producto',
-          image: 'assets/images/box.png'),
+      appBar: appBar(
+        context,
+        'Detalle de producto',
+        image: 'assets/images/box.png',
+      ),
       body: _body(context),
     );
   }
@@ -44,13 +49,14 @@ class ProductDetails extends StatelessWidget {
     return Card(
       elevation: 1,
       child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            productPhoto(product.image == '' ? 'no_image.png' : product.image)
-                .withWidth(_size.width * 0.3),
-            productInfo(context).expand()
-          ]),
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          productPhoto(product.image == '' ? 'no_image.png' : product.image)
+              .withWidth(_size.width * 0.3),
+          productInfo(context).expand()
+        ],
+      ),
     );
   }
 
@@ -81,12 +87,13 @@ class ProductDetails extends StatelessWidget {
 
   Widget _productName(BuildContext context) {
     return descText(
-        // ignore: unnecessary_null_comparison
-        capitalizeText(product.name),
-        context,
-        fweigth: 4,
-        maxLines: 2,
-        fontSizeFactor: 1.2);
+      // ignore: unnecessary_null_comparison
+      capitalizeText(product.name),
+      context,
+      fweigth: 4,
+      maxLines: 2,
+      fontSizeFactor: 1.2,
+    );
   }
 
   Widget _subCategory() {
@@ -95,7 +102,7 @@ class ProductDetails extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         return descRichText(
           // ignore: unnecessary_null_comparison
-          'Subcategoria: ',
+          'Subcategoría: ',
           capitalizeText((snapshot.data?['name'] ?? '')),
           context,
         ).paddingSymmetric(vertical: 1);
@@ -108,11 +115,11 @@ class ProductDetails extends StatelessWidget {
       future: ProductsProvider.findProductCategory(product.categoryId),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         return descRichText(
-                // ignore: unnecessary_null_comparison
-                'Categoria: ',
-                capitalizeText((snapshot.data?['name'] ?? '')),
-                context)
-            .paddingSymmetric(vertical: 1);
+          // ignore: unnecessary_null_comparison
+          'Categoría: ',
+          capitalizeText((snapshot.data?['name'] ?? '')),
+          context,
+        ).paddingSymmetric(vertical: 1);
       },
     );
   }
@@ -121,47 +128,60 @@ class ProductDetails extends StatelessWidget {
     return Card(
       elevation: 8,
       child: FutureBuilder<Map?>(
-          future: ProductsProvider.findProductDetails(product.idCloud),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView(
-                children: [
-                  // hDivider(),
-                  futureLabelContent(
-                      DBProvider.db.findBrand(product.brand), 'name', 'Marca'),
-                  hDivider(),
-                  futureLabelContent(
-                      ProductsProvider.findProductUnit(product.unit.toString()),
-                      'name',
-                      'Unidad'),
-                  hDivider(),
-                  _pPrice(
-                      context,
-                      getFormatedCurrency(double.parse((searchPrice
-                              ? snapshot.data!['price']
-                              : product.price)
-                          .toString()))),
-                  hDivider(),
-                  // labelContent('Codigo/PLU: : ', product.code),
-                  // hDivider(),
+        future: ProductsProvider.findProductDetails(product.idCloud),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView(
+              children: [
+                // hDivider(),
+                futureLabelContent(
+                  DBProvider.db.findBrand(product.brand),
+                  'name',
+                  'Marca',
+                ),
+                hDivider(),
+                futureLabelContent(
+                  ProductsProvider.findProductUnit(product.unit.toString()),
+                  'name',
+                  'Unidad',
+                ),
+                hDivider(),
+                _pPrice(
+                  context,
+                  getFormatedCurrency(
+                    double.parse(
+                      (searchPrice ? snapshot.data!['price'] : product.price)
+                          .toString(),
+                    ),
+                  ),
+                ),
+                hDivider(),
+                // labelContent('Codigo/PLU: : ', product.code),
+                // hDivider(),
 
-                  labelContent('Metodo de impuesto',
-                      product.taxMethod == 0 ? 'Incluido' : 'No incluido'),
-                  hDivider(),
-                  futureLabelContent(
-                      DBProvider.db.findTableFieldsById(
-                          'sma_tax_rates', product.taxRateId.toString()),
-                      'name',
-                      'Tasa de impuestos '),
-                  hDivider(),
-                  _qtty(context),
-                  hDivider(),
-                ],
-              );
-            } else {
-              return Loader();
-            }
-          }),
+                labelContent(
+                  'Método de impuesto',
+                  product.taxMethod == 0 ? 'Incluido' : 'No incluido',
+                ),
+                hDivider(),
+                futureLabelContent(
+                  DBProvider.db.findTableFieldsById(
+                    'sma_tax_rates',
+                    product.taxRateId.toString(),
+                  ),
+                  'name',
+                  'Tasa de impuestos ',
+                ),
+                hDivider(),
+                _qtty(context),
+                hDivider(),
+              ],
+            );
+          } else {
+            return Loader();
+          }
+        },
+      ),
     );
   }
 
@@ -172,12 +192,16 @@ class ProductDetails extends StatelessWidget {
         labelContent('Cantidad ', product.quantity.toString()),
         buttonTextIcon(() async {
           final res = await ProductsProvider.findProductQuantities(
-              product.idCloud.toString());
+            product.idCloud.toString(),
+          );
           if (res != null) {
             listInfoDialog(context, res, 'name', 'quantity', 'Bodega', 'Cant.');
           } else {
-            confirmDialog(context, 'No se encontraron datos',
-                'assets/images/warning.png');
+            confirmDialog(
+              context,
+              'No se encontraron datos',
+              'assets/images/warning.png',
+            );
           }
         }).paddingRight(20)
       ],
@@ -192,24 +216,50 @@ class ProductDetails extends StatelessWidget {
         buttonTextIcon(() async {
           if (dataBloc.settings?['prioridad_precios_producto'] == 10) {
             final res = await UnitsProvider.getProductUnitsRaw(
-                product.idCloud.toString(), '');
+              product.idCloud.toString(),
+              '',
+            );
             if (res != null) {
               listInfoDialog(
-                  context, res, 'name', 'valor_unitario', 'Grupo', 'Precio',
-                  flexCol2: 2, flexCol1: 3, isPrice: true);
+                context,
+                res,
+                'name',
+                'valor_unitario',
+                'Grupo',
+                'Precio',
+                flexCol2: 2,
+                flexCol1: 3,
+                isPrice: true,
+              );
             } else {
-              confirmDialog(context, 'No se encontraron datos',
-                  'assets/images/warning.png');
+              confirmDialog(
+                context,
+                'No se encontraron datos',
+                'assets/images/warning.png',
+              );
             }
           } else {
             final res = await ProductsProvider.findProductPrices(
-                product.idCloud.toString());
+              product.idCloud.toString(),
+            );
             if (res != null) {
-              listInfoDialog(context, res, 'name', 'price', 'Grupo', 'Precio',
-                  flexCol2: 2, flexCol1: 3, isPrice: true);
+              listInfoDialog(
+                context,
+                res,
+                'name',
+                'price',
+                'Grupo',
+                'Precio',
+                flexCol2: 2,
+                flexCol1: 3,
+                isPrice: true,
+              );
             } else {
-              confirmDialog(context, 'No se encontraron datos',
-                  'assets/images/warning.png');
+              confirmDialog(
+                context,
+                'No se encontraron datos',
+                'assets/images/warning.png',
+              );
             }
           }
         }).paddingRight(20)

@@ -35,10 +35,10 @@ class NewAddress extends StatefulWidget {
   const NewAddress({Key? key, required this.customer}) : super(key: key);
   final CompanyModel customer;
   @override
-  _NewAddressState createState() => _NewAddressState();
+  _NewAddress createState() => _NewAddress();
 }
 
-class _NewAddressState extends State<NewAddress> {
+class _NewAddress extends State<NewAddress> {
   late Size _size;
   late Color _pc;
 
@@ -60,7 +60,7 @@ class _NewAddressState extends State<NewAddress> {
 
   CountriesModel? _country;
   StatesModel? _states;
-  CitiesModel? _citys;
+  CitiesModel? _city;
 
   final TextEditingController _countryController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
@@ -136,7 +136,7 @@ class _NewAddressState extends State<NewAddress> {
   //     final zones = await ZonesProvider.loadCityZones(cityCode ?? "");
   //     _zonesController.sink.add(zones);
   //   } else {
-  //     if (_citys != null && (data?.isEmpty ?? true)) {
+  //     if (_cities != null && (data?.isEmpty ?? true)) {
   //       final zones = await ZonesProvider.loadCityZones(
   //           customerBloc.getAddress.cityCode ?? "");
   //       _zonesController.sink.add(zones);
@@ -155,12 +155,14 @@ class _NewAddressState extends State<NewAddress> {
     } else {
       cityCode = customerBloc.getAddress.cityCode;
     }
-    final zones = await ZonesProvider.loadCityZones(cityCode ?? "");
+    final zones = await ZonesProvider.loadCityZones(cityCode ?? '');
     _zonesController.sink.add(zones);
   }
 
-  Future<void> _loadSubzones(List<SubzoneModel>? data,
-      {bool reload = false}) async {
+  Future<void> _loadSubzones(
+    List<SubzoneModel>? data, {
+    bool reload = false,
+  }) async {
     if (reload) {
       final szones =
           await ZonesProvider.loadSubZones(customerBloc.getAddress.location);
@@ -227,7 +229,7 @@ class _NewAddressState extends State<NewAddress> {
 
   Widget _countries() {
     return FutureBuilder<CountriesModel?>(
-      // load country if already defined in customerdata, if not load default country
+      // load country if already defined in customerData, if not load default country
       future: customerBloc.getAddress.country != null
           ? CountriesProvider.loadCountry(customerBloc.getAddress.country!)
           : CountriesProvider.defaultCountry(),
@@ -270,10 +272,10 @@ class _NewAddressState extends State<NewAddress> {
           : CitiesProvider.defaultCity(),
       builder: (BuildContext context, AsyncSnapshot<CitiesModel?> snapshot) {
         if (snapshot.hasData &&
-            _citys == null &&
+            _city == null &&
             _states != null &&
             _country != null) {
-          _citys = snapshot.data;
+          _city = snapshot.data;
           customerBloc.getAddress.city ??= snapshot.data!.descripcion;
           customerBloc.getAddress.cityCode ??= snapshot.data!.codigo;
 
@@ -287,29 +289,31 @@ class _NewAddressState extends State<NewAddress> {
 
   Widget _zones() {
     return ZoneDropDown(
-        stream: _zonesController.stream,
-        dropDownKey: _zonesDropDownKey,
-        required: false,
-        onChange: (data) async {
-          if (customerBloc.getAddress.location != data?.id) {
-            customerBloc.getAddress.location = data?.id;
-            _subZoneDropDownKey.currentState?.changeSelectedItem(null);
+      stream: _zonesController.stream,
+      dropDownKey: _zonesDropDownKey,
+      required: false,
+      onChange: (data) async {
+        if (customerBloc.getAddress.location != data?.id) {
+          customerBloc.getAddress.location = data?.id;
+          _subZoneDropDownKey.currentState?.changeSelectedItem(null);
 
-            await _loadSubzones(null, reload: true);
-          }
-        },
-        selectedZone: customerBloc.getAddress.location);
+          await _loadSubzones(null, reload: true);
+        }
+      },
+      selectedZone: customerBloc.getAddress.location,
+    );
   }
 
   Widget _subZones() {
     return SubZoneDropDown(
-        stream: _subzonesController.stream,
-        dropDownKey: _subZoneDropDownKey,
-        required: false,
-        onChange: (SubzoneModel? szone) {
-          customerBloc.getAddress.subzone = szone?.id;
-        },
-        selectedSZoneCode: customerBloc.getAddress.subzone);
+      stream: _subzonesController.stream,
+      dropDownKey: _subZoneDropDownKey,
+      required: false,
+      onChange: (SubzoneModel? szone) {
+        customerBloc.getAddress.subzone = szone?.id;
+      },
+      selectedSZoneCode: customerBloc.getAddress.subzone,
+    );
   }
 
   Widget _locationSelector() {
@@ -331,16 +335,17 @@ class _NewAddressState extends State<NewAddress> {
                 color: pColor,
               ),
               Text(
-                  (customerBloc.getAddress.latitude != null &&
-                          customerBloc.getAddress.longitude != null)
-                      ? 'Lat:' +
-                          roundDouble(customerBloc.getAddress.latitude!, 3)
-                              .toString() +
-                          ', Lon:' +
-                          roundDouble(customerBloc.getAddress.longitude!, 3)
-                              .toString()
-                      : ' Añadir localización',
-                  style: buttonsSmallTextStyle(context, color: pColor)),
+                (customerBloc.getAddress.latitude != null &&
+                        customerBloc.getAddress.longitude != null)
+                    ? 'Lat:' +
+                        roundDouble(customerBloc.getAddress.latitude!, 3)
+                            .toString() +
+                        ', Lon:' +
+                        roundDouble(customerBloc.getAddress.longitude!, 3)
+                            .toString()
+                    : ' Añadir localización',
+                style: buttonsSmallTextStyle(context, color: pColor),
+              ),
             ],
           ),
           onTap: () async {
@@ -376,7 +381,7 @@ class _NewAddressState extends State<NewAddress> {
           ),
         ).paddingRight(4),
         Tooltip(
-          message: 'Selecionar localización',
+          message: 'Seleccionar localización',
           child: AppButton(
             // color: greyLight,
             width: 35,
@@ -404,7 +409,8 @@ class _NewAddressState extends State<NewAddress> {
               customerBloc.getAddress.longitude != null)
           ? GeoPoint(
               latitude: customerBloc.getAddress.latitude!,
-              longitude: customerBloc.getAddress.longitude!)
+              longitude: customerBloc.getAddress.longitude!,
+            )
           : null,
     ).launch(context);
     if (result != null) {
@@ -421,7 +427,7 @@ class _NewAddressState extends State<NewAddress> {
         controller: _countryController,
         // autofocus: true,
         decoration: InputDecoration(
-          labelText: 'Pais',
+          labelText: 'País',
           suffixIcon: IconButton(
             icon: const Icon(Icons.clear),
             onPressed: () {
@@ -434,7 +440,7 @@ class _NewAddressState extends State<NewAddress> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       maxHeight: _size.width * 0.9,
@@ -447,7 +453,7 @@ class _NewAddressState extends State<NewAddress> {
       showSearchBox: true,
       selectedItem: _country,
       dropdownSearchDecoration: InputDecoration(
-        labelText: 'Pais :',
+        labelText: 'País :',
         labelStyle: TextStyle(color: _pc),
         filled: true,
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
@@ -477,7 +483,10 @@ class _NewAddressState extends State<NewAddress> {
   }
 
   Widget _customPopupCountriesItemBuilder(
-      BuildContext context, CountriesModel? item, bool isSelected) {
+    BuildContext context,
+    CountriesModel? item,
+    bool isSelected,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
@@ -518,7 +527,7 @@ class _NewAddressState extends State<NewAddress> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       maxHeight: _size.width * 0.9,
@@ -565,7 +574,10 @@ class _NewAddressState extends State<NewAddress> {
   }
 
   Widget _customPopupStatesItemBuilder(
-      BuildContext context, StatesModel item, bool isSelected) {
+    BuildContext context,
+    StatesModel item,
+    bool isSelected,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
@@ -606,7 +618,7 @@ class _NewAddressState extends State<NewAddress> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       maxHeight: _size.width * 0.9,
@@ -618,7 +630,7 @@ class _NewAddressState extends State<NewAddress> {
       compareFn: (item, selectedItem) =>
           item?.descripcion == selectedItem?.descripcion,
       showSearchBox: true,
-      selectedItem: _citys,
+      selectedItem: _city,
       dropdownSearchDecoration: InputDecoration(
         labelText: 'Ciudad :',
         labelStyle: TextStyle(color: _pc),
@@ -627,12 +639,14 @@ class _NewAddressState extends State<NewAddress> {
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onFind: (String? filter) => CitiesProvider.loadFromDB(
-          search: filter, departament: _states?.coddepartamento),
+        search: filter,
+        departament: _states?.coddepartamento,
+      ),
       onChanged: (data) async {
-        _citys = data;
-        if (_citys?.descripcion != customerBloc.getAddress.city) {
-          customerBloc.getAddress.city = _citys?.descripcion;
-          customerBloc.getAddress.cityCode = _citys?.codigo;
+        _city = data;
+        if (_city?.descripcion != customerBloc.getAddress.city) {
+          customerBloc.getAddress.city = _city?.descripcion;
+          customerBloc.getAddress.cityCode = _city?.codigo;
 
           _zonesDropDownKey.currentState?.changeSelectedItem(null);
           _subZoneDropDownKey.currentState?.changeSelectedItem(null);
@@ -641,7 +655,7 @@ class _NewAddressState extends State<NewAddress> {
         }
       },
       // selectedItem: posBloc.getAddress,
-      popupItemBuilder: _customPopupCitysItemBuilder,
+      popupItemBuilder: _customPopupCitiesItemBuilder,
       popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
@@ -650,8 +664,11 @@ class _NewAddressState extends State<NewAddress> {
     );
   }
 
-  Widget _customPopupCitysItemBuilder(
-      BuildContext context, CitiesModel? item, bool isSelected) {
+  Widget _customPopupCitiesItemBuilder(
+    BuildContext context,
+    CitiesModel? item,
+    bool isSelected,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
@@ -670,64 +687,78 @@ class _NewAddressState extends State<NewAddress> {
   }
 
   Widget _direccion() {
-    return textFormField(context, 'Dirección', (value) {
-      customerBloc.getAddress.direccion = value;
-    }, (String? value) {
-      if (value == null || value == '') {
-        return 'El campo es necesario';
-      }
-    }, () {
-      _emailFocus.requestFocus();
-    }, focus: _direccionFocus, controller: _direccionController)
-        .paddingSymmetric(vertical: 4);
+    return textFormField(
+      context,
+      'Dirección',
+      (value) {
+        customerBloc.getAddress.direccion = value;
+      },
+      (String? value) {
+        if (value == null || value == '') {
+          return 'El campo es necesario';
+        }
+      },
+      () {
+        _emailFocus.requestFocus();
+      },
+      focus: _direccionFocus,
+      controller: _direccionController,
+    ).paddingSymmetric(vertical: 4);
   }
 
   Widget _sucursal() {
-    return textFormField(context, 'Nombre de sucursal', (value) {
-      customerBloc.getAddress.sucursal = value;
-    }, (value) {
-      if (value == null || value == '') {
-        _sucursalFocus.requestFocus();
-        return 'El campo es necesario';
-      }
-    }, () {
-      _direccionFocus.requestFocus();
-    }, focus: _sucursalFocus, controller: _sucursalController)
-        .paddingSymmetric(vertical: 4);
+    return textFormField(
+      context,
+      'Nombre de sucursal',
+      (value) {
+        customerBloc.getAddress.sucursal = value;
+      },
+      (value) {
+        if (value == null || value == '') {
+          _sucursalFocus.requestFocus();
+          return 'El campo es necesario';
+        }
+      },
+      () {
+        _direccionFocus.requestFocus();
+      },
+      focus: _sucursalFocus,
+      controller: _sucursalController,
+    ).paddingSymmetric(vertical: 4);
   }
 
   Widget _phone() {
     return textFormField(
-            context,
-            'Telefono',
-            (value) {
-              customerBloc.getAddress.phone = value;
-            },
-            (String? value) {},
-            () {
-              _phoneFocus.unfocus();
-            },
-            focus: _phoneFocus,
-            controller: _phoneController,
-            keyBType: TextInputType.number)
-        .paddingSymmetric(vertical: 4, horizontal: 2);
+      context,
+      'Teléfono',
+      (value) {
+        customerBloc.getAddress.phone = value;
+      },
+      (String? value) {},
+      () {
+        _phoneFocus.unfocus();
+      },
+      focus: _phoneFocus,
+      controller: _phoneController,
+      keyBType: TextInputType.number,
+    ).paddingSymmetric(vertical: 4, horizontal: 2);
   }
 
   Widget _email() {
     return textFormField(
-            context,
-            'Email',
-            (value) {
-              customerBloc.getAddress.email = value;
-            },
-            (value) {},
-            () {
-              _phoneFocus.requestFocus();
-            },
-            focus: _emailFocus,
-            controller: _emailController,
-            keyBType: TextInputType.emailAddress)
-        .paddingSymmetric(vertical: 4, horizontal: 2);
+      context,
+      'Email',
+      (value) {
+        customerBloc.getAddress.email = value;
+      },
+      (value) {},
+      () {
+        _phoneFocus.requestFocus();
+      },
+      focus: _emailFocus,
+      controller: _emailController,
+      keyBType: TextInputType.emailAddress,
+    ).paddingSymmetric(vertical: 4, horizontal: 2);
   }
 
   Widget _customerConfig() {
@@ -743,8 +774,10 @@ class _NewAddressState extends State<NewAddress> {
                 size: kIconSize,
                 color: pColor,
               ),
-              Text(' Crear',
-                  style: buttonsSmallTextStyle(context, color: pColor)),
+              Text(
+                ' Crear',
+                style: buttonsSmallTextStyle(context, color: pColor),
+              ),
             ],
           ),
           enabled: !_loading,
@@ -756,7 +789,9 @@ class _NewAddressState extends State<NewAddress> {
                   });
                   if (_formKey.currentState?.validate() ?? false) {
                     await CustomerAddressesProvider.createAddress(
-                        context, widget.customer);
+                      context,
+                      widget.customer,
+                    );
                   }
                   setState(() {
                     _loading = true;

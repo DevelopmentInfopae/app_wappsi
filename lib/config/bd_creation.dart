@@ -131,7 +131,7 @@ CREATE TABLE `sma_preferences` (
 );
 ''';
 
-const String DbPreferencesCategoriresSql = '''
+const String DbPreferencesCategoriesSql = '''
 CREATE TABLE `sma_preferences_categories` (
 `id` INTEGER NOT NULL PRIMARY KEY,
 `name` TEXT  DEFAULT NULL,
@@ -782,7 +782,7 @@ DESADICIONAL TEXT DEFAULT ''
 );
 ''';
 
-const String CitysSql = '''
+const String CitiesSql = '''
 CREATE TABLE `sma_cities` (
 PAIS TEXT NOT NULL DEFAULT '""',
 CODDEPARTAMENTO TEXT DEFAULT '""',
@@ -1203,7 +1203,7 @@ CREATE TABLE `sma_payments` (
 
 ''';
 
-const String FavotitesSql = '''
+const String FavoritesSql = '''
 
 CREATE TABLE `sma_wishlist` (
 `id` INTEGER NOT NULL PRIMARY KEY,
@@ -1659,31 +1659,31 @@ List<String> indexCreation = [
 ];
 
 List<String> syncIds = [
-  "INSERT INTO sync (id) VALUES (1);",
-  "INSERT INTO sync (id) VALUES (2);",
-  "INSERT INTO sync (id) VALUES (3);",
-  "INSERT INTO sync (id) VALUES (4);",
-  "INSERT INTO sync (id) VALUES (5);",
-  "INSERT INTO sync (id) VALUES (6);",
-  "INSERT INTO sync (id) VALUES (7);",
-  "INSERT INTO sync (id) VALUES (8);",
-  "INSERT INTO sync (id) VALUES (9);",
-  "INSERT INTO sync (id) VALUES (10);",
-  "INSERT INTO sync (id) VALUES (11);",
-  "INSERT INTO sync (id) VALUES (12);",
-  "INSERT INTO sync (id) VALUES (13);",
-  "INSERT INTO sync (id) VALUES (14);",
-  "INSERT INTO sync (id) VALUES (15);",
-  "INSERT INTO sync (id) VALUES (16);",
-  "INSERT INTO sync (id) VALUES (17);",
-  "INSERT INTO sync (id) VALUES (18);",
-  "INSERT INTO sync (id) VALUES (19);",
-  "INSERT INTO sync (id) VALUES (20);",
-  "INSERT INTO sync (id) VALUES (21);",
-  "INSERT INTO sync (id) VALUES (22);",
-  "INSERT INTO sync (id) VALUES (23);",
-  "INSERT INTO sync (id) VALUES (24);",
-  "INSERT INTO sync (id) VALUES (25);",
-  "INSERT INTO sync (id) VALUES (26);",
-  "INSERT INTO sync (id) VALUES (27);",
+  'INSERT INTO sync (id) VALUES (1);',
+  'INSERT INTO sync (id) VALUES (2);',
+  'INSERT INTO sync (id) VALUES (3);',
+  'INSERT INTO sync (id) VALUES (4);',
+  'INSERT INTO sync (id) VALUES (5);',
+  'INSERT INTO sync (id) VALUES (6);',
+  'INSERT INTO sync (id) VALUES (7);',
+  'INSERT INTO sync (id) VALUES (8);',
+  'INSERT INTO sync (id) VALUES (9);',
+  'INSERT INTO sync (id) VALUES (10);',
+  'INSERT INTO sync (id) VALUES (11);',
+  'INSERT INTO sync (id) VALUES (12);',
+  'INSERT INTO sync (id) VALUES (13);',
+  'INSERT INTO sync (id) VALUES (14);',
+  'INSERT INTO sync (id) VALUES (15);',
+  'INSERT INTO sync (id) VALUES (16);',
+  'INSERT INTO sync (id) VALUES (17);',
+  'INSERT INTO sync (id) VALUES (18);',
+  'INSERT INTO sync (id) VALUES (19);',
+  'INSERT INTO sync (id) VALUES (20);',
+  'INSERT INTO sync (id) VALUES (21);',
+  'INSERT INTO sync (id) VALUES (22);',
+  'INSERT INTO sync (id) VALUES (23);',
+  'INSERT INTO sync (id) VALUES (24);',
+  'INSERT INTO sync (id) VALUES (25);',
+  'INSERT INTO sync (id) VALUES (26);',
+  'INSERT INTO sync (id) VALUES (27);',
 ];

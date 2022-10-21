@@ -19,21 +19,21 @@ class _OnBoardState extends State<OnBoard> {
 
   List<Map<String, dynamic>> sliderList = [
     {
-      "icon": 'assets/images/onboard1.png',
-      "title": 'Easy to use mobile pos',
-      "description":
+      'icon': 'assets/images/onboard1.png',
+      'title': 'Easy to use mobile pos',
+      'description':
           'Lorem ipsum dolor sit amet, consectetuer adipisci elit, sed diam nonummy nibh euismod tincidunt u laoreet dolore magna aliquam erat volutpat. Ut wi',
     },
     {
-      "icon": 'assets/images/onboard2.png',
-      "title": 'Choose your features',
-      "description":
+      'icon': 'assets/images/onboard2.png',
+      'title': 'Choose your features',
+      'description':
           'Lorem ipsum dolor sit amet, consectetuer adipisci elit, sed diam nonummy nibh euismod tincidunt u laoreet dolore magna aliquam erat volutpat. Ut wi',
     },
     {
-      "icon": 'assets/images/onboard3.png',
-      "title": 'All business solutions',
-      "description":
+      'icon': 'assets/images/onboard3.png',
+      'title': 'All business solutions',
+      'description':
           'Lorem ipsum dolor sit amet, consectetuer adipisci elit, sed diam nonummy nibh euismod tincidunt u laoreet dolore magna aliquam erat volutpat. Ut wi',
     },
   ];
@@ -107,10 +107,12 @@ class _OnBoardState extends State<OnBoard> {
                   itemBuilder: (_, index) {
                     return Column(
                       children: [
-                        Image.asset(sliderList[index]['icon'],
-                            fit: BoxFit.fill,
-                            width: context.width(),
-                            height: 340),
+                        Image.asset(
+                          sliderList[index]['icon'],
+                          fit: BoxFit.fill,
+                          width: context.width(),
+                          height: 340,
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Text(
@@ -158,7 +160,7 @@ class _OnBoardState extends State<OnBoard> {
           ),
           ButtonGlobal(
             iconWidget: Icons.arrow_forward,
-            buttontext: buttonText,
+            buttonText: buttonText,
             buttonDecoration: kButtonDecoration.copyWith(color: pColor),
             onPressed: () {
               setState(
@@ -166,7 +168,8 @@ class _OnBoardState extends State<OnBoard> {
                   currentIndexPage < 2
                       ? pageController.nextPage(
                           duration: const Duration(microseconds: 1000),
-                          curve: Curves.bounceInOut)
+                          curve: Curves.bounceInOut,
+                        )
                       : Navigator.pushNamed(context, '/loginForm');
                 },
               );

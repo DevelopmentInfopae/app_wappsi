@@ -27,16 +27,21 @@ class _DBSyncState extends State<DBSync> {
   SyncDBProvider syncDB = SyncDBProvider();
   final Map<String, bool> _status = {};
 
-  bool suceesAlertShown = false;
+  bool successAlertShown = false;
 
   // late Size _size;
 
   @override
   void initState() {
     _options = widget.syncElements ?? enabledOptions.keys.toList();
-    _status.addAll(Map.fromIterable(_options, value: (value) {
-      return false;
-    }));
+    _status.addAll(
+      Map.fromIterable(
+        _options,
+        value: (value) {
+          return false;
+        },
+      ),
+    );
     super.initState();
   }
 
@@ -44,9 +49,14 @@ class _DBSyncState extends State<DBSync> {
   Widget build(BuildContext context) {
     // _size = MediaQuery.of(context).size;
     return Scaffold(
-        appBar: appBar(context, 'Sincronización',
-            back: false, image: 'assets/images/sync.gif'),
-        body: _body(context));
+      appBar: appBar(
+        context,
+        'Sincronización',
+        back: false,
+        image: 'assets/images/sync.gif',
+      ),
+      body: _body(context),
+    );
   }
 
   _body(BuildContext context) {
@@ -61,16 +71,19 @@ class _DBSyncState extends State<DBSync> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data == true) {
-            return elementSync('Paises, departamentos y ciudades',
-                completed: true);
+            return elementSync(
+              'Países, departamentos y ciudades',
+              completed: true,
+            );
           }
           confirmDialog(
-              context,
-              'Error al escribir paises, departamentos o ciudades en la base de datos local',
-              'assets/images/dizzy-robot.png');
-          return elementSync('Paises, departamentos y ciudades');
+            context,
+            'Error al escribir países, departamentos o ciudades en la base de datos local',
+            'assets/images/dizzy-robot.png',
+          );
+          return elementSync('Países, departamentos y ciudades');
         } else {
-          return elementSync('Paises, departamentos y ciudades');
+          return elementSync('Países, departamentos y ciudades');
         }
       },
     );
@@ -88,7 +101,7 @@ class _DBSyncState extends State<DBSync> {
           );
         } else {
           return Center(
-            child: elementSync('Base de datos no encontrada, creandola'),
+            child: elementSync('Base de datos no encontrada, creándola'),
           );
         }
       },
@@ -98,41 +111,42 @@ class _DBSyncState extends State<DBSync> {
   List<FutureBuilder<dynamic>> _syncElements(BuildContext context) {
     final elements = _options.map((option) {
       return FutureBuilder(
-          future: syncDB.syncOption(context, option),
-          // future: null,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData) {
-              // setState(() {
-              _status[option] = true;
-              // });
-              _navigate();
-              return Column(
-                children: [
-                  elementSync(option, completed: true),
-                  const Divider(
-                    color: Colors.black38,
-                    height: 2,
-                  ),
-                ],
-              );
-            } else {
-              // _navigate();
-              return Column(
-                children: [
-                  ElementSync(
-                    context: context,
-                    optionInfo: enabledOptions[option]!,
-                    optionName: option,
-                    status: false,
-                  ),
-                  const Divider(
-                    color: Colors.black38,
-                    height: 2,
-                  ),
-                ],
-              );
-            }
-          });
+        future: syncDB.syncOption(context, option),
+        // future: null,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            // setState(() {
+            _status[option] = true;
+            // });
+            _navigate();
+            return Column(
+              children: [
+                elementSync(option, completed: true),
+                const Divider(
+                  color: Colors.black38,
+                  height: 2,
+                ),
+              ],
+            );
+          } else {
+            // _navigate();
+            return Column(
+              children: [
+                ElementSync(
+                  context: context,
+                  optionInfo: enabledOptions[option]!,
+                  optionName: option,
+                  status: false,
+                ),
+                const Divider(
+                  color: Colors.black38,
+                  height: 2,
+                ),
+              ],
+            );
+          }
+        },
+      );
     }).toList();
     elements.add(_syncCSC());
     return elements;
@@ -142,10 +156,10 @@ class _DBSyncState extends State<DBSync> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Image.asset('assets/images/' +
-                (enabledOptions[option]?['image'] ?? 'countries.png'))
-            .paddingSymmetric(horizontal: 10, vertical: 3)
-            .withHeight(50),
+        Image.asset(
+          'assets/images/' +
+              (enabledOptions[option]?['image'] ?? 'countries.png'),
+        ).paddingSymmetric(horizontal: 10, vertical: 3).withHeight(50),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -162,31 +176,36 @@ class _DBSyncState extends State<DBSync> {
     // final _pc = pColor;
     if (_status.values.where((element) => element == false).isEmpty) {
       // return ;
-      // confirmDialog(context, 'Base de datos sincronizada con exito',
+      // confirmDialog(context, 'Base de datos sincronizada con éxito',
       //     'assets/images/success.png');
-      if (!suceesAlertShown) {
+      if (!successAlertShown) {
         final homeKey = GlobalKey<HomeState>();
         WidgetsBinding.instance.addPostFrameCallback((_) async {
-          confirmDialog(context, 'Base de datos sincronizada con exito',
-              'assets/images/success.png');
+          confirmDialog(
+            context,
+            'Base de datos sincronizada con éxito',
+            'assets/images/success.png',
+          );
 
-          /// set last_logged user to current_user value, used to perform bd operations 
+          /// set last_logged user to current_user value, used to perform bd operations
           /// on user change
-          await setValue("last_user", getStringAsync("current_user"));
+          await setValue('last_user', getStringAsync('current_user'));
 
           await Future.delayed(const Duration(seconds: 2));
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (BuildContext context) {
-              dataBloc.setHomeKey(homeKey);
-              return Home(
-                key: homeKey,
-              );
-            }),
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                dataBloc.setHomeKey(homeKey);
+                return Home(
+                  key: homeKey,
+                );
+              },
+            ),
             (route) => false,
           );
         });
-        suceesAlertShown = true;
+        successAlertShown = true;
       }
 
       // return

@@ -12,7 +12,7 @@ class PricePoliciesProvider {
   /// Checks what else is required to add product price correctly
   static Map checkProductSelectionRequirements() {
     final Map requirements = {
-      "product_unit": false,
+      'product_unit': false,
     };
     final pricePolicy = dataBloc.settings!['prioridad_precios_producto'];
     if (pricePolicy == 10) {
@@ -21,15 +21,20 @@ class PricePoliciesProvider {
     return requirements;
   }
 
-  /// Return ProductModel object with prices calculatd by price_policy
+  /// Return ProductModel object with prices calculated by price_policy
   static Future<ProductModel> policyCases(
-      ProductModel product, int? policy, CompanyModel? customer,
-      {bool defaultPrice = false, String? productKey, UnitsModel? unit}) async {
+    ProductModel product,
+    int? policy,
+    CompanyModel? customer, {
+    bool defaultPrice = false,
+    String? productKey,
+    UnitsModel? unit,
+  }) async {
     //tax rate for IVA
 
     double price = product.getPriceWithoutIVA();
 
-    /// For price_plicy with id 6
+    /// For price_policy with id 6
     if (policy == 6) {
       if (customer != null) {
         if (product.promoPrice != null) {
@@ -40,7 +45,9 @@ class PricePoliciesProvider {
         } else {
           if (customer.priceGroupId != null) {
             price = await product.customerPrice(
-                customer, product.billerPrice(product.getPrice()));
+              customer,
+              product.billerPrice(product.getPrice()),
+            );
           } else {
             price = await product.billerPrice(product.getPrice());
           }
@@ -77,12 +84,15 @@ class PricePoliciesProvider {
     }
   }
 
-  /// Return ProductModel object with prices calculatd by price_policy
+  /// Return ProductModel object with prices calculated by price_policy
   static Future<bool> policyCasesPrice(
-      String? productKey, int? policy, CompanyModel? customer,
-      {bool defaultPrice = false,
-      bool toOrder = false,
-      bool toQuote = false}) async {
+    String? productKey,
+    int? policy,
+    CompanyModel? customer, {
+    bool defaultPrice = false,
+    bool toOrder = false,
+    bool toQuote = false,
+  }) async {
     //tax rate for IVA
 
     double price = 0.0;
@@ -100,7 +110,7 @@ class PricePoliciesProvider {
     }
 
     try {
-      /// For price_plicy with id 6
+      /// For price_policy with id 6
       if (policy == 6) {
         ProductModel? t;
         if (toOrder) {
@@ -118,7 +128,9 @@ class PricePoliciesProvider {
           if (customer != null) {
             if (customer.priceGroupId != null) {
               price = await product.customerPrice(
-                  customer, product.billerPrice(product.getPrice()));
+                customer,
+                product.billerPrice(product.getPrice()),
+              );
             } else {
               price = await product.billerPrice(product.getPrice());
             }
@@ -171,16 +183,19 @@ class PricePoliciesProvider {
     return result;
   }
 
-  /// Return ProductModel object with prices calculatd by price_policy
+  /// Return ProductModel object with prices calculated by price_policy
   static Future<bool> policyCasesPriceOrder(
-      String? productKey, int? policy, CompanyModel? customer,
-      {bool defaultPrice = false}) async {
+    String? productKey,
+    int? policy,
+    CompanyModel? customer, {
+    bool defaultPrice = false,
+  }) async {
     //tax rate for IVA
 
     double price = 0.0;
 
     try {
-      /// For price_plicy with id 6
+      /// For price_policy with id 6
       if (policy == 6) {
         if (orderBloc.getProducts![productKey]!.promoPrice != null) {
           orderBloc.getProducts![productKey]!.price =
@@ -192,9 +207,11 @@ class PricePoliciesProvider {
           if (customer != null) {
             if (customer.priceGroupId != null) {
               price = await orderBloc.getProducts![productKey]!.customerPrice(
-                  customer,
-                  orderBloc.getProducts![productKey]!.billerPrice(
-                      orderBloc.getProducts![productKey]!.getPrice()));
+                customer,
+                orderBloc.getProducts![productKey]!.billerPrice(
+                  orderBloc.getProducts![productKey]!.getPrice(),
+                ),
+              );
             } else {
               price = await orderBloc.getProducts![productKey]!
                   .billerPrice(orderBloc.getProducts![productKey]!.getPrice());
@@ -230,20 +247,23 @@ class PricePoliciesProvider {
       return true;
     } catch (e) {
       // printConsole(e);
-      await logError(e, from: 'Price policys fromPosOrder');
+      await logError(e, from: 'Price policy fromPosOrder');
       return false;
     }
   }
 
   static Future<List<double>> priceWDiscount(
-      double price, CompanyModel? customer) async {
+    double price,
+    CompanyModel? customer,
+  ) async {
     int? discount = 0;
     double discountVal = 0.0;
     double priceD = price;
 
     if (customer != null) {
       final discountData = await CompaniesProvider.findCustomerDiscount(
-          customer.customerGroupId!);
+        customer.customerGroupId!,
+      );
 
       // ignore: unnecessary_null_comparison
       discount = discountData!['percent'];

@@ -2,7 +2,7 @@ import 'package:pos_wappsi/models/documentypes_model.dart';
 
 import 'local_db_provider.dart';
 
-class DocumenttypesProvider {
+class DocumentTypesProvider {
   static List<DocumentypeModel> fromJsonList(List<Map> list) {
     List<DocumentypeModel> documentypes = [];
     Map<String, dynamic> temp = {};

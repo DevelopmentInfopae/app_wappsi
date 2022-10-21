@@ -69,9 +69,11 @@ class _OrderProductsState extends State<OrderProducts> {
 
   void _goToPage(int page) {
     if (pageController.hasClients) {
-      pageController.animateToPage(page,
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.fastOutSlowIn);
+      pageController.animateToPage(
+        page,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.fastOutSlowIn,
+      );
     }
   }
 
@@ -104,23 +106,27 @@ class _OrderProductsState extends State<OrderProducts> {
     // initialize search controller
 
     return WillPopScope(
-        child: Scaffold(
-            key: _scaffoldKey, appBar: buildAppBar(context), body: _body()),
-        onWillPop: () async {
-          bool pop = false;
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: buildAppBar(context),
+        body: _body(),
+      ),
+      onWillPop: () async {
+        bool pop = false;
 
-          if (index == 1) {
-            _goToPage(0);
+        if (index == 1) {
+          _goToPage(0);
+        } else {
+          if (_searchController.isOpen) {
+            _searchController.close();
           } else {
-            if (_searchController.isOpen) {
-              _searchController.close();
-            } else {
-              pop = true;
-            }
+            pop = true;
           }
+        }
 
-          return pop;
-        });
+        return pop;
+      },
+    );
   }
 
   Column _body() {
@@ -155,23 +161,25 @@ class _OrderProductsState extends State<OrderProducts> {
         }
       },
       leading: Tooltip(
-          message: "Favoritos",
-          child: AppBarLeading(
-              widget: Icon(
-                Icons.favorite,
-                size: 27,
-                color: index == 1 ? Colors.white : favColor,
-              ),
-              backgroundColor: index == 0 ? Colors.white : favColor,
-              onTap: () {
-                if ((index) == 0) {
-                  _searchController.close();
-                  _goToPage(1);
-                } else {
-                  _goToPage(0);
-                }
-                _updateIndex();
-              })),
+        message: 'Favoritos',
+        child: AppBarLeading(
+          widget: Icon(
+            Icons.favorite,
+            size: 27,
+            color: index == 1 ? Colors.white : favColor,
+          ),
+          backgroundColor: index == 0 ? Colors.white : favColor,
+          onTap: () {
+            if ((index) == 0) {
+              _searchController.close();
+              _goToPage(1);
+            } else {
+              _goToPage(0);
+            }
+            _updateIndex();
+          },
+        ),
+      ),
     );
   }
 
@@ -195,22 +203,26 @@ class _OrderProductsState extends State<OrderProducts> {
         MediaQuery.of(context).orientation == Orientation.portrait;
 
     return FavoritesOrderSelection(
-        isPortrait: isPortrait,
-        toOrder: true,
-        context: _scaffoldKey.currentContext ?? context);
+      isPortrait: isPortrait,
+      toOrder: true,
+      context: _scaffoldKey.currentContext ?? context,
+    );
   }
 
   Container _searchHeight() {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(0.0, 1.0), //(x,y)
-          blurRadius: 2.0,
-        )
-      ]),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 2.0,
+          )
+        ],
+      ),
     );
   }
 
@@ -262,7 +274,9 @@ class _OrderProductsState extends State<OrderProducts> {
       transition: CircularFloatingSearchBarTransition(),
       physics: const BouncingScrollPhysics(),
       builder: (context, _) => buildBody(
-          stream: orderBloc.productSearchStream, action: 'add_to_order'),
+        stream: orderBloc.productSearchStream,
+        action: 'add_to_order',
+      ),
       title: Text(
         'Buscar producto',
         style: buttonsSmallTextStyle(context),
@@ -275,79 +289,81 @@ class _OrderProductsState extends State<OrderProducts> {
 
   Widget _products() {
     return Container(
-        // height:_size.height*0.78,
-        // to avoid overlap with floatingSearchBar
-        margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
-        padding: const EdgeInsets.only(top: 10),
-        child: _productsStream());
+      // height:_size.height*0.78,
+      // to avoid overlap with floatingSearchBar
+      margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
+      padding: const EdgeInsets.only(top: 10),
+      child: _productsStream(),
+    );
   }
 
   StreamBuilder<Map<String, ProductModel>> _productsStream() {
     return StreamBuilder<Map<String, ProductModel>>(
-        stream: orderBloc.productsStream,
-        builder: (context, snapshot) {
-          // _searchBarFocusManagement();
-          bool productRequestFocus = _productFocus();
+      stream: orderBloc.productsStream,
+      builder: (context, snapshot) {
+        // _searchBarFocusManagement();
+        bool productRequestFocus = _productFocus();
 
-          if (_productsCount + 1 == snapshot.data?.length) {
-            _productsCount += 1;
-            _searchBarFocusManagement();
-          }
-          if (snapshot.hasData &&
-              _searchController.isClosed &&
-              _productsCount == (orderBloc.getProducts?.length ?? 0)) {
-            if (orderBloc.getItemsCount() == 0) {
-              _productsCount = 0;
-              // _itemsCount = 0;
-              return Container();
-              //
-              // return _empty(context).center();
-            } else {
-              // _itemsCount += 1;
-
-              if (_productsCount == snapshot.data!.length) {
-                if (_scrollController.hasClients) {
-                  _scrollController
-                      .jumpTo(_scrollController.position.minScrollExtent);
-                }
-                // final xd = orderBloc.settings['set_focus'];
-                // printConsole();
-
-              } else if (_productsCount - 2 == snapshot.data!.length) {
-                // Nothing to do when items are removed from cart
-              } else {
-                // _searchBarFocusManagement();
-                _productsCount = snapshot.data!.length;
-                // _itemsCount = orderBloc.getItemsCount();
-              }
-            }
-            Map<String, ProductModel> saleProductsList = snapshot.data!;
-            return ProductsList(
-              key: pListKey,
-              productList: saleProductsList,
-              scrollController: _scrollController,
-              productRequestFocus: productRequestFocus,
-              fromOrder: true,
-            );
-          } else if (orderBloc.getProducts?.isNotEmpty ?? false) {
-            return ProductsList(
-              key: pListKey,
-              productList: orderBloc.getProducts!,
-              scrollController: _scrollController,
-              productRequestFocus: false,
-              fromOrder: true,
-            );
-          } else if (snapshot.hasData && _searchController.isOpen) {
-            return Container();
-          } else {
-            //reset product count
+        if (_productsCount + 1 == snapshot.data?.length) {
+          _productsCount += 1;
+          _searchBarFocusManagement();
+        }
+        if (snapshot.hasData &&
+            _searchController.isClosed &&
+            _productsCount == (orderBloc.getProducts?.length ?? 0)) {
+          if (orderBloc.getItemsCount() == 0) {
             _productsCount = 0;
-            // ignore: unnecessary_null_comparison
+            // _itemsCount = 0;
             return Container();
-
+            //
             // return _empty(context).center();
+          } else {
+            // _itemsCount += 1;
+
+            if (_productsCount == snapshot.data!.length) {
+              if (_scrollController.hasClients) {
+                _scrollController
+                    .jumpTo(_scrollController.position.minScrollExtent);
+              }
+              // final xd = orderBloc.settings['set_focus'];
+              // printConsole();
+
+            } else if (_productsCount - 2 == snapshot.data!.length) {
+              // Nothing to do when items are removed from cart
+            } else {
+              // _searchBarFocusManagement();
+              _productsCount = snapshot.data!.length;
+              // _itemsCount = orderBloc.getItemsCount();
+            }
           }
-        });
+          Map<String, ProductModel> saleProductsList = snapshot.data!;
+          return ProductsList(
+            key: pListKey,
+            productList: saleProductsList,
+            scrollController: _scrollController,
+            productRequestFocus: productRequestFocus,
+            fromOrder: true,
+          );
+        } else if (orderBloc.getProducts?.isNotEmpty ?? false) {
+          return ProductsList(
+            key: pListKey,
+            productList: orderBloc.getProducts!,
+            scrollController: _scrollController,
+            productRequestFocus: false,
+            fromOrder: true,
+          );
+        } else if (snapshot.hasData && _searchController.isOpen) {
+          return Container();
+        } else {
+          //reset product count
+          _productsCount = 0;
+          // ignore: unnecessary_null_comparison
+          return Container();
+
+          // return _empty(context).center();
+        }
+      },
+    );
   }
 
   _searchBarFocusManagement() {
@@ -410,10 +426,11 @@ class _OrderProductsState extends State<OrderProducts> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         subTotal(
-            large: true,
-            stream: orderBloc.subTotalStream,
-            defaultValue: orderBloc.getSubTotal(),
-            color: Colors.white),
+          large: true,
+          stream: orderBloc.subTotalStream,
+          defaultValue: orderBloc.getSubTotal(),
+          color: Colors.white,
+        ),
         _sendOrder(),
       ],
 
@@ -426,8 +443,9 @@ class _OrderProductsState extends State<OrderProducts> {
       padding: kButtonPadding,
       color: Colors.white,
       shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radius2),
-          side: const BorderSide(color: pColor)),
+        borderRadius: BorderRadius.circular(radius2),
+        side: const BorderSide(color: pColor),
+      ),
       width: 10,
       onTap: () async {
         _send();
@@ -435,8 +453,10 @@ class _OrderProductsState extends State<OrderProducts> {
       // child: Icon(FontAwesomeIcons.pause),
       child: Row(
         children: [
-          Text('Siguiente',
-              style: buttonsSmallTextStyle(context, color: pColor)),
+          Text(
+            'Siguiente',
+            style: buttonsSmallTextStyle(context, color: pColor),
+          ),
           const Icon(
             Icons.arrow_forward_ios_rounded,
             size: kIconSize,
@@ -462,9 +482,12 @@ class _OrderProductsState extends State<OrderProducts> {
         if (res.isEmpty) {
           if ((query.length - _queryLen > 1)) {
             _searchController.clear();
-            scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
-                const Duration(seconds: 1, milliseconds: 500),
-                backGroundColor: Colors.red);
+            scaffoldAlert(
+              context,
+              'Producto ' + query + ' no encontrado',
+              const Duration(seconds: 1, milliseconds: 500),
+              backGroundColor: Colors.red,
+            );
 
             // _searchController.query='';
             _searchController.open();
@@ -476,13 +499,18 @@ class _OrderProductsState extends State<OrderProducts> {
           if (res.length == 1) {
             final temp = ProductModel.fromJson(res.first);
             final productReq = await ProductsProvider.getProductRequirements(
-                context, temp,
-                fromOrder: true);
+              context,
+              temp,
+              fromOrder: true,
+            );
             if (productReq != {}) {
               final result = await orderBloc.addProduct(productReq);
               if (result) {
-                scaffoldAlert(context, 'Producto ${temp.name} añadido',
-                    const Duration(seconds: 1));
+                scaffoldAlert(
+                  context,
+                  'Producto ${temp.name} añadido',
+                  const Duration(seconds: 1),
+                );
               }
             }
 
@@ -508,8 +536,11 @@ class _OrderProductsState extends State<OrderProducts> {
       // SalePayment().launch(context);
       const OrderOtherDetails().launch(context);
     } else {
-      confirmDialog(context, "Debe seleccionar productos antes de continuar",
-          "assets/images/alert.png");
+      confirmDialog(
+        context,
+        'Debe seleccionar productos antes de continuar',
+        'assets/images/alert.png',
+      );
     }
   }
 }

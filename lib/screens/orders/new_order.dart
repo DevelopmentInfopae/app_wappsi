@@ -71,15 +71,17 @@ class _NewOrderState extends State<NewOrder> {
     _pc = pColor;
     _size = MediaQuery.of(context).size;
     return WillPopScope(
-        onWillPop: () async {
-          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
-          // printConsole('here i am');
-          return true;
-        },
-        child: Scaffold(
-            floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-            appBar: _appBar(),
-            body: _body()));
+      onWillPop: () async {
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+        // printConsole('here i am');
+        return true;
+      },
+      child: Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+        appBar: _appBar(),
+        body: _body(),
+      ),
+    );
   }
 
   Widget _body() {
@@ -169,7 +171,7 @@ class _NewOrderState extends State<NewOrder> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
       },
       // maxHeight: _size.width * 0.9,
       // dialogMaxWidth: _size.width * 0.8,
@@ -205,17 +207,21 @@ class _NewOrderState extends State<NewOrder> {
       orderBloc.setCustomer(data);
       if (orderBloc.productsAdded.isNotEmpty) {
         final choice = await choiceAlert(
-            context,
-            'Se ha encontrado una lista de productos para el pedido existente,¿Que desea hacer?',
-            'assets/images/warning.png',
-            cancel: 'Borrar',
-            confirm: 'Recalcular precios',
-            skipeable: false);
+          context,
+          'Se ha encontrado una lista de productos para el pedido existente,¿Que desea hacer?',
+          'assets/images/warning.png',
+          cancel: 'Borrar',
+          confirm: 'Calcular precios nuevamente',
+          skipeable: false,
+        );
         if (choice) {
           final status = await orderBloc.reloadProducts();
           if (!status) {
-            confirmDialog(context, 'Error al recalcular precios',
-                'assets/images/warning.png');
+            confirmDialog(
+              context,
+              'Error al calcular precios',
+              'assets/images/warning.png',
+            );
           }
         } else {
           orderBloc.emptyProductsAdded();
@@ -223,7 +229,9 @@ class _NewOrderState extends State<NewOrder> {
       }
       orderBloc.setCustomerAddresses(null);
       final addresses = await CustomerAddressesProvider.getDataAdrreses(
-          '', orderBloc.getCustomerId());
+        '',
+        orderBloc.getCustomerId(),
+      );
       if (addresses.length == 1) {
         setState(() {
           orderBloc.setCustomerAddresses(addresses.first);
@@ -295,7 +303,9 @@ class _NewOrderState extends State<NewOrder> {
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onFind: (String? filter) => CustomerAddressesProvider.getDataAdrreses(
-          filter, orderBloc.getCustomerId()),
+        filter,
+        orderBloc.getCustomerId(),
+      ),
       onChanged: _customerAddrSelection,
       selectedItem: orderBloc.getCustomerAddresses,
       popupItemBuilder: popupCustomerAddressesItemBuilder,
@@ -362,8 +372,10 @@ class _NewOrderState extends State<NewOrder> {
               }
               if (orderBloc.getCustomer != null) {
                 orderBloc.setCustomerAddresses(
-                    await CustomerAddressesProvider.selectDefaultAddrs(
-                        orderBloc.getCustomer?.idCloud));
+                  await CustomerAddressesProvider.selectDefaultAddrs(
+                    orderBloc.getCustomer?.idCloud,
+                  ),
+                );
               }
               setState(() {});
               // if (_formKey.currentState?.validate() ?? false) {

@@ -18,7 +18,7 @@ import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-// class to show product indormation in form of a card
+// class to show product information in form of a card
 
 class ProductCard extends StatefulWidget {
   final ProductModel product;
@@ -26,15 +26,15 @@ class ProductCard extends StatefulWidget {
   final String action;
 
   final bool searchPrice;
-  final bool showAllwaysUnitAlert;
+  final bool showAlwaysUnitAlert;
 
-  const ProductCard(
-      {Key? key,
-      required this.product,
-      required this.action,
-      this.searchPrice = true,
-      this.showAllwaysUnitAlert = false})
-      : super(key: key);
+  const ProductCard({
+    Key? key,
+    required this.product,
+    required this.action,
+    this.searchPrice = true,
+    this.showAlwaysUnitAlert = false,
+  }) : super(key: key);
 
   @override
   _ProductCardState createState() => _ProductCardState();
@@ -55,117 +55,133 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     // _textTheme = Theme.of(context).textTheme;
     return AppButton(
-        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-        padding: EdgeInsets.zero,
-        elevation: 2,
-        child: Row(
-          children: [
-            productPhoto(widget.product.image == ''
-                    ? 'no_image.png'
-                    : widget.product.image)
-                .flexible(flex: 2),
-            _productInfo().flexible(flex: 7)
-          ],
-        ),
-        onTap: () async {
-          try {
-            if (widget.action == 'add_to_cart') {
-              final productReq = await ProductsProvider.getProductRequirements(
-                  context, widget.product,
-                  showAllwaysUnitAlert: widget.showAllwaysUnitAlert);
-              if (productReq != {}) {
-                final result = await posBloc.addProduct(productReq);
-                // printConsole(result);
-                if (result ?? false) {
-                  scaffoldAlert(
-                      context,
-                      "Producto ${widget.product.name} añadido",
-                      const Duration(seconds: 1));
-                }
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+      padding: EdgeInsets.zero,
+      elevation: 2,
+      child: Row(
+        children: [
+          productPhoto(
+            widget.product.image == '' ? 'no_image.png' : widget.product.image,
+          ).flexible(flex: 2),
+          _productInfo().flexible(flex: 7)
+        ],
+      ),
+      onTap: () async {
+        try {
+          if (widget.action == 'add_to_cart') {
+            final productReq = await ProductsProvider.getProductRequirements(
+              context,
+              widget.product,
+              showAlwaysUnitAlert: widget.showAlwaysUnitAlert,
+            );
+            if (productReq != {}) {
+              final result = await posBloc.addProduct(productReq);
+              // printConsole(result);
+              if (result ?? false) {
+                scaffoldAlert(
+                  context,
+                  'Producto ${widget.product.name} añadido',
+                  const Duration(seconds: 1),
+                );
               }
+            }
 
-              // Navigator.pop(context);
-            } else if (widget.action == 'add_to_order') {
-              final productReq = await ProductsProvider.getProductRequirements(
-                  context, widget.product,
-                  showAllwaysUnitAlert: widget.showAllwaysUnitAlert,
-                  fromOrder: true);
-              if (productReq != {}) {
-                final result = await orderBloc.addProduct(productReq);
+            // Navigator.pop(context);
+          } else if (widget.action == 'add_to_order') {
+            final productReq = await ProductsProvider.getProductRequirements(
+              context,
+              widget.product,
+              showAlwaysUnitAlert: widget.showAlwaysUnitAlert,
+              fromOrder: true,
+            );
+            if (productReq != {}) {
+              final result = await orderBloc.addProduct(productReq);
 
-                // printConsole(result);
-                if (result ?? false) {
-                  scaffoldAlert(
-                      context,
-                      "Producto ${widget.product.name} añadido",
-                      const Duration(seconds: 1));
-                  // to avoid :
-                  // await Future.delayed(Duration(seconds:1));
-                }
-                // Navigator.pop(context);
+              // printConsole(result);
+              if (result ?? false) {
+                scaffoldAlert(
+                  context,
+                  'Producto ${widget.product.name} añadido',
+                  const Duration(seconds: 1),
+                );
+                // to avoid :
+                // await Future.delayed(Duration(seconds:1));
               }
-
-              // Navigator.pop(context);
-            } else if (widget.action == 'add_to_quote') {
-              final productReq = await ProductsProvider.getProductRequirements(
-                  context, widget.product,
-                  showAllwaysUnitAlert: widget.showAllwaysUnitAlert,
-                  fromQuote: true);
-              if (productReq != {}) {
-                final result = await quoteBloc.addProduct(productReq);
-
-                // printConsole(result);
-                if (result) {
-                  scaffoldAlert(
-                      context,
-                      "Producto ${widget.product.name} añadido",
-                      const Duration(seconds: 1));
-                  // to avoid :
-                  // await Future.delayed(Duration(seconds:1));
-                }
-                // Navigator.pop(context);
-              }
-
               // Navigator.pop(context);
             }
-            else if (widget.action == 'add_to_purchase') {
-              final productReq = await ProductsProvider.getProductRequirements(
-                  context, widget.product,
-                  showAllwaysUnitAlert: widget.showAllwaysUnitAlert,
-                  fromPurchase: true);
-              if (productReq != {}) {
-                final result = await purchaseBloc.addProduct(productReq);
 
-                // printConsole(result);
-                if (result) {
-                  scaffoldAlert(
-                      context,
-                      "Producto ${widget.product.name} añadido",
-                      const Duration(seconds: 1));
-                  // to avoid :
-                  // await Future.delayed(Duration(seconds:1));
-                }
-                // Navigator.pop(context);
+            // Navigator.pop(context);
+          } else if (widget.action == 'add_to_quote') {
+            final productReq = await ProductsProvider.getProductRequirements(
+              context,
+              widget.product,
+              showAlwaysUnitAlert: widget.showAlwaysUnitAlert,
+              fromQuote: true,
+            );
+            if (productReq != {}) {
+              final result = await quoteBloc.addProduct(productReq);
+
+              // printConsole(result);
+              if (result) {
+                scaffoldAlert(
+                  context,
+                  'Producto ${widget.product.name} añadido',
+                  const Duration(seconds: 1),
+                );
+                // to avoid :
+                // await Future.delayed(Duration(seconds:1));
               }
-
               // Navigator.pop(context);
-            } else if (widget.action == 'price_verifier') {
-              ProductPriceVerifier(product: widget.product).launch(context);
-            } else if (widget.action == 'add_to_favorites') {
-              customerBloc.addProductToFav(
-                  widget.product, widget.product.idCloud.toString());
-            } else {
-              // null;
-              ProductDetails(
-                product: widget.product,
-                searchPrice: widget.searchPrice,
-              ).launch(context);
             }
-          } catch (e) {
-            // printConsole(e);
-            await logError(e, from: 'On adding product to order, quote or sale');
+
+            // Navigator.pop(context);
+          } else if (widget.action == 'add_to_purchase') {
+            final productReq = await ProductsProvider.getProductRequirements(
+              context,
+              widget.product,
+              showAlwaysUnitAlert: widget.showAlwaysUnitAlert,
+              fromPurchase: true,
+            );
+            if (productReq != {}) {
+              final result = await purchaseBloc.addProduct(productReq);
+
+              // printConsole(result);
+              if (result) {
+                scaffoldAlert(
+                  context,
+                  'Producto ${widget.product.name} añadido',
+                  const Duration(seconds: 1),
+                );
+                // to avoid :
+                // await Future.delayed(Duration(seconds:1));
+              }
+              // Navigator.pop(context);
+            }
+
+            // Navigator.pop(context);
+          } else if (widget.action == 'price_verifier') {
+            ProductPriceVerifier(product: widget.product).launch(context);
+          } else if (widget.action == 'add_to_favorites') {
+            customerBloc.addProductToFav(
+              widget.product,
+              widget.product.idCloud.toString(),
+            );
+          } else {
+            // null;
+            ProductDetails(
+              product: widget.product,
+              searchPrice: widget.searchPrice,
+            ).launch(context);
           }
-        });
+        } catch (e) {
+          // printConsole(e);
+          await logError(
+            e,
+            from: 'On adding product to order, quote or sale',
+          );
+        }
+      },
+    );
   }
 
   Widget _productInfo() {
@@ -179,26 +195,29 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Row _productQttyPrice() {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Text(
-        'Cantidad: ${widget.product.inventory}',
-        style: normalTextStyle(context),
-      ),
-      FutureBuilder(
-        future: _getProductPrice(),
-        // initialData: widget.product.price,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return Text(
-              getFormatedCurrency(snapshot.data),
-              style: normalTextStyle(context, fontWeightDelta: 2),
-            );
-          } else {
-            return const Text('\$ ');
-          }
-        },
-      ),
-    ]);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Cantidad: ${widget.product.inventory}',
+          style: normalTextStyle(context),
+        ),
+        FutureBuilder(
+          future: _getProductPrice(),
+          // initialData: widget.product.price,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData) {
+              return Text(
+                getFormatedCurrency(snapshot.data),
+                style: normalTextStyle(context, fontWeightDelta: 2),
+              );
+            } else {
+              return const Text('\$ ');
+            }
+          },
+        ),
+      ],
+    );
   }
 
   Text _productCode() {

@@ -1,5 +1,4 @@
 // import 'package:badges/badges.dart';
-// ignore_for_file: body_might_complete_normally_nullable
 
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
@@ -69,15 +68,17 @@ class _NewQuoteState extends State<NewQuote> {
     _pc = pColor;
     _size = MediaQuery.of(context).size;
     return WillPopScope(
-        onWillPop: () async {
-          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
-          // printConsole('here i am');
-          return true;
-        },
-        child: Scaffold(
-            // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-            appBar: _appBar(),
-            body: _body()));
+      onWillPop: () async {
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+        // printConsole('here i am');
+        return true;
+      },
+      child: Scaffold(
+        // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+        appBar: _appBar(),
+        body: _body(),
+      ),
+    );
   }
 
   Widget _body() {
@@ -187,7 +188,8 @@ class _NewQuoteState extends State<NewQuote> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
+        return null;
       },
       // maxHeight: _size.width * 0.9,
       // dialogMaxWidth: _size.width * 0.8,
@@ -223,17 +225,21 @@ class _NewQuoteState extends State<NewQuote> {
       quoteBloc.setCustomer(data);
       if (quoteBloc.productsAdded.isNotEmpty) {
         final choice = await choiceAlert(
-            context,
-            'Se ha encontrado una lista de productos para el pedido existente,¿Que desea hacer?',
-            'assets/images/warning.png',
-            cancel: 'Borrar',
-            confirm: 'Recalcular precios',
-            skipeable: false);
+          context,
+          'Se ha encontrado una lista de productos para el pedido existente,¿Que desea hacer?',
+          'assets/images/warning.png',
+          cancel: 'Borrar',
+          confirm: 'Calcular precios nuevamente',
+          skipeable: false,
+        );
         if (choice) {
           final status = await quoteBloc.reloadProducts();
           if (!status) {
-            confirmDialog(context, 'Error al recalcular precios',
-                'assets/images/warning.png');
+            confirmDialog(
+              context,
+              'Error al calcular precios',
+              'assets/images/warning.png',
+            );
           }
         } else {
           quoteBloc.emptyProductsAdded();
@@ -241,7 +247,9 @@ class _NewQuoteState extends State<NewQuote> {
       }
       quoteBloc.setCustomerAddresses(null);
       final addresses = await CustomerAddressesProvider.getDataAdrreses(
-          '', quoteBloc.getCustomerId());
+        '',
+        quoteBloc.getCustomerId(),
+      );
       if (addresses.length == 1) {
         setState(() {
           quoteBloc.setCustomerAddresses(addresses.first);
@@ -267,7 +275,8 @@ class _NewQuoteState extends State<NewQuote> {
       height: dropDownHeight,
       child: FutureBuilder(
         future: CustomerAddressesProvider.selectDefaultAddrsToQuote(
-            returnBool: true),
+          returnBool: true,
+        ),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             if (quoteBloc.getCustomerAddresses == null) {
@@ -323,6 +332,7 @@ class _NewQuoteState extends State<NewQuote> {
         if (value == null) {
           return 'Debe seleccionar una sucursal de cliente';
         }
+        return null;
       },
       onFind: (String? filter) =>
           CustomerAddressesProvider.getDataAdrresesToQuote(filter),
@@ -384,8 +394,10 @@ class _NewQuoteState extends State<NewQuote> {
               }
               if (quoteBloc.getCustomer != null) {
                 quoteBloc.setCustomerAddresses(
-                    await CustomerAddressesProvider.selectDefaultAddrs(
-                        quoteBloc.getCustomer?.idCloud));
+                  await CustomerAddressesProvider.selectDefaultAddrs(
+                    quoteBloc.getCustomer?.idCloud,
+                  ),
+                );
               }
               setState(() {});
               // if (_formKey.currentState?.validate() ?? false) {

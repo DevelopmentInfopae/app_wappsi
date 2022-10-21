@@ -10,15 +10,18 @@ import 'package:pos_wappsi/utils/local_storage/local_files.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-Widget labelContent(String label, String content,
-    {bool padding = true,
-    EdgeInsetsGeometry paddingValue = EdgeInsets.zero,
-    double? labelFontSize,
-    TextAlign? contentAlign,
-    bool capitalize = true,
-    bool capitalizeLabel = false,
-    Color? labelColor,
-    bool labelBold = true}) {
+Widget labelContent(
+  String label,
+  String content, {
+  bool padding = true,
+  EdgeInsetsGeometry paddingValue = EdgeInsets.zero,
+  double? labelFontSize,
+  TextAlign? contentAlign,
+  bool capitalize = true,
+  bool capitalizeLabel = false,
+  Color? labelColor,
+  bool labelBold = true,
+}) {
   return Padding(
     padding: padding
         ? const EdgeInsets.symmetric(horizontal: 20, vertical: 10)
@@ -30,9 +33,10 @@ Widget labelContent(String label, String content,
         Text(
           capitalizeLabel ? capitalizeText(label) : label,
           style: TextStyle(
-              fontWeight: labelBold ? FontWeight.bold : null,
-              fontSize: labelFontSize,
-              color: labelColor ?? greyDarkerColor),
+            fontWeight: labelBold ? FontWeight.bold : null,
+            fontSize: labelFontSize,
+            color: labelColor ?? greyDarkerColor,
+          ),
         ),
         Text(
           capitalize ? capitalizeText(content) : content,
@@ -45,16 +49,16 @@ Widget labelContent(String label, String content,
 }
 
 class DecoratedLabeledContent extends StatelessWidget {
-  const DecoratedLabeledContent(
-      {Key? key,
-      required this.label,
-      required this.content,
-      this.backgroundColor,
-      this.contentAlign,
-      this.labelFontSize,
-      this.paddingValue = EdgeInsets.zero,
-      this.withPadding = true})
-      : super(key: key);
+  const DecoratedLabeledContent({
+    Key? key,
+    required this.label,
+    required this.content,
+    this.backgroundColor,
+    this.contentAlign,
+    this.labelFontSize,
+    this.paddingValue = EdgeInsets.zero,
+    this.withPadding = true,
+  }) : super(key: key);
   final String label;
   final Color? backgroundColor;
   final TextAlign? contentAlign;
@@ -66,25 +70,29 @@ class DecoratedLabeledContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: backgroundColor ?? Colors.grey[300]!,
-          borderRadius: BorderRadius.circular(15)),
-      child: labelContent(label, content,
-          padding: true,
-          paddingValue: paddingValue,
-          labelFontSize: labelFontSize,
-          contentAlign: contentAlign),
+        color: backgroundColor ?? Colors.grey[300]!,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: labelContent(
+        label,
+        content,
+        padding: true,
+        paddingValue: paddingValue,
+        labelFontSize: labelFontSize,
+        contentAlign: contentAlign,
+      ),
     );
   }
 }
 
 class FutureDecoratedLabeledContent extends StatelessWidget {
-  const FutureDecoratedLabeledContent(
-      {Key? key,
-      required this.label,
-      required this.mapKey,
-      required this.function,
-      this.backgroundColor})
-      : super(key: key);
+  const FutureDecoratedLabeledContent({
+    Key? key,
+    required this.label,
+    required this.mapKey,
+    required this.function,
+    this.backgroundColor,
+  }) : super(key: key);
   final Future<Map<dynamic, dynamic>?> function;
   final String label;
   final Color? backgroundColor;
@@ -93,20 +101,25 @@ class FutureDecoratedLabeledContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: backgroundColor ?? Colors.grey[300]!,
-          borderRadius: BorderRadius.circular(15)),
+        color: backgroundColor ?? Colors.grey[300]!,
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: futureLabelContent(function, mapKey, label),
     );
   }
 }
 
-Widget labelContentH(String label, String content, BuildContext context,
-    {withInnerPading = true,
-    EdgeInsetsGeometry? padding,
-    int flexCol1 = 1,
-    int flexCol2 = 2}) {
+Widget labelContentH(
+  String label,
+  String content,
+  BuildContext context, {
+  withInnerPadding = true,
+  EdgeInsetsGeometry? padding,
+  int flexCol1 = 1,
+  int flexCol2 = 2,
+}) {
   return Padding(
-    padding: withInnerPading
+    padding: withInnerPadding
         ? const EdgeInsets.symmetric(horizontal: 10, vertical: 5)
         : padding!,
     child: Row(
@@ -131,19 +144,21 @@ Widget labelContentH(String label, String content, BuildContext context,
 
 Widget futureLabelContent(Future<Map?> function, String key, String label) {
   return FutureBuilder<Map?>(
-      future: function,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return labelContent('$label ', snapshot.data![key]);
-        } else {
-          return labelContent('$label ', '');
-        }
-      });
+    future: function,
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        return labelContent('$label ', snapshot.data![key]);
+      } else {
+        return labelContent('$label ', '');
+      }
+    },
+  );
 }
 
-Widget hDivider(
-    {EdgeInsetsGeometry padding = const EdgeInsets.symmetric(horizontal: 20),
-    double height = 0.5}) {
+Widget hDivider({
+  EdgeInsetsGeometry padding = const EdgeInsets.symmetric(horizontal: 20),
+  double height = 0.5,
+}) {
   return Padding(
     padding: padding,
     child: Container(
@@ -154,13 +169,14 @@ Widget hDivider(
   );
 }
 
-Widget vDivider(
-    {double heigh = 40,
-    double width = 2,
-    double pleft = 0.0,
-    double prigth = 0.0,
-    double ptop = 0.0,
-    double pbottom = 0.0}) {
+Widget vDivider({
+  double heigh = 40,
+  double width = 2,
+  double pleft = 0.0,
+  double prigth = 0.0,
+  double ptop = 0.0,
+  double pbottom = 0.0,
+}) {
   return Container(
     padding:
         EdgeInsets.only(left: pleft, right: prigth, top: ptop, bottom: pbottom),
@@ -170,37 +186,45 @@ Widget vDivider(
   );
 }
 
-Widget bottom(Widget child, Color _pc, Size _size,
-    {Alignment? alignment, bool elevation = true}) {
+Widget bottom(
+  Widget child,
+  Color _pc,
+  Size _size, {
+  Alignment? alignment,
+  bool elevation = true,
+}) {
   return Container(
-      height: 64,
-      width: _size.width,
-      alignment: alignment,
-      decoration: BoxDecoration(
-          // borderRadius: BorderRadius.circular(radius2),
-          color: _pc,
-          boxShadow: elevation
-              ? [
-                  const BoxShadow(
-                    color: Colors.grey,
-                    offset: Offset(1.0, 0.0), //(x,y)
-                    blurRadius: 5.0,
-                  )
-                ]
-              : null),
-      // padding: EdgeInsets.symmetric(vertical: ),
+    height: 64,
+    width: _size.width,
+    alignment: alignment,
+    decoration: BoxDecoration(
+      // borderRadius: BorderRadius.circular(radius2),
+      color: _pc,
+      boxShadow: elevation
+          ? [
+              const BoxShadow(
+                color: Colors.grey,
+                offset: Offset(1.0, 0.0), //(x,y)
+                blurRadius: 5.0,
+              )
+            ]
+          : null,
+    ),
+    // padding: EdgeInsets.symmetric(vertical: ),
 
-      child: child);
+    child: child,
+  );
 }
 
 Positioned loadingIndicator(double width) {
   return Positioned(
-      left: 0,
-      bottom: 0,
-      child: SizedBox(
-        width: width,
-        child: Loader(),
-      ));
+    left: 0,
+    bottom: 0,
+    child: SizedBox(
+      width: width,
+      child: Loader(),
+    ),
+  );
 }
 
 Widget customerPhoto(String? img, {fit = BoxFit.contain}) {
@@ -221,7 +245,7 @@ Widget customerPhoto(String? img, {fit = BoxFit.contain}) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
     child: FutureBuilder(
-      future: initSavetoPath(img, 'images/customers', url),
+      future: initSaveToPath(img, 'images/customers', url),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           try {
@@ -267,7 +291,7 @@ Widget addressPhoto(String img, {fit = BoxFit.contain}) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
     child: FutureBuilder(
-      future: initSavetoPath(img, 'images/customers', url),
+      future: initSaveToPath(img, 'images/customers', url),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           try {
@@ -303,7 +327,7 @@ Widget productPhoto(String img) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
     child: FutureBuilder(
-      future: initSavetoPath(img, 'images/products', url),
+      future: initSaveToPath(img, 'images/products', url),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           try {
@@ -344,7 +368,7 @@ Widget billerThumbNail(String img) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
     child: FutureBuilder(
-      future: initSavetoPath(img, 'images/biller', url),
+      future: initSaveToPath(img, 'images/biller', url),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           try {
@@ -370,7 +394,7 @@ Widget billerImage(String image) {
   try {
     if (img.substring(img.length - 4) == '.png') {
       imgURL = dataBloc.userData!.hostUrl +
-          "/wappsi_apis/utils/pngToJpg?img=" +
+          '/wappsi_apis/utils/pngToJpg?img=' +
           imgURL;
       img = img.substring(0, img.length - 4) + '.jpg';
     }
@@ -380,7 +404,7 @@ Widget billerImage(String image) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
     child: FutureBuilder(
-      future: initSavetoPath(img, 'images/biller/', imgURL),
+      future: initSaveToPath(img, 'images/biller/', imgURL),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           try {

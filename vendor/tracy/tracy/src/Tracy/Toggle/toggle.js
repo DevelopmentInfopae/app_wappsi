@@ -42,7 +42,7 @@
 			dest = ref[1] ? dest.parentNode : dest;
 			dest = ref[2] ? dest.closest(ref[2]) : dest;
 			dest = ref[3] ? Toggle.nextElement(dest.nextElementSibling, ref[4]) : dest;
-			dest = ref[5] ? dest.querySelector(ref[5]) : dest;
+			dest = ref[5] ? dest.Queryelector(ref[5]) : dest;
 
 			el.classList.toggle('tracy-collapsed', !show);
 			dest.classList.toggle('tracy-collapsed', !show);

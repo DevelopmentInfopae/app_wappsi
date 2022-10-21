@@ -31,10 +31,11 @@ class ZoneSZoneData extends StatelessWidget {
           subzone = snapshot.data['subzone_data'];
 
           return labelContent(
-              'Zona / Barrio',
-              (zone?.capitalizeZoneName() ?? "--") +
-                  " / " +
-                  (subzone?.capitalizeSubzoneName() ?? "--"));
+            'Zona / Barrio',
+            (zone?.capitalizeZoneName() ?? '--') +
+                ' / ' +
+                (subzone?.capitalizeSubzoneName() ?? '--'),
+          );
         }
         return Container();
       },

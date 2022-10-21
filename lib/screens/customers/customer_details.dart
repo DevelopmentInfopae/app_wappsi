@@ -32,8 +32,11 @@ class _CustomerDetailsState extends State<CustomerDetails> {
     // _pc = pColor;
 
     return Scaffold(
-      appBar: appBar(context, 'Detalle de cliente',
-          image: 'assets/images/people.png'),
+      appBar: appBar(
+        context,
+        'Detalle de cliente',
+        image: 'assets/images/people.png',
+      ),
       body: _body(context),
     );
   }
@@ -47,16 +50,17 @@ class _CustomerDetailsState extends State<CustomerDetails> {
         customerPhotoAndName(context, widget.customer),
         _customerDetails().paddingOnly(left: 10, right: 10, bottom: 5).expand(),
         bottom(
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                // const GoBackBottom(),
-                _addresses(context),
-                _favorites(context),
-              ],
-            ),
-            pColor,
-            size)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // const GoBackBottom(),
+              _addresses(context),
+              _favorites(context),
+            ],
+          ),
+          pColor,
+          size,
+        )
       ],
     );
   }
@@ -111,32 +115,40 @@ class _CustomerDetailsState extends State<CustomerDetails> {
 
   Widget _customerDetails() {
     return Card(
-        elevation: 5,
-        child: ListView(
-          padding: const EdgeInsets.all(5),
-          children: [
-            labelContent('Ubicación ',
-                '${widget.customer.city ?? ''} ${widget.customer.state ?? ''}-${widget.customer.country ?? ''}'),
-            hDivider(),
-            labelContent('Drección ', widget.customer.address ?? ''),
-            hDivider(),
-            ZoneSZoneData(
-                zoneId: widget.customer.location,
-                subzoneId: widget.customer.subzone),
-            hDivider(),
-            labelContent('Email ', widget.customer.email ?? ''),
-            hDivider(),
-            labelContent('Telefono ', widget.customer.phone ?? ''),
-            hDivider(),
-            labelContent(
-                'Lista de precios ', widget.customer.priceGroupName ?? ''),
-            hDivider(),
-            labelContent(
-                'Descuentos ', widget.customer.customerGroupName ?? ''),
-            // hDivider(),
+      elevation: 5,
+      child: ListView(
+        padding: const EdgeInsets.all(5),
+        children: [
+          labelContent(
+            'Ubicación ',
+            '${widget.customer.city ?? ''} ${widget.customer.state ?? ''}-${widget.customer.country ?? ''}',
+          ),
+          hDivider(),
+          labelContent('Dirección ', widget.customer.address ?? ''),
+          hDivider(),
+          ZoneSZoneData(
+            zoneId: widget.customer.location,
+            subzoneId: widget.customer.subzone,
+          ),
+          hDivider(),
+          labelContent('Email ', widget.customer.email ?? ''),
+          hDivider(),
+          labelContent('Teléfono ', widget.customer.phone ?? ''),
+          hDivider(),
+          labelContent(
+            'Lista de precios ',
+            widget.customer.priceGroupName ?? '',
+          ),
+          hDivider(),
+          labelContent(
+            'Descuentos ',
+            widget.customer.customerGroupName ?? '',
+          ),
+          // hDivider(),
 
-            // futureLabelContent(DBProvider.db.findCustomerDiscount(customer.customerGroupId??1), 'name', 'Marca')
-          ],
-        ));
+          // futureLabelContent(DBProvider.db.findCustomerDiscount(customer.customerGroupId??1), 'name', 'Marca')
+        ],
+      ),
+    );
   }
 }

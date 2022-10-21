@@ -20,7 +20,8 @@ void main() async {
   // add these lines
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+  );
   runApp(const MyApp());
 }
 
@@ -59,28 +60,31 @@ class _MyAppState extends State<MyApp> {
       ],
       supportedLocales: const [Locale('es')],
       theme: ThemeData(
-          primaryColor: const Color.fromRGBO(28, 122, 190, 1),
-          scaffoldBackgroundColor: Colors.grey[100],
-          inputDecorationTheme:
-              const InputDecorationTheme(fillColor: Colors.white),
-          appBarTheme: const AppBarTheme(
-              backgroundColor: Colors.white,
-              toolbarTextStyle: TextStyle(color: Colors.black, fontSize: 20)),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ButtonStyle(
+        primaryColor: const Color.fromRGBO(28, 122, 190, 1),
+        scaffoldBackgroundColor: Colors.grey[100],
+        inputDecorationTheme:
+            const InputDecorationTheme(fillColor: Colors.white),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          toolbarTextStyle: TextStyle(color: Colors.black, fontSize: 20),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
             // backgroundColor: MaterialStateProperty.all(Colors.green)
             elevation: MaterialStateProperty.all(5),
             backgroundColor: MaterialStateProperty.all(Colors.white),
-          )),
-          iconTheme: const IconThemeData(color: Colors.black),
-          primaryIconTheme: const IconThemeData(color: Colors.white),
-          buttonTheme: const ButtonThemeData(
-              // textTheme: ButtonTextTheme.primary
-              ),
-          textTheme: GoogleFonts.poppinsTextTheme(
-            Theme.of(context).textTheme,
           ),
-          backgroundColor: Colors.white),
+        ),
+        iconTheme: const IconThemeData(color: Colors.black),
+        primaryIconTheme: const IconThemeData(color: Colors.white),
+        buttonTheme: const ButtonThemeData(
+            // textTheme: buttonTextTheme.primary
+            ),
+        textTheme: GoogleFonts.poppinsTextTheme(
+          Theme.of(context).textTheme,
+        ),
+        backgroundColor: Colors.white,
+      ),
       title: 'WappsiPOSApp',
       initialRoute: '/',
       routes: Routes.getRoutes(),

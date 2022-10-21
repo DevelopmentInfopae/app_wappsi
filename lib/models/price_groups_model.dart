@@ -23,18 +23,19 @@ class PriceGroupsModel {
 
   factory PriceGroupsModel.fromJson(Map<String, dynamic> json) =>
       PriceGroupsModel(
-          id: json["id"].toString(),
-          idCloud: json["id_cloud"].toString(),
-          name: json["name"].toString(),
-          priceGroupBase: json["price_group_base"].toString(),
-          lastUpdate: json["last_update"].toString());
+        id: json['id'].toString(),
+        idCloud: json['id_cloud'].toString(),
+        name: json['name'].toString(),
+        priceGroupBase: json['price_group_base'].toString(),
+        lastUpdate: json['last_update'].toString(),
+      );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "id_cloud": idCloud,
-        "name": name,
-        "price_group_base": priceGroupBase,
-        "last_update": lastUpdate,
+        'id': id,
+        'id_cloud': idCloud,
+        'name': name,
+        'price_group_base': priceGroupBase,
+        'last_update': lastUpdate,
       };
 
   @override

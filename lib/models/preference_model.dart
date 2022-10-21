@@ -20,12 +20,13 @@ class PreferenceModel {
 
   factory PreferenceModel.fromJson(Map<String, dynamic> json) =>
       PreferenceModel(
-          id: parsingToInt(json["id"] ?? ''),
-          categoryId: (json["category_id"] ?? '').toString(),
-          name: (json["name"] ?? '').toString());
+        id: parsingToInt(json['id'] ?? ''),
+        categoryId: (json['category_id'] ?? '').toString(),
+        name: (json['name'] ?? '').toString(),
+      );
 
   Map<String, dynamic> toJson() =>
-      {"id": id, "category_id": categoryId, "name": name};
+      {'id': id, 'category_id': categoryId, 'name': name};
 
   static List<PreferenceModel> fromJsonList(List<Map> list) {
     List<PreferenceModel> prefs = [];

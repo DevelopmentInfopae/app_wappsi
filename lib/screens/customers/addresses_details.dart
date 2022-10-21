@@ -21,9 +21,11 @@ import '../../components/location/zone_szone_data.dart';
 import '../../utils/location/custom_controller.dart';
 
 class AddressDetails extends StatefulWidget {
-  const AddressDetails(
-      {required this.customer, required this.address, Key? key})
-      : super(key: key);
+  const AddressDetails({
+    required this.customer,
+    required this.address,
+    Key? key,
+  }) : super(key: key);
 
   final CompanyModel customer;
   final CustomerAddressesModel address;
@@ -38,16 +40,17 @@ class _AddressDetailsState extends State<AddressDetails> {
   late CustomController? controller;
   late GeoPoint? gLoc;
   late GlobalKey<ScaffoldState> scaffoldKey;
-  bool markerDrawed = false;
-  Key mapGlobalkey = UniqueKey();
+  bool markerDraw = false;
+  Key mapGlobalKey = UniqueKey();
   @override
   void initState() {
     super.initState();
     if (widget.address.latitude != null && widget.address.longitude != null) {
       try {
         gLoc = GeoPoint(
-            latitude: widget.address.latitude!,
-            longitude: widget.address.longitude!);
+          latitude: widget.address.latitude!,
+          longitude: widget.address.longitude!,
+        );
         controller = CustomController(
           initMapWithUserPosition: false,
           initPosition: gLoc,
@@ -78,8 +81,11 @@ class _AddressDetailsState extends State<AddressDetails> {
     // _pc = pColor;
 
     return Scaffold(
-      appBar: appBar(context, 'Detalle de sucursal',
-          image: 'assets/images/locations.png'),
+      appBar: appBar(
+        context,
+        'Detalle de sucursal',
+        image: 'assets/images/locations.png',
+      ),
       body: _body(context),
     );
   }
@@ -100,9 +106,10 @@ class _AddressDetailsState extends State<AddressDetails> {
     return Card(
       child: Row(
         children: [
-          addressPhoto(widget.customer.customerProfilePhoto ?? '',
-                  fit: BoxFit.cover)
-              .withSize(width: 100, height: 100),
+          addressPhoto(
+            widget.customer.customerProfilePhoto ?? '',
+            fit: BoxFit.cover,
+          ).withSize(width: 100, height: 100),
           addressDesc(context, widget.customer, widget.address)
               .paddingSymmetric(vertical: 4)
               .expand()
@@ -123,28 +130,29 @@ class _AddressDetailsState extends State<AddressDetails> {
     return Column(
       children: [
         Card(
-            elevation: 5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              // padding: const EdgeInsets.all(5),
-              children: [
-                labelContent('Telefono ', widget.address.phone ?? ''),
-                hDivider(),
-                labelContent('Ubicación ', stateCity),
-                hDivider(),
-                labelContent('Dirección ', widget.address.direccion ?? ''),
-                hDivider(),
-                _zoneSzoneInfo(),
-              ],
-            )),
+          elevation: 5,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            // padding: const EdgeInsets.all(5),
+            children: [
+              labelContent('Teléfono ', widget.address.phone ?? ''),
+              hDivider(),
+              labelContent('Ubicación ', stateCity),
+              hDivider(),
+              labelContent('Dirección ', widget.address.direccion ?? ''),
+              hDivider(),
+              _zoneSzoneInfo(),
+            ],
+          ),
+        ),
         Card(
-                elevation: 5,
-                child: controller != null
-                    ? _map()
-                        .paddingSymmetric(horizontal: 4, vertical: 4)
-                        .withHeight(300)
-                    : Container())
-            .expand(),
+          elevation: 5,
+          child: controller != null
+              ? _map()
+                  .paddingSymmetric(horizontal: 4, vertical: 4)
+                  .withHeight(300)
+              : Container(),
+        ).expand(),
       ],
     );
   }
@@ -160,19 +168,22 @@ class _AddressDetailsState extends State<AddressDetails> {
 
   Widget _map() {
     // to make this shit draw position marker
-    if (!markerDrawed) {
+    if (!markerDraw) {
       Timer(const Duration(seconds: 2), () {
         try {
-          controller!.addMarker(gLoc!,
-              markerIcon: const MarkerIcon(
-                  icon: Icon(
+          controller!.addMarker(
+            gLoc!,
+            markerIcon: const MarkerIcon(
+              icon: Icon(
                 Icons.location_on,
                 color: Colors.red,
                 size: kIconSize + 50,
-              )));
+              ),
+            ),
+          );
           controller!.osmBaseController;
           setState(() {
-            markerDrawed = true;
+            markerDraw = true;
           });
         } catch (e) {
           printConsole(e);
@@ -190,7 +201,7 @@ class _AddressDetailsState extends State<AddressDetails> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Loader(),
-            const Text("Cargando mapa.."),
+            const Text('Cargando mapa..'),
           ],
         ),
       ),

@@ -5,14 +5,14 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/zone_model.dart';
 
 class ZoneDropDown extends StatefulWidget {
-  const ZoneDropDown(
-      {Key? key,
-      required this.stream,
-      required this.dropDownKey,
-      required this.required,
-      required this.onChange,
-      required this.selectedZone})
-      : super(key: key);
+  const ZoneDropDown({
+    Key? key,
+    required this.stream,
+    required this.dropDownKey,
+    required this.required,
+    required this.onChange,
+    required this.selectedZone,
+  }) : super(key: key);
 
   final Stream<List<ZoneModel>> stream;
   final int? selectedZone;
@@ -73,7 +73,7 @@ class _ZoneDropDownState extends State<ZoneDropDown> {
           validator: (item) {
             if (widget.selectedZone == null && widget.required) {
               // if ((snapshot.data?.isEmpty ?? false)) {
-              return "Campo requerido";
+              return 'Campo requerido';
               // }
             }
             return null;
@@ -98,7 +98,7 @@ class _ZoneDropDownState extends State<ZoneDropDown> {
               final data = (snapshot.data)?.where((element) {
                 final result = element.zoneName
                     .toUpperCase()
-                    .contains(filter?.toUpperCase() ?? "");
+                    .contains(filter?.toUpperCase() ?? '');
                 return result;
               }).toList();
               return data ?? (<ZoneModel>[]);

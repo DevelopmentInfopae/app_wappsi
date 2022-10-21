@@ -66,13 +66,17 @@ class _ProductsState extends State<Products> {
       },
       child: Scaffold(
         key: _scaffoldKey,
-        appBar: appBar(context, 'Productos',
-            elevation: false,
-            radius: 0,
-            image: 'assets/images/box.png', onPop: () {
-          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
-          Navigator.pop(context);
-        }),
+        appBar: appBar(
+          context,
+          'Productos',
+          elevation: false,
+          radius: 0,
+          image: 'assets/images/box.png',
+          onPop: () {
+            dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+            Navigator.pop(context);
+          },
+        ),
         body: _body(),
       ),
     );
@@ -103,13 +107,16 @@ class _ProductsState extends State<Products> {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(0.0, 1.0), //(x,y)
-          blurRadius: 2.0,
-        )
-      ]),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 2.0,
+          )
+        ],
+      ),
     );
   }
 
@@ -129,74 +136,83 @@ class _ProductsState extends State<Products> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: const BorderRadius.all(Radius.circular(radius2))),
+        color: Colors.grey[200],
+        borderRadius: const BorderRadius.all(Radius.circular(radius2)),
+      ),
       child: FloatingSearchAppBar(
-          controller: _searchController,
-          hint: ' Buscar producto',
-          titleStyle: buttonsSmallTextStyle(context),
-          transitionDuration: const Duration(milliseconds: 800),
-          clearQueryOnClose: true,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-          // alwaysOpened: true,
+        controller: _searchController,
+        hint: ' Buscar producto',
+        titleStyle: buttonsSmallTextStyle(context),
+        transitionDuration: const Duration(milliseconds: 800),
+        clearQueryOnClose: true,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+        // alwaysOpened: true,
 
-          hintStyle: buttonsSmallTextStyle(context),
-          hideKeyboardOnDownScroll: true,
-          onQueryChanged: _onQueryChanged,
-          // height: _size.height * 0.078 < 55 ? 55 : _size.height * 0.078,
-          elevation: 0,
-          actions: [
-            FloatingSearchBarAction.searchToClear(
-                // showIfClosed: false,
-                ),
-            FloatingSearchBarAction.icon(
-                showIfOpened: true,
-                icon: showFilters
-                    ? Icons.filter_alt_rounded
-                    : Icons.filter_alt_outlined,
-                onTap: () {
-                  // setState(() {
-                  showFilters = !showFilters;
-                  // });
-                }),
-            Container(width: _size.width * 0.15)
-          ],
-          // leadingActions: [Icon(Icons.search)],
-          automaticallyImplyBackButton: false,
-          color: Colors.grey[200],
-          body: null),
+        hintStyle: buttonsSmallTextStyle(context),
+        hideKeyboardOnDownScroll: true,
+        onQueryChanged: _onQueryChanged,
+        // height: _size.height * 0.078 < 55 ? 55 : _size.height * 0.078,
+        elevation: 0,
+        actions: [
+          FloatingSearchBarAction.searchToClear(
+              // showIfClosed: false,
+              ),
+          FloatingSearchBarAction.icon(
+            showIfOpened: true,
+            icon: showFilters
+                ? Icons.filter_alt_rounded
+                : Icons.filter_alt_outlined,
+            onTap: () {
+              // setState(() {
+              showFilters = !showFilters;
+              // });
+            },
+          ),
+          Container(width: _size.width * 0.15)
+        ],
+        // leadingActions: [Icon(Icons.search)],
+        automaticallyImplyBackButton: false,
+        color: Colors.grey[200],
+        body: null,
+      ),
     );
   }
 
   Widget _productsList() {
     return FutureBuilder<List<Map>?>(
-        future: ProductsProvider.getAllProducts(offset: true, offsetValue: 1),
-        builder: (BuildContext context, AsyncSnapshot<List<Map>?> snapshot) {
-          if (snapshot.hasData) {
-            return StreamBuilder<List<ProductModel>?>(
-                stream: _productsStream.stream,
-                builder:
-                    (context, AsyncSnapshot<List<ProductModel>?> snapshot2) {
-                  if (snapshot2.hasData) {
-                    return ProductCardList(
-                        products: snapshot2.data!, searchParams: _searchParams);
-                  } else {
-                    _productsStream.sink.add(ProductModel.fromJsonList(
-                        snapshot.data!,
-                        loadInitialQtty: true,
-                        qttyKey: 'quantity'));
+      future: ProductsProvider.getAllProducts(offset: true, offsetValue: 1),
+      builder: (BuildContext context, AsyncSnapshot<List<Map>?> snapshot) {
+        if (snapshot.hasData) {
+          return StreamBuilder<List<ProductModel>?>(
+            stream: _productsStream.stream,
+            builder: (context, AsyncSnapshot<List<ProductModel>?> snapshot2) {
+              if (snapshot2.hasData) {
+                return ProductCardList(
+                  products: snapshot2.data!,
+                  searchParams: _searchParams,
+                );
+              } else {
+                _productsStream.sink.add(
+                  ProductModel.fromJsonList(
+                    snapshot.data!,
+                    loadInitialQtty: true,
+                    qttyKey: 'quantity',
+                  ),
+                );
 
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                });
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        });
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
   }
 
   _onQueryChanged(String? query) async {
@@ -204,8 +220,13 @@ class _ProductsState extends State<Products> {
     if (query == '' || query == null) {
       final res = await ProductsProvider.getAllProducts();
       if (res != null) {
-        _productsStream.sink.add(ProductModel.fromJsonList(res,
-            loadInitialQtty: true, qttyKey: 'quantity'));
+        _productsStream.sink.add(
+          ProductModel.fromJsonList(
+            res,
+            loadInitialQtty: true,
+            qttyKey: 'quantity',
+          ),
+        );
       }
     } else {
       final res = await ProductsProvider.findProducts(query);
@@ -215,9 +236,12 @@ class _ProductsState extends State<Products> {
         if (query.length - _queryLen > 1) {
           _searchController.clear();
           _searchController.close();
-          scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
-              const Duration(seconds: 1, milliseconds: 500),
-              backGroundColor: Colors.red);
+          scaffoldAlert(
+            context,
+            'Producto ' + query + ' no encontrado',
+            const Duration(seconds: 1, milliseconds: 500),
+            backGroundColor: Colors.red,
+          );
           await Future.delayed(const Duration(milliseconds: 500));
           _searchController.open();
           _queryLen = 0;

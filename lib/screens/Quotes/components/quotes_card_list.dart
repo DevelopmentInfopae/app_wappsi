@@ -13,12 +13,12 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import '../../../constant.dart';
 
 class QuotesCardList extends StatefulWidget {
-  const QuotesCardList(
-      {Key? key,
-      required this.quotes,
-      required this.searchParams,
-      this.filters = const []})
-      : super(key: key);
+  const QuotesCardList({
+    Key? key,
+    required this.quotes,
+    required this.searchParams,
+    this.filters = const [],
+  }) : super(key: key);
   final List<QuoteModel> quotes;
   final List<String> filters;
   final Map searchParams;
@@ -84,11 +84,12 @@ class _QuotesCardListState extends State<QuotesCardList> {
 
       _loading = true;
       final res = await QuotesProvider.listLocalQuotes(
-          search: widget.searchParams['search'] ?? '',
-          filters: widget.filters,
-          offset: true,
-          limit: 30,
-          offsetValue: _page * 30);
+        search: widget.searchParams['search'] ?? '',
+        filters: widget.filters,
+        offset: true,
+        limit: 30,
+        offsetValue: _page * 30,
+      );
       if (res != null) {
         if (res.isNotEmpty) {
           setState(() {
@@ -105,7 +106,10 @@ class _QuotesCardListState extends State<QuotesCardList> {
         }
       } else {
         await confirmDialog(
-            context, 'Error al cargar datos', 'assets/images/dizzy-robot.png');
+          context,
+          'Error al cargar datos',
+          'assets/images/dizzy-robot.png',
+        );
         setState(() {
           _loading = false;
         });
@@ -114,7 +118,7 @@ class _QuotesCardListState extends State<QuotesCardList> {
   }
 }
 
-// class to show customer indormation in form of a card
+// class to show customer information in form of a card
 
 // ignore: must_be_immutable
 class QuotesCard extends StatelessWidget {
@@ -128,7 +132,6 @@ class QuotesCard extends StatelessWidget {
   Map<String, Color> cardColors = {};
   @override
   Widget build(BuildContext context) {
-    // cardColors = mapquotestatusColor(widget.quote.saleStatus);
     // _size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () async {
@@ -158,35 +161,49 @@ class QuotesCard extends StatelessWidget {
         children: [
           // _status().paddingSymmetric(horizontal: 8),
           labelContentH(
-              'Cliente:', capitalizeText(quote.customer.toString()), context,
-              withInnerPading: false,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
+            'Cliente:',
+            capitalizeText(quote.customer.toString()),
+            context,
+            withInnerPadding: false,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          ),
 
           labelContentH(
-              'Fecha:',
-              capitalizeText(parseDateStrES(quote.date ?? '') +
+            'Fecha:',
+            capitalizeText(
+              parseDateStrES(quote.date ?? '') +
                   ' ' +
-                  parseTimeStrES(quote.date ?? '')),
-              context,
-              withInnerPading: false,
-              flexCol1: 1,
-              flexCol2: 3,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
-          labelContentH('Referencia No:', quote.referenceNo ?? '', context,
-              withInnerPading: false,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2)),
+                  parseTimeStrES(quote.date ?? ''),
+            ),
+            context,
+            withInnerPadding: false,
+            flexCol1: 1,
+            flexCol2: 3,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          ),
+          labelContentH(
+            'Referencia No:',
+            quote.referenceNo ?? '',
+            context,
+            withInnerPadding: false,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          ),
           Container(
             decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(radius2)),
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(radius2),
+            ),
             padding: const EdgeInsets.all(4),
             child: Column(
               children: [
                 labelContentH(
-                    'Total:', value.substring(0, value.length - 1), context,
-                    withInnerPading: false,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2))
+                  'Total:',
+                  value.substring(0, value.length - 1),
+                  context,
+                  withInnerPadding: false,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                )
               ],
             ),
           ),

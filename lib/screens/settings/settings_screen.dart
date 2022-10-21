@@ -12,10 +12,14 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(context, 'Ajustes', image: 'assets/images/settings.png',
-          onPop: () {
-        dataBloc.homeKey?.currentState?.selectTab(TabItem.home);
-      }),
+      appBar: appBar(
+        context,
+        'Ajustes',
+        image: 'assets/images/settings.png',
+        onPop: () {
+          dataBloc.homeKey?.currentState?.selectTab(TabItem.home);
+        },
+      ),
       body: _body(context),
     );
   }
@@ -24,8 +28,10 @@ class SettingsScreen extends StatelessWidget {
     return SingleChildScrollView(
       child: SettingSection(
         title: Text('Ajustes generales', style: boldTextStyle(size: 24)),
-        subTitle: Text('Controla algunos parametros de la aplicación',
-            style: primaryTextStyle()), // Optional
+        subTitle: Text(
+          'Controla algunos parámetros de la aplicación',
+          style: primaryTextStyle(),
+        ), // Optional
         items: _settings(context),
       ),
     );
@@ -34,24 +40,29 @@ class SettingsScreen extends StatelessWidget {
   List<Widget> _settings(BuildContext context) {
     return [
       SettingItemWidget(
-          title: 'Ajustes de impresión',
-          subTitle: 'Conectate y configura tus dispositivos de impresión',
-          decoration: BoxDecoration(borderRadius: radius()),
-          trailing: Icon(Icons.keyboard_arrow_right_rounded,
-              color: context.dividerColor),
-          onTap: () {
-            const PrintSettings().launch(context);
-          }),
+        title: 'Ajustes de impresión',
+        subTitle: 'Conéctate y configura tus dispositivos de impresión',
+        decoration: BoxDecoration(borderRadius: radius()),
+        trailing: Icon(
+          Icons.keyboard_arrow_right_rounded,
+          color: context.dividerColor,
+        ),
+        onTap: () {
+          const PrintSettings().launch(context);
+        },
+      ),
       SettingItemWidget(
-          title: 'Reportar errores',
-          subTitle: 'Reporta los errores que has tenido hasta la fecha',
-          decoration: BoxDecoration(borderRadius: radius()),
-          trailing: Icon(Icons.keyboard_arrow_right_rounded,
-              color: context.dividerColor),
-          onTap: () {
-            const ReportErrorScreen().launch(context);
-
-          }),
+        title: 'Reportar errores',
+        subTitle: 'Reporta los errores que has tenido hasta la fecha',
+        decoration: BoxDecoration(borderRadius: radius()),
+        trailing: Icon(
+          Icons.keyboard_arrow_right_rounded,
+          color: context.dividerColor,
+        ),
+        onTap: () {
+          const ReportErrorScreen().launch(context);
+        },
+      ),
       // SettingItemWidget(
       //   title: 'Close account',
       //   subTitle:

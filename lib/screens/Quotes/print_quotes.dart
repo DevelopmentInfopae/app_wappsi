@@ -25,13 +25,13 @@ class PrintQuote extends StatefulWidget {
   final String image;
   final bool exitToNewQuote;
   final Map<dynamic, dynamic> printData;
-  const PrintQuote(
-      {Key? key,
-      required this.printData,
-      this.back = false,
-      this.exitToNewQuote = true,
-      this.image = 'assets/images/printer.png'})
-      : super(key: key);
+  const PrintQuote({
+    Key? key,
+    required this.printData,
+    this.back = false,
+    this.exitToNewQuote = true,
+    this.image = 'assets/images/printer.png',
+  }) : super(key: key);
   @override
   _PrintQuoteState createState() => _PrintQuoteState();
 }
@@ -48,7 +48,7 @@ class _PrintQuoteState extends State<PrintQuote> {
   @override
   void initState() {
     printFormat = PrintFormat(productsList: widget.printData['products']);
-    // initSavetoPath();
+    // initSaveToPath();
     // initPlatformState();
     super.initState();
   }
@@ -108,7 +108,8 @@ class _PrintQuoteState extends State<PrintQuote> {
               billerImage(widget.printData['company_data'].logo)
                   .paddingSymmetric(horizontal: 40)
                   .withHeight(
-                      _size.height * 0.09 > 60 ? _size.height * 0.09 : 60),
+                    _size.height * 0.09 > 60 ? _size.height * 0.09 : 60,
+                  ),
               legalInformation(textTheme, widget.printData),
               emptyLine(),
               quoteRef(textTheme, widget.printData),
@@ -117,10 +118,10 @@ class _PrintQuoteState extends State<PrintQuote> {
                   .withWidth(_size.width * 0.85)
                   .paddingSymmetric(horizontal: 10),
               emptyLine(),
-              products(widget.printData,
-                      pricePolicy:
-                          dataBloc.settings!['prioridad_precios_producto'])
-                  .withWidth(_size.width * 0.85),
+              products(
+                widget.printData,
+                pricePolicy: dataBloc.settings!['prioridad_precios_producto'],
+              ).withWidth(_size.width * 0.85),
               emptyLine(),
               emptyLine(),
               taxRatesValues(textTheme, widget.printData)
@@ -179,14 +180,19 @@ class _PrintQuoteState extends State<PrintQuote> {
           });
 
           scaffoldAlert(
-              context, 'Imprimiendo comprobante', const Duration(seconds: 3));
+            context,
+            'Imprimiendo comprobante',
+            const Duration(seconds: 3),
+          );
           String companyLogo = widget.printData['company_data'].logo;
           if (companyLogo.substring(companyLogo.length - 4) == '.png') {
             companyLogo =
                 companyLogo.substring(0, companyLogo.length - 4) + '.jpg';
           }
           final result = await printFormat.printQuote(
-              dataBloc.dirPath! + billerImgDir + companyLogo, widget.printData);
+            dataBloc.dirPath! + billerImgDir + companyLogo,
+            widget.printData,
+          );
           if (result ?? false) {
             await Future.delayed(const Duration(seconds: 1));
             hideCurrentScaffoldAlert(context);
@@ -195,7 +201,10 @@ class _PrintQuoteState extends State<PrintQuote> {
             });
           } else {
             scaffoldAlert(
-                context, 'Error al imprimir', const Duration(seconds: 3));
+              context,
+              'Error al imprimir',
+              const Duration(seconds: 3),
+            );
           }
         } else {
           PrintSettings(
@@ -246,13 +255,18 @@ class _PrintQuoteState extends State<PrintQuote> {
       },
       child: Row(
         children: [
-          const Icon(Icons.arrow_back_ios_rounded,
-              size: kIconSize, color: pColor),
-          Text(' Salir',
-              style: buttonsSmallTextStyle(
-                context,
-                color: pColor,
-              )),
+          const Icon(
+            Icons.arrow_back_ios_rounded,
+            size: kIconSize,
+            color: pColor,
+          ),
+          Text(
+            ' Salir',
+            style: buttonsSmallTextStyle(
+              context,
+              color: pColor,
+            ),
+          ),
         ],
       ),
     );

@@ -59,13 +59,17 @@ class _ProductsState extends State<SalesList> {
         floatingActionButton:
             Environment().env == 'DEV' ? createSaleInsert(context) : null,
         key: _scaffoldKey,
-        appBar: appBar(context, 'Lista de Ventas',
-            elevation: false,
-            radius: 0,
-            image: 'assets/images/shopping-list.png', onPop: () {
-          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
-          Navigator.pop(context);
-        }),
+        appBar: appBar(
+          context,
+          'Lista de Ventas',
+          elevation: false,
+          radius: 0,
+          image: 'assets/images/shopping-list.png',
+          onPop: () {
+            dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+            Navigator.pop(context);
+          },
+        ),
         body: _body(),
       ),
     );
@@ -84,12 +88,16 @@ class _ProductsState extends State<SalesList> {
         //   _pullingSales = true;
         // });
         final syncProv = SyncDBProvider();
-        await syncProv.synSelectedOption({
-          'path': 'sync/allSales',
-          'table': 'sma_sales',
-          'sync_id': 22,
-          'image': 'order-list.png'
-        }, context, isPost: false);
+        await syncProv.synSelectedOption(
+          {
+            'path': 'sync/allSales',
+            'table': 'sma_sales',
+            'sync_id': 22,
+            'image': 'order-list.png'
+          },
+          context,
+          isPost: false,
+        );
         final sales = await LocalSalesProvider.listAllLocalSales();
         _salesListStream.sink.add(sales ?? []);
         // setState(() {
@@ -118,13 +126,16 @@ class _ProductsState extends State<SalesList> {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(0.0, 1.0), //(x,y)
-          blurRadius: 2.0,
-        )
-      ]),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 2.0,
+          )
+        ],
+      ),
     );
   }
 
@@ -132,28 +143,30 @@ class _ProductsState extends State<SalesList> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: const BorderRadius.all(Radius.circular(radius2))),
+        color: Colors.grey[200],
+        borderRadius: const BorderRadius.all(Radius.circular(radius2)),
+      ),
       child: FloatingSearchAppBar(
-          hint: ' Buscar venta',
-          transitionDuration: const Duration(milliseconds: 800),
-          clearQueryOnClose: true,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-          // alwaysOpened: true,
-          titleStyle: buttonsSmallTextStyle(context),
-          hintStyle: buttonsSmallTextStyle(context),
-          hideKeyboardOnDownScroll: true,
-          onQueryChanged: _onQueryChanged,
-          // height: _size.height * 0.078 < 55 ? 55 : _size.height * 0.078,
-          elevation: 0,
-          actions: [
-            FloatingSearchBarAction.searchToClear(
-                // showIfClosed: false,
-                ),
-          ],
-          automaticallyImplyBackButton: false,
-          color: Colors.grey[200],
-          body: null),
+        hint: ' Buscar venta',
+        transitionDuration: const Duration(milliseconds: 800),
+        clearQueryOnClose: true,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+        // alwaysOpened: true,
+        titleStyle: buttonsSmallTextStyle(context),
+        hintStyle: buttonsSmallTextStyle(context),
+        hideKeyboardOnDownScroll: true,
+        onQueryChanged: _onQueryChanged,
+        // height: _size.height * 0.078 < 55 ? 55 : _size.height * 0.078,
+        elevation: 0,
+        actions: [
+          FloatingSearchBarAction.searchToClear(
+              // showIfClosed: false,
+              ),
+        ],
+        automaticallyImplyBackButton: false,
+        color: Colors.grey[200],
+        body: null,
+      ),
     );
   }
 
@@ -161,31 +174,36 @@ class _ProductsState extends State<SalesList> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 7),
       child: FutureBuilder<List<SalesModel>?>(
-          future: LocalSalesProvider.listLocalSales(),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<SalesModel>?> snapshot) {
-            if (snapshot.hasData) {
-              return StreamBuilder<List<SalesModel>>(
-                  stream: _salesListStream.stream,
-                  builder:
-                      (context, AsyncSnapshot<List<SalesModel>> snapshot2) {
-                    if (snapshot2.hasData) {
-                      return SalesCardList(
-                          sales: snapshot2.data!, searchParams: _searchParams);
-                    } else {
-                      _salesListStream.sink.add(snapshot.data!);
+        future: LocalSalesProvider.listLocalSales(),
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<List<SalesModel>?> snapshot,
+        ) {
+          if (snapshot.hasData) {
+            return StreamBuilder<List<SalesModel>>(
+              stream: _salesListStream.stream,
+              builder: (context, AsyncSnapshot<List<SalesModel>> snapshot2) {
+                if (snapshot2.hasData) {
+                  return SalesCardList(
+                    sales: snapshot2.data!,
+                    searchParams: _searchParams,
+                  );
+                } else {
+                  _salesListStream.sink.add(snapshot.data!);
 
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  });
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          }),
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
     );
   }
 

@@ -17,23 +17,23 @@ import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-// class to show product indormation in form of a card
+// class to show product information in form of a card
 
 class ProductCard extends StatefulWidget {
-  const ProductCard(
-      {Key? key,
-      required this.formKey,
-      required this.quantityFocusNode,
-      required this.unit,
-      required this.product,
-      required this.getQtty,
-      required this.editQtty,
-      required this.addQtty,
-      required this.rmQtty,
-      required this.prefsSelection,
-      required this.delete,
-      this.requestFocus = false})
-      : super(key: key);
+  const ProductCard({
+    Key? key,
+    required this.formKey,
+    required this.quantityFocusNode,
+    required this.unit,
+    required this.product,
+    required this.getQtty,
+    required this.editQtty,
+    required this.addQtty,
+    required this.rmQtty,
+    required this.prefsSelection,
+    required this.delete,
+    this.requestFocus = false,
+  }) : super(key: key);
   final Function getQtty;
   final Function(double) editQtty;
   final Function addQtty;
@@ -95,37 +95,40 @@ class _ProductCardState extends State<ProductCard> {
     }
 
     unitInfo += widget.unit?.name ?? '';
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      productPhoto(
-              (product?.image ?? '') == '' ? 'no_image.png' : product!.image)
-          .withSize(width: 94, height: 100),
-      vDivider(width: 1, heigh: 90),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        // mainAxisAlignment: MainAxisAlignment.spaceAround,
-        // mainAxisAlignment: ,
-        children: [
-          _productDesc().paddingSymmetric(horizontal: 8, vertical: 1),
-          _productPrefs().paddingOnly(left: 8, right: 8, bottom: 3),
-          Divider(
-            height: 1,
-            color: greyMediumLight,
-            thickness: 1,
-          ).paddingSymmetric(horizontal: 10),
-          // _unitInfo(widget.unit, unitInfo).paddingOnly(
-          //   left: 10,
-          // ),
-          widget.unit != null
-              ? _unitDetails().paddingOnly(left: 10, right: 14, top: 4)
-              : _productWoutInfoPrice()
-                  .paddingOnly(left: 10, right: 14, top: 4),
-          _baseUnitQtty(widget.unit),
-        ],
-      ).paddingTop(4).expand(),
-    ]);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        productPhoto(
+          (product?.image ?? '') == '' ? 'no_image.png' : product!.image,
+        ).withSize(width: 94, height: 100),
+        vDivider(width: 1, heigh: 90),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
+          // mainAxisAlignment: ,
+          children: [
+            _productDesc().paddingSymmetric(horizontal: 8, vertical: 1),
+            _productPrefs().paddingOnly(left: 8, right: 8, bottom: 3),
+            Divider(
+              height: 1,
+              color: greyMediumLight,
+              thickness: 1,
+            ).paddingSymmetric(horizontal: 10),
+            // _unitInfo(widget.unit, unitInfo).paddingOnly(
+            //   left: 10,
+            // ),
+            widget.unit != null
+                ? _unitDetails().paddingOnly(left: 10, right: 14, top: 4)
+                : _productWithoutInfoPrice()
+                    .paddingOnly(left: 10, right: 14, top: 4),
+            _baseUnitQtty(widget.unit),
+          ],
+        ).paddingTop(4).expand(),
+      ],
+    );
   }
 
-  Row _productWoutInfoPrice() {
+  Row _productWithoutInfoPrice() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -142,11 +145,12 @@ class _ProductCardState extends State<ProductCard> {
   Row _unitDetails() {
     return Row(
       children: [
-        Text(capitalizeText(widget.unit!.name),
-                style: normalTextStyle(context),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis)
-            .expand(),
+        Text(
+          capitalizeText(widget.unit!.name),
+          style: normalTextStyle(context),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ).expand(),
         _baseUnitPrice(widget.unit!)
       ],
     );
@@ -159,14 +163,14 @@ class _ProductCardState extends State<ProductCard> {
       children: [
         _qty().paddingOnly(bottom: 4, right: 4),
         Container(
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: greyMediumLight),
-                child: _productPriceTotal())
-            .paddingOnly(right: 10)
-            .expand()
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: greyMediumLight,
+          ),
+          child: _productPriceTotal(),
+        ).paddingOnly(right: 10).expand()
       ],
     );
   }
@@ -224,8 +228,13 @@ class _ProductCardState extends State<ProductCard> {
   // }
 
   Widget _productDesc() {
-    return descText(capitalizeText(product?.name ?? ''), context,
-        maxLines: 2, fontSizeFactor: 0.88, fweigth: 2);
+    return descText(
+      capitalizeText(product?.name ?? ''),
+      context,
+      maxLines: 2,
+      fontSizeFactor: 0.88,
+      fweigth: 2,
+    );
   }
 
   Widget _qty() {
@@ -289,8 +298,11 @@ class _ProductCardState extends State<ProductCard> {
                       });
                     }
                   } else {
-                    confirmDialog(context, 'Cantidad de producto no valida',
-                        'assets/images/alert.png');
+                    confirmDialog(
+                      context,
+                      'Cantidad de producto no valida',
+                      'assets/images/alert.png',
+                    );
                   }
                 } else {
                   bool res = await widget.editQtty(productQtty);
@@ -357,9 +369,10 @@ class _ProductCardState extends State<ProductCard> {
 
         if (!res) {
           confirmDialog(
-              context,
-              "El producto ${product?.name ?? ''} no tiene suficiente stock. Stock actual ${product?.inventory ?? ''}",
-              'assets/images/out-of-stock.png');
+            context,
+            "El producto ${product?.name ?? ''} no tiene suficiente stock. Stock actual ${product?.inventory ?? ''}",
+            'assets/images/out-of-stock.png',
+          );
         }
       },
       child: const Icon(
@@ -370,7 +383,7 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   // Widget _delete() {
-  //   // Delete a prodcut from sales's cart (bloc_sale)
+  //   // Delete a product from sales's cart (bloc_sale)
   //   return AppButton(
   //     padding: const EdgeInsets.symmetric(horizontal: 5),
   //     margin: EdgeInsets.zero,
@@ -403,8 +416,10 @@ class _ProductCardState extends State<ProductCard> {
                   )
                 : FutureBuilder<UnitsModel?>(
                     future: UnitsProvider.getUnitInfo(unit.baseUnit!),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<UnitsModel?> snapshot) {
+                    builder: (
+                      BuildContext context,
+                      AsyncSnapshot<UnitsModel?> snapshot,
+                    ) {
                       return Text(
                         capitalizeText(snapshot.data?.code ?? ''),
                         style: normalTextStyle(context, fontWeightDelta: 2),
@@ -427,9 +442,10 @@ class _ProductCardState extends State<ProductCard> {
 
   void _stockAlert() {
     confirmDialog(
-        context,
-        'El producto ${product?.name} no tiene suficiente stock. Stock actual ${getRoundedQtty(product?.inventory ?? 0)}',
-        'assets/images/out-of-stock.png');
+      context,
+      'El producto ${product?.name} no tiene suficiente stock. Stock actual ${getRoundedQtty(product?.inventory ?? 0)}',
+      'assets/images/out-of-stock.png',
+    );
   }
 
   Widget _productPriceTotal() {
@@ -464,10 +480,13 @@ class _ProductCardState extends State<ProductCard> {
 
     if (value == 1.0) {
       _quantityController.selection = TextSelection(
-          baseOffset: 0, extentOffset: _quantityController.text.length);
+        baseOffset: 0,
+        extentOffset: _quantityController.text.length,
+      );
     } else {
       _quantityController.selection = TextSelection.fromPosition(
-          TextPosition(offset: _quantityController.text.length));
+        TextPosition(offset: _quantityController.text.length),
+      );
     }
   }
 
@@ -476,13 +495,14 @@ class _ProductCardState extends State<ProductCard> {
     return Card(
       elevation: 10,
       child: GestureDetector(
-          onTap: () {
-            widget.quantityFocusNode.unfocus();
-            ProductDetails(
-              product: product!,
-            ).launch(context);
-          },
-          child: _productTile()),
+        onTap: () {
+          widget.quantityFocusNode.unfocus();
+          ProductDetails(
+            product: product!,
+          ).launch(context);
+        },
+        child: _productTile(),
+      ),
     );
   }
 }

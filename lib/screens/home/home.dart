@@ -60,7 +60,10 @@ class HomeState extends State<Home> {
             _close = false;
           } else {
             _close = await choiceAlert(
-                context, '¿Desea cerrar sesión?', 'assets/images/logout.png');
+              context,
+              '¿Desea cerrar sesión?',
+              'assets/images/logout.png',
+            );
           }
         }
 
@@ -78,12 +81,14 @@ class HomeState extends State<Home> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-        body: Stack(children: <Widget>[
-          _buildOffstageNavigator(TabItem.home),
-          _buildOffstageNavigator(TabItem.products),
-          _buildOffstageNavigator(TabItem.clients),
-          _buildOffstageNavigator(TabItem.settings),
-        ]),
+        body: Stack(
+          children: <Widget>[
+            _buildOffstageNavigator(TabItem.home),
+            _buildOffstageNavigator(TabItem.products),
+            _buildOffstageNavigator(TabItem.clients),
+            _buildOffstageNavigator(TabItem.settings),
+          ],
+        ),
         bottomNavigationBar: _bottomWidget(),
       ),
     );
@@ -91,24 +96,28 @@ class HomeState extends State<Home> {
 
   Widget _bottomWidget() {
     return Container(
-        // color: Colors.white,
-        // padding: EdgeInsets.symmetric(horizontal: 10),
-        decoration: const BoxDecoration(color: Colors.white, boxShadow: [
+      // color: Colors.white,
+      // padding: EdgeInsets.symmetric(horizontal: 10),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
           BoxShadow(
             color: Colors.grey,
             offset: Offset(1.0, 0.0), //(x,y)
             blurRadius: 5.0,
           )
-        ]),
+        ],
+      ),
 
-        // alignment: Alignment.center,
-        height: getBottomNavBarHeight(context),
-        child: Stack(
-          children: [
-            _bottomNavBar(_bottomIndex).paddingTop(2),
-            syncing ? const LinearProgressIndicator() : Container()
-          ],
-        ));
+      // alignment: Alignment.center,
+      height: getBottomNavBarHeight(context),
+      child: Stack(
+        children: [
+          _bottomNavBar(_bottomIndex).paddingTop(2),
+          syncing ? const LinearProgressIndicator() : Container()
+        ],
+      ),
+    );
   }
 
   Widget _bottomNavBar(int index) {
@@ -130,7 +139,7 @@ class HomeState extends State<Home> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // imgTumbnail().withWidth(_size.width*0.16).paddingSymmetric(horizontal: 10),
+          // imgThumbnail().withWidth(_size.width*0.16).paddingSymmetric(horizontal: 10),
 
           _wappsi().paddingOnly(left: 15, right: 15),
           // Spacer(),
@@ -148,9 +157,10 @@ class HomeState extends State<Home> {
     return Row(
       children: [
         Image.asset('assets/images/wappsi.png').withHeight(
-            _size.height * 0.048 > 30
-                ? (_size.height * 0.04 > 35 ? 35 : _size.height * 0.04)
-                : 30),
+          _size.height * 0.048 > 30
+              ? (_size.height * 0.04 > 35 ? 35 : _size.height * 0.04)
+              : 30,
+        ),
         Image.asset(
           'assets/images/wappsi_pos_movil.png',
           width: _size.width * 0.55 > 270
@@ -199,7 +209,7 @@ class HomeState extends State<Home> {
       setState(() => _currentTab = tabItem);
     }
 
-    // to change bottomwidget
+    // to change bottomWidget
     if (tabItem == TabItem.home) {
       //verify if are in home root /
       if (_navigatorKeys[TabItem.home]!.currentState?.canPop() ?? false) {

@@ -47,34 +47,42 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
     return Scaffold(
-        appBar: appBar(context, 'Detalles',
-            leading: _leading(), image: 'assets/images/sleeping.png'),
-        body: _body());
+      appBar: appBar(
+        context,
+        'Detalles',
+        leading: _leading(),
+        image: 'assets/images/sleeping.png',
+      ),
+      body: _body(),
+    );
   }
 
   Widget _leading() {
     return AppBarLeading(
-        widget: Icon(
-          FontAwesomeIcons.trashCan,
-          color: Colors.red,
-          size: leadingIconSize - 4,
-        ),
-        onTap: () async {
-          final choice = await choiceAlert(
-              context,
-              '¿Desea eliminar esta venta suspendida?',
-              'assets/images/alert.png');
-          if (choice) {
-            await SuspendedSalesProvider.deleteSuspSale(
-                (widget.suspSaleInfo?['suspended_sale'] ?? 0).toString());
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              '/',
-              (route) => false,
-            );
-            const NewSale().launch(context);
-          }
-        });
+      widget: Icon(
+        FontAwesomeIcons.trashCan,
+        color: Colors.red,
+        size: leadingIconSize - 4,
+      ),
+      onTap: () async {
+        final choice = await choiceAlert(
+          context,
+          '¿Desea eliminar esta venta suspendida?',
+          'assets/images/alert.png',
+        );
+        if (choice) {
+          await SuspendedSalesProvider.deleteSuspSale(
+            (widget.suspSaleInfo?['suspended_sale'] ?? 0).toString(),
+          );
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/',
+            (route) => false,
+          );
+          const NewSale().launch(context);
+        }
+      },
+    );
   }
 
   Widget _body() {
@@ -103,10 +111,13 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
                             fontSizeFactor: 1,
                           ),
                           descText(
-                              widget.suspSaleInfo?['items'].toString() ?? '',
-                              context,
-                              textStyle: numbersTextStyle(
-                                  fontSizeFactor: 1.1, color: pColor))
+                            widget.suspSaleInfo?['items'].toString() ?? '',
+                            context,
+                            textStyle: numbersTextStyle(
+                              fontSizeFactor: 1.1,
+                              color: pColor,
+                            ),
+                          )
                         ],
                       ),
                       alignment: Alignment.center,
@@ -118,9 +129,14 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           descText('Total', context, fontSizeFactor: 1),
-                          descText(valueT.substring(0, valueT.length), context,
-                              textStyle: numbersTextStyle(
-                                  fontSizeFactor: 1.1, color: pColor)),
+                          descText(
+                            valueT.substring(0, valueT.length),
+                            context,
+                            textStyle: numbersTextStyle(
+                              fontSizeFactor: 1.1,
+                              color: pColor,
+                            ),
+                          ),
                         ],
                       ),
                       alignment: Alignment.center,
@@ -142,19 +158,23 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
     for (int i = 0; i < _products.length; i++) {
       if (_units.isNotEmpty) {
         _products[i].unit = _units[i]?.idCloud ?? _products[i].unit;
-        _pCards.add(ProductCardWUnit(
-          product: _products[i],
-          action: 'product_details',
-          unit: _units[i],
-          searchPrice: false,
-        ));
+        _pCards.add(
+          ProductCardWUnit(
+            product: _products[i],
+            action: 'product_details',
+            unit: _units[i],
+            searchPrice: false,
+          ),
+        );
       } else {
         _products[i].inventory = _products[i].quantity;
-        _pCards.add(ProductCard(
-          product: _products[i],
-          action: 'prodouct_details',
-          searchPrice: false,
-        ));
+        _pCards.add(
+          ProductCard(
+            product: _products[i],
+            action: 'prodouct_details',
+            searchPrice: false,
+          ),
+        );
       }
     }
     return SingleChildScrollView(
@@ -206,19 +226,24 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
         bool load = true;
         if ((posBloc.getProducts?.length ?? 0) > 0) {
           load = await choiceAlert(
-              context,
-              'Se ha detectado una venta en progreso. \n ¿Desea continuar?',
-              'assets/images/alert.png');
+            context,
+            'Se ha detectado una venta en progreso. \n ¿Desea continuar?',
+            'assets/images/alert.png',
+          );
         }
 
         if (load) {
           final dif = widget.suspSaleInfo?['products_info']['dif'] ?? [];
           if (dif.length != 0) {
-            await priceDiffAlert(context, dif,
-                (widget.suspSaleInfo?['suspended_sale']).toString());
+            await priceDiffAlert(
+              context,
+              dif,
+              (widget.suspSaleInfo?['suspended_sale']).toString(),
+            );
           } else {
             final res = await posBloc.loadSuspendedSale(
-                (widget.suspSaleInfo?['suspended_sale']).toString());
+              (widget.suspSaleInfo?['suspended_sale']).toString(),
+            );
 
             Navigator.pushNamedAndRemoveUntil(
               context,
@@ -228,16 +253,24 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
             const NewSale().launch(context);
             if (res.isNotEmpty) {
               listInfoDialog(
-                  context, res, 'name', 'inventory', 'Producto', 'Stock',
-                  flexCol1: 3,
-                  flexCol2: 1,
-                  title:
-                      'Error al cargar los siguientes productos de la venta:');
+                context,
+                res,
+                'name',
+                'inventory',
+                'Producto',
+                'Stock',
+                flexCol1: 3,
+                flexCol2: 1,
+                title: 'Error al cargar los siguientes productos de la venta:',
+              );
             } else {
               // confirmDialog(context, 'Venta suspendida cargada correctamente',
               //     'assets/images/success.png');
-              scaffoldAlert(context, 'Venta suspendida cargada correctamente',
-                  const Duration(milliseconds: 500));
+              scaffoldAlert(
+                context,
+                'Venta suspendida cargada correctamente',
+                const Duration(milliseconds: 500),
+              );
             }
           }
         }

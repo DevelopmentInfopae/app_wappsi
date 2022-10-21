@@ -57,13 +57,17 @@ class _ProductsState extends State<QuotesList> {
       },
       child: Scaffold(
         key: _scaffoldKey,
-        appBar: appBar(context, 'Cotizaciones',
-            elevation: false,
-            radius: 0,
-            image: 'assets/images/quotation.png', onPop: () {
-          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
-          Navigator.pop(context);
-        }),
+        appBar: appBar(
+          context,
+          'Cotizaciones',
+          elevation: false,
+          radius: 0,
+          image: 'assets/images/quotation.png',
+          onPop: () {
+            dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+            Navigator.pop(context);
+          },
+        ),
         body: _body(),
       ),
     );
@@ -81,10 +85,14 @@ class _ProductsState extends State<QuotesList> {
             final dbProvider = SyncDBProvider();
 
             final result = await dbProvider.syncOption(
-                context, tableNamesToSyncOpt['sma_quotes']!);
+              context,
+              tableNamesToSyncOpt['sma_quotes']!,
+            );
             if (result['error'] == false) {
               final orders = await QuotesProvider.listLocalQuotes(
-                  search: _searchParams['search'] ?? '', filters: _filters);
+                search: _searchParams['search'] ?? '',
+                filters: _filters,
+              );
               _quotesListStream.sink.add(orders ?? []);
             }
           },
@@ -107,13 +115,16 @@ class _ProductsState extends State<QuotesList> {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(0.0, 1.0), //(x,y)
-          blurRadius: 2.0,
-        )
-      ]),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 2.0,
+          )
+        ],
+      ),
     );
   }
 
@@ -121,28 +132,30 @@ class _ProductsState extends State<QuotesList> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: const BorderRadius.all(Radius.circular(radius2))),
+        color: Colors.grey[200],
+        borderRadius: const BorderRadius.all(Radius.circular(radius2)),
+      ),
       child: FloatingSearchAppBar(
-          hint: 'Buscar pedido',
-          transitionDuration: const Duration(milliseconds: 800),
-          clearQueryOnClose: true,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-          // alwaysOpened: true,
-          titleStyle: buttonsSmallTextStyle(context),
-          hintStyle: buttonsSmallTextStyle(context),
-          hideKeyboardOnDownScroll: true,
-          onQueryChanged: _onQueryChanged,
-          // height: _size.height * 0.078 < 55 ? 55 : _size.height * 0.078,
-          elevation: 0,
-          actions: [
-            FloatingSearchBarAction.searchToClear(
-                // showIfClosed: false,
-                ),
-          ],
-          automaticallyImplyBackButton: false,
-          color: Colors.grey[200],
-          body: null),
+        hint: 'Buscar pedido',
+        transitionDuration: const Duration(milliseconds: 800),
+        clearQueryOnClose: true,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+        // alwaysOpened: true,
+        titleStyle: buttonsSmallTextStyle(context),
+        hintStyle: buttonsSmallTextStyle(context),
+        hideKeyboardOnDownScroll: true,
+        onQueryChanged: _onQueryChanged,
+        // height: _size.height * 0.078 < 55 ? 55 : _size.height * 0.078,
+        elevation: 0,
+        actions: [
+          FloatingSearchBarAction.searchToClear(
+              // showIfClosed: false,
+              ),
+        ],
+        automaticallyImplyBackButton: false,
+        color: Colors.grey[200],
+        body: null,
+      ),
     );
   }
 
@@ -150,33 +163,37 @@ class _ProductsState extends State<QuotesList> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 7),
       child: FutureBuilder<List<QuoteModel>?>(
-          future: QuotesProvider.listLocalQuotes(filters: _filters),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<QuoteModel>?> snapshot) {
-            if (snapshot.hasData) {
-              return StreamBuilder<List<QuoteModel>>(
-                  stream: _quotesListStream.stream,
-                  builder:
-                      (context, AsyncSnapshot<List<QuoteModel>> snapshot2) {
-                    if (snapshot2.hasData) {
-                      return QuotesCardList(
-                          quotes: snapshot2.data!,
-                          searchParams: _searchParams,
-                          filters: _filters);
-                    } else {
-                      _quotesListStream.sink.add(snapshot.data!);
+        future: QuotesProvider.listLocalQuotes(filters: _filters),
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<List<QuoteModel>?> snapshot,
+        ) {
+          if (snapshot.hasData) {
+            return StreamBuilder<List<QuoteModel>>(
+              stream: _quotesListStream.stream,
+              builder: (context, AsyncSnapshot<List<QuoteModel>> snapshot2) {
+                if (snapshot2.hasData) {
+                  return QuotesCardList(
+                    quotes: snapshot2.data!,
+                    searchParams: _searchParams,
+                    filters: _filters,
+                  );
+                } else {
+                  _quotesListStream.sink.add(snapshot.data!);
 
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  });
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          }),
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
     );
   }
 
@@ -184,7 +201,9 @@ class _ProductsState extends State<QuotesList> {
     _searchParams['search'] = query;
 
     final res = await QuotesProvider.listLocalQuotes(
-        search: query ?? '', filters: _filters);
+      search: query ?? '',
+      filters: _filters,
+    );
     if (res != null) {
       _quotesListStream.sink.add(res);
     }

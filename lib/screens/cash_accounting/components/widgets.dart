@@ -7,16 +7,19 @@ import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/screens/cash_accounting/components/functions.dart';
-import 'package:pos_wappsi/utils/text_formating/currency_formater.dart';
+import 'package:pos_wappsi/utils/text_formating/currency_formatter.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-Widget registerInput(BuildContext context, RegisterFormProvider cashAccForm,
-    FocusNode valueFocus,
-    {String action = 'open',
-    label = '',
-    textAlign = TextAlign.center,
-    TextStyle? style = const TextStyle(fontSize: 18),
-    bool autoFocus = true}) {
+Widget registerInput(
+  BuildContext context,
+  RegisterFormProvider cashAccForm,
+  FocusNode valueFocus, {
+  String action = 'open',
+  label = '',
+  textAlign = TextAlign.center,
+  TextStyle? style = const TextStyle(fontSize: 18),
+  bool autoFocus = true,
+}) {
   return Padding(
     padding: const EdgeInsets.all(15.0),
     child: TextFormField(
@@ -41,7 +44,7 @@ Widget registerInput(BuildContext context, RegisterFormProvider cashAccForm,
       validator: (value) {
         if (value!.isNotEmpty) {
           return cashAccForm
-                  .isNumeric(value.replaceAll(',', '').replaceAll("\$", ''))
+                  .isNumeric(value.replaceAll(',', '').replaceAll('\$', ''))
               ? null
               : 'El valor ingresado no es valido';
         } else {
@@ -56,7 +59,9 @@ Widget registerInput(BuildContext context, RegisterFormProvider cashAccForm,
 }
 
 Widget movementDetails(
-    BuildContext context, Map<String, dynamic> movementInfo) {
+  BuildContext context,
+  Map<String, dynamic> movementInfo,
+) {
   // final _size = MediaQuery.of(context).size;
   String value =
       getFormatedCurrency(double.tryParse(movementInfo['value'] ?? '') ?? 0.0);
@@ -159,10 +164,14 @@ Widget movementDetails(
 
 /// Close register info
 Widget closeRegisterDetails(
-    BuildContext context, Map<String, dynamic> closeRegisterInfo) {
+  BuildContext context,
+  Map<String, dynamic> closeRegisterInfo,
+) {
   // final _size = MediaQuery.of(context).size;
   String value = getFormatedCurrency(
-      double.tryParse(closeRegisterInfo['value'] ?? '') ?? 0.0, decimals: 0);
+    double.tryParse(closeRegisterInfo['value'] ?? '') ?? 0.0,
+    decimals: 0,
+  );
   return Column(
     mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,7 +184,7 @@ Widget closeRegisterDetails(
             style: normalTextStyle(context, fontWeightDelta: 5),
           ),
           Text(
-            closeRegisterInfo['user_name']??'',
+            closeRegisterInfo['user_name'] ?? '',
             style: normalTextStyle(context),
             textAlign: TextAlign.end,
           ).expand()

@@ -23,17 +23,17 @@ class StatesModel {
   String? desadicional;
 
   factory StatesModel.fromJson(Map<String, dynamic> json) => StatesModel(
-        pais: json["PAIS"],
-        coddepartamento: json["CODDEPARTAMENTO"],
-        departamento: json["DEPARTAMENTO"],
-        desadicional: json["DESADICIONAL"],
+        pais: json['PAIS'],
+        coddepartamento: json['CODDEPARTAMENTO'],
+        departamento: json['DEPARTAMENTO'],
+        desadicional: json['DESADICIONAL'],
       );
 
   Map<String, dynamic> toJson() => {
-        "PAIS": pais,
-        "CODDEPARTAMENTO": coddepartamento,
-        "DEPARTAMENTO": departamento,
-        "DESADICIONAL": desadicional,
+        'PAIS': pais,
+        'CODDEPARTAMENTO': coddepartamento,
+        'DEPARTAMENTO': departamento,
+        'DESADICIONAL': desadicional,
       };
 
   @override

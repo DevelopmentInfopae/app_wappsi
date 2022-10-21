@@ -28,59 +28,68 @@ class ProductPriceVerifier extends StatelessWidget {
 
   Widget _body(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
-        child: _productDetails(context));
+      padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
+      child: _productDetails(context),
+    );
   }
 
   Widget _productDetails(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return FutureBuilder<Map?>(
-        future: ProductsProvider.findProductDetails(product.idCloud),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final price = getFormatedCurrency(product.price + 0.0);
-            return SingleChildScrollView(
-              child: Card(
-                child: Column(
-                  children: [
-                    Column(
-                      children: [
-                        productPhoto(product.image).paddingTop(4).expand(),
-                        Column(
-                          children: [
-                            _productName(context)
-                                .paddingOnly(left: 40, right: 40)
-                                .center()
-                                .withHeight(size.height * 0.076),
-                            descText(price.substring(0, price.length), context,
-                                    color: pColor,
-                                    fweigth: 4,
-                                    textStyle: numbersTextStyle(
-                                        fontSizeFactor: 2, color: pColor))
-                                .paddingTop(4),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                descText('Lista PVP', context,
-                                    fontSizeFactor: 1,
-                                    fweigth: 1,
-                                    color: greyColor),
-                                _taxInfo()
-                              ],
-                            )
-                          ],
-                        ).center(),
-                      ],
-                    ).withHeight(size.height * 0.4),
-                    _pricesAndQtties(size).paddingSymmetric(vertical: 16),
-                  ],
-                ),
+      future: ProductsProvider.findProductDetails(product.idCloud),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final price = getFormatedCurrency(product.price + 0.0);
+          return SingleChildScrollView(
+            child: Card(
+              child: Column(
+                children: [
+                  Column(
+                    children: [
+                      productPhoto(product.image).paddingTop(4).expand(),
+                      Column(
+                        children: [
+                          _productName(context)
+                              .paddingOnly(left: 40, right: 40)
+                              .center()
+                              .withHeight(size.height * 0.076),
+                          descText(
+                            price.substring(0, price.length),
+                            context,
+                            color: pColor,
+                            fweigth: 4,
+                            textStyle: numbersTextStyle(
+                              fontSizeFactor: 2,
+                              color: pColor,
+                            ),
+                          ).paddingTop(4),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              descText(
+                                'Lista PVP',
+                                context,
+                                fontSizeFactor: 1,
+                                fweigth: 1,
+                                color: greyColor,
+                              ),
+                              _taxInfo()
+                            ],
+                          )
+                        ],
+                      ).center(),
+                    ],
+                  ).withHeight(size.height * 0.4),
+                  _pricesAndQuantities(size).paddingSymmetric(vertical: 16),
+                ],
               ),
-            );
-          } else {
-            return Loader();
-          }
-        });
+            ),
+          );
+        } else {
+          return Loader();
+        }
+      },
+    );
   }
 
   Widget _taxInfo() {
@@ -100,7 +109,7 @@ class ProductPriceVerifier extends StatelessWidget {
     );
   }
 
-  Row _pricesAndQtties(Size size) {
+  Row _pricesAndQuantities(Size size) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,9 +130,14 @@ class ProductPriceVerifier extends StatelessWidget {
             children: snapshot.data!.map((e) {
               return Column(
                 children: [
-                  descText((e['quantity'] ?? product.price).toString(), context,
-                      textStyle: numbersTextStyle(
-                          color: greyDarkerColor, fontSizeFactor: 1.3)),
+                  descText(
+                    (e['quantity'] ?? product.price).toString(),
+                    context,
+                    textStyle: numbersTextStyle(
+                      color: greyDarkerColor,
+                      fontSizeFactor: 1.3,
+                    ),
+                  ),
                   descText(
                     e['name'] ?? '',
                     context,
@@ -146,24 +160,36 @@ class ProductPriceVerifier extends StatelessWidget {
 
   Widget _prices(Size size) {
     return FutureBuilder<List<Map>?>(
-      future: dataBloc.settings?['prioridad_precios_producto'] == 10?UnitsProvider.getProductUnitsRaw(
-                product.idCloud.toString(), ''):ProductsProvider.findProductPrices(product.idCloud.toString()),
+      future: dataBloc.settings?['prioridad_precios_producto'] == 10
+          ? UnitsProvider.getProductUnitsRaw(
+              product.idCloud.toString(),
+              '',
+            )
+          : ProductsProvider.findProductPrices(product.idCloud.toString()),
       builder: (BuildContext context, AsyncSnapshot<List<Map>?> snapshot) {
         if (snapshot.hasData && (snapshot.data?.length ?? 0) > 0) {
           return Column(
             children: snapshot.data!.map((e) {
-              final price =
-                  getFormatedCurrency((e['price']??e['valor_unitario'] ?? product.price) + 0.0);
+              final price = getFormatedCurrency(
+                (e['price'] ?? e['valor_unitario'] ?? product.price) + 0.0,
+              );
               return Column(
                 children: [
-                  descText(price.substring(0, price.length), context,
-                      textStyle: numbersTextStyle(
-                          color: greyDarkerColor, fontSizeFactor: 1.2)),
-                  descText(e['name'] ?? e['name']?? '', context,
-                          fontSizeFactor: 0.9,
-                          fweigth: 2,
-                          color: greyColor)
-                      .paddingBottom(8),
+                  descText(
+                    price.substring(0, price.length),
+                    context,
+                    textStyle: numbersTextStyle(
+                      color: greyDarkerColor,
+                      fontSizeFactor: 1.2,
+                    ),
+                  ),
+                  descText(
+                    e['name'] ?? e['name'] ?? '',
+                    context,
+                    fontSizeFactor: 0.9,
+                    fweigth: 2,
+                    color: greyColor,
+                  ).paddingBottom(8),
                 ],
               );
             }).toList(),
@@ -177,13 +203,14 @@ class ProductPriceVerifier extends StatelessWidget {
 
   Widget _productName(BuildContext context) {
     return descText(
-        // ignore: unnecessary_null_comparison
-        capitalizeText(product.name),
-        context,
-        maxLines: 2,
-        fweigth: 4,
-        textAlign: TextAlign.center,
-        color: greyDarkerColor,
-        fontSizeFactor: 1.1);
+      // ignore: unnecessary_null_comparison
+      capitalizeText(product.name),
+      context,
+      maxLines: 2,
+      fweigth: 4,
+      textAlign: TextAlign.center,
+      color: greyDarkerColor,
+      fontSizeFactor: 1.1,
+    );
   }
 }

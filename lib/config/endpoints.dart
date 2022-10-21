@@ -107,15 +107,15 @@ String checkPuSupConsEndP = 'purchases/checkConsecutiveNo';
 //                                       DeliveryTimes Endpoint
 //_______________________________________________________________________________________________________________
 
-String avaibleDelTimeEndP = 'deliveryTime/getDeliveryTimes';
+String availableDelTimeEndP = 'deliveryTime/getDeliveryTimes';
 
 //______________________________________________________________________________________________________________
 //
 //                                       Location data
 //_______________________________________________________________________________________________________________
 
-const String cityZonesEndP = "/locations/cityZones";
+const String cityZonesEndP = '/locations/cityZones';
 
-const String subZonesEndP = "/locations/zoneSubzones";
+const String subZonesEndP = '/locations/zoneSubzones';
 
-const String locationDataEndP = "locations/locationData";
+const String locationDataEndP = 'locations/locationData';

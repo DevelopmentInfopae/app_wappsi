@@ -18,12 +18,13 @@ class _AddCategoryState extends State<AddCategory> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Image(
-              image: AssetImage('assets/images/x.png'),
-            )),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Image(
+            image: AssetImage('assets/images/x.png'),
+          ),
+        ),
         title: Text(
           'Add Category',
           style: GoogleFonts.poppins(
@@ -50,7 +51,7 @@ class _AddCategoryState extends State<AddCategory> {
               ),
             ),
             ButtonGlobalWithoutIcon(
-              buttontext: 'Save',
+              buttonText: 'Save',
               buttonDecoration: kButtonDecoration.copyWith(color: pColor),
               onPressed: () {
                 finish(context);

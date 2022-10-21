@@ -67,7 +67,8 @@ class _ListAddressesState extends State<ListAddresses> {
 
   Future<void> _reload(BuildContext context) async {
     final addresses = await CustomerAddressesProvider.loadCustomerAddresses(
-        widget.customer.idCloud!);
+      widget.customer.idCloud!,
+    );
 
     setState(() {
       address = addresses;
@@ -83,43 +84,51 @@ class _ListAddressesState extends State<ListAddresses> {
 
   Widget _addresses() {
     return Container(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-        child: FutureBuilder<List<CustomerAddressesModel>?>(
-            future: CustomerAddressesProvider.loadCustomerAddresses(
-                widget.customer.idCloud!),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                address = snapshot.data!;
-              }
-              return _addressList(context);
-            }));
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+      child: FutureBuilder<List<CustomerAddressesModel>?>(
+        future: CustomerAddressesProvider.loadCustomerAddresses(
+          widget.customer.idCloud!,
+        ),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            address = snapshot.data!;
+          }
+          return _addressList(context);
+        },
+      ),
+    );
   }
 
   Widget _addressList(BuildContext context) {
     return RefreshIndicator(
-        onRefresh: () async {
-          await _reload(context);
-        },
-        child: ListView(
-            controller: _addressesListController,
-            children: address
-                .map((e) => AddressCard(customer: widget.customer, address: e)
-                    .paddingSymmetric(horizontal: 4, vertical: 4))
-                .toList()));
+      onRefresh: () async {
+        await _reload(context);
+      },
+      child: ListView(
+        controller: _addressesListController,
+        children: address
+            .map(
+              (e) => AddressCard(customer: widget.customer, address: e)
+                  .paddingSymmetric(horizontal: 4, vertical: 4),
+            )
+            .toList(),
+      ),
+    );
   }
 
   Widget _bottom() {
     return bottom(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            // _saveChanges(context),
-            const GoBackBottom(),
-            addAddress(context),
-          ],
-        ),
-        _pc,
-        _size);
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          // _saveChanges(context),
+          const GoBackBottom(),
+          addAddress(context),
+        ],
+      ),
+      _pc,
+      _size,
+    );
   }
 
   AppButton addAddress(BuildContext context) {

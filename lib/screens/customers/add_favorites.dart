@@ -28,9 +28,11 @@ import 'package:pos_wappsi/utils/nav_utils.dart';
 class AddFavorites extends StatefulWidget {
   final String currentAction;
   final CompanyModel? customer;
-  const AddFavorites(
-      {Key? key, this.currentAction = 'creating_customer', this.customer})
-      : super(key: key);
+  const AddFavorites({
+    Key? key,
+    this.currentAction = 'creating_customer',
+    this.customer,
+  }) : super(key: key);
 
   @override
   _AddFavoritesState createState() => _AddFavoritesState();
@@ -75,9 +77,15 @@ class _AddFavoritesState extends State<AddFavorites> {
     _size = MediaQuery.of(context).size;
     // initialize search controller
     return Scaffold(
-        appBar: appBar(context, 'Favoritos',
-            elevation: false, radius: 0, image: 'assets/images/favorite.png'),
-        body: _searchbar());
+      appBar: appBar(
+        context,
+        'Favoritos',
+        elevation: false,
+        radius: 0,
+        image: 'assets/images/favorite.png',
+      ),
+      body: _searchbar(),
+    );
   }
 
   Widget _searchbar() {
@@ -98,20 +106,23 @@ class _AddFavoritesState extends State<AddFavorites> {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(0.0, 1.0), //(x,y)
-          blurRadius: 2.0,
-        )
-      ]),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 2.0,
+          )
+        ],
+      ),
     );
   }
 
   FloatingSearchBar _searchField() {
     return FloatingSearchBar(
       clearQueryOnClose: true,
-            axisAlignment: 0,
+      axisAlignment: 0,
 
       elevation: 0,
       padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -162,58 +173,63 @@ class _AddFavoritesState extends State<AddFavorites> {
 
   Widget _products() {
     return Container(
-        // height:_size.height*0.78,
-        // to avoid overlap with floatingSearchBar
-        margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
-        padding: const EdgeInsets.only(top: 15),
-        child: StreamBuilder<Map<String, ProductModel>>(
-            stream: customerBloc.favoritesStream,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                // return Container();
-                if (!_searchController.isClosed) {
-                  // _searchController.hide();
-                  _searchController.close();
-                }
-                return ListView(
-                  children: snapshot.data!.keys.map((String k) {
-                    return Dismissible(
-                      key: Key(k),
-                      onDismissed: (direction) {
-                        customerBloc.removeProductFromFav(k);
-                      },
-                      background: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(radius2)),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.delete,
-                              size: iconSize(context),
-                              color: Colors.white,
-                            ).paddingOnly(left: 16, right: 8),
-                            Text(
-                              'Quitar elemento',
-                              style: buttonsTextStyle(context,
-                                  fontSizeFactor: 1.05),
-                            )
-                          ],
-                        ),
-                      ).paddingSymmetric(vertical: 8),
-                      child: ProductCard(
-                        action: 'details',
-                        product: snapshot.data![k]!,
-                      ),
-                    );
-                  }).toList(),
+      // height:_size.height*0.78,
+      // to avoid overlap with floatingSearchBar
+      margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
+      padding: const EdgeInsets.only(top: 15),
+      child: StreamBuilder<Map<String, ProductModel>>(
+        stream: customerBloc.favoritesStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            // return Container();
+            if (!_searchController.isClosed) {
+              // _searchController.hide();
+              _searchController.close();
+            }
+            return ListView(
+              children: snapshot.data!.keys.map((String k) {
+                return Dismissible(
+                  key: Key(k),
+                  onDismissed: (direction) {
+                    customerBloc.removeProductFromFav(k);
+                  },
+                  background: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(radius2),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.delete,
+                          size: iconSize(context),
+                          color: Colors.white,
+                        ).paddingOnly(left: 16, right: 8),
+                        Text(
+                          'Quitar elemento',
+                          style: buttonsTextStyle(
+                            context,
+                            fontSizeFactor: 1.05,
+                          ),
+                        )
+                      ],
+                    ),
+                  ).paddingSymmetric(vertical: 8),
+                  child: ProductCard(
+                    action: 'details',
+                    product: snapshot.data![k]!,
+                  ),
                 );
-              } else {
-                // ignore: unnecessary_null_comparison
-                return _empty(context).center();
-              }
-            }));
+              }).toList(),
+            );
+          } else {
+            // ignore: unnecessary_null_comparison
+            return _empty(context).center();
+          }
+        },
+      ),
+    );
   }
 
   Widget _empty(BuildContext context) {
@@ -247,10 +263,15 @@ class _AddFavoritesState extends State<AddFavorites> {
           padding: kButtonPadding,
           child: Row(
             children: [
-              const Icon(Icons.arrow_forward_ios_rounded,
-                  size: kIconSize, color: pColor),
-              Text('Siguiente',
-                  style: buttonsSmallTextStyle(context, color: pColor)),
+              const Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: kIconSize,
+                color: pColor,
+              ),
+              Text(
+                'Siguiente',
+                style: buttonsSmallTextStyle(context, color: pColor),
+              ),
             ],
           ),
           enabled: !_loading,
@@ -262,9 +283,11 @@ class _AddFavoritesState extends State<AddFavorites> {
                     await CompaniesProvider.sendCustomerInfo(context);
                   } else if (widget.currentAction == 'adding_fav_to_customer') {
                     await dataBloc.refreshToken(context);
-                    await CompaniesProvider.addCompanyFavs(
-                        context, widget.customer!);
-                    gobackTwoTimes(context);
+                    await CompaniesProvider.addCompanyFavorites(
+                      context,
+                      widget.customer!,
+                    );
+                    goBackTwoTimes(context);
                   }
                 },
           color: Colors.white,

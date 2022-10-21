@@ -41,7 +41,7 @@ class _PrintMovementState extends State<PrintMovement> {
   @override
   void initState() {
     printFormat = PrintFormat(movementInfo: widget.movementInfo);
-    // initSavetoPath();
+    // initSaveToPath();
     // initPlatformState();
     super.initState();
   }
@@ -57,11 +57,16 @@ class _PrintMovementState extends State<PrintMovement> {
         return true;
       },
       child: Scaffold(
-        appBar: appBar(context, 'Movimientos',
-            back: true, image: 'assets/images/cash-register.png', onPop: () {
-          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
-          Navigator.pop(context);
-        }),
+        appBar: appBar(
+          context,
+          'Movimientos',
+          back: true,
+          image: 'assets/images/cash-register.png',
+          onPop: () {
+            dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+            Navigator.pop(context);
+          },
+        ),
         body: _body(),
       ),
     );
@@ -90,7 +95,8 @@ class _PrintMovementState extends State<PrintMovement> {
               billerImage(dataBloc.getBillerCompany!.logo!)
                   .paddingSymmetric(horizontal: 40)
                   .withHeight(
-                      _size.height * 0.08 > 60 ? _size.height * 0.08 : 60),
+                    _size.height * 0.08 > 60 ? _size.height * 0.08 : 60,
+                  ),
               socialReason(dataBloc.settings?['razon_social'], textTheme),
               emptyLine(),
               movementDetails(context, widget.movementInfo),
@@ -142,8 +148,11 @@ class _PrintMovementState extends State<PrintMovement> {
             _printing = true;
           });
 
-          scaffoldAlert(context, 'Imprimiendo comprobante de movimiento',
-              const Duration(seconds: 3));
+          scaffoldAlert(
+            context,
+            'Imprimiendo comprobante de movimiento',
+            const Duration(seconds: 3),
+          );
           String companyLogo = dataBloc.getBillerCompany!.logo!;
           if (companyLogo.substring(companyLogo.length - 4) == '.png') {
             companyLogo =
@@ -159,7 +168,10 @@ class _PrintMovementState extends State<PrintMovement> {
             });
           } else {
             scaffoldAlert(
-                context, 'Error al imprimir', const Duration(seconds: 3));
+              context,
+              'Error al imprimir',
+              const Duration(seconds: 3),
+            );
           }
         } else {
           PrintSettings(
@@ -211,8 +223,10 @@ class _PrintMovementState extends State<PrintMovement> {
   Widget _signatureStamp() {
     return Column(
       children: [
-        Text('____________________________________',
-            style: normalTextStyle(context)),
+        Text(
+          '____________________________________',
+          style: normalTextStyle(context),
+        ),
         Text('Firma y sello', style: normalTextStyle(context))
       ],
     );

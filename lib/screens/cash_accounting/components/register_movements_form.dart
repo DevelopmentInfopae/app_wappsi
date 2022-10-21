@@ -91,11 +91,15 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
           _paymentMethodDestiny().paddingOnly(left: 15, right: 15),
           Form(
             key: registerFormProvider.formKey,
-            child: registerInput(context, registerFormProvider, _valueFocus,
-                action: 'movement',
-                textAlign: TextAlign.left,
-                label: 'Valor',
-                autoFocus: false),
+            child: registerInput(
+              context,
+              registerFormProvider,
+              _valueFocus,
+              action: 'movement',
+              textAlign: TextAlign.left,
+              label: 'Valor',
+              autoFocus: false,
+            ),
           ),
           _movementNote().paddingOnly(left: 15, right: 15, bottom: 5),
         ],
@@ -107,7 +111,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
     return DropdownSearch<DropdDownSItem>(
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       // maxHeight: _size.height * 0.9,
@@ -192,7 +196,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       enabled: _originPaymentStatus,
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
 
@@ -253,7 +257,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       // key: _paymentDestiny,
@@ -315,12 +319,14 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
     );
   }
 
-  Widget _documentType(RegisterFormProvider registerFormProvider,
-      {List<DocumentsTypes> items = const []}) {
+  Widget _documentType(
+    RegisterFormProvider registerFormProvider, {
+    List<DocumentsTypes> items = const [],
+  }) {
     return DropdownSearch<DocumentsTypes>(
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       // key: _documentTypeKey,
@@ -363,9 +369,16 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
   }
 
   Widget _movementNote() {
-    return textFormField(context, 'Nota de movimiento', (String value) {
-      registerFormProvider.movementNote = value;
-    }, () {}, () {}, controller: _movementController);
+    return textFormField(
+      context,
+      'Nota de movimiento',
+      (String value) {
+        registerFormProvider.movementNote = value;
+      },
+      () {},
+      () {},
+      controller: _movementController,
+    );
   }
 
   Map<String, dynamic> _validateFields() {
@@ -395,80 +408,90 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
   }
 
   Widget _bottom() => bottom(
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          const GoBackBottom(),
-          AppButton(
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: kIconSize,
-                  color: pColor,
-                ),
-                Text(
-                  'Realizar movimiento',
-                  style: buttonsSmallTextStyle(context, color: pColor),
-                ),
-              ],
-            ),
-            // color: ,
-            padding: kButtonPadding,
-            enabled: !_sending,
-            onTap: () async {
-              final temp = _validateFields();
-              if (temp['error']) {
-                confirmDialog(
-                    context, temp['message'], 'assets/images/warning.png');
-              } else {
-                setState(() {
-                  _sending = true;
-                });
-                final res = await sendRegisterAction(
-                    context, registerFormProvider, _valueFocus,
-                    action: 'movement');
-                if (res != null) {
-                  // Navigator.pop(context);
-                  /// update JWT token
-                  await dataBloc.refreshToken(context);
-
-                  final Map<String, String> movementData = {
-                    'date': res['date'] ?? '',
-                    'reference_no': res['reference_no'] ?? '',
-                    'biller_name': dataBloc.userData!.billerName,
-                    'movement_type': registerMovements
-                        .where((element) =>
-                            element.value == registerFormProvider.movementType)
-                        .first
-                        .name,
-                    'value': registerFormProvider.value,
-                    'movement_note': registerFormProvider.movementNote ?? '',
-                    'user_name': (dataBloc.userData?.firstName ?? '') +
-                        (dataBloc.userData?.lastName ?? '')
-                  };
-                  WidgetsBinding.instance.addPostFrameCallback((_) async {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => const HomeScreen(),
-                      ),
-                      (route) => false,
-                    );
-                    await PrintMovement(
-                      movementInfo: movementData,
-                    ).launch(context);
-                  });
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const GoBackBottom(),
+            AppButton(
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: kIconSize,
+                    color: pColor,
+                  ),
+                  Text(
+                    'Realizar movimiento',
+                    style: buttonsSmallTextStyle(context, color: pColor),
+                  ),
+                ],
+              ),
+              // color: ,
+              padding: kButtonPadding,
+              enabled: !_sending,
+              onTap: () async {
+                final temp = _validateFields();
+                if (temp['error']) {
+                  confirmDialog(
+                    context,
+                    temp['message'],
+                    'assets/images/warning.png',
+                  );
                 } else {
                   setState(() {
-                    _sending = false;
+                    _sending = true;
                   });
+                  final res = await sendRegisterAction(
+                    context,
+                    registerFormProvider,
+                    _valueFocus,
+                    action: 'movement',
+                  );
+                  if (res != null) {
+                    // Navigator.pop(context);
+                    /// update JWT token
+                    await dataBloc.refreshToken(context);
+
+                    final Map<String, String> movementData = {
+                      'date': res['date'] ?? '',
+                      'reference_no': res['reference_no'] ?? '',
+                      'biller_name': dataBloc.userData!.billerName,
+                      'movement_type': registerMovements
+                          .where(
+                            (element) =>
+                                element.value ==
+                                registerFormProvider.movementType,
+                          )
+                          .first
+                          .name,
+                      'value': registerFormProvider.value,
+                      'movement_note': registerFormProvider.movementNote ?? '',
+                      'user_name': (dataBloc.userData?.firstName ?? '') +
+                          (dataBloc.userData?.lastName ?? '')
+                    };
+                    WidgetsBinding.instance.addPostFrameCallback((_) async {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => const HomeScreen(),
+                        ),
+                        (route) => false,
+                      );
+                      await PrintMovement(
+                        movementInfo: movementData,
+                      ).launch(context);
+                    });
+                  } else {
+                    setState(() {
+                      _sending = false;
+                    });
+                  }
                 }
-              }
-            },
-          ),
-        ],
-      ),
-      pColor,
-      _size);
+              },
+            ),
+          ],
+        ),
+        pColor,
+        _size,
+      );
 }

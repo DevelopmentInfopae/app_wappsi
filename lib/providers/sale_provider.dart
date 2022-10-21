@@ -16,7 +16,7 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class SalesProvider {
   /// Send current pos data to server, if there is any changes between local db and server,
-  /// server response will contain those changes and they'll be writen into local db, then
+  /// server response will contain those changes and they'll be written into local db, then
   /// reload POS data
   ///
   static Future<bool> sendPosData(BuildContext context) async {
@@ -32,9 +32,10 @@ class SalesProvider {
           await api.postPetition(newSaleEndP, sale, dataBloc.getHeaders());
       if (res['status'] == -1) {
         reloadDialog(
-            context,
-            res['body']['error_message'] ?? res['body']['message'],
-            'assets/images/dizzy-robot.png');
+          context,
+          res['body']['error_message'] ?? res['body']['message'],
+          'assets/images/dizzy-robot.png',
+        );
       } else {
         hideCurrentScaffoldAlert(context);
 
@@ -43,17 +44,18 @@ class SalesProvider {
               res['body']['data'] != null &&
               res['body']['sync']) {
             scaffoldAlert(
-                context,
-                'Se encontraron cambios en los detalles de la venta.',
-                const Duration(seconds: 2),
-                backGroundColor: Colors.red);
+              context,
+              'Se encontraron cambios en los detalles de la venta.',
+              const Duration(seconds: 2),
+              backGroundColor: Colors.red,
+            );
 
             await logError(res, from: 'Sale creation');
             final Map<String, dynamic> changes = res['body']['data'];
             // to show changes in costumer or products
             // String chText = _getChangesString(changes);
             await Future.forEach(changes.keys.toList(), (String key) async {
-              // here update tables who are suposed to be not updated
+              // here update tables who are supposed to be not updated
               if (changes[key]) {
                 final syncDB = SyncDBProvider();
                 await syncDB.syncOption(context, tableNamesToSyncOpt[key]!);
@@ -63,25 +65,32 @@ class SalesProvider {
 
             if (!reload) {
               hideCurrentScaffoldAlert(context);
-              scaffoldAlert(context, 'Error al recargar datos de venta POS',
-                  const Duration(seconds: 2),
-                  backGroundColor: Colors.red);
+              scaffoldAlert(
+                context,
+                'Error al recargar datos de venta POS',
+                const Duration(seconds: 2),
+                backGroundColor: Colors.red,
+              );
             } else {
               hideCurrentScaffoldAlert(context);
 
               Navigator.pop(context);
 
-              scaffoldAlert(context, 'Datos de venta POS recargados',
-                  const Duration(seconds: 1));
+              scaffoldAlert(
+                context,
+                'Datos de venta POS recargados',
+                const Duration(seconds: 1),
+              );
             }
           } else {
             scaffoldAlert(
-                context,
-                res['body']['message'] ??
-                    res['message'] ??
-                    'Error al registrar la venta',
-                const Duration(seconds: 2),
-                backGroundColor: Colors.red);
+              context,
+              res['body']['message'] ??
+                  res['message'] ??
+                  'Error al registrar la venta',
+              const Duration(seconds: 2),
+              backGroundColor: Colors.red,
+            );
           }
         } else {
           try {
@@ -99,7 +108,9 @@ class SalesProvider {
             if (saleId != null) {
               // Save sale items into dbUpdated
               final saleItemsStatus = await SaleItemsProvider.saveAllIntoDB(
-                  productsDetails['product_detail_list'], saleId);
+                productsDetails['product_detail_list'],
+                saleId,
+              );
 
               final paymentsStatus =
                   await PaymentProvider.saveAllIntoDB(saleId);
@@ -107,7 +118,10 @@ class SalesProvider {
               if (saleItemsStatus && paymentsStatus) {
                 posBloc.setPrintData(printData);
                 scaffoldAlert(
-                    context, 'Venta creada', const Duration(seconds: 1));
+                  context,
+                  'Venta creada',
+                  const Duration(seconds: 1),
+                );
                 result = true;
               }
             }
@@ -136,19 +150,19 @@ class SalesProvider {
         .getDocumentDetails(dataBloc.userData!.documentTypeId.toString());
     final temp = removeRareSpaceChr(docDetails?['invoice_footer'] ?? '');
     return {
-      "products": await posBloc.getProductsListMap(),
-      "customer": posBloc.getCustomer!.toJson(),
-      "customer_address": posBloc.getCustomerAddresses!.toJson(),
-      "payment_method": posBloc.getPaymentMethod!.toJson(),
-      "sale_data": saleData,
-      "pos_note": posBloc.getInvoiceNote ?? '',
-      "payment": posBloc.getPaymentValue!.toDouble(),
-      "total": posBloc.getSubTotal(),
-      "iva": posBloc.getIVAs(),
-      "company_data": dataBloc.getBillerCompany,
-      "biller_data": dataBloc.getBIllerData,
-      "settings": settings,
-      "footer": temp
+      'products': await posBloc.getProductsListMap(),
+      'customer': posBloc.getCustomer!.toJson(),
+      'customer_address': posBloc.getCustomerAddresses!.toJson(),
+      'payment_method': posBloc.getPaymentMethod!.toJson(),
+      'sale_data': saleData,
+      'pos_note': posBloc.getInvoiceNote ?? '',
+      'payment': posBloc.getPaymentValue!.toDouble(),
+      'total': posBloc.getSubTotal(),
+      'iva': posBloc.getIVAs(),
+      'company_data': dataBloc.getBillerCompany,
+      'biller_data': dataBloc.getBIllerData,
+      'settings': settings,
+      'footer': temp
     };
   }
 }

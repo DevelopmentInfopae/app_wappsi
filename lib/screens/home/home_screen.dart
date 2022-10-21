@@ -21,16 +21,16 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  Application createState() => Application();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class Application extends State<HomeScreen> {
   List<Map<String, dynamic>> sliderList = [
     {
-      "icon": 'assets/images/banner1.png',
+      'icon': 'assets/images/banner1.png',
     },
     {
-      "icon": 'assets/images/banner2.png',
+      'icon': 'assets/images/banner2.png',
     }
   ];
   PageController pageController = PageController(initialPage: 0);
@@ -63,16 +63,17 @@ class _HomeScreenState extends State<HomeScreen> {
   // appbar widgets
   PreferredSize _appBar() {
     return boxAppBar(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            (dataBloc.getBillerCompany != null
-                ? _companyNameLogo(dataBloc.getBillerCompany!)
-                : _futureCompNameLogo()),
-            _notifications()
-          ],
-        ).paddingSymmetric(horizontal: 8),
-        _size);
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          (dataBloc.getBillerCompany != null
+              ? _companyNameLogo(dataBloc.getBillerCompany!)
+              : _futureCompNameLogo()),
+          _notifications()
+        ],
+      ).paddingSymmetric(horizontal: 8),
+      _size,
+    );
   }
 
   FutureBuilder<dynamic> _futureCompNameLogo() {
@@ -111,14 +112,14 @@ class _HomeScreenState extends State<HomeScreen> {
   // show notification icon and shows notification's page
   Widget _notifications() {
     return AppBarLeading(
-        onTap: () {
-          // select home bottomBar
-          // dataBloc.homeKey?.currentState?.changeBottomIndex(0);
-          // NotificationScreen().launch(context);
-        },
-        borderSideColor: Colors.white,
-        widget:
-            Icon(FontAwesomeIcons.bell, size: leadingIconSize, color: pColor));
+      onTap: () {
+        // select home bottomBar
+        // dataBloc.homeKey?.currentState?.changeBottomIndex(0);
+        // NotificationScreen().launch(context);
+      },
+      borderSideColor: Colors.white,
+      widget: Icon(FontAwesomeIcons.bell, size: leadingIconSize, color: pColor),
+    );
     // return AppButton(
     //     padding: EdgeInsets.zero,
     //     elevation: 0,
@@ -149,12 +150,15 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Text(
         'Menú principal',
         style: Theme.of(context).textTheme.headline6?.apply(
-            fontWeightDelta: 5, fontSizeFactor: 1.1, color: greyDarkerColor),
+              fontWeightDelta: 5,
+              fontSizeFactor: 1.1,
+              color: greyDarkerColor,
+            ),
       ),
     );
   }
 
-  // aplciation functions
+  // application functions
   Widget _options() {
     final gridItems = gridItemsForPermissions();
     return Container(
@@ -177,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // // mesage above news
+  // // message above news
   // Widget _newsMessage() {
   //   return Padding(
   //     padding: const EdgeInsets.all(8.0),

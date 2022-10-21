@@ -12,10 +12,12 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 /// to close action = 'close'
 ///
 class SelectCustomerAddressAlert extends StatefulWidget {
-  final List<CustomerAddressesModel> adresses;
-  const SelectCustomerAddressAlert(
-      {Key? key, required this.customer, required this.adresses})
-      : super(key: key);
+  final List<CustomerAddressesModel> addresses;
+  const SelectCustomerAddressAlert({
+    Key? key,
+    required this.customer,
+    required this.addresses,
+  }) : super(key: key);
   final CompanyModel customer;
   @override
   SelectCustomerAddressAlertState createState() {
@@ -68,7 +70,7 @@ class SelectCustomerAddressAlertState
           color: Colors.red.withOpacity(0.8),
           child: CupertinoDialogAction(
             child: const Text(
-              "Cancelar",
+              'Cancelar',
               style: TextStyle(color: Colors.white),
               textAlign: TextAlign.center,
             ),
@@ -82,15 +84,15 @@ class SelectCustomerAddressAlertState
           color: pColor.withOpacity(0.8),
           child: CupertinoDialogAction(
             child: const Text(
-              "Aceptar",
+              'Aceptar',
               style: TextStyle(color: Colors.white),
               textAlign: TextAlign.center,
             ),
             onPressed: () async {
               if (_selection != 0) {
-                Navigator.of(context).pop(widget.adresses
-                    .where((u) => u.idCloud == _selection)
-                    .first);
+                Navigator.of(context).pop(
+                  widget.addresses.where((u) => u.idCloud == _selection).first,
+                );
               }
               // return widget.customer;
             },
@@ -106,7 +108,7 @@ class SelectCustomerAddressAlertState
       color: Colors.transparent,
       child: SingleChildScrollView(
         child: Column(
-          children: widget.adresses.map((CustomerAddressesModel a) {
+          children: widget.addresses.map((CustomerAddressesModel a) {
             return AppButton(
               onTap: () {
                 if (_selection == a.idCloud) {
@@ -121,10 +123,12 @@ class SelectCustomerAddressAlertState
               },
               color: greyLight,
               shapeBorder: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  side: BorderSide(
-                      color: a.idCloud == _selection ? pColor : Colors.white,
-                      width: 3)),
+                borderRadius: BorderRadius.circular(5),
+                side: BorderSide(
+                  color: a.idCloud == _selection ? pColor : Colors.white,
+                  width: 3,
+                ),
+              ),
               padding: EdgeInsets.zero,
               child: ListTile(
                 title: Column(

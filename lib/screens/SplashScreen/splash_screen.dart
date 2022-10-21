@@ -50,18 +50,20 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Text(
                 'Powered By Wappsi',
                 style: GoogleFonts.poppins(
-                    color: Theme.of(context).primaryTextTheme.bodyText1!.color,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 20.0),
+                  color: Theme.of(context).primaryTextTheme.bodyText1!.color,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 20.0,
+                ),
               ),
             ),
             Center(
               child: Text(
                 'V 1.0.0',
                 style: GoogleFonts.poppins(
-                    color: Theme.of(context).primaryTextTheme.bodyText1!.color,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 15.0),
+                  color: Theme.of(context).primaryTextTheme.bodyText1!.color,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 15.0,
+                ),
               ),
             ),
           ],

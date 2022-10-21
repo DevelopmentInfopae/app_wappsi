@@ -133,8 +133,8 @@ $(window).load(function() {
 	if (ApiGen.config.options.elementDetailsCollapsed) {
 		$(document.body).on('click', 'tr', function(ev) {
 
-			var short = this.querySelector('.short')
-			, detailed = this.querySelector('.detailed')
+			var short = this.Queryelector('.short')
+			, detailed = this.Queryelector('.detailed')
 
 			if (!short || !detailed) return
 

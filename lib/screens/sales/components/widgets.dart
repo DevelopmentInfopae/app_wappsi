@@ -10,29 +10,31 @@ import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
-Widget subTotal(
-    {bool large = false,
-    Color? color,
-    Stream<double>? stream,
-    double? defaultValue}) {
+Widget subTotal({
+  bool large = false,
+  Color? color,
+  Stream<double>? stream,
+  double? defaultValue,
+}) {
   return StreamBuilder<double>(
-      stream: stream ?? posBloc.subTotalStream,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final value = getFormatedCurrency(snapshot.data!);
-          return large
-              ? _totalLarge(context, value, color: color)
-              : totalValue(context, value, color: color)
-                  .paddingSymmetric(horizontal: 8);
-        } else {
-          // posBloc.setSubTotal(posBloc.getSubTotal());
-          final value = getFormatedCurrency(defaultValue ?? 0.0);
-          return large
-              ? _totalLarge(context, value, color: color)
-              : totalValue(context, value, color: color)
-                  .paddingSymmetric(horizontal: 8);
-        }
-      });
+    stream: stream ?? posBloc.subTotalStream,
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        final value = getFormatedCurrency(snapshot.data!);
+        return large
+            ? _totalLarge(context, value, color: color)
+            : totalValue(context, value, color: color)
+                .paddingSymmetric(horizontal: 8);
+      } else {
+        // posBloc.setSubTotal(posBloc.getSubTotal());
+        final value = getFormatedCurrency(defaultValue ?? 0.0);
+        return large
+            ? _totalLarge(context, value, color: color)
+            : totalValue(context, value, color: color)
+                .paddingSymmetric(horizontal: 8);
+      }
+    },
+  );
 }
 
 // Widget _totalSmall(BuildContext context, String value) {
@@ -51,7 +53,7 @@ Widget _totalLarge(BuildContext context, String value, {Color? color}) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      Text("Total: ", style: buttonsSmallTextStyle(context, color: color)),
+      Text('Total: ', style: buttonsSmallTextStyle(context, color: color)),
       totalValue(context, value, color: color).paddingOnly(right: 8),
     ],
   );
@@ -60,14 +62,21 @@ Widget _totalLarge(BuildContext context, String value, {Color? color}) {
 Widget totalValue(BuildContext context, String value, {Color? color}) {
   return FittedBox(
     fit: BoxFit.fitHeight,
-    child: Text(value.substring(0, value.length),
-        style: numbersTextStyle(
-            color: color ?? Colors.white, fontWeight: FontWeight.w800)),
+    child: Text(
+      value.substring(0, value.length),
+      style: numbersTextStyle(
+        color: color ?? Colors.white,
+        fontWeight: FontWeight.w800,
+      ),
+    ),
   );
 }
 
 Widget popupCustomerAddressesItemBuilder(
-    BuildContext context, CustomerAddressesModel? item, bool isSelected) {
+  BuildContext context,
+  CustomerAddressesModel? item,
+  bool isSelected,
+) {
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 8),
     decoration: !isSelected
@@ -90,7 +99,10 @@ Widget popupCustomerAddressesItemBuilder(
 }
 
 Widget customPopupCustomerItemBuilder(
-    BuildContext context, CompanyModel? item, bool isSelected) {
+  BuildContext context,
+  CompanyModel? item,
+  bool isSelected,
+) {
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 8),
     decoration: !isSelected
@@ -105,9 +117,9 @@ Widget customPopupCustomerItemBuilder(
       title: Text(capitalizeText(item?.name ?? '')),
       subtitle: Text(capitalizeText(item?.vatNo ?? '')),
       leading: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: customerPhoto(item!.customerProfilePhoto))
-          .withWidth(50),
+        borderRadius: BorderRadius.circular(8.0),
+        child: customerPhoto(item!.customerProfilePhoto),
+      ).withWidth(50),
     ),
   );
 }

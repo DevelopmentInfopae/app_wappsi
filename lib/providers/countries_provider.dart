@@ -9,7 +9,8 @@ import 'package:pos_wappsi/utils/print_errors.dart';
 
 class CountriesProvider {
   static List<CountriesModel> fromJsonFileList(
-      List<Map<String, dynamic>> list) {
+    List<Map<String, dynamic>> list,
+  ) {
     List<CountriesModel> _list = [];
     for (var element in list) {
       _list.add(CountriesModel.fromJson(element));
@@ -36,10 +37,12 @@ class CountriesProvider {
     if (search == null || search == '') {
       data = await allCountries();
     } else {
-      data = await DBProvider.db.sqlQuery('sma_countries',
-          where:
-              "NOMBRE LIKE '%$search%' OR INDICATIVO LIKE '%$search%' OR codigo_iso LIKE '%$search%'",
-          limit: 20);
+      data = await DBProvider.db.sqlQuery(
+        'sma_countries',
+        where:
+            "NOMBRE LIKE '%$search%' OR INDICATIVO LIKE '%$search%' OR codigo_iso LIKE '%$search%'",
+        limit: 20,
+      );
     }
     List<CountriesModel> list = [];
     if (data != null) {
@@ -87,12 +90,12 @@ class CountriesProvider {
     try {
       data = temp.map((e) => CountriesModel.fromJson(e).toJson()).toList();
     } catch (e) {
-      await logError(e, from: 'Writing coutries from JSON file to DB');
+      await logError(e, from: 'Writing countries from JSON file to DB');
 
       // printConsole(e);
     }
 
-    return await DBProvider.db.insertOrUpdateQuerys('sma_countries', data);
+    return await DBProvider.db.insertOrUpdateQuery('sma_countries', data);
   }
 
   /// Return all rows in sma_countries

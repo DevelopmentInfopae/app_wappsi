@@ -13,12 +13,15 @@ class OrderSaleItemsProvider {
   }
 
   static Future<bool> saveAllIntoDB(
-      List<Map<String, dynamic>> orderItems, int orderId, String registrationData) async {
+    List<Map<String, dynamic>> orderItems,
+    int orderId,
+    String registrationData,
+  ) async {
     for (int i = 0; i < orderItems.length; i++) {
       orderItems[i]['sale_id'] = orderId;
       orderItems[i]['registration_date'] = registrationData;
     }
     return await DBProvider.db
-        .insertOrUpdateQuerys('sma_order_sale_items', orderItems);
+        .insertOrUpdateQuery('sma_order_sale_items', orderItems);
   }
 }

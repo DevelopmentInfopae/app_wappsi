@@ -13,7 +13,7 @@ class SubzoneModel {
     required this.zoneCode,
     required this.subzoneName,
     required this.subzoneCode,
-    required this.id
+    required this.id,
   });
 
   final String zoneCode;
@@ -27,17 +27,17 @@ class SubzoneModel {
   String toRawJson() => json.encode(toJson());
 
   factory SubzoneModel.fromJson(Map json) => SubzoneModel(
-        zoneCode: json["zone_code"],
-        subzoneName: json["subzone_name"],
-        subzoneCode: json["subzone_code"],
-        id: parsingToInt(json["id"]),
+        zoneCode: json['zone_code'],
+        subzoneName: json['subzone_name'],
+        subzoneCode: json['subzone_code'],
+        id: parsingToInt(json['id']),
       );
 
   Map<String, dynamic> toJson() => {
-        "zone_code": zoneCode,
-        "subzone_name": subzoneName,
-        "subzone_code": subzoneCode,
-        "id":id
+        'zone_code': zoneCode,
+        'subzone_name': subzoneName,
+        'subzone_code': subzoneCode,
+        'id': id
       };
 
   static List<SubzoneModel> fromJsonList(List data) {
@@ -55,7 +55,7 @@ class SubzoneModel {
     // prString(temp);
   }
 
-  String capitalizeSubzoneName(){
+  String capitalizeSubzoneName() {
     return capitalizeText(subzoneName);
   }
 

@@ -14,8 +14,8 @@ import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 
 class ReportErrorScreen extends StatefulWidget {
   // ignore: use_key_in_widget_constructors
-  /// Receive an string `print` wich could be ['settings','movement','pos'], with that, print
-  /// diferent things depending on the `print`, also receive `movementInfo` wich is required when tryint
+  /// Receive an string `print` which could be ['settings','movement','pos'], with that, print
+  /// different things depending on the `print`, also receive `movementInfo` which is required when trying
   /// to print movement receipt
   const ReportErrorScreen({Key? key}) : super(key: key);
   @override
@@ -42,8 +42,11 @@ class _ReportErrorScreenState extends State<ReportErrorScreen> {
     _size = MediaQuery.of(context).size;
     _pc = pColor;
     return Scaffold(
-      appBar: appBar(context, 'Reportar errores',
-          image: 'assets/images/clipboard.png'),
+      appBar: appBar(
+        context,
+        'Reportar errores',
+        image: 'assets/images/clipboard.png',
+      ),
       body: _body(),
     );
   }
@@ -62,7 +65,7 @@ class _ReportErrorScreenState extends State<ReportErrorScreen> {
                 ).paddingSymmetric(horizontal: 14, vertical: 16),
                 _message().paddingSymmetric(horizontal: 16, vertical: 16)
               ],
-            )
+            ),
           ).expand(),
           bottom(_buttons(), _pc, _size),
         ],
@@ -71,10 +74,18 @@ class _ReportErrorScreenState extends State<ReportErrorScreen> {
   }
 
   Widget _message() {
-    return textFormField(context, 'Descripción del error', (String value) {},
-        (String value) {
-      _messageText = value;
-    }, () {}, controller: _messageController, maxLines: 8, focus: _messageFocus);
+    return textFormField(
+      context,
+      'Descripción del error',
+      (String value) {},
+      (String value) {
+        _messageText = value;
+      },
+      () {},
+      controller: _messageController,
+      maxLines: 8,
+      focus: _messageFocus,
+    );
   }
 
   Widget _buttons() {
@@ -87,12 +98,12 @@ class _ReportErrorScreenState extends State<ReportErrorScreen> {
   AppButton _sendErrors() {
     return AppButton(
       padding: kButtonPadding,
-      onTap: () async{
+      onTap: () async {
         _messageFocus.unfocus();
         final errorsP = ErrorsProvider();
         final res = await errorsP.sendErrorLog(context, _messageText);
 
-        if(res)Navigator.pop(context);
+        if (res) Navigator.pop(context);
       },
       child: Row(
         children: [

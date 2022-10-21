@@ -16,11 +16,15 @@ class _RegisterMovementsState extends State<RegisterMovements> {
   Widget build(BuildContext context) {
     return Scaffold(
       //  child: child,
-      appBar: appBar(context, 'Movimientos',
-          image: 'assets/images/cash-register.png'),
+      appBar: appBar(
+        context,
+        'Movimientos',
+        image: 'assets/images/cash-register.png',
+      ),
       body: ChangeNotifierProvider(
-          create: (_) => RegisterFormProvider(),
-          child: const RegisterMovementsForm()),
+        create: (_) => RegisterFormProvider(),
+        child: const RegisterMovementsForm(),
+      ),
     );
   }
 }

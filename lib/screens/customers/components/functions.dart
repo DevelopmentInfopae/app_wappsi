@@ -1,8 +1,8 @@
 Map getVerificationCode(String nit) {
-  nit.replaceAll(" ", "");
-  nit.replaceAll(",", "");
-  nit.replaceAll(".", "");
-  nit.replaceAll("-", "");
+  nit.replaceAll(' ', '');
+  nit.replaceAll(',', '');
+  nit.replaceAll('.', '');
+  nit.replaceAll('-', '');
   if ((int.tryParse(nit) ?? '') == '') {
     return {
       'error': true,

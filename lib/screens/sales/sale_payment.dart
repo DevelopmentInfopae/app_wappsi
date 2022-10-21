@@ -31,7 +31,7 @@ import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/screens/sales/print_sale.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
-import 'package:pos_wappsi/utils/text_formating/currency_formater.dart';
+import 'package:pos_wappsi/utils/text_formating/currency_formatter.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class SalePayment extends StatefulWidget {
@@ -54,7 +54,7 @@ class _SalePaymentState extends State<SalePayment> {
   int _count10000 = 0;
   int _count20000 = 0;
 
-  // to disable paybutton when awaiting for response
+  // to disable payButton when awaiting for response
   bool _sending = false;
 
   final TextEditingController _paymentMethodController =
@@ -150,24 +150,28 @@ class _SalePaymentState extends State<SalePayment> {
       children: [
         RichText(
           text: TextSpan(
-              text: 'Numero de productos: ',
-              style: buttonsSmallTextStyle(context).apply(color: _pc),
-              children: [
-                TextSpan(
-                    text: '${posBloc.getProductsCount()}',
-                    style: _textTheme.headline6)
-              ]),
+            text: 'Numero de productos: ',
+            style: buttonsSmallTextStyle(context).apply(color: _pc),
+            children: [
+              TextSpan(
+                text: '${posBloc.getProductsCount()}',
+                style: _textTheme.headline6,
+              )
+            ],
+          ),
           // style: textTheme,
         ),
         RichText(
           text: TextSpan(
-              text: 'Numero de items: ',
-              style: buttonsSmallTextStyle(context).apply(color: _pc),
-              children: [
-                TextSpan(
-                    text: '${posBloc.getItemsCount()}',
-                    style: _textTheme.headline6)
-              ]),
+            text: 'Numero de items: ',
+            style: buttonsSmallTextStyle(context).apply(color: _pc),
+            children: [
+              TextSpan(
+                text: '${posBloc.getItemsCount()}',
+                style: _textTheme.headline6,
+              )
+            ],
+          ),
           // style: textTheme,
         ),
       ],
@@ -206,7 +210,7 @@ class _SalePaymentState extends State<SalePayment> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
 
@@ -287,7 +291,7 @@ class _SalePaymentState extends State<SalePayment> {
     return DropdownSearch<DocumentsTypes>(
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
         return null;
       },
       // key: _documentTypeKey,
@@ -357,7 +361,9 @@ class _SalePaymentState extends State<SalePayment> {
     return AppTextField(
       controller: _paymentTermController,
       decoration: InputDecorations.authInputDecoration(
-          hintText: '', labelText: 'Plazo de pago (dias)'),
+        hintText: '',
+        labelText: 'Plazo de pago (Dias)',
+      ),
       enabled: posBloc.getPaymentMethod?.code == 'Credito',
       textFieldType: TextFieldType.PHONE,
       textStyle: Theme.of(context).textTheme.subtitle1,
@@ -391,15 +397,29 @@ class _SalePaymentState extends State<SalePayment> {
   }
 
   Widget _invoiceNote() {
-    return textFormField(context, 'Nota de factura', (String value) {
-      posBloc.setInvoiceNote(value);
-    }, (value) {}, () {}, controller: _invoiceNController);
+    return textFormField(
+      context,
+      'Nota de factura',
+      (String value) {
+        posBloc.setInvoiceNote(value);
+      },
+      (value) {},
+      () {},
+      controller: _invoiceNController,
+    );
   }
 
   Widget _dispatchNote() {
-    return textFormField(context, 'Nota interna', (String value) {
-      posBloc.setDispatchNote(value);
-    }, (value) {}, () {}, controller: _dispatchNController);
+    return textFormField(
+      context,
+      'Nota interna',
+      (String value) {
+        posBloc.setDispatchNote(value);
+      },
+      (value) {},
+      () {},
+      controller: _dispatchNController,
+    );
   }
 
   Widget _value() {
@@ -409,7 +429,9 @@ class _SalePaymentState extends State<SalePayment> {
           controller: _valuePController,
           inputFormatters: [CurrencyInputFormatter()],
           decoration: InputDecorations.authInputDecoration(
-              hintText: '', labelText: 'Valor'),
+            hintText: '',
+            labelText: 'Valor',
+          ),
           enabled: (posBloc.getPaymentMethod?.code != 'Credito' ||
               posBloc.getPaymentMethod?.code != 'credito'),
           textFieldType: TextFieldType.PHONE,
@@ -421,10 +443,12 @@ class _SalePaymentState extends State<SalePayment> {
               return 'Debe suministrar un valor';
             } else {
               try {
-                final val = double.parse(value
-                    .replaceAll('\$', '')
-                    .replaceAll(',', '')
-                    .replaceAll('.', ''));
+                final val = double.parse(
+                  value
+                      .replaceAll('\$', '')
+                      .replaceAll(',', '')
+                      .replaceAll('.', ''),
+                );
                 if (val < posBloc.getSubTotal()) {
                   return 'El valor suministrado no cubre el total de la venta';
                 }
@@ -441,10 +465,12 @@ class _SalePaymentState extends State<SalePayment> {
               _updateCounts(zero: true);
               if (value != '') {
                 try {
-                  _valueP = int.parse(value
-                      .replaceAll('\$', '')
-                      .replaceAll(',', '')
-                      .replaceAll('.', ''));
+                  _valueP = int.parse(
+                    value
+                        .replaceAll('\$', '')
+                        .replaceAll(',', '')
+                        .replaceAll('.', ''),
+                  );
                   posBloc.setPaymentValue(_valueP);
                 } catch (e) {
                   _valueP = 0;
@@ -499,8 +525,9 @@ class _SalePaymentState extends State<SalePayment> {
       padding: kButtonPadding,
       width: 20,
       shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radius2),
-          side: BorderSide(color: counter != 0 ? _pc : Colors.white, width: 1)),
+        borderRadius: BorderRadius.circular(radius2),
+        side: BorderSide(color: counter != 0 ? _pc : Colors.white, width: 1),
+      ),
       // padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       onTap: () {
         setState(() {
@@ -515,8 +542,8 @@ class _SalePaymentState extends State<SalePayment> {
               counter += 1;
               _updateCounts(value: value);
             }
-            // this is to format currency, it dindt work with inputformaters in textField because
-            // here we are modifing its value directly
+            // this is to format currency, it didn't work with input formatters in textField because
+            // here we are modifying its value directly
             final tempValue = getFormatedCurrency((_valueP.toDouble()));
             _valuePController.text =
                 tempValue.substring(0, tempValue.length - 3);
@@ -526,14 +553,16 @@ class _SalePaymentState extends State<SalePayment> {
       },
       child: RichText(
         text: TextSpan(
-            text: valueString.substring(0, valueString.length),
-            style: _textTheme.bodyText1!.apply(color: Colors.black),
-            children: [
-              TextSpan(
-                  text: (counter == 0 ? '' : 'x$counter'),
-                  style: _textTheme.bodyText1!
-                      .apply(color: Colors.black87, fontSizeFactor: 0.95))
-            ]),
+          text: valueString.substring(0, valueString.length),
+          style: _textTheme.bodyText1!.apply(color: Colors.black),
+          children: [
+            TextSpan(
+              text: (counter == 0 ? '' : 'x$counter'),
+              style: _textTheme.bodyText1!
+                  .apply(color: Colors.black87, fontSizeFactor: 0.95),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -602,11 +631,10 @@ class _SalePaymentState extends State<SalePayment> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         subTotal(
-                large: true,
-                color: Colors.white,
-                defaultValue: posBloc.getSubTotal())
-            .paddingLeft(8)
-            .expand(),
+          large: true,
+          color: Colors.white,
+          defaultValue: posBloc.getSubTotal(),
+        ).paddingLeft(8).expand(),
         sendButton().flexible(),
       ],
     );
@@ -636,16 +664,20 @@ class _SalePaymentState extends State<SalePayment> {
                   _sending = true;
                 });
                 scaffoldAlert(
-                    context, 'Registrando venta', const Duration(seconds: 5));
+                  context,
+                  'Registrando venta',
+                  const Duration(seconds: 5),
+                );
                 final result = await SalesProvider.sendPosData(context);
                 if (result) {
-                  // to let message be readed
+                  // to let message be read
                   // await Future.delayed(Duration(seconds: 1));
                   // hideCurrentScaffoldAlert(context);
 
                   await dataBloc.syncElements(
-                      ['Precios de Productos', 'Productos de Sucursales'],
-                      context);
+                    ['Precios de Productos', 'Productos de Sucursales'],
+                    context,
+                  );
 
                   /// update JWT token
                   await dataBloc.refreshToken(context);
@@ -672,8 +704,10 @@ class _SalePaymentState extends State<SalePayment> {
                 // PrintSale().launch(context);
               }
             },
-      child: Text('Finalizar venta',
-          style: buttonsSmallTextStyle(context, color: pColor)),
+      child: Text(
+        'Finalizar venta',
+        style: buttonsSmallTextStyle(context, color: pColor),
+      ),
     );
   }
 }

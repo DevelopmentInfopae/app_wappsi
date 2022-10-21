@@ -14,11 +14,11 @@ class PaymentMethodsProvider {
           posBloc.setPaymentMethod(PaymentMethods.fromJson(data.first));
           return true;
         }
-      }else{
+      } else {
         if (data.isNotEmpty && orderBloc.getPaymentMethod == null) {
-        orderBloc.setPaymentMethod(PaymentMethods.fromJson(data.first));
-        return true;
-      }
+          orderBloc.setPaymentMethod(PaymentMethods.fromJson(data.first));
+          return true;
+        }
       }
     }
   }
@@ -57,10 +57,12 @@ class PaymentMethodsProvider {
   //                                PAYMENT METHODS
   //
   //-----------------------------------------------------------------------------
-  /// Return all rows in sma_payment_methods wich fields (name) LIKE given string
+  /// Return all rows in sma_payment_methods which fields (name) LIKE given string
   // ignore: avoid_init_to_null
-  static Future<List<Map<String, dynamic>>?> findPaymentMethods(
-      {String? search = '', pos = true}) async {
+  static Future<List<Map<String, dynamic>>?> findPaymentMethods({
+    String? search = '',
+    pos = true,
+  }) async {
     String where = '';
     if (pos) {
       where =
@@ -79,7 +81,8 @@ class PaymentMethodsProvider {
 
   /// Return payMethod info given a pay method id
   static Future<Map<String, dynamic>?> loadPaymentMethodByCode(
-      String code) async {
+    String code,
+  ) async {
     return await DBProvider.db
         .sqlFirstQuery('sma_payment_methods', where: 'code="$code"');
   }

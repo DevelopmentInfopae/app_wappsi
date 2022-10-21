@@ -49,10 +49,9 @@ class RegisterAlertDialogState extends State<RegisterAlertDialog> {
           ).paddingBottom(10),
           Text(
             widget.action == 'open'
-                ? "Digite el valor con el que desea abrir la caja (COP)"
-                : 'Digite el valor total del efectivo en mano (COP)',
-            style:
-                buttonsSmallTextStyle(context).apply(color: kGreyTextColor),
+                ? 'Ingrese el valor con el que desea abrir la caja (COP)'
+                : 'Ingrese el valor total del efectivo en mano (COP)',
+            style: buttonsSmallTextStyle(context).apply(color: kGreyTextColor),
           ),
         ],
       ),
@@ -72,26 +71,30 @@ class RegisterAlertDialogState extends State<RegisterAlertDialog> {
           ),
         ),
         Container(
-          color: !sending?pColor.withOpacity(0.8):greyColor,
+          color: !sending ? pColor.withOpacity(0.8) : greyColor,
           child: CupertinoDialogAction(
-            
             child: const Text(
-              "Aceptar",
+              'Aceptar',
               style: TextStyle(color: Colors.white),
               textAlign: TextAlign.center,
             ),
-            
-            onPressed: !sending?() async {
-              setState(() {
-                sending=true;
-              });
-              await sendRegisterAction(context, registerForm, _valueFocus,
-                  syncDB: false, action: widget.action);
-              setState(() {
-                sending=false;
-              });
-              
-            }:null,
+            onPressed: !sending
+                ? () async {
+                    setState(() {
+                      sending = true;
+                    });
+                    await sendRegisterAction(
+                      context,
+                      registerForm,
+                      _valueFocus,
+                      syncDB: false,
+                      action: widget.action,
+                    );
+                    setState(() {
+                      sending = false;
+                    });
+                  }
+                : null,
           ),
         ),
       ],
@@ -108,8 +111,12 @@ class RegisterAlertDialogState extends State<RegisterAlertDialog> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            registerInput(context, cashAccForm, _valueFocus,
-                action: widget.action)
+            registerInput(
+              context,
+              cashAccForm,
+              _valueFocus,
+              action: widget.action,
+            )
           ],
         ),
       ),

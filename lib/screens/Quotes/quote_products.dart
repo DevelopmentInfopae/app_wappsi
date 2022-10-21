@@ -79,9 +79,11 @@ class _QuoteProductsState extends State<QuoteProducts> {
 
   void _goToPage(int page) {
     if (pageController.hasClients) {
-      pageController.animateToPage(page,
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.fastOutSlowIn);
+      pageController.animateToPage(
+        page,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.fastOutSlowIn,
+      );
     }
   }
 
@@ -107,23 +109,27 @@ class _QuoteProductsState extends State<QuoteProducts> {
     // initialize search controller
 
     return WillPopScope(
-        child: Scaffold(
-            key: _scaffoldKey, appBar: buildAppBar(context), body: _body()),
-        onWillPop: () async {
-          bool pop = false;
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: buildAppBar(context),
+        body: _body(),
+      ),
+      onWillPop: () async {
+        bool pop = false;
 
-          if (index == 1) {
-            _goToPage(0);
+        if (index == 1) {
+          _goToPage(0);
+        } else {
+          if (_searchController.isOpen) {
+            _searchController.close();
           } else {
-            if (_searchController.isOpen) {
-              _searchController.close();
-            } else {
-              pop = true;
-            }
+            pop = true;
           }
+        }
 
-          return pop;
-        });
+        return pop;
+      },
+    );
   }
 
   Column _body() {
@@ -158,24 +164,26 @@ class _QuoteProductsState extends State<QuoteProducts> {
         }
       },
       leading: Tooltip(
-          message: "Favoritos",
-          child: AppBarLeading(
-              widget: Icon(
-                Icons.favorite,
-                size: leadingIconSize,
-                color: index == 1 ? Colors.white : favColor,
-              ),
-              backgroundColor: index == 0 ? Colors.white : favColor,
-              onTap: () {
-                // FocusScope.of(context).unfocus();
-                if ((pageController.page ?? 0) == 0) {
-                  _searchController.close();
-                  _goToPage(1);
-                } else {
-                  _goToPage(0);
-                }
-                _updateIndex();
-              })),
+        message: 'Favoritos',
+        child: AppBarLeading(
+          widget: Icon(
+            Icons.favorite,
+            size: leadingIconSize,
+            color: index == 1 ? Colors.white : favColor,
+          ),
+          backgroundColor: index == 0 ? Colors.white : favColor,
+          onTap: () {
+            // FocusScope.of(context).unfocus();
+            if ((pageController.page ?? 0) == 0) {
+              _searchController.close();
+              _goToPage(1);
+            } else {
+              _goToPage(0);
+            }
+            _updateIndex();
+          },
+        ),
+      ),
     );
   }
 
@@ -199,23 +207,27 @@ class _QuoteProductsState extends State<QuoteProducts> {
         MediaQuery.of(context).orientation == Orientation.portrait;
 
     return FavoritesOrderSelection(
-        isPortrait: isPortrait,
-        // toOrder: false,
-        toQuote: true,
-        context: _scaffoldKey.currentContext ?? context);
+      isPortrait: isPortrait,
+      // toOrder: false,
+      toQuote: true,
+      context: _scaffoldKey.currentContext ?? context,
+    );
   }
 
   Container _searchHeight() {
     return Container(
       height: searchHeight + 8,
       width: _size.width,
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(0.0, 1.0), //(x,y)
-          blurRadius: 2.0,
-        )
-      ]),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 2.0,
+          )
+        ],
+      ),
     );
   }
 
@@ -267,7 +279,9 @@ class _QuoteProductsState extends State<QuoteProducts> {
       transition: CircularFloatingSearchBarTransition(),
       physics: const BouncingScrollPhysics(),
       builder: (context, _) => buildBody(
-          stream: quoteBloc.productSearchStream, action: 'add_to_quote'),
+        stream: quoteBloc.productSearchStream,
+        action: 'add_to_quote',
+      ),
       title: Text(
         'Buscar producto',
         style: buttonsSmallTextStyle(context),
@@ -280,74 +294,76 @@ class _QuoteProductsState extends State<QuoteProducts> {
 
   Widget _products() {
     return Container(
-        // height:_size.height*0.78,
-        // to avoid overlap with floatingSearchBar
-        margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
-        padding: const EdgeInsets.only(top: 15),
-        child: _productsStream());
+      // height:_size.height*0.78,
+      // to avoid overlap with floatingSearchBar
+      margin: EdgeInsets.only(top: _size.height * 0.078, bottom: 8),
+      padding: const EdgeInsets.only(top: 15),
+      child: _productsStream(),
+    );
   }
 
   StreamBuilder<Map<String, ProductModel>> _productsStream() {
     return StreamBuilder<Map<String, ProductModel>>(
-        stream: quoteBloc.productsStream,
-        builder: (context, snapshot) {
-          // _searchBarFocusManagement();
-          bool productRequestFocus = _productFocus();
-          if (_productsCount + 1 == snapshot.data?.length) {
-            _productsCount += 1;
-            _searchBarFocusManagement();
-          }
-          if (snapshot.hasData &&
-              _searchController.isClosed &&
-              _productsCount == (quoteBloc.getProducts?.length ?? 0)) {
-            if (quoteBloc.getItemsCount() == 0) {
-              _productsCount = 0;
-              // _itemsCount = 0;
-              return Container();
-              //
-              // return _empty(context).center();
-            } else {
-              // _itemsCount += 1;
-
-              if (_productsCount == snapshot.data!.length) {
-                if (_scrollController.hasClients) {
-                  _scrollController
-                      .jumpTo(_scrollController.position.minScrollExtent);
-                }
-              } else if (_productsCount - 2 == snapshot.data!.length) {
-                // Nothing to do when items are removed from cart
-              } else {
-                // _searchBarFocusManagement();
-                _productsCount = snapshot.data!.length;
-                // _itemsCount = quoteBloc.getItemsCount();
-              }
-            }
-            Map<String, ProductModel> saleProductsList = snapshot.data!;
-            return ProductsList(
-              key: pListKey,
-              productList: saleProductsList,
-              scrollController: _scrollController,
-              productRequestFocus: productRequestFocus,
-              fromQuote: true,
-            );
-          } else if (quoteBloc.getProducts?.isNotEmpty ?? false) {
-            return ProductsList(
-              key: pListKey,
-              productList: quoteBloc.getProducts!,
-              scrollController: _scrollController,
-              productRequestFocus: false,
-              fromQuote: true,
-            );
-          } else if (snapshot.hasData && _searchController.isOpen) {
-            return Container();
-          } else {
+      stream: quoteBloc.productsStream,
+      builder: (context, snapshot) {
+        // _searchBarFocusManagement();
+        bool productRequestFocus = _productFocus();
+        if (_productsCount + 1 == snapshot.data?.length) {
+          _productsCount += 1;
+          _searchBarFocusManagement();
+        }
+        if (snapshot.hasData &&
+            _searchController.isClosed &&
+            _productsCount == (quoteBloc.getProducts?.length ?? 0)) {
+          if (quoteBloc.getItemsCount() == 0) {
             _productsCount = 0;
-            // ignore: unnecessary_null_comparison
+            // _itemsCount = 0;
             return Container();
-
+            //
             // return _empty(context).center();
+          } else {
+            // _itemsCount += 1;
+
+            if (_productsCount == snapshot.data!.length) {
+              if (_scrollController.hasClients) {
+                _scrollController
+                    .jumpTo(_scrollController.position.minScrollExtent);
+              }
+            } else if (_productsCount - 2 == snapshot.data!.length) {
+              // Nothing to do when items are removed from cart
+            } else {
+              // _searchBarFocusManagement();
+              _productsCount = snapshot.data!.length;
+              // _itemsCount = quoteBloc.getItemsCount();
+            }
           }
-        });
+          Map<String, ProductModel> saleProductsList = snapshot.data!;
+          return ProductsList(
+            key: pListKey,
+            productList: saleProductsList,
+            scrollController: _scrollController,
+            productRequestFocus: productRequestFocus,
+            fromQuote: true,
+          );
+        } else if (quoteBloc.getProducts?.isNotEmpty ?? false) {
+          return ProductsList(
+            key: pListKey,
+            productList: quoteBloc.getProducts!,
+            scrollController: _scrollController,
+            productRequestFocus: false,
+            fromQuote: true,
+          );
+        } else if (snapshot.hasData && _searchController.isOpen) {
+          return Container();
+        } else {
+          _productsCount = 0;
+          // ignore: unnecessary_null_comparison
+          return Container();
+
+          // return _empty(context).center();
+        }
+      },
+    );
   }
 
   _searchBarFocusManagement() {
@@ -410,10 +426,11 @@ class _QuoteProductsState extends State<QuoteProducts> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         subTotal(
-            large: true,
-            stream: quoteBloc.subTotalStream,
-            defaultValue: quoteBloc.getSubTotal(),
-            color: Colors.white),
+          large: true,
+          stream: quoteBloc.subTotalStream,
+          defaultValue: quoteBloc.getSubTotal(),
+          color: Colors.white,
+        ),
         _sendOrder(),
       ],
 
@@ -426,8 +443,9 @@ class _QuoteProductsState extends State<QuoteProducts> {
       padding: kButtonPadding,
       color: Colors.white,
       shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radius2),
-          side: const BorderSide(color: pColor)),
+        borderRadius: BorderRadius.circular(radius2),
+        side: const BorderSide(color: pColor),
+      ),
       width: 10,
       onTap: () async {
         _send();
@@ -435,8 +453,10 @@ class _QuoteProductsState extends State<QuoteProducts> {
       // child: Icon(FontAwesomeIcons.pause),
       child: Row(
         children: [
-          Text('Siguiente',
-              style: buttonsSmallTextStyle(context, color: pColor)),
+          Text(
+            'Siguiente',
+            style: buttonsSmallTextStyle(context, color: pColor),
+          ),
           const Icon(
             Icons.arrow_forward_ios_rounded,
             size: kIconSize,
@@ -462,9 +482,12 @@ class _QuoteProductsState extends State<QuoteProducts> {
         if (res.isEmpty) {
           if ((query.length - _queryLen > 1)) {
             _searchController.clear();
-            scaffoldAlert(context, 'Producto ' + query + ' no encontrado',
-                const Duration(seconds: 1, milliseconds: 500),
-                backGroundColor: Colors.red);
+            scaffoldAlert(
+              context,
+              'Producto ' + query + ' no encontrado',
+              const Duration(seconds: 1, milliseconds: 500),
+              backGroundColor: Colors.red,
+            );
             _searchController.open();
 
             // _searchController.query='';
@@ -476,13 +499,18 @@ class _QuoteProductsState extends State<QuoteProducts> {
           if (res.length == 1) {
             final temp = ProductModel.fromJson(res.first);
             final productReq = await ProductsProvider.getProductRequirements(
-                context, temp,
-                fromQuote: true);
+              context,
+              temp,
+              fromQuote: true,
+            );
             if (productReq != {}) {
               final result = await quoteBloc.addProduct(productReq);
               if (result) {
-                scaffoldAlert(context, 'Producto ${temp.name} añadido',
-                    const Duration(seconds: 1));
+                scaffoldAlert(
+                  context,
+                  'Producto ${temp.name} añadido',
+                  const Duration(seconds: 1),
+                );
               }
             }
 
@@ -507,8 +535,11 @@ class _QuoteProductsState extends State<QuoteProducts> {
     if ((quoteBloc.getProducts?.keys.length ?? 0) > 0) {
       const QuoteOtherData().launch(context);
     } else {
-      confirmDialog(context, "Debe seleccionar productos antes de continuar",
-          "assets/images/alert.png");
+      confirmDialog(
+        context,
+        'Debe seleccionar productos antes de continuar',
+        'assets/images/alert.png',
+      );
     }
   }
 }

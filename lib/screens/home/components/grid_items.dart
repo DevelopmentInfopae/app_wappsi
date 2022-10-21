@@ -55,22 +55,22 @@ List<GridItems> basePermissions = [
 
   GridItems(
     title: 'Sincronizar datos',
-    route: "syncElements",
+    route: 'syncElements',
     icon: 'assets/images/synchronization.png',
   ),
   GridItems(
     title: 'Cuenta de usuario',
-    route: "profile",
+    route: 'profile',
     icon: 'assets/images/user.png',
   ),
   GridItems(
     title: 'Ajustes',
-    route: "settings",
+    route: 'settings',
     icon: 'assets/images/settings.png',
   ),
   GridItems(
     title: 'Cerrar sesión',
-    route: "logout",
+    route: 'logout',
     icon: 'assets/images/logout.png',
   ),
 ];
@@ -78,77 +78,77 @@ List<GridItems> basePermissions = [
 Map<String, GridItems> gridItemsMap = {
   'pos-index': GridItems(
     title: 'Agregar venta',
-    route: "sales",
+    route: 'sales',
     icon: 'assets/images/add-to-cart.png',
   ),
   'sales-add_order': GridItems(
     title: 'Agregar pedido',
-    route: "orders",
+    route: 'orders',
     icon: 'assets/images/add-order.png',
   ),
   'pos-sales': GridItems(
     title: 'Listado de ventas',
-    route: "list_sales",
+    route: 'list_sales',
     icon: 'assets/images/shopping-list.png',
   ),
   'sales-orders': GridItems(
     title: 'Listado de pedidos',
-    route: "list_orders",
+    route: 'list_orders',
     icon: 'assets/images/order.png',
   ),
   'customers-add': GridItems(
     title: 'Agregar cliente',
-    route: "addCustomer",
+    route: 'addCustomer',
     icon: 'assets/images/add-user.png',
   ),
   'customers-index': GridItems(
     title: 'Lista de clientes',
-    route: "customers",
+    route: 'customers',
     icon: 'assets/images/people.png',
   ),
   'products-index': GridItems(
     title: 'Lista de productos',
-    route: "products",
+    route: 'products',
     icon: 'assets/images/box.png',
   ),
   'products-price': GridItems(
     title: 'Verificador de precios',
-    route: "priceVerifier",
+    route: 'priceVerifier',
     icon: 'assets/images/give-money.png',
   ),
   'pos-pos_register_add_movement': GridItems(
     title: 'Control de caja',
-    route: "register",
+    route: 'register',
     icon: 'assets/images/cash-register.png',
   ),
   'quotes-add': GridItems(
     title: 'Agregar cotización',
-    route: "quotes",
+    route: 'quotes',
     icon: 'assets/images/add-quote.png',
   ),
   'quotes-index': GridItems(
     title: 'Listado de cotizaciones',
-    route: "quotes_index",
+    route: 'quotes_index',
     icon: 'assets/images/order-list.png',
   ),
   'suppliers-index': GridItems(
     title: 'Lista de proveedores',
-    route: "suppliers-index",
+    route: 'suppliers-index',
     icon: 'assets/images/quotation.png',
   ),
   'suppliers-add': GridItems(
     title: 'Agregar proveedor',
-    route: "suppliers-add",
+    route: 'suppliers-add',
     icon: 'assets/images/add-user.png',
   ),
   'purchases-add': GridItems(
     title: 'Agregar compra',
-    route: "purchases-add",
+    route: 'purchases-add',
     icon: 'assets/images/cargo.png',
   ),
   'purchases-index': GridItems(
     title: 'Listar compras',
-    route: "purchases-index",
+    route: 'purchases-index',
     icon: 'assets/images/cargo.png',
   ),
 };

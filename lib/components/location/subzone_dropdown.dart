@@ -6,14 +6,14 @@ import 'package:pos_wappsi/constant.dart';
 import '../../models/subzone_model.dart';
 
 class SubZoneDropDown extends StatefulWidget {
-  const SubZoneDropDown(
-      {Key? key,
-      required this.stream,
-      required this.dropDownKey,
-      required this.required,
-      required this.onChange,
-      required this.selectedSZoneCode})
-      : super(key: key);
+  const SubZoneDropDown({
+    Key? key,
+    required this.stream,
+    required this.dropDownKey,
+    required this.required,
+    required this.onChange,
+    required this.selectedSZoneCode,
+  }) : super(key: key);
 
   final Stream<List<SubzoneModel>> stream;
   final int? selectedSZoneCode;
@@ -76,7 +76,7 @@ class _SubZoneDropDownState extends State<SubZoneDropDown> {
           validator: (item) {
             if (item == null && widget.required) {
               // if ((snapshot.data?.isEmpty ?? false)) {
-                return "Campo requerido";
+              return 'Campo requerido';
               // }
             }
             return null;
@@ -101,7 +101,7 @@ class _SubZoneDropDownState extends State<SubZoneDropDown> {
               final data = (snapshot.data)?.where((element) {
                 final result = element.subzoneName
                     .toUpperCase()
-                    .contains(filter?.toUpperCase() ?? "");
+                    .contains(filter?.toUpperCase() ?? '');
                 return result;
               }).toList();
               return data ?? (<SubzoneModel>[]);

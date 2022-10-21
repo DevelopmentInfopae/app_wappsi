@@ -18,14 +18,14 @@ class SelectProductPrefsDialog extends StatefulWidget {
   final UnitsModel? unit;
   final double? uQtty;
   final Map<PreferenceCategoryModel, List<PreferenceModel>> productPrefs;
-  const SelectProductPrefsDialog(
-      {Key? key,
-      required this.product,
-      this.prefsSelection = false,
-      this.uQtty,
-      required this.productPrefs,
-      required this.unit})
-      : super(key: key);
+  const SelectProductPrefsDialog({
+    Key? key,
+    required this.product,
+    this.prefsSelection = false,
+    this.uQtty,
+    required this.productPrefs,
+    required this.unit,
+  }) : super(key: key);
   final ProductModel product;
   final bool prefsSelection;
   @override
@@ -96,7 +96,9 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
         // contentPadding: EdgeInsets.zero,
         // contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         insetPadding: EdgeInsets.symmetric(
-            horizontal: hInsetPadding, vertical: vInsetPadding),
+          horizontal: hInsetPadding,
+          vertical: vInsetPadding,
+        ),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         title: Column(
           mainAxisSize: MainAxisSize.min,
@@ -125,7 +127,7 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
                 color: Colors.red.withOpacity(0.8),
                 child: CupertinoDialogAction(
                   child: const Text(
-                    "Cancelar",
+                    'Cancelar',
                     style: TextStyle(color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
@@ -139,7 +141,7 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
                 color: pColor.withOpacity(0.8),
                 child: CupertinoDialogAction(
                   child: const Text(
-                    "Aceptar",
+                    'Aceptar',
                     style: TextStyle(color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
@@ -185,11 +187,13 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
                 padding: kButtonPadding,
                 margin: EdgeInsets.zero,
                 decoration: BoxDecoration(
-                    border: Border.all(
-                        color: (markAsNeeded[prefCat.id] ?? false)
-                            ? errorColor
-                            : Colors.transparent),
-                    borderRadius: BorderRadius.circular(5)),
+                  border: Border.all(
+                    color: (markAsNeeded[prefCat.id] ?? false)
+                        ? errorColor
+                        : Colors.transparent,
+                  ),
+                  borderRadius: BorderRadius.circular(5),
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -233,8 +237,11 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
     );
   }
 
-  AppButton _preffButton(PreferenceModel e, BuildContext context,
-      PreferenceCategoryModel prefCat) {
+  AppButton _preffButton(
+    PreferenceModel e,
+    BuildContext context,
+    PreferenceCategoryModel prefCat,
+  ) {
     return AppButton(
       elevation: 3,
       width: double.infinity,
@@ -261,14 +268,16 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
         ),
       ),
       shapeBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-          side: BorderSide(
-              color: ((productPrefsSelected[prefCat] ?? [])
-                      .where((element) => element == e)
-                      .isNotEmpty)
-                  ? pColor.withOpacity(0.5)
-                  : Colors.white,
-              width: 3)),
+        borderRadius: BorderRadius.circular(5),
+        side: BorderSide(
+          color: ((productPrefsSelected[prefCat] ?? [])
+                  .where((element) => element == e)
+                  .isNotEmpty)
+              ? pColor.withOpacity(0.5)
+              : Colors.white,
+          width: 3,
+        ),
+      ),
       padding: EdgeInsets.zero,
       onTap: () {
         _selectUnselectPref(prefCat, e);
@@ -324,10 +333,10 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
         String error = '';
         if ((productPrefsSelected[reqCatPref]?.length ?? 1) > selectionLimit) {
           error =
-              "Debe seleccionar como máximo ${reqCatPref.selectionLimit ?? 1} preferencia(s) para esta categoría";
+              'Debe seleccionar como máximo ${reqCatPref.selectionLimit ?? 1} preferencia(s) para esta categoría';
         } else {
           error =
-              "Debe seleccionar por lo menos una preferencia para esta categoría";
+              'Debe seleccionar por lo menos una preferencia para esta categoría';
         }
         setState(() {
           errorMessage[reqCatPref.id ?? 0] = error;

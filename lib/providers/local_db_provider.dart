@@ -39,121 +39,133 @@ class DBProvider {
     // printConsole(path);
 
     // creation of db
-    final db = await openDatabase(path, version: dbVersion, onOpen: (db) {},
-        onCreate: (Database db, int version) async {
-      // table creation
+    final db = await openDatabase(
+      path,
+      version: dbVersion,
+      onOpen: (db) {},
+      onCreate: (Database db, int version) async {
+        // table creation
 
-      await db.execute(DbProductsSql);
-      await db.execute(DbProductsPriceSql);
-      await db.execute(DbProductPhotosSql);
-      await db.execute(DbProductPreferencesSql);
-      await db.execute(DbPreferencesSql);
-      await db.execute(DbPreferencesCategoriresSql);
-      await db.execute(DbProductVariantsSql);
-      await db.execute(DbCompaniesSql);
-      await db.execute(DbBillerDataSql);
-      await db.execute(DbCustomerGroupsSql);
-      await db.execute(DbAddressesSql);
-      await db.execute(DbUpdatesSql);
-      await db.execute(DbPriceGroupsSql);
-      await db.execute(DbSettingsSql);
-      await db.execute(WarehouseProductsSql);
-      await db.execute(BrandsSql);
-      await db.execute(DbTaxRatesSql);
-      await db.execute(PaymentMethodsSql);
-      await db.execute(DbPosSettingsSql);
-      await db.execute(DocumenTypesSql);
-      await db.execute(CountriesSql);
-      await db.execute(StatesSql);
-      await db.execute(CitysSql);
-      await db.execute(DocumentTypesSql);
-      await db.execute(PCategoriesSql);
-      await db.execute(PUnitsSql);
-      await db.execute(UnitPricesSql);
-      await db.execute(WarehousesSql);
-      await db.execute(BillerDocumentTypesSql);
-      //favorite products
-      await db.execute(FavotitesSql);
-      await db.execute(GroupsSql);
-      await db.execute(SuspendedSalesSql);
-      await db.execute(SuspendedSaleProductsSql);
-      // Create tables to save sales locally
-      await db.execute(SalesSql);
-      await db.execute(SaleItemsSql);
-      await db.execute(PaymentSql);
+        await db.execute(DbProductsSql);
+        await db.execute(DbProductsPriceSql);
+        await db.execute(DbProductPhotosSql);
+        await db.execute(DbProductPreferencesSql);
+        await db.execute(DbPreferencesSql);
+        await db.execute(DbPreferencesCategoriesSql);
+        await db.execute(DbProductVariantsSql);
+        await db.execute(DbCompaniesSql);
+        await db.execute(DbBillerDataSql);
+        await db.execute(DbCustomerGroupsSql);
+        await db.execute(DbAddressesSql);
+        await db.execute(DbUpdatesSql);
+        await db.execute(DbPriceGroupsSql);
+        await db.execute(DbSettingsSql);
+        await db.execute(WarehouseProductsSql);
+        await db.execute(BrandsSql);
+        await db.execute(DbTaxRatesSql);
+        await db.execute(PaymentMethodsSql);
+        await db.execute(DbPosSettingsSql);
+        await db.execute(DocumenTypesSql);
+        await db.execute(CountriesSql);
+        await db.execute(StatesSql);
+        await db.execute(CitiesSql);
+        await db.execute(DocumentTypesSql);
+        await db.execute(PCategoriesSql);
+        await db.execute(PUnitsSql);
+        await db.execute(UnitPricesSql);
+        await db.execute(WarehousesSql);
+        await db.execute(BillerDocumentTypesSql);
+        //favorite products
+        await db.execute(FavoritesSql);
+        await db.execute(GroupsSql);
+        await db.execute(SuspendedSalesSql);
+        await db.execute(SuspendedSaleProductsSql);
+        // Create tables to save sales locally
+        await db.execute(SalesSql);
+        await db.execute(SaleItemsSql);
+        await db.execute(PaymentSql);
 
-      // orders tables
-      await db.execute(OrderSaleItemsSql);
-      await db.execute(OrderSalesSql);
-      // quotes tables
-      await db.execute(PurchasesSql);
-      await db.execute(QuotesTableSql);
-      await db.execute(QuoteItemsTableSql);
-      await db.execute(PurchaseItemsSql);
+        // orders tables
+        await db.execute(OrderSaleItemsSql);
+        await db.execute(OrderSalesSql);
+        // quotes tables
+        await db.execute(PurchasesSql);
+        await db.execute(QuotesTableSql);
+        await db.execute(QuoteItemsTableSql);
+        await db.execute(PurchaseItemsSql);
 
-      ///Errors log
-      await db.execute(ErrorsDataSql);
+        ///Errors log
+        await db.execute(ErrorsDataSql);
 
-      // index creation
-      Batch batch = db.batch();
+        // index creation
+        Batch batch = db.batch();
 
-      for (var element in indexCreation) {
-        batch.execute(element);
-      }
-      try {
-        batch.commit();
-      } catch (e) {
-        printConsole(e);
-      }
+        for (var element in indexCreation) {
+          batch.execute(element);
+        }
+        try {
+          batch.commit();
+        } catch (e) {
+          printConsole(e);
+        }
 
-      // ids sync creation
+        // ids sync creation
 
-      batch = db.batch();
+        batch = db.batch();
 
-      for (var element in syncIds) {
-        batch.execute(element);
-      }
-      try {
-        batch.commit();
-      } catch (e) {
-        printConsole(e);
-      }
-    });
+        for (var element in syncIds) {
+          batch.execute(element);
+        }
+        try {
+          batch.commit();
+        } catch (e) {
+          printConsole(e);
+        }
+      },
+    );
 
-    if (getStringAsync("current_user") != getStringAsync("last_user") &&
-        getStringAsync("last_user").isNotEmpty) {
-      await reloadTable("sync", DbUpdatesSql, db);
+    if (getStringAsync('current_user') != getStringAsync('last_user') &&
+        getStringAsync('last_user').isNotEmpty) {
+      await reloadTable('sync', DbUpdatesSql, db);
     }
     return db;
   }
 
   Future<void> reloadTable(
-      String tableName, String tableSqlite, Database db) async {
-    await db.rawQuery("DROP TABLE IF EXISTS $tableName");
+    String tableName,
+    String tableSqlite,
+    Database db,
+  ) async {
+    await db.rawQuery('DROP TABLE IF EXISTS $tableName');
     await db.execute(tableSqlite);
   }
 
   ///-----------------------------------------------------------------------------
-  ///                                UPDATE QUERYS
+  ///                                UPDATE Query
   ///              With '' as field separator in query used with json
   ///                        fields in db with "" inside
   ///
   ///-----------------------------------------------------------------------------
-  Future<bool> insertOrUpdateQuerys(String table, List query,
-      {bool printSql = false}) async {
+  Future<bool> insertOrUpdateQuery(
+    String table,
+    List query, {
+    bool printSql = false,
+  }) async {
     final db = await database;
     bool result = true;
     Batch batch = db!.batch();
     for (var element in query) {
       try {
-        batch.insert(table, element,
-            conflictAlgorithm: ConflictAlgorithm.replace);
+        batch.insert(
+          table,
+          element,
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
       } catch (e) {
         // printConsole(e);
         if (element is List) {
           if (element.isNotEmpty) {
-            result =
-                await insertOrUpdateQuerys(table, element, printSql: false);
+            result = await insertOrUpdateQuery(table, element, printSql: false);
           }
           // values = getStringFromValues(element);
         }
@@ -164,29 +176,29 @@ class DBProvider {
 
     try {
       await batch.commit();
-      // disable ientity writing
+      // disable identity writing
       // await db.execute('SET IDENTITY_INSERT $table ON');
       // debugprintConsole(res.toString());
       return result;
     } catch (e) {
-      return await insertOrUpdateQuerys2(table, query);
+      return await insertOrUpdateQuery2(table, query);
     }
   }
 
   ///-----------------------------------------------------------------------------
-  ///                                UPDATE QUERYS
+  ///                                UPDATE Query
   ///              With '' as field separator in query used with json
   ///                        fields in db with "" inside
   ///
   ///-----------------------------------------------------------------------------
-  Future<bool> deleteQuerys(String table, String where) async {
+  Future<bool> deleteQuery(String table, String where) async {
     final db = await database;
     bool result = true;
 
     try {
       await db!.delete(table, where: where);
 
-      // disable ientity writing
+      // disable identity writing
       // await db.execute('SET IDENTITY_INSERT $table ON');
       // debugprintConsole(res.toString());
       return result;
@@ -198,27 +210,35 @@ class DBProvider {
   }
 
   ///-----------------------------------------------------------------------------
-  ///                                UPDATE QUERYS
+  ///                                UPDATE Query
   ///                    With "" as field separator in query and
-  ///               replacing all ' in string to selecte replacment
+  ///               replacing all ' in string to selected replacement
   ///-----------------------------------------------------------------------------
-  Future<bool> insertOrUpdateQuerys2(String table, List query,
-      {String replace = '^'}) async {
+  Future<bool> insertOrUpdateQuery2(
+    String table,
+    List query, {
+    String replace = '^',
+  }) async {
     final db = await database;
     // final enc = jsonEncode(query);
     // final queryF = jsonDecode(enc.replaceAll("'", replace));
     // Batch batch = db!.batch();
     for (Map element in query) {
       try {
-        await db!.insert(table, element as Map<String, dynamic>,
-            conflictAlgorithm: ConflictAlgorithm.replace);
+        await db!.insert(
+          table,
+          element as Map<String, dynamic>,
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
       } catch (e) {
         await printAndSaveError(e);
 
         try {
-          // remove unespected column names
-          element.removeWhere((key, value) =>
-              !(tablesColumnsNames[table]?.contains(key) ?? false));
+          // remove unexpected column names
+          element.removeWhere(
+            (key, value) =>
+                !(tablesColumnsNames[table]?.contains(key) ?? false),
+          );
           String values = getStringFromValues(element.values);
           String sql =
               'INSERT OR REPLACE INTO $table ("${element.keys.join('","')}") VALUES ($values);';
@@ -239,8 +259,11 @@ class DBProvider {
   //                                       JSON-QUERY INSERT INTO DB
   //_______________________________________________________________________________________________________________
 
-  Future insertQuery(String table, Map<String, dynamic> query,
-      {bool returnId = false}) async {
+  Future insertQuery(
+    String table,
+    Map<String, dynamic> query, {
+    bool returnId = false,
+  }) async {
     Database? db = await database;
 
     try {
@@ -262,7 +285,7 @@ class DBProvider {
 
   //_______________________________________________________________________________________________________________
 
-  Future<bool> insertQuerys(String table, List query) async {
+  Future<bool> insertQueryJsonList(String table, List query) async {
     final db = await database;
 
     // enable identity writing on table
@@ -291,7 +314,9 @@ class DBProvider {
   //-----------------------------------------------------------------------------
 
   Future<Map<String, dynamic>?> findTableFieldsById(
-      String table, String id) async {
+    String table,
+    String id,
+  ) async {
     final db = await database;
 
     try {
@@ -303,15 +328,20 @@ class DBProvider {
     }
   }
 
-  Future<void> printAndSaveError(Object e,
-      {String table = 'errors_log',
-      String from = 'local db operations'}) async {
+  Future<void> printAndSaveError(
+    Object e, {
+    String table = 'errors_log',
+    String from = 'local db operations',
+  }) async {
     printConsole(e.toString());
     await insertQuery(table, {'error': e.toString(), 'from': from});
   }
 
-  Future<Map<String, dynamic>?> sqlFirstQuery(String table,
-      {String? where, List<String>? columns}) async {
+  Future<Map<String, dynamic>?> sqlFirstQuery(
+    String table, {
+    String? where,
+    List<String>? columns,
+  }) async {
     final db = await database;
 
     try {
@@ -324,7 +354,10 @@ class DBProvider {
   }
 
   Future<int?> sqlUpdateQuery(
-      String table, Map<String, Object?> values, String where) async {
+    String table,
+    Map<String, Object?> values,
+    String where,
+  ) async {
     final db = await database;
 
     try {
@@ -337,21 +370,25 @@ class DBProvider {
   }
 
   /// Execute sql query using query function in a try catch statement
-  Future<List<Map<String, dynamic>>?> sqlQuery(String table,
-      {String? where,
-      int? limit = 50,
-      String? orderBy,
-      int? offset,
-      List<String>? columns}) async {
+  Future<List<Map<String, dynamic>>?> sqlQuery(
+    String table, {
+    String? where,
+    int? limit = 50,
+    String? orderBy,
+    int? offset,
+    List<String>? columns,
+  }) async {
     final db = await database;
 
     try {
-      final res = await db!.query(table,
-          where: where,
-          limit: limit,
-          orderBy: orderBy,
-          offset: offset,
-          columns: columns);
+      final res = await db!.query(
+        table,
+        where: where,
+        limit: limit,
+        orderBy: orderBy,
+        offset: offset,
+        columns: columns,
+      );
       return res;
     } catch (e) {
       await printAndSaveError(e);
@@ -402,8 +439,11 @@ class DBProvider {
     }
   }
 
-  Future<List<Map>?> findTableFieldsByIds(String table, List<int> ids,
-      {String column = 'id_cloud'}) async {
+  Future<List<Map>?> findTableFieldsByIds(
+    String table,
+    List<int> ids, {
+    String column = 'id_cloud',
+  }) async {
     final db = await database;
 
     try {
@@ -434,8 +474,10 @@ class DBProvider {
   //-----------------------------------------------------------------------------
   /// Return all data from sma_biller_data of a given biller_id
   Future<Map<String, dynamic>?> getBillerData() async {
-    return await sqlFirstQuery('sma_biller_data',
-        where: 'biller_id = ${dataBloc.userData!.billerId}');
+    return await sqlFirstQuery(
+      'sma_biller_data',
+      where: 'biller_id = ${dataBloc.userData!.billerId}',
+    );
   }
 
   //-----------------------------------------------------------------------------
@@ -454,9 +496,11 @@ class DBProvider {
   //_______________________________________________________________________________________________________________
 
   Future<Map<String, dynamic>?> getDocumentDetails(String id) async {
-    return await sqlFirstQuery('sma_documents_types',
-        // columns: _customerColumns,
-        where: "id_cloud = $id");
+    return await sqlFirstQuery(
+      'sma_documents_types',
+      // columns: _customerColumns,
+      where: 'id_cloud = $id',
+    );
   }
 
   //-----------------------------------------------------------------------------
@@ -469,18 +513,22 @@ class DBProvider {
     return await sqlQuery('sma_documentypes', limit: null);
   }
 
-  Future<List<Map<String, dynamic>>?> findDocument(String searchs) async {
-    return await sqlQuery('sma_documentypes',
-        // columns: _customerColumns,
-        where:
-            "nombre LIKE '%$searchs%' OR abreviacion LIKE '%$searchs%' OR codigo_doc LIKE '%$searchs%'",
-        limit: 20);
+  Future<List<Map<String, dynamic>>?> findDocument(String search) async {
+    return await sqlQuery(
+      'sma_documentypes',
+      // columns: _customerColumns,
+      where:
+          "nombre LIKE '%$search%' OR abreviacion LIKE '%$search%' OR codigo_doc LIKE '%$search%'",
+      limit: 20,
+    );
   }
 
   Future<Map<String, dynamic>?> loadDocument(String id) async {
-    return await sqlFirstQuery('sma_documentypes',
-        // columns: _customerColumns,
-        where: "id_cloud=$id");
+    return await sqlFirstQuery(
+      'sma_documentypes',
+      // columns: _customerColumns,
+      where: 'id_cloud=$id',
+    );
   }
 
   Future<Map<String, dynamic>?> defaultDocument() async {

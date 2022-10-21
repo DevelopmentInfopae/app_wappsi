@@ -25,7 +25,7 @@ class CitiesProvider {
       final List temp = await json.decode(response);
       data = temp.map((e) => CitiesModel.fromJson(e).toJson()).toList();
     } catch (e) {
-            await logError(e, from: 'Loading cities from Map');
+      await logError(e, from: 'Loading cities from Map');
 
       // printConsole(e);
     }
@@ -42,19 +42,21 @@ class CitiesProvider {
       // data = queryResultToMapList(temp);
       data = temp.map((e) => e as Map<String, dynamic>).toList();
     } catch (e) {
-      await logError(e, from: 'Writing scities from JSON to local DB');
+      await logError(e, from: 'Writing cities from JSON to local DB');
 
       printConsole(e);
     }
 
-    return await DBProvider.db.insertOrUpdateQuerys('sma_cities', data);
+    return await DBProvider.db.insertOrUpdateQuery('sma_cities', data);
   }
 
-  static Future<List<CitiesModel>> loadFromDB(
-      {String? search, String? departament}) async {
+  static Future<List<CitiesModel>> loadFromDB({
+    String? search,
+    String? departament,
+  }) async {
     List<Map<String, dynamic>>? data = [];
     if (departament != null) {
-      data = await findCity(departament, searchs: search);
+      data = await findCity(departament, search: search);
     } else {
       return [];
     }
@@ -101,10 +103,14 @@ class CitiesProvider {
     return await DBProvider.db.sqlQuery('sma_cities', limit: 20);
   }
 
-  static Future<List<Map<String, dynamic>>?> findCity(String departament,
-      {String? searchs = ''}) async {
-    return await DBProvider.db.sqlQuery('sma_cities',
-        where: "CODDEPARTAMENTO=$departament AND DESCRIPCION LIKE '%$searchs%'",
-        limit: 20);
+  static Future<List<Map<String, dynamic>>?> findCity(
+    String departament, {
+    String? search = '',
+  }) async {
+    return await DBProvider.db.sqlQuery(
+      'sma_cities',
+      where: "CODDEPARTAMENTO=$departament AND DESCRIPCION LIKE '%$search%'",
+      limit: 20,
+    );
   }
 }

@@ -33,7 +33,7 @@ class FavoritesOrderSelection extends StatefulWidget {
 
 class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
   List<ProductModel> _favorites = [];
-  bool _reloadFavsingFavs = false;
+  bool _reloadFavoritesIngFavorites = false;
 
   late CompanyModel customer;
 
@@ -74,12 +74,12 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
       children: [
         _searchBarBackground(_searchBar(context)),
         RefreshIndicator(
-                displacement: 0,
-                onRefresh: () async {
-                  await _reloadFavs(context);
-                },
-                child: _products())
-            .expand()
+          displacement: 0,
+          onRefresh: () async {
+            await _reloadFavorites(context);
+          },
+          child: _products(),
+        ).expand()
       ],
     );
   }
@@ -88,8 +88,9 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: const BorderRadius.all(Radius.circular(radius2))),
+        color: Colors.grey[200],
+        borderRadius: const BorderRadius.all(Radius.circular(radius2)),
+      ),
       child: FloatingSearchAppBar(
         hint: 'Buscar favorito',
         clearQueryOnClose: true,
@@ -128,7 +129,7 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
       child: FloatingSearchBarAction(
         showIfOpened: false,
         child: CircularButton(
-          icon: _reloadFavsingFavs
+          icon: _reloadFavoritesIngFavorites
               ? FittedBox(
                   child: Loader(
                     decoration: const BoxDecoration(),
@@ -140,7 +141,7 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
                   color: pColor,
                 ),
           onPressed: () async {
-            await _reloadFavs(context);
+            await _reloadFavorites(context);
           },
         ),
       ),
@@ -151,54 +152,58 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
     return Container(
       height: searchHeight + 8,
       padding: const EdgeInsets.only(left: 5, right: 5, top: 1, bottom: 6),
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(0.0, 1.0), //(x,y)
-          blurRadius: 2.0,
-        )
-      ]),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 2.0,
+          )
+        ],
+      ),
       child: child,
     );
   }
 
-  Future<void> _reloadFavs(BuildContext context) async {
+  Future<void> _reloadFavorites(BuildContext context) async {
     setState(() {
-      _reloadFavsingFavs = true;
+      _reloadFavoritesIngFavorites = true;
     });
 
-    await WishlistProvider.reloadCustomerFavs(context, customer);
+    await WishlistProvider.reloadCustomerFavorites(context, customer);
     final pFav = await WishlistProvider.loadCustomerFavorites(customer);
 
     setState(() {
       _favorites = pFav;
-      _reloadFavsingFavs = false;
+      _reloadFavoritesIngFavorites = false;
     });
   }
 
   Widget _products() {
     return Container(
-        padding: const EdgeInsets.only(top: 4),
-        // margin: EdgeInsets.o,
-        child: FutureBuilder<List<ProductModel>?>(
-            future:
-                WishlistProvider.loadCustomerFavorites(customer),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                // setState(() {
-                //   _favorites = snapshot.data!;
-                // });
-                if (snapshot.data!.isNotEmpty) {
-                  _favorites = snapshot.data!;
-                  return _favoritesList(context);
-                } else {
-                  return _empty(context).center();
-                }
-              } else {
-                // ignore: unnecessary_null_comparison
-                return _empty(context).center();
-              }
-            }));
+      padding: const EdgeInsets.only(top: 4),
+      // margin: EdgeInsets.o,
+      child: FutureBuilder<List<ProductModel>?>(
+        future: WishlistProvider.loadCustomerFavorites(customer),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            // setState(() {
+            //   _favorites = snapshot.data!;
+            // });
+            if (snapshot.data!.isNotEmpty) {
+              _favorites = snapshot.data!;
+              return _favoritesList(context);
+            } else {
+              return _empty(context).center();
+            }
+          } else {
+            // ignore: unnecessary_null_comparison
+            return _empty(context).center();
+          }
+        },
+      ),
+    );
   }
 
   // _onQueryChanged(String? query) async {
@@ -219,13 +224,15 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
 
   Widget _favoritesList(BuildContext context) {
     return ListView.builder(
-        itemCount: _favorites.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ProductCard(
-              action: action,
-              product: _favorites[index],
-              showAllwaysUnitAlert: true);
-        });
+      itemCount: _favorites.length,
+      itemBuilder: (BuildContext context, int index) {
+        return ProductCard(
+          action: action,
+          product: _favorites[index],
+          showAlwaysUnitAlert: true,
+        );
+      },
+    );
   }
 
   Widget _empty(BuildContext context) {
@@ -243,10 +250,10 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
           ),
         ],
       ),
-      enabled: !_reloadFavsingFavs,
+      enabled: !_reloadFavoritesIngFavorites,
       color: pColor,
       onTap: () async {
-        await _reloadFavs(context);
+        await _reloadFavorites(context);
       },
     );
   }

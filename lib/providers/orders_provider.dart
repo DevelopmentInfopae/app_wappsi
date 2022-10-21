@@ -23,7 +23,7 @@ import '../config/bd_sync.dart';
 
 class OrdersProvider {
   /// Send current pos data to server, if there is any changes between local db and server,
-  /// server response will contain those changes and they'll be writen into local db, then
+  /// server response will contain those changes and they'll be written into local db, then
   /// reload POS data
   ///
   static Future<bool> sendOrderData(BuildContext context) async {
@@ -35,7 +35,8 @@ class OrdersProvider {
 
     List<Map<String, dynamic>> orderItems =
         OrderSaleItemsModel.buildOderSaleItems(
-            orderBloc.getProducts!.keys.toList());
+      orderBloc.getProducts!.keys.toList(),
+    );
     // final debug = sale.toString();
 
     final data = {'order_sales': order, 'order_sale_items': orderItems};
@@ -48,9 +49,10 @@ class OrdersProvider {
       hideCurrentScaffoldAlert(context);
       if (res['status'] == -1) {
         reloadDialog(
-            context,
-            res['body']['error_message'] ?? res['body']['message'],
-            'assets/images/dizzy-robot.png');
+          context,
+          res['body']['error_message'] ?? res['body']['message'],
+          'assets/images/dizzy-robot.png',
+        );
       } else {
         if (res['error'] ?? true) {
           if (res['body']?['data'] != [] &&
@@ -58,10 +60,11 @@ class OrdersProvider {
               (res['body']?['sync'] ?? false)) {
             hideCurrentScaffoldAlert(context);
             scaffoldAlert(
-                context,
-                res['body']['error_message'] ?? res['body']['message'],
-                const Duration(seconds: 1, milliseconds: 500),
-                backGroundColor: errorColor);
+              context,
+              res['body']['error_message'] ?? res['body']['message'],
+              const Duration(seconds: 1, milliseconds: 500),
+              backGroundColor: errorColor,
+            );
           } else {
             confirmDialog(
               context,
@@ -75,7 +78,8 @@ class OrdersProvider {
           order['reference_no'] = res['body']['data']['reference_no'];
           order['registration_date'] = res['body']['data']['server_date'];
           order['id_cloud'] = orderId;
-          order['delivery_text'] = orderBloc.getDeliveryTime?.getDelvTimeText();
+          order['delivery_text'] =
+              orderBloc.getDeliveryTime?.getDeliveryTimeText();
           // orderItems['registration_date'] = res['body']['data']['server_date'];
           final orderSaveR =
               await DBProvider.db.insertQuery('sma_order_sales', order);
@@ -86,8 +90,11 @@ class OrdersProvider {
           );
 
           if (orderSaveR && orderItemsSaveR) {
-            scaffoldAlert(context, 'Pedido creado exitosamente',
-                const Duration(seconds: 2));
+            scaffoldAlert(
+              context,
+              'Pedido creado exitosamente',
+              const Duration(seconds: 2),
+            );
           }
           // get Order print data
           final printData = await _buildPrintDataMap(order);
@@ -114,61 +121,70 @@ class OrdersProvider {
         .getDocumentDetails(order['document_type_id'].toString());
     final temp = removeRareSpaceChr(docDetails?['invoice_footer'] ?? '');
     return {
-      "products": await orderBloc.getProductsListMap(),
-      "customer": orderBloc.getCustomer!.toJson(),
-      "customer_address": orderBloc.getCustomerAddresses!.toJson(),
-      "zone_szone_data": await ZonesProvider.getZoneSzoneDataJson(
-          zoneId: orderBloc.getCustomerAddresses?.location,
-          subzoneId: orderBloc.getCustomerAddresses?.subzone),
-      "order_data": order,
-      "pos_note": orderBloc.getOrderNote ?? '',
-      "total": order['total'],
-      "total_discount": order['total_discount'],
-      "grand_total": order['grand_total'],
-      "iva": orderBloc.getIVAs(),
-      "company_data": dataBloc.getBillerCompany,
-      "biller_data": dataBloc.getBIllerData,
-      "settings": settings,
-      "footer": temp
+      'products': await orderBloc.getProductsListMap(),
+      'customer': orderBloc.getCustomer!.toJson(),
+      'customer_address': orderBloc.getCustomerAddresses!.toJson(),
+      'zone_szone_data': await ZonesProvider.getZoneSzoneDataJson(
+        zoneId: orderBloc.getCustomerAddresses?.location,
+        subzoneId: orderBloc.getCustomerAddresses?.subzone,
+      ),
+      'order_data': order,
+      'pos_note': orderBloc.getOrderNote ?? '',
+      'total': order['total'],
+      'total_discount': order['total_discount'],
+      'grand_total': order['grand_total'],
+      'iva': orderBloc.getIVAs(),
+      'company_data': dataBloc.getBillerCompany,
+      'biller_data': dataBloc.getBIllerData,
+      'settings': settings,
+      'footer': temp
     };
   }
 
   /// get new orders from server
-  static Future<bool> getOrdersFromServer(BuildContext context,
-      {String search = "", List<String>? filters, int limit = 30}) async {
+  static Future<bool> getOrdersFromServer(
+    BuildContext context, {
+    String search = '',
+    List<String>? filters,
+    int limit = 30,
+  }) async {
     try {
       final localIds =
           await LocalOrdersProvider.ordersIds(search: search, filters: filters);
       // final currentBiller = dataBloc.userData!.billerId;
 
       final res = await DataProvider().postPetition(
-          searchOrdersEndP,
-          {
-            "query": search,
-            "status_filter": filters,
-            "limit": limit,
-            "local_orders": localIds,
-            "biller_id": dataBloc.userData?.billerId
-          },
-          dataBloc.getHeaders());
+        searchOrdersEndP,
+        {
+          'query': search,
+          'status_filter': filters,
+          'limit': limit,
+          'local_orders': localIds,
+          'biller_id': dataBloc.userData?.billerId
+        },
+        dataBloc.getHeaders(),
+      );
       if (res['status'] == -1) {
         reloadDialog(
-            context,
-            res['body']['error_message'] ?? res['body']['message'],
-            'assets/images/dizzy-robot.png');
+          context,
+          res['body']['error_message'] ?? res['body']['message'],
+          'assets/images/dizzy-robot.png',
+        );
       } else if (!(res['error'] ?? true)) {
         final syncOptionName = tableNamesToSyncOpt['sma_order_sales']!;
-        // here this if condition is innesesary 'cause order_sales are specialSync
+        // here this if condition is unnecessary 'cause order_sales are specialSync
         // if (specialSync.contains("Ordenes de pedido")) {
         // final Map data = res['body']?['data']??{};
         if (res['body']?['data'].isNotEmpty ?? false) {
           return await SyncDBProvider.addNewDataOnSpecialOption(
-              syncOptionName, res);
+            syncOptionName,
+            res,
+          );
         }
         //  }
       }
     } catch (e) {
-      logError(e, from: "Finding orders froms server");
+      logError(e, from: 'Finding orders from server');
     }
 
     return false;
@@ -176,27 +192,35 @@ class OrdersProvider {
 
   /// Cancel a pending order.
   static Future<bool> cancelPendingOrder(
-      BuildContext context, int orderId) async {
+    BuildContext context,
+    int orderId,
+  ) async {
     try {
       // final currentBiller = dataBloc.userData!.billerId;
 
       final res = await DataProvider().postPetition(
-          cancelPendingOrderEndP, {"order_id": orderId}, dataBloc.getHeaders());
+        cancelPendingOrderEndP,
+        {'order_id': orderId},
+        dataBloc.getHeaders(),
+      );
       if (res['status'] == -1) {
         reloadDialog(
-            context,
-            res['body']['error_message'] ?? res['body']['message'],
-            'assets/images/dizzy-robot.png');
+          context,
+          res['body']['error_message'] ?? res['body']['message'],
+          'assets/images/dizzy-robot.png',
+        );
       } else if (!(res['error'] ?? true)) {
         final dbProvider = SyncDBProvider();
 
         final result = await dbProvider.syncOption(
-            context, tableNamesToSyncOpt['sma_order_sales']!);
+          context,
+          tableNamesToSyncOpt['sma_order_sales']!,
+        );
         return result;
         //  }
       }
     } catch (e) {
-      logError(e, from: "Cancel pending order");
+      logError(e, from: 'Cancel pending order');
     }
 
     return false;

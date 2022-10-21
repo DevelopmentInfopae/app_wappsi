@@ -65,8 +65,8 @@ class SyncAlertDialogState extends State<SyncAlertDialog> {
 
   Widget _elementsLoading() {
     return ListView(
-        children: widget.options.keys.map((option) {
-      return FutureBuilder(
+      children: widget.options.keys.map((option) {
+        return FutureBuilder(
           future: syncDB.syncOption(context, option),
           // future: null,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -75,18 +75,20 @@ class SyncAlertDialogState extends State<SyncAlertDialog> {
             } else {
               return elementSync(option);
             }
-          });
-    }).toList());
+          },
+        );
+      }).toList(),
+    );
   }
 
   Widget elementSync(String option, {bool completed = false}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Image.asset('assets/images/' +
-                (enabledOptions[option]?['image'] ?? 'synchronization.png'))
-            .paddingSymmetric(horizontal: 10, vertical: 3)
-            .withHeight(
+        Image.asset(
+          'assets/images/' +
+              (enabledOptions[option]?['image'] ?? 'synchronization.png'),
+        ).paddingSymmetric(horizontal: 10, vertical: 3).withHeight(
               _size.height * 0.07 > 60 ? _size.height * 0.07 : 60,
             ),
       ],

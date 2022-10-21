@@ -22,32 +22,33 @@ ProductModel productModelFromJson(Map<String, dynamic> str) =>
 String productModelToJson(ProductModel data) => json.encode(data.toJson());
 
 class ProductModel {
-  ProductModel(
-      {required this.name,
-      required this.id,
-      required this.idCloud,
-      required this.slug,
-      required this.code,
-      required this.image,
-      required this.price,
-      required this.cost,
-      this.priceWithoutDiscount,
-      this.pricePolicyPrices,
-      required this.promoStart,
-      required this.promoEnd,
-      this.promoPrice = 0.0,
-      this.quantity = 1,
-      required this.inventory,
-      required this.taxMethod,
-      required this.brand,
-      required this.taxRateId,
-      required this.taxRate,
-      required this.categoryId,
-      required this.subCategoryId,
-      required this.unit,
-      required this.type,
-      required this.taxRateName,
-      this.discount = 0.0});
+  ProductModel({
+    required this.name,
+    required this.id,
+    required this.idCloud,
+    required this.slug,
+    required this.code,
+    required this.image,
+    required this.price,
+    required this.cost,
+    this.priceWithoutDiscount,
+    this.pricePolicyPrices,
+    required this.promoStart,
+    required this.promoEnd,
+    this.promoPrice = 0.0,
+    this.quantity = 1,
+    required this.inventory,
+    required this.taxMethod,
+    required this.brand,
+    required this.taxRateId,
+    required this.taxRate,
+    required this.categoryId,
+    required this.subCategoryId,
+    required this.unit,
+    required this.type,
+    required this.taxRateName,
+    this.discount = 0.0,
+  });
   String type;
   String slug;
   int id;
@@ -100,45 +101,51 @@ class ProductModel {
         'subcategory_id',
       ];
 
-  factory ProductModel.fromJson(Map<dynamic, dynamic> json,
-          {bool loadInitialQtty = false, String? qtyKey}) =>
+  factory ProductModel.fromJson(
+    Map<dynamic, dynamic> json, {
+    bool loadInitialQtty = false,
+    String? qtyKey,
+  }) =>
       ProductModel(
-          idCloud: int.parse(json["id_cloud"].toString()),
-          id: int.parse(json["id"].toString()),
-          slug: json["slug"] ?? json["name"],
-          image: json["image"] ?? '',
-          name: (json["name"] ?? json["slug"] ?? '').toString(),
-          code: json["code"],
-          price: double.tryParse(json["price"]?.toString() ?? '0.0') ?? 0.0,
-          pricePolicyPrices:
-              double.tryParse(json["price_policy"]?.toString() ?? '0.0') ?? 0.0,
-          priceWithoutDiscount: double.tryParse(
-                  json["price_without_discount"]?.toString() ?? '0') ??
-              0.0,
-          discount: double.tryParse(json["discount"]?.toString() ?? '0') ?? 0.0,
-          cost: double.tryParse(json["cost"]?.toString() ?? '0') ?? 0.0,
-          promoStart: json["start_date"] ?? '',
-          promoEnd: json["end_date"] ?? '',
-          taxMethod: int.tryParse(json["tax_method"]?.toString() ?? '0') ?? 0,
-          promoPrice: _promoPrice(json),
-          inventory:
-              double.tryParse(json["quantity"]?.toString() ?? '0') ?? 0.0,
-          brand: json["brand"],
-          unit: int.tryParse(json['unit']?.toString() ?? '0') ?? 0,
-          taxRateId: json["tax_rate"],
-          taxRate: double.tryParse(json['rate']?.toString() ?? '0') ?? 0.0,
-          type: json['type'] ?? '',
-          categoryId: (json['category_id'] ?? 0).toString(),
-          subCategoryId: (json['subcategory_id'] ?? 0).toString(),
-          taxRateName: json['tax_rate_name'],
-          quantity: loadInitialQtty ? (json[qtyKey]) + 0.0 : 1.0);
+        idCloud: int.parse(json['id_cloud'].toString()),
+        id: int.parse(json['id'].toString()),
+        slug: json['slug'] ?? json['name'],
+        image: json['image'] ?? '',
+        name: (json['name'] ?? json['slug'] ?? '').toString(),
+        code: json['code'],
+        price: double.tryParse(json['price']?.toString() ?? '0.0') ?? 0.0,
+        pricePolicyPrices:
+            double.tryParse(json['price_policy']?.toString() ?? '0.0') ?? 0.0,
+        priceWithoutDiscount: double.tryParse(
+              json['price_without_discount']?.toString() ?? '0',
+            ) ??
+            0.0,
+        discount: double.tryParse(json['discount']?.toString() ?? '0') ?? 0.0,
+        cost: double.tryParse(json['cost']?.toString() ?? '0') ?? 0.0,
+        promoStart: json['start_date'] ?? '',
+        promoEnd: json['end_date'] ?? '',
+        taxMethod: int.tryParse(json['tax_method']?.toString() ?? '0') ?? 0,
+        promoPrice: _promoPrice(json),
+        inventory: double.tryParse(json['quantity']?.toString() ?? '0') ?? 0.0,
+        brand: json['brand'],
+        unit: int.tryParse(json['unit']?.toString() ?? '0') ?? 0,
+        taxRateId: json['tax_rate'],
+        taxRate: double.tryParse(json['rate']?.toString() ?? '0') ?? 0.0,
+        type: json['type'] ?? '',
+        categoryId: (json['category_id'] ?? 0).toString(),
+        subCategoryId: (json['subcategory_id'] ?? 0).toString(),
+        taxRateName: json['tax_rate_name'],
+        quantity: loadInitialQtty ? (json[qtyKey]) + 0.0 : 1.0,
+      );
 
   /// Load ProductModel instances of a given list of product data
-  static List<ProductModel> fromJsonList(List<Map> list,
-      {bool loadInitialQtty = false,
-      String qttyKey = 'initial_qtty',
-      bool initalPrice = false,
-      String inititalPriceKey = ''}) {
+  static List<ProductModel> fromJsonList(
+    List<Map> list, {
+    bool loadInitialQtty = false,
+    String qttyKey = 'initial_qtty',
+    bool initialPrice = false,
+    String initialPriceKey = '',
+  }) {
     List<ProductModel> products = [];
     // to check product promo
 
@@ -157,16 +164,21 @@ class ProductModel {
 
         temp['promo_price'] = null;
       }
-      if (initalPrice) {
+      if (initialPrice) {
         try {
-          temp['price'] = temp[inititalPriceKey];
+          temp['price'] = temp[initialPriceKey];
         } catch (e) {
           printConsole(e);
         }
       }
 
-      products.add(ProductModel.fromJson(temp,
-          loadInitialQtty: loadInitialQtty, qtyKey: qttyKey));
+      products.add(
+        ProductModel.fromJson(
+          temp,
+          loadInitialQtty: loadInitialQtty,
+          qtyKey: qttyKey,
+        ),
+      );
     }
 
     return products;
@@ -240,27 +252,27 @@ class ProductModel {
   }
 
   double getPriceWithIVA() {
-    double pwithIVA = price;
+    double pWithIVA = price;
 
     if (taxMethod == 0) {
-      pwithIVA = price;
+      pWithIVA = price;
     } else {
-      pwithIVA = price * (100 + taxRate!) / 100;
+      pWithIVA = price * (100 + taxRate!) / 100;
     }
 
-    return pwithIVA;
+    return pWithIVA;
   }
 
   double getCostWithIVA() {
-    double pwithIVA = price;
+    double pWithIVA = price;
 
     if (taxMethod == 0) {
-      pwithIVA = cost;
+      pWithIVA = cost;
     } else {
-      pwithIVA = cost * (100 + taxRate!) / 100;
+      pWithIVA = cost * (100 + taxRate!) / 100;
     }
 
-    return pwithIVA;
+    return pWithIVA;
   }
 
   double getIVA() {
@@ -268,31 +280,35 @@ class ProductModel {
   }
 
   Map<String, dynamic> toJson() => {
-        "slug": slug,
-        "id": id,
-        "id_cloud": idCloud,
-        "image": image,
-        "price": getPriceWithIVA(),
-        "name": name,
-        "code": code,
-        "start_date": promoStart,
-        "end_date": promoEnd,
+        'slug': slug,
+        'id': id,
+        'id_cloud': idCloud,
+        'image': image,
+        'price': getPriceWithIVA(),
+        'name': name,
+        'code': code,
+        'start_date': promoStart,
+        'end_date': promoEnd,
         'price_without_discount': priceWithoutDiscount,
-        "tax_method": taxMethod,
-        "promo_price": promoPrice,
-        "quantity": quantity,
-        "brand": brand,
-        "inventory": inventory,
-        "tax_rate": taxRateId,
-        "rate": taxRate,
-        "tax_rate_name": taxRateName
+        'tax_method': taxMethod,
+        'promo_price': promoPrice,
+        'quantity': quantity,
+        'brand': brand,
+        'inventory': inventory,
+        'tax_rate': taxRateId,
+        'rate': taxRate,
+        'tax_rate_name': taxRateName
       };
 
   /// Customer's price for a product
   Future<double> customerPrice(
-      CompanyModel customer, Future<double> function) async {
+    CompanyModel customer,
+    Future<double> function,
+  ) async {
     final productPrice = await ProductsProvider.findProductPrice(
-        idCloud.toString(), customer.priceGroupId!);
+      idCloud.toString(),
+      customer.priceGroupId!,
+    );
     return double.tryParse(productPrice!['price'].toString()) ?? await function;
   }
 
@@ -311,7 +327,9 @@ class ProductModel {
     } else {
       if (dataBloc.getBIllerData!.defaultPriceGroup != null) {
         final productPrice = await ProductsProvider.findProductPrice(
-            idCloud.toString(), dataBloc.getBIllerData!.defaultPriceGroup!);
+          idCloud.toString(),
+          dataBloc.getBIllerData!.defaultPriceGroup!,
+        );
         if (productPrice != null) {
           return double.tryParse(productPrice['price'].toString()) ??
               priceWithoutDiscount!;
@@ -325,15 +343,16 @@ class ProductModel {
   }
 
   ///Returns a Map<String,dynamic>, where the keys are the same of
-  ///SaleModel.fromJson(), it could be usefull to build an instance of
+  ///SaleModel.fromJson(), it could be useful to build an instance of
   ///SaleModel to send to an endpoint of API's service. It also returns
-  ///key product_detail_list wich contains a list of product details
+  ///key product_detail_list which contains a list of product details
   static Map<String, dynamic> getProductDetailMapLists(
-      Map<String, ProductModel>? products,
-      int warehouseId,
-      Map<String, UnitsModel>? units,
-      Function(String) getProdPrefText) {
-    List<double> _quantitys = [];
+    Map<String, ProductModel>? products,
+    int warehouseId,
+    Map<String, UnitsModel>? units,
+    Function(String) getProdPrefText,
+  ) {
+    List<double> _quantities = [];
     List<int> _units = [];
     List<int?> _unitsSelected = [];
     List<int> _ids = [];
@@ -368,7 +387,7 @@ class ProductModel {
             (products[key]!.priceWithoutDiscount! - products[key]!.price);
         _ids.add(products[key]!.idCloud);
         _codes.add(products[key]!.code);
-        _quantitys.add(products[key]!.quantity);
+        _quantities.add(products[key]!.quantity);
         _units.add(products[key]!.unit);
         _unitsSelected.add(units?[key]?.idCloud);
         _types.add(products[key]!.type);
@@ -392,26 +411,26 @@ class ProductModel {
         discountPercent = discountPercent * 100;
 
         productsDetails.add({
-          "product_id": products[key]!.idCloud,
-          "product_type": products[key]!.type,
-          "product_code": products[key]!.code,
-          "product_name": products[key]!.name,
-          "quantity": products[key]!.quantity,
-          "warehouse_id": warehouseId,
-          "tax_rate_id": products[key]!.taxRateId,
-          "unit_": products[key]!.taxRateId,
-          "product_unit_id": products[key]!.unit,
-          "product_unit_id_selected": units?[key]?.idCloud,
-          "tax": products[key]!.taxRateName,
-          "unit_price": pIVA,
-          "net_unit_price": pNoIVA,
-          "discount": discountPercent.toString() + '%',
-          "item_tax": taxValue,
-          "subtotal":
+          'product_id': products[key]!.idCloud,
+          'product_type': products[key]!.type,
+          'product_code': products[key]!.code,
+          'product_name': products[key]!.name,
+          'quantity': products[key]!.quantity,
+          'warehouse_id': warehouseId,
+          'tax_rate_id': products[key]!.taxRateId,
+          'unit_': products[key]!.taxRateId,
+          'product_unit_id': products[key]!.unit,
+          'product_unit_id_selected': units?[key]?.idCloud,
+          'tax': products[key]!.taxRateName,
+          'unit_price': pIVA,
+          'net_unit_price': pNoIVA,
+          'discount': discountPercent.toString() + '%',
+          'item_tax': taxValue,
+          'subtotal':
               products[key]!.getPriceWithIVA() * products[key]!.quantity,
-          "price_before_tax": products[key]!.getPriceWithoutIVA(),
-          "unit_quantity": products[key]!.quantity,
-          "product_preferences_text": getProdPrefText(key)
+          'price_before_tax': products[key]!.getPriceWithoutIVA(),
+          'unit_quantity': products[key]!.quantity,
+          'product_preferences_text': getProdPrefText(key)
         });
       }
     }
@@ -431,12 +450,12 @@ class ProductModel {
       'net_price': _prices,
       'unit_price': _pricesIVA,
       'real_unit_price': _pricePPolicy,
-      'quantity': _quantitys,
+      'quantity': _quantities,
       'product_unit': _units,
       'product_unit_id_selected': _unitsSelected,
-      'product_base_quantity': _quantitys,
-      "product_detail_list": productsDetails,
-      "product_preferences_text": _productPrefsText
+      'product_base_quantity': _quantities,
+      'product_detail_list': productsDetails,
+      'product_preferences_text': _productPrefsText
     };
   }
 
@@ -445,9 +464,10 @@ class ProductModel {
   ///SaleModel to send to an endpoint of API's service. It also returns
   ///key product_detail_list wich contains a list of product details
   static Map<String, dynamic> getProductDetailsWithCost(
-      Map<String, ProductModel>? products,
-      int warehouseId,
-      Map<String, UnitsModel>? units) {
+    Map<String, ProductModel>? products,
+    int warehouseId,
+    Map<String, UnitsModel>? units,
+  ) {
     List<double> _quantitys = [];
     List<int> _units = [];
     List<int?> _unitsSelected = [];
@@ -505,25 +525,25 @@ class ProductModel {
         discountPercent = discountPercent * 100;
 
         productsDetails.add({
-          "product_id": products[key]!.idCloud,
-          "product_type": products[key]!.type,
-          "product_code": products[key]!.code,
-          "product_name": products[key]!.name,
-          "quantity": products[key]!.quantity,
-          "warehouse_id": warehouseId,
-          "tax_rate_id": products[key]!.taxRateId,
-          "unit_": products[key]!.taxRateId,
-          "product_unit_id": products[key]!.unit,
-          "product_unit_id_selected": units?[key]?.idCloud,
-          "tax": products[key]!.taxRateName,
-          "unit_price": pIVA,
-          "net_unit_price": pNoIVA,
-          "discount": discountPercent.toString() + '%',
-          "item_tax": taxValue,
-          "subtotal":
+          'product_id': products[key]!.idCloud,
+          'product_type': products[key]!.type,
+          'product_code': products[key]!.code,
+          'product_name': products[key]!.name,
+          'quantity': products[key]!.quantity,
+          'warehouse_id': warehouseId,
+          'tax_rate_id': products[key]!.taxRateId,
+          'unit_': products[key]!.taxRateId,
+          'product_unit_id': products[key]!.unit,
+          'product_unit_id_selected': units?[key]?.idCloud,
+          'tax': products[key]!.taxRateName,
+          'unit_price': pIVA,
+          'net_unit_price': pNoIVA,
+          'discount': discountPercent.toString() + '%',
+          'item_tax': taxValue,
+          'subtotal':
               products[key]!.getPriceWithIVA() * products[key]!.quantity,
-          "price_before_tax": products[key]!.getCOstWithoutIVA(),
-          "unit_quantity": products[key]!.quantity
+          'price_before_tax': products[key]!.getCOstWithoutIVA(),
+          'unit_quantity': products[key]!.quantity
         });
       }
     }
@@ -547,7 +567,7 @@ class ProductModel {
       'product_unit': _units,
       'product_unit_id_selected': _unitsSelected,
       'product_base_quantity': _quantitys,
-      "product_detail_list": productsDetails
+      'product_detail_list': productsDetails
     };
   }
 

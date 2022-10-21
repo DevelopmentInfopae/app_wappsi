@@ -69,15 +69,17 @@ class _NewSaleState extends State<NewSale> {
     _pc = pColor;
     _size = MediaQuery.of(context).size;
     return WillPopScope(
-        onWillPop: () async {
-          dataBloc.homeKey?.currentState?.changeBottomIndex(1);
-          // printConsole('here i am');
-          return true;
-        },
-        child: Scaffold(
-            floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-            appBar: _appBar(),
-            body: _body()));
+      onWillPop: () async {
+        dataBloc.homeKey?.currentState?.changeBottomIndex(1);
+        // printConsole('here i am');
+        return true;
+      },
+      child: Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+        appBar: _appBar(),
+        body: _body(),
+      ),
+    );
   }
 
   Widget _body() {
@@ -153,22 +155,24 @@ class _NewSaleState extends State<NewSale> {
           printConsole(e);
         }
         return AppBarLeading(
-            onTap: () => SuspendedSalesScreen(suspendedSales: snapshot.data)
-                .launch(context),
-            widget: Badge(
-                badgeColor: Colors.red,
-                // padding: EdgeInsets.all(6),
-                alignment: Alignment.center,
-                position: BadgePosition.topEnd(),
-                badgeContent: Text(
-                  qtty.toString(),
-                  style: const TextStyle(color: Colors.white),
-                ),
-                child: Icon(
-                  FontAwesomeIcons.moon,
-                  size: leadingIconSize,
-                  color: pColor,
-                )));
+          onTap: () => SuspendedSalesScreen(suspendedSales: snapshot.data)
+              .launch(context),
+          widget: Badge(
+            badgeColor: Colors.red,
+            // padding: EdgeInsets.all(6),
+            alignment: Alignment.center,
+            position: BadgePosition.topEnd(),
+            badgeContent: Text(
+              qtty.toString(),
+              style: const TextStyle(color: Colors.white),
+            ),
+            child: Icon(
+              FontAwesomeIcons.moon,
+              size: leadingIconSize,
+              color: pColor,
+            ),
+          ),
+        );
       },
     );
   }
@@ -214,7 +218,7 @@ class _NewSaleState extends State<NewSale> {
       ),
       mode: Mode.BOTTOM_SHEET,
       validator: (item) {
-        if (item == null) return "Campo requerido";
+        if (item == null) return 'Campo requerido';
       },
       // maxHeight: _size.width * 0.9,
       // dialogMaxWidth: _size.width * 0.8,
@@ -250,17 +254,21 @@ class _NewSaleState extends State<NewSale> {
       posBloc.setCustomer(data);
       if (posBloc.productsAdded.isNotEmpty) {
         final choice = await choiceAlert(
-            context,
-            'Se ha encontrado una carrito de compras existente,¿Que desea hacer?',
-            'assets/images/warning.png',
-            cancel: 'Borrar',
-            confirm: 'Recalcular precios',
-            skipeable: false);
+          context,
+          'Se ha encontrado una carrito de compras existente,¿Que desea hacer?',
+          'assets/images/warning.png',
+          cancel: 'Borrar',
+          confirm: 'Calcular precios nuevamente',
+          skipeable: false,
+        );
         if (choice) {
           final status = await posBloc.reloadAllProducts();
           if (!status) {
-            confirmDialog(context, 'Error al recalcular precios',
-                'assets/images/warning.png');
+            confirmDialog(
+              context,
+              'Error al calcular precios',
+              'assets/images/warning.png',
+            );
           }
         } else {
           posBloc.emptyProductsAdded();
@@ -268,7 +276,9 @@ class _NewSaleState extends State<NewSale> {
       }
       posBloc.setCustomerAddresses(null);
       final addresses = await CustomerAddressesProvider.getDataAdrreses(
-          '', posBloc.getCustomerId());
+        '',
+        posBloc.getCustomerId(),
+      );
       if (addresses.length == 1) {
         setState(() {
           posBloc.setCustomerAddresses(addresses.first);
@@ -292,7 +302,8 @@ class _NewSaleState extends State<NewSale> {
   Widget _customerAddresses() {
     return FutureBuilder(
       future: CustomerAddressesProvider.selectDefaultAddrs(
-          posBloc.getCustomer?.idCloud),
+        posBloc.getCustomer?.idCloud,
+      ),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (posBloc.getCustomerAddresses == null) {
@@ -344,7 +355,9 @@ class _NewSaleState extends State<NewSale> {
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
       onFind: (String? filter) => CustomerAddressesProvider.getDataAdrreses(
-          filter, posBloc.getCustomerId()),
+        filter,
+        posBloc.getCustomerId(),
+      ),
       onChanged: _customerAddrSelection,
       validator: (value) {
         if (value == null) {
@@ -411,8 +424,10 @@ class _NewSaleState extends State<NewSale> {
               }
               if (posBloc.getCustomer != null) {
                 posBloc.setCustomerAddresses(
-                    await CustomerAddressesProvider.selectDefaultAddrs(
-                        posBloc.getCustomer?.idCloud));
+                  await CustomerAddressesProvider.selectDefaultAddrs(
+                    posBloc.getCustomer?.idCloud,
+                  ),
+                );
               }
               setState(() {});
               // if (_formKey.currentState?.validate() ?? false) {

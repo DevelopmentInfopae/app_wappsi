@@ -18,12 +18,13 @@ class CustomerBloc {
   // final _tokenController = BehaviorSubject<String>();
   bool disposed = false;
 
-
-
-  BehaviorSubject<CompanyModel?> _customerController = BehaviorSubject<CompanyModel?>();
-         // to manage addresses creation data
-  BehaviorSubject<CustomerAddressesModel?> _addressController = BehaviorSubject<CustomerAddressesModel?>();
-  BehaviorSubject<Map<String,ProductModel>> _favoritesController = BehaviorSubject<Map<String, ProductModel>>();
+  BehaviorSubject<CompanyModel?> _customerController =
+      BehaviorSubject<CompanyModel?>();
+  // to manage addresses creation data
+  BehaviorSubject<CustomerAddressesModel?> _addressController =
+      BehaviorSubject<CustomerAddressesModel?>();
+  BehaviorSubject<Map<String, ProductModel>> _favoritesController =
+      BehaviorSubject<Map<String, ProductModel>>();
   BehaviorSubject<String?> _userNameController = BehaviorSubject<String?>();
   BehaviorSubject<String?> _passwordController = BehaviorSubject<String?>();
   BehaviorSubject<String?> _imageController = BehaviorSubject<String?>();
@@ -44,7 +45,9 @@ class CustomerBloc {
 
   Future<bool> verifyUserName(BuildContext context) async {
     final res = await UserProvider.verifyIfUserNameExist(
-        context, _userNameController.value!);
+      context,
+      _userNameController.value!,
+    );
     return res;
   }
 
@@ -79,25 +82,27 @@ class CustomerBloc {
   CustomerAddressesModel get getAddress {
     if (!_addressController.hasValue) {
       _addressController.value = CustomerAddressesModel(
-          id: '',
-          direccion: '',
-          vatNo: '',
-          idCloud: 0,
-          customerGroupId: '',
-          sucursal: '',
-          companyId: '',
-          priceGroupId: '');
+        id: '',
+        direccion: '',
+        vatNo: '',
+        idCloud: 0,
+        customerGroupId: '',
+        sucursal: '',
+        companyId: '',
+        priceGroupId: '',
+      );
     } else if (_addressController.hasValue &&
         _addressController.value == null) {
       _addressController.value = CustomerAddressesModel(
-          id: '',
-          direccion: '',
-          vatNo: '',
-          idCloud: 0,
-          customerGroupId: '',
-          sucursal: '',
-          companyId: '',
-          priceGroupId: '');
+        id: '',
+        direccion: '',
+        vatNo: '',
+        idCloud: 0,
+        customerGroupId: '',
+        sucursal: '',
+        companyId: '',
+        priceGroupId: '',
+      );
     }
     return _addressController.value!;
   }
@@ -133,7 +138,7 @@ class CustomerBloc {
   Function(String) get setPassword => _passwordController.sink.add;
 
   dispose() {
-    disposed=true;
+    disposed = true;
     _customerController.close();
     _userNameController.close();
     _passwordController.close();
@@ -144,17 +149,17 @@ class CustomerBloc {
   }
 
   reload() {
-    disposed=false;
-    _customerController =  BehaviorSubject<CompanyModel?>();
-    _addressController =   BehaviorSubject<CustomerAddressesModel?>();
+    disposed = false;
+    _customerController = BehaviorSubject<CompanyModel?>();
+    _addressController = BehaviorSubject<CustomerAddressesModel?>();
     _favoritesController = BehaviorSubject<Map<String, ProductModel>>();
-    _userNameController =  BehaviorSubject<String?>();
-    _passwordController =  BehaviorSubject<String?>();
-    _imageController =     BehaviorSubject<String?>();
-    _locationController =  BehaviorSubject<GeoPoint?>();
+    _userNameController = BehaviorSubject<String?>();
+    _passwordController = BehaviorSubject<String?>();
+    _imageController = BehaviorSubject<String?>();
+    _locationController = BehaviorSubject<GeoPoint?>();
   }
 
-  clearAdressCreationData() {
+  clearAddressCreationData() {
     _addressController.value = null;
   }
 }

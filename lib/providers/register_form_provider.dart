@@ -63,8 +63,12 @@ class RegisterFormProvider extends ChangeNotifier {
       value = '0';
     }
     final body = _movementToJson();
-    final res = await api.postPetition(regMovEndP, body, dataBloc.getHeaders(),
-        awaitTime: 10);
+    final res = await api.postPetition(
+      regMovEndP,
+      body,
+      dataBloc.getHeaders(),
+      awaitTime: 10,
+    );
 
     return res;
   }
@@ -122,10 +126,17 @@ class RegisterFormProvider extends ChangeNotifier {
     final res = await apiProvider.postPetition(regCloseEndP, body, headers);
     if (res['status'] == -1) {
       await reloadDialog(
-          context, res['body']['message'], 'assets/images/dizzy-robot.png');
+        context,
+        res['body']['message'],
+        'assets/images/dizzy-robot.png',
+      );
     } else if (res['error']) {
-      scaffoldAlert(context, res['body']['message'], const Duration(seconds: 1),
-          backGroundColor: errorColor);
+      scaffoldAlert(
+        context,
+        res['body']['message'],
+        const Duration(seconds: 1),
+        backGroundColor: errorColor,
+      );
     } else {
       final Map<String, String> registerCloseData = {
         'user_name': ((dataBloc.userData?.firstName ?? '') +
@@ -147,7 +158,10 @@ class RegisterFormProvider extends ChangeNotifier {
       // confirmDialog(
       //     context, res['body']['message'], 'assets/images/success.png');
       scaffoldAlert(
-          context, res['body']['message'], const Duration(seconds: 1));
+        context,
+        res['body']['message'],
+        const Duration(seconds: 1),
+      );
       // hideCurrentScaffoldAlert(context);
       //set current register status = close
       dataBloc.registerData?.status = 'close';
