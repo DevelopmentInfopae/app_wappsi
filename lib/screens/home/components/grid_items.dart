@@ -59,7 +59,7 @@ List<GridItems> basePermissions = [
     icon: 'assets/images/synchronization.png',
   ),
   GridItems(
-    title: 'Cuenta de usuario',
+    title: 'Usuario',
     route: 'profile',
     icon: 'assets/images/user.png',
   ),
@@ -112,12 +112,12 @@ Map<String, GridItems> gridItemsMap = {
     icon: 'assets/images/box.png',
   ),
   'products-price': GridItems(
-    title: 'Verificador de precios',
+    title: 'Verificar precios',
     route: 'priceVerifier',
     icon: 'assets/images/give-money.png',
   ),
   'pos-pos_register_add_movement': GridItems(
-    title: 'Control de caja',
+    title: 'Caja',
     route: 'register',
     icon: 'assets/images/cash-register.png',
   ),

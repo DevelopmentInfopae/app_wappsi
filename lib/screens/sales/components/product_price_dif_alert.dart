@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 
 // import 'package:pos_wappsi/utils/alerts.dart';

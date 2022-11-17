@@ -691,7 +691,7 @@ class _SalePaymentState extends State<SalePayment> {
                       (route) => false,
                     );
                     final printData = posBloc.getPrintData!;
-                    posBloc.dispose();
+                    await posBloc.dispose();
                     PrintSale(
                       printData: printData,
                     ).launch(context);

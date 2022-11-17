@@ -71,9 +71,6 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
           'assets/images/alert.png',
         );
         if (choice) {
-          await SuspendedSalesProvider.deleteSuspSale(
-            (widget.suspSaleInfo?['suspended_sale'] ?? 0).toString(),
-          );
           Navigator.pushNamedAndRemoveUntil(
             context,
             '/',
@@ -234,7 +231,7 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
 
         if (load) {
           final dif = widget.suspSaleInfo?['products_info']['dif'] ?? [];
-          if (dif.length != 0) {
+          if (dif?.length != 0) {
             await priceDiffAlert(
               context,
               dif,

@@ -32,6 +32,10 @@ import 'package:rxdart/rxdart.dart';
 class POSBloc {
   // to save data of user
   bool isDisposed = false;
+
+  ///
+  String? suspendedSaleId;
+
   BehaviorSubject<Map<String, ProductModel>> _productsController =
       BehaviorSubject<Map<String, ProductModel>>();
   BehaviorSubject<Map<String, UnitsModel>> _productUnitController =
@@ -576,7 +580,7 @@ class POSBloc {
   Future<List<Map<String, dynamic>>> loadSuspendedSale(String id) async {
     _emptyPosData();
     final res = await SuspendedSalesProvider.loadSale(id);
-
+    suspendedSaleId = id;
     return res;
   }
 
@@ -585,7 +589,7 @@ class POSBloc {
     _emptyPosData();
     _verifyPricesController.value = 0;
     final res = await SuspendedSalesProvider.loadSale(id, getPrices: false);
-
+    suspendedSaleId = id;
     return res;
   }
 
@@ -798,7 +802,7 @@ class POSBloc {
 
   Function(int) get setPaymentValue => _paymentValueController.sink.add;
 
-  dispose() {
+  dispose() async {
     isDisposed = true;
     _productsController.close();
     _productSearchController.close();
@@ -819,9 +823,19 @@ class POSBloc {
 
     _paymentTermController.close();
     // _printStateController.close();
+    if (suspendedSaleId != null) {
+      try {
+        await SuspendedSalesProvider.deleteSuspSale(
+          suspendedSaleId ?? '',
+        );
+      } catch (e) {
+        logError(e);
+      }
+      suspendedSaleId = null;
+    }
   }
 
-  reload({bool disposeFirst = false}) {
+  reload({bool disposeFirst = false}) async {
     if (disposeFirst) {
       dispose();
     }

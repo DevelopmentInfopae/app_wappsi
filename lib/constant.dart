@@ -231,8 +231,8 @@ Size imageIconSize() => const Size(60, 60);
 /// Home grid elements size
 Size gridItemSize(BuildContext context) {
   final _size = MediaQuery.of(context).size;
-  double width = _size.width > 500 ? 120 : 108;
-  double height = width * 1.253;
+  double width = (_size.width * 0.22) < 90 ? 90 : _size.width * 0.22;
+  double height = width * 1.28;
   return Size(width, height);
 }
 

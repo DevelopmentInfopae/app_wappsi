@@ -8,8 +8,8 @@ class ProdConfig implements BaseConfig {
 
   @override
   // String get cFolder => '/erp/';
-  String get cFolder => '/dulcelandia_pruebas/';
-  // String get cFolder => '/dulcelandia/';
+  // String get cFolder => '/dulcelandia_pruebas/';
+  String get cFolder => '/dulcelandia/';
 
   @override
   // String get hostFolder => '/wappsi_apis_dev/';
