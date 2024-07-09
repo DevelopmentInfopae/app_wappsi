@@ -161,6 +161,8 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
 
     dataBloc.setUserData(UserModel.fromJson(res['body']['user_data']));
 
+    dataBloc.userData?.token = res['body']['access_token'];
+
     /// set current logged user id on sharedPrefs
     // set current user value
     await setValue('current_user', dataBloc.userData?.id);

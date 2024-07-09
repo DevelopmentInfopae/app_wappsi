@@ -72,11 +72,26 @@ class UserModel {
         companyName: json['company_name'],
         warehouseName: json['warehouse_name'],
         sellerName: json['seller_name'],
-        billerId: int.parse(json['biller_id']),
+        //TODO: Revisar esto
+        billerId: int.parse(getFirstStringList(json['biller_id'])),
         billerName: json['biller_name'],
         companyFolder: json['company_folder'] ?? Environment().config.cFolder,
         documentTypeId: int.tryParse(json['document_type_id'].toString()),
       );
+
+  static String getFirstStringList(dynamic data) {
+    String res = '';
+    try {
+      final t = jsonDecode(data);
+      if(t is List){
+        return t.first.toString();
+      }
+      return jsonEncode(t);
+    } catch (e) {
+      
+    }
+    return res;
+  }
 
   Map<String, dynamic> toJson() => {
         'token': token,

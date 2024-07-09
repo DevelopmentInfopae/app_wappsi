@@ -3,7 +3,7 @@ import 'base_config_class.dart';
 class DevConfig implements BaseConfig {
   @override
   // String get apiHost => 'http://wappsi281.com';
-  String get apiHost => 'http://wappsi335.com';
+  String get apiHost => 'http://wappsi.com';
   // String get apiHost => 'http://lapappaya.com';
 
   @override

@@ -47,6 +47,7 @@ app.*.map.json
 
 push_repo.sh
 
-
 /android/key.properties
 
+# FVM Version Cache
+.fvm/

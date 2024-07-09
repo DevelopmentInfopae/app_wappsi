@@ -84,7 +84,7 @@ class DataBloc {
   Map<String, dynamic>? get settings => _settingsController.valueOrNull;
 
   String getToken() {
-    return _userController.value!.token;
+    return dataBloc.userData?.token ?? '';
   }
 
   /// To control Home state, like selected tab item or current bottomBar
