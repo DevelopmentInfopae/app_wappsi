@@ -36,6 +36,7 @@ class ProductsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: productList.keys.length,
+      physics: AppConstants.scrollPhysics,
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       controller: _scrollController,
       itemBuilder: (context, index) {

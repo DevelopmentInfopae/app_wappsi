@@ -89,7 +89,6 @@ class SyncDBProvider {
         // syncBloc.setProgressMessage(res['body']['message']);
         return {'error': true, 'status': 2, 'message': res['body']['message']};
       } else {
-        // syncBloc.setProgressMessage('Escribiendo actualizaciones en la base de datos local');
         bool result = false;
         // ignore: unrelated_type_equality_checks
 
@@ -318,7 +317,7 @@ class SyncDBProvider {
     if (option == 'Datos de Facturación') {
       res = await updateBillerData();
     } else {
-      final res = await update(option);
+      res = await update(option);
     }
 
     return res['error'] == false;

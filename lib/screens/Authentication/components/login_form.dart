@@ -4,14 +4,15 @@ import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 // import 'package:flutter/services.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/screens/components/button_global.dart';
-import 'package:pos_wappsi/screens/components/input_decoration.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/permissions_model.dart';
 import 'package:pos_wappsi/models/register_model.dart';
 import 'package:pos_wappsi/models/user_model.dart';
 import 'package:pos_wappsi/providers/login_form_provider.dart';
-import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/screens/components/buttons.dart';
+import 'package:pos_wappsi/screens/components/input_decoration.dart';
+import 'package:pos_wappsi/screens/components/spacers.dart';
+import 'package:pos_wappsi/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class LoginFormInputs extends StatefulWidget {
@@ -61,12 +62,6 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
       onChanged: (value) {
         loginForm.password = value;
       },
-      onFieldSubmitted: (_) {
-        loginForm.loading
-            // ignore: unnecessary_statements
-            ? null
-            : _login(loginForm, context);
-      },
       decoration: InputDecorations.authInputDecoration(
         hintText: '',
         labelText: 'Contraseña',
@@ -106,22 +101,16 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
     );
   }
 
-  ButtonGlobalWithoutIcon _loginButton(
+  Widget _loginButton(
     BuildContext context,
     LoginFormProvider loginForm,
   ) {
-    return ButtonGlobalWithoutIcon(
-      buttonText: 'Iniciar sesión',
-      buttonDecoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(
-          Radius.circular(5),
-        ),
-        // to change color based on _isLoading property
-        color: loginForm.loading ? Colors.grey : pColor,
-      ),
-      onPressed: loginForm.loading
+    return CustomButtonWithState(
+      onTap: loginForm.loading
+          // ignore: unnecessary_statements
           ? () {}
           : () async => await _login(loginForm, context),
+      text: 'Iniciar sesión',
     );
   }
 
@@ -133,8 +122,6 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
     if (loginForm.isValidForm()) {
       // hide keyboard
       passwordFocusNode.unfocus();
-
-      loading(context);
 
       // disable login button
       loginForm.isLoading = true;
@@ -215,31 +202,25 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
     BuildContext context,
     bool override,
   ) async {
+    if (res['status'] == 1) {
+      _navigate(context, res);
+      return;
+    }
     if (res['body']['logged'] ?? false) {
-      // ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      Navigator.pop(context);
       _overrideLogin(loginForm, context, res);
+      return;
     } else if (res['body']['incorrect_password'] ?? false) {
-      // ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      Navigator.pop(context);
-      confirmDialog(context, res['body']['message'], 'assets/images/alert.png');
       loginForm.isLoading = false;
       passwordFocusNode.requestFocus();
     } else if (res['body']['user_not_found'] ?? false) {
-      // ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      Navigator.pop(context);
-      confirmDialog(context, res['body']['message'], 'assets/images/alert.png');
-      loginForm.isLoading = false;
       userFocusNode.requestFocus();
-    } else if (res['status'] == 1) {
-      _navigate(context, res);
     } else {
       // hide loading snackbar
       loginForm.isLoading = false;
-      // ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      Navigator.pop(context);
-      confirmDialog(context, res['body']['message'], 'assets/images/alert.png');
     }
+    AppDialogs.genericConfirmationDialog(
+      title: res['body']['message'],
+    );
   }
 
   Future<void> _navigate(BuildContext context, Map res) async {
@@ -274,15 +255,13 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
         padding: kTextFieldPaddingSmall,
         child: Column(
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _userName(loginForm),
-                SizedBox(height: loginFormSpacer(context)),
-                _password(context, loginForm),
-              ],
-            ).flexible(flex: 7),
-            _loginButton(context, loginForm).flexible(flex: 3)
+            _userName(loginForm),
+            const SafeSpacer(),
+            _password(context, loginForm),
+            const SafeSpacer(
+              height: 36,
+            ),
+            _loginButton(context, loginForm)
           ],
         ),
       ),

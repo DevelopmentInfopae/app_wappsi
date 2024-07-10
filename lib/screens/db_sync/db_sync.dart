@@ -5,7 +5,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
-import 'package:pos_wappsi/config/colors.dart';
+import 'package:pos_wappsi/config/theme/colors.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
@@ -18,6 +18,7 @@ import 'package:pos_wappsi/screens/db_sync/components/widgets.dart';
 import 'package:pos_wappsi/screens/db_sync/state/syn_state.dart';
 import 'package:pos_wappsi/screens/home/home.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/dialogs.dart';
 import 'package:pos_wappsi/utils/global_locator.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
@@ -50,17 +51,6 @@ class _DBSyncState extends ConsumerState<DBSync> {
         },
       ),
     );
-    Future.delayed(
-      const Duration(seconds: 1),
-      () {
-        ref
-            .read(currentSyncStateProvider.notifier)
-            .update((state) => _options[index]);
-        if (_options.length < index + 1) {
-          index += 1;
-        }
-      },
-    );
     super.initState();
   }
 
@@ -82,30 +72,39 @@ class _DBSyncState extends ConsumerState<DBSync> {
       children: [
         ref.watch(dbSyncProvider).when(
           data: (data) {
-            final option = _options[index];
+            String option = ref.read(currentSyncStateProvider);
             if (data) {
-              ref
-                  .read(currentSyncStateProvider.notifier)
-                  .update((state) => option);
-              if (_options.length < index + 1) {
-                index += 1;
-              } else {
-                _navigate();
+              if (option.isNotEmpty) {
+                ref.read(syncStateProvider).add(option);
               }
-              ref.read(syncStateProvider).add(option);
+              if (_options.length == ref.read(syncStateProvider).length) {
+                _navigate();
+              } else {
+                Future.delayed(Duration.zero, () {
+                  final value = _options[ref.read(syncStateProvider).length];
+                  ref.read(currentSyncStateProvider.notifier).update(
+                        (state) => value,
+                      );
+                  toast(
+                    'Sincronizando $value',
+                  );
+                });
+              }
             } else {
-              toast(
-                'Error al sincronizar ${ref.read(currentSyncStateProvider)}, reintentando',
-                bgColor: AppColors.cancelColor,
-              );
-              Future.delayed(const Duration(seconds: 1), () {
-                ref
-                    .read(currentSyncStateProvider.notifier)
-                    .update((state) => '');
-                ref
-                    .read(currentSyncStateProvider.notifier)
-                    .update((state) => option);
-              });
+              if (ref.read(currentSyncStateProvider).isNotEmpty) {
+                toast(
+                  'Error al sincronizar ${ref.read(currentSyncStateProvider)}, reintentando',
+                  bgColor: AppColors.cancelColor,
+                );
+                Future.delayed(const Duration(seconds: 1), () {
+                  ref
+                      .read(currentSyncStateProvider.notifier)
+                      .update((state) => '');
+                  ref
+                      .read(currentSyncStateProvider.notifier)
+                      .update((state) => option);
+                });
+              }
             }
             return const SizedBox();
           },
@@ -136,10 +135,9 @@ class _DBSyncState extends ConsumerState<DBSync> {
               completed: true,
             );
           }
-          confirmDialog(
-            context,
-            'Error al escribir países, departamentos o ciudades en la base de datos local',
-            'assets/images/dizzy-robot.png',
+          AppDialogs.genericConfirmationDialog(
+            title:
+                'Error al escribir países, departamentos o ciudades en la base de datos local',
           );
           return elementSync('Países, departamentos y ciudades');
         } else {
@@ -174,17 +172,6 @@ class _DBSyncState extends ConsumerState<DBSync> {
 
   List<Widget> _syncElements(BuildContext context) {
     // _size = MediaQuery.of(context).size;
-    Future.delayed(
-      Duration.zero,
-      () {
-        final value = ref.watch(currentSyncStateProvider);
-        if (value.isNotEmpty) {
-          toast(
-            'Sincronizando $value',
-          );
-        }
-      },
-    );
     final List<Widget> elements = _options.map((option) {
       return Column(
         children: [
@@ -200,7 +187,7 @@ class _DBSyncState extends ConsumerState<DBSync> {
         ],
       );
     }).toList();
-    elements.add(_syncCSC());
+    // elements.add(_syncCSC());
     return elements;
   }
 
@@ -226,44 +213,40 @@ class _DBSyncState extends ConsumerState<DBSync> {
 
   _navigate() {
     // final _pc = pColor;
-    if (_status.values.where((element) => element == false).isEmpty) {
-      // return ;
-      // confirmDialog(context, 'Base de datos sincronizada con éxito',
-      //     'assets/images/success.png');
-      if (!successAlertShown) {
-        final homeKey = GlobalKey<HomeState>();
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          confirmDialog(
-            context,
-            'Base de datos sincronizada con éxito',
-            'assets/images/success.png',
-          );
 
-          /// set last_logged user to current_user value, used to perform bd operations
-          /// on user change
-          await setValue('last_user', getStringAsync('current_user'));
+    // return ;
+    // confirmDialog(context, 'Base de datos sincronizada con éxito',
+    //     'assets/images/success.png');
+    if (!successAlertShown) {
+      final homeKey = GlobalKey<HomeState>();
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        confirmDialog(
+          context,
+          'Base de datos sincronizada con éxito',
+          'assets/images/success.png',
+        );
 
-          await Future.delayed(const Duration(seconds: 2));
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) {
-                dataBloc.setHomeKey(homeKey);
-                return Home(
-                  key: homeKey,
-                );
-              },
-            ),
-            (route) => false,
-          );
-        });
-        successAlertShown = true;
-      }
+        /// set last_logged user to current_user value, used to perform bd operations
+        /// on user change
+        await setValue('last_user', getStringAsync('current_user'));
 
-      // return
-
-    } else {
-      return Container();
+        await Future.delayed(const Duration(seconds: 2));
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              dataBloc.setHomeKey(homeKey);
+              return Home(
+                key: homeKey,
+              );
+            },
+          ),
+          (route) => false,
+        );
+      });
+      successAlertShown = true;
     }
+
+    // return
   }
 }

@@ -1,0 +1,336 @@
+@font-face {
+    font-family: 'Goldplay It';
+    src: url('Goldplay-RegularIt.eot');
+    src: local('Goldplay Regular It'), local('Goldplay-RegularIt'),
+        url('Goldplay-RegularIt.eot?#iefix') format('embedded-opentype'),
+        url('Goldplay-RegularIt.woff2') format('woff2'),
+        url('Goldplay-RegularIt.woff') format('woff'),
+        url('Goldplay-RegularIt.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Goldplay Alt Black It';
+    src: url('GoldplayAlt-BlackIt.eot');
+    src: local('Goldplay Alt Black It'), local('GoldplayAlt-BlackIt'),
+        url('GoldplayAlt-BlackIt.eot?#iefix') format('embedded-opentype'),
+        url('GoldplayAlt-BlackIt.woff2') format('woff2'),
+        url('GoldplayAlt-BlackIt.woff') format('woff'),
+        url('GoldplayAlt-BlackIt.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Goldplay Alt';
+    src: url('GoldplayAlt-SemiBold.eot');
+    src: local('Goldplay Alt SemiBold'), local('GoldplayAlt-SemiBold'),
+        url('GoldplayAlt-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('GoldplayAlt-SemiBold.woff2') format('woff2'),
+        url('GoldplayAlt-SemiBold.woff') format('woff'),
+        url('GoldplayAlt-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Goldplay Alt Bold It';
+    src: url('GoldplayAlt-BoldIt.eot');
+    src: local('Goldplay Alt Bold It'), local('GoldplayAlt-BoldIt'),
+        url('GoldplayAlt-BoldIt.eot?#iefix') format('embedded-opentype'),
+        url('GoldplayAlt-BoldIt.woff2') format('woff2'),
+        url('GoldplayAlt-BoldIt.woff') format('woff'),
+        url('GoldplayAlt-BoldIt.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Goldplay Thin It';
+    src: url('Goldplay-ThinIt.eot');
+    src: local('Goldplay Thin It'), local('Goldplay-ThinIt'),
+        url('Goldplay-ThinIt.eot?#iefix') format('embedded-opentype'),
+        url('Goldplay-ThinIt.woff2') format('woff2'),
+        url('Goldplay-ThinIt.woff') format('woff'),
+        url('Goldplay-ThinIt.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Goldplay Black It';
+    src: url('Goldplay-BlackIt.eot');
+    src: local('Goldplay Black It'), local('Goldplay-BlackIt'),
+        url('Goldplay-BlackIt.eot?#iefix') format('embedded-opentype'),
+        url('Goldplay-BlackIt.woff2') format('woff2'),
+        url('Goldplay-BlackIt.woff') format('woff'),
+        url('Goldplay-BlackIt.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Goldplay';
+    src: url('Goldplay-Medium.eot');
+    src: local('Goldplay Medium'), local('Goldplay-Medium'),
+        url('Goldplay-Medium.eot?#iefix') format('embedded-opentype'),
+        url('Goldplay-Medium.woff2') format('woff2'),
+        url('Goldplay-Medium.woff') format('woff'),
+        url('Goldplay-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Goldplay Bold It';
+    src: url('Goldplay-BoldIt.eot');
+    src: local('Goldplay Bold It'), local('Goldplay-BoldIt'),
+        url('Goldplay-BoldIt.eot?#iefix') format('embedded-opentype'),
+        url('Goldplay-BoldIt.woff2') format('woff2'),
+        url('Goldplay-BoldIt.woff') format('woff'),
+        url('Goldplay-BoldIt.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Goldplay';
+    src: url('Goldplay-Bold.eot');
+    src: local('Goldplay Bold'), local('Goldplay-Bold'),
+        url('Goldplay-Bold.eot?#iefix') format('embedded-opentype'),
+        url('Goldplay-Bold.woff2') format('woff2'),
+        url('Goldplay-Bold.woff') format('woff'),
+        url('Goldplay-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Goldplay Alt Medium It';
+    src: url('GoldplayAlt-MediumIt.eot');
+    src: local('Goldplay Alt Medium It'), local('GoldplayAlt-MediumIt'),
+        url('GoldplayAlt-MediumIt.eot?#iefix') format('embedded-opentype'),
+        url('GoldplayAlt-MediumIt.woff2') format('woff2'),
+        url('GoldplayAlt-MediumIt.woff') format('woff'),
+        url('GoldplayAlt-MediumIt.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Goldplay Alt';
+    src: url('GoldplayAlt-Bold.eot');
+    src: local('Goldplay Alt Bold'), local('GoldplayAlt-Bold'),
+        url('GoldplayAlt-Bold.eot?#iefix') format('embedded-opentype'),
+        url('GoldplayAlt-Bold.woff2') format('woff2'),
+        url('GoldplayAlt-Bold.woff') format('woff'),
+        url('GoldplayAlt-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Goldplay Alt';
+    src: url('GoldplayAlt-Medium.eot');
+    src: local('Goldplay Alt Medium'), local('GoldplayAlt-Medium'),
+        url('GoldplayAlt-Medium.eot?#iefix') format('embedded-opentype'),
+        url('GoldplayAlt-Medium.woff2') format('woff2'),
+        url('GoldplayAlt-Medium.woff') format('woff'),
+        url('GoldplayAlt-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Goldplay Alt';
+    src: url('GoldplayAlt-Light.eot');
+    src: local('Goldplay Alt Light'), local('GoldplayAlt-Light'),
+        url('GoldplayAlt-Light.eot?#iefix') format('embedded-opentype'),
+        url('GoldplayAlt-Light.woff2') format('woff2'),
+        url('GoldplayAlt-Light.woff') format('woff'),
+        url('GoldplayAlt-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Goldplay Light It';
+    src: url('Goldplay-LightIt.eot');
+    src: local('Goldplay Light It'), local('Goldplay-LightIt'),
+        url('Goldplay-LightIt.eot?#iefix') format('embedded-opentype'),
+        url('Goldplay-LightIt.woff2') format('woff2'),
+        url('Goldplay-LightIt.woff') format('woff'),
+        url('Goldplay-LightIt.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Goldplay Alt Thin It';
+    src: url('GoldplayAlt-ThinIt.eot');
+    src: local('Goldplay Alt Thin It'), local('GoldplayAlt-ThinIt'),
+        url('GoldplayAlt-ThinIt.eot?#iefix') format('embedded-opentype'),
+        url('GoldplayAlt-ThinIt.woff2') format('woff2'),
+        url('GoldplayAlt-ThinIt.woff') format('woff'),
+        url('GoldplayAlt-ThinIt.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Goldplay';
+    src: url('Goldplay-SemiBold.eot');
+    src: local('Goldplay SemiBold'), local('Goldplay-SemiBold'),
+        url('Goldplay-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('Goldplay-SemiBold.woff2') format('woff2'),
+        url('Goldplay-SemiBold.woff') format('woff'),
+        url('Goldplay-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Goldplay Medium It';
+    src: url('Goldplay-MediumIt.eot');
+    src: local('Goldplay Medium It'), local('Goldplay-MediumIt'),
+        url('Goldplay-MediumIt.eot?#iefix') format('embedded-opentype'),
+        url('Goldplay-MediumIt.woff2') format('woff2'),
+        url('Goldplay-MediumIt.woff') format('woff'),
+        url('Goldplay-MediumIt.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Goldplay Alt';
+    src: url('GoldplayAlt-Black.eot');
+    src: local('Goldplay Alt Black'), local('GoldplayAlt-Black'),
+        url('GoldplayAlt-Black.eot?#iefix') format('embedded-opentype'),
+        url('GoldplayAlt-Black.woff2') format('woff2'),
+        url('GoldplayAlt-Black.woff') format('woff'),
+        url('GoldplayAlt-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Goldplay Alt SemiBold It';
+    src: url('GoldplayAlt-SemiBoldIt.eot');
+    src: local('Goldplay Alt SemiBold It'), local('GoldplayAlt-SemiBoldIt'),
+        url('GoldplayAlt-SemiBoldIt.eot?#iefix') format('embedded-opentype'),
+        url('GoldplayAlt-SemiBoldIt.woff2') format('woff2'),
+        url('GoldplayAlt-SemiBoldIt.woff') format('woff'),
+        url('GoldplayAlt-SemiBoldIt.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Goldplay SemiBold It';
+    src: url('Goldplay-SemiBoldIt.eot');
+    src: local('Goldplay SemiBold It'), local('Goldplay-SemiBoldIt'),
+        url('Goldplay-SemiBoldIt.eot?#iefix') format('embedded-opentype'),
+        url('Goldplay-SemiBoldIt.woff2') format('woff2'),
+        url('Goldplay-SemiBoldIt.woff') format('woff'),
+        url('Goldplay-SemiBoldIt.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Goldplay Alt';
+    src: url('GoldplayAlt-Regular.eot');
+    src: local('Goldplay Alt Regular'), local('GoldplayAlt-Regular'),
+        url('GoldplayAlt-Regular.eot?#iefix') format('embedded-opentype'),
+        url('GoldplayAlt-Regular.woff2') format('woff2'),
+        url('GoldplayAlt-Regular.woff') format('woff'),
+        url('GoldplayAlt-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Goldplay Alt It';
+    src: url('GoldplayAlt-RegularIt.eot');
+    src: local('Goldplay Alt Regular It'), local('GoldplayAlt-RegularIt'),
+        url('GoldplayAlt-RegularIt.eot?#iefix') format('embedded-opentype'),
+        url('GoldplayAlt-RegularIt.woff2') format('woff2'),
+        url('GoldplayAlt-RegularIt.woff') format('woff'),
+        url('GoldplayAlt-RegularIt.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Goldplay Alt';
+    src: url('GoldplayAlt-Thin.eot');
+    src: local('Goldplay Alt Thin'), local('GoldplayAlt-Thin'),
+        url('GoldplayAlt-Thin.eot?#iefix') format('embedded-opentype'),
+        url('GoldplayAlt-Thin.woff2') format('woff2'),
+        url('GoldplayAlt-Thin.woff') format('woff'),
+        url('GoldplayAlt-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Goldplay';
+    src: url('Goldplay-Regular.eot');
+    src: local('Goldplay Regular'), local('Goldplay-Regular'),
+        url('Goldplay-Regular.eot?#iefix') format('embedded-opentype'),
+        url('Goldplay-Regular.woff2') format('woff2'),
+        url('Goldplay-Regular.woff') format('woff'),
+        url('Goldplay-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Goldplay';
+    src: url('Goldplay-Light.eot');
+    src: local('Goldplay Light'), local('Goldplay-Light'),
+        url('Goldplay-Light.eot?#iefix') format('embedded-opentype'),
+        url('Goldplay-Light.woff2') format('woff2'),
+        url('Goldplay-Light.woff') format('woff'),
+        url('Goldplay-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Goldplay Alt Light It';
+    src: url('GoldplayAlt-LightIt.eot');
+    src: local('Goldplay Alt Light It'), local('GoldplayAlt-LightIt'),
+        url('GoldplayAlt-LightIt.eot?#iefix') format('embedded-opentype'),
+        url('GoldplayAlt-LightIt.woff2') format('woff2'),
+        url('GoldplayAlt-LightIt.woff') format('woff'),
+        url('GoldplayAlt-LightIt.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Goldplay';
+    src: url('Goldplay-Black.eot');
+    src: local('Goldplay Black'), local('Goldplay-Black'),
+        url('Goldplay-Black.eot?#iefix') format('embedded-opentype'),
+        url('Goldplay-Black.woff2') format('woff2'),
+        url('Goldplay-Black.woff') format('woff'),
+        url('Goldplay-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Goldplay';
+    src: url('Goldplay-Thin.eot');
+    src: local('Goldplay Thin'), local('Goldplay-Thin'),
+        url('Goldplay-Thin.eot?#iefix') format('embedded-opentype'),
+        url('Goldplay-Thin.woff2') format('woff2'),
+        url('Goldplay-Thin.woff') format('woff'),
+        url('Goldplay-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+

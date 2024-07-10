@@ -14,10 +14,8 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
-    return SafeArea(
-      child: Scaffold(
-        body: LoginMobileView(size: _size),
-      ),
+    return Scaffold(
+      body: LoginMobileView(size: _size),
     );
   }
 }

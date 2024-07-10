@@ -28,12 +28,13 @@ class LoginMobileView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+            const SizedBox(),
             Logo(
               width: _size.width,
               height: responsive.maxHeightValue(150),
               fit: BoxFit.fitHeight,
               image: 'assets/logos/logo_wappsi.png',
-            ).paddingOnly(top: _size.height * 0.15),
+            ),
             MultiProvider(
               providers: [
                 ChangeNotifierProvider(
@@ -41,21 +42,20 @@ class LoginMobileView extends StatelessWidget {
                 )
               ],
               child: const LoginFormInputs(),
-            ).withHeight(_size.height * 0.38),
+            ),
             Column(
-              children: [
+              children: const [
                 Logo(
                   width: 250,
-                  height: _size.height * 0.065,
                   fit: BoxFit.fitWidth,
                   image: 'assets/images/logo_wappsi_pos_movil.png',
                 ),
-                const CurrentVersion(),
+                CurrentVersion(),
               ],
             )
           ],
         ).withSize(
-          height: _size.height * 0.98,
+          height: _size.height,
           width: _size.width > 500 ? 500 : _size.width,
         ),
       ),

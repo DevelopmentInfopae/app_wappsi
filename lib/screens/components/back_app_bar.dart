@@ -7,7 +7,6 @@ import 'package:pos_wappsi/screens/components/appbar.dart';
 import 'package:pos_wappsi/screens/components/basic_widgets.dart';
 
 Widget _back(BuildContext context, {Function? onPop}) {
-  final _size = MediaQuery.of(context).size;
   return Container(
     padding: const EdgeInsets.only(left: 10),
     // color:Colors.red,
@@ -17,11 +16,9 @@ Widget _back(BuildContext context, {Function? onPop}) {
         // ignore: unnecessary_statements
         onPop != null ? onPop() : Navigator.pop(context);
       },
-      icon: Icon(
+      icon: const Icon(
         Icons.arrow_back_ios_sharp,
-        size: _size.height * 0.043 > 30
-            ? (_size.height * 0.043 > 40 ? 40 : _size.height * 0.043)
-            : 30,
+        size: 25,
       ),
     ),
   );
@@ -73,14 +70,10 @@ Widget _content(
       back ? _back(context, onPop: onPop) : Container(),
       (image != null ? imgThumbnail(image: image) : imgThumbnail())
           .withSize(
-            height: _size.height * 0.06 > 38
-                ? (_size.height * 0.06 > 42 ? 42 : _size.height * 0.06)
-                : 38,
-            width: _size.height * 0.06 > 38
-                ? (_size.height * 0.06 > 42 ? 42 : _size.height * 0.06)
-                : 38,
+            height: 26,
+            width: 26,
           )
-          .paddingOnly(right: 8, left: back ? 10 : 20, bottom: 0),
+          .paddingOnly(right: 8, left: 10, bottom: 0),
       _text(title, context, subtitle: subtitle)
           .paddingRight(leading == null ? _size.width * 0.1 : 10)
           .expand(),
@@ -103,7 +96,7 @@ Widget _text(
       AutoSizeText(
         title,
         maxLines: 1,
-        style: const TextStyle(fontSize: 30.0, fontWeight: FontWeight.w900),
+        style: const TextStyle(fontSize: 26.0, fontWeight: FontWeight.w900),
       ),
       subtitle == null
           ? Container()

@@ -1,17 +1,13 @@
 // ignore_for_file: implementation_imports
 
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:nb_utils/nb_utils.dart';
-
-import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
-
-import 'dart:async';
-import 'dart:io';
-
 import 'package:pos_wappsi/utils/print_errors.dart';
 
 class DataProvider {
@@ -28,10 +24,8 @@ class DataProvider {
     // headers['Access-Control-Allow-Origin'] = '*';
     var dio = Dio();
     // dio.options.
-    dio.options.baseUrl = ((dataBloc.userData == null
-            ? Environment().config.apiHost
-            : dataBloc.userData?.hostUrl ?? '')) +
-        Environment().config.hostFolder;
+    dio.options.baseUrl =
+        Environment().config.apiHost + Environment().config.hostFolder;
     // dio.options.baseUrl = LHOST;
     dio.options.headers = headers;
     // to seconds to milliseconds, seconds * 1000
@@ -135,10 +129,8 @@ class DataProvider {
     var dio = Dio();
     // headers['Access-Control-Allow-Origin'] = '*';
 
-    dio.options.baseUrl = ((dataBloc.userData == null
-            ? Environment().config.apiHost
-            : dataBloc.userData?.hostUrl ?? '')) +
-        Environment().config.hostFolder;
+    dio.options.baseUrl =
+        Environment().config.apiHost + Environment().config.hostFolder;
     dio.options.headers = headers;
     dio.options.method = 'GET';
     // String url =
@@ -223,52 +215,4 @@ class DataProvider {
   }
 
   handleErrorJWT() {}
-
-  // DELETE
-
-  // Future<Map<String,dynamic>> deletePetition
-  //       (String endpoint,{Map<String, String> headers}) async {
-  //   var resp;
-  //   String _url = URL + '/api/$endpoint';
-  //   try {
-  //     resp = await http.delete(
-  //       _url,
-  //       headers: headers
-  //     ).timeout(
-  //       Duration(seconds: 15),
-  //       onTimeout: (){
-  //         throw TimeoutException('Now answer, try again.');
-  //       }
-  //     );
-
-  //     if (resp['status'] == 200) {
-  //       return {
-  //         'body':decodedRespBody,
-  //         'status':1
-  //       };
-  //     }else if(resp['status'] == 401){
-  //       return {
-  //         'status': 2,
-  //         'message': decodedRespBody['message']
-  //       };
-  //     }else {
-  //       // printConsole(resp['status']);
-  //       return {'status': 3, 'message': 'Something went wrong, try again!', 'body': null};
-  //     }
-  //   }
-
-  //   on SocketException {
-  //     return {'status': 1, 'message': 'Verify your internet connection', 'body': null};
-  //       // controlador = 'sinConexión';
-  //   } on http.ClientException {
-  //     // printConsole('ClientException');
-  //     return {'status': 2, 'message': 'Something went wrong, try again', 'body': null};
-  //   } on TimeoutException {
-  //     return {'status': 3, 'message': 'No answer, try again', 'body': null};
-  //   }
-
-  //   catch (e) {
-  //     return {'status': 0, 'message': 'Failed request', 'body': null};
-  //   }
-  // }
 }

@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
-import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/config/theme/colors.dart';
 import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
 // import 'package:pos_wappsi/screens/Authentication/login_form.dart';
@@ -13,10 +14,10 @@ import 'package:pos_wappsi/screens/Quotes/new_quote.dart';
 import 'package:pos_wappsi/screens/Quotes/quotes_list.dart';
 import 'package:pos_wappsi/screens/cash_accounting/components/open_register_alert.dart';
 import 'package:pos_wappsi/screens/cash_accounting/register_options.dart';
+import 'package:pos_wappsi/screens/components/components.dart';
 import 'package:pos_wappsi/screens/customers/new_customer.dart';
 import 'package:pos_wappsi/screens/db_sync/sync_elements_screen.dart';
 import 'package:pos_wappsi/screens/home/components/grid_items.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 import 'package:pos_wappsi/screens/orders/new_order.dart';
 import 'package:pos_wappsi/screens/orders/orders_list.dart';
@@ -50,22 +51,24 @@ class HomeGridCards extends StatelessWidget {
   }
 
   Widget _elements(BuildContext context) {
-    final size = gridItemSize(context);
     return Column(
       children: [
         _image().paddingTop(4).flexible(flex: 7),
+        const SafeSpacer(
+          height: 6,
+        ),
         Container(
           child: _text(context).paddingOnly(bottom: 2, left: 2, right: 2),
-          decoration: BoxDecoration(
-            color: Colors.grey[50],
-            borderRadius: const BorderRadius.only(
+          decoration: const BoxDecoration(
+            color: Color.fromARGB(255, 241, 241, 241),
+            borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(5.0),
               bottomRight: Radius.circular(5.0),
             ),
           ),
         ).flexible(flex: 5),
       ],
-    ).withSize(width: size.width, height: size.height);
+    ).withSize(width: 100, height: 130);
   }
 
   Widget _text(BuildContext context) {
@@ -82,8 +85,15 @@ class HomeGridCards extends StatelessWidget {
   }
 
   Widget _image() {
-    return Padding(
-      padding: const EdgeInsets.all(4),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(
+          color: AppColors.primary_50,
+          width: 0.5,
+        ),
+      ),
+      padding: const EdgeInsets.all(8),
       child: Image(
         fit: BoxFit.fitWidth,
         image: AssetImage(

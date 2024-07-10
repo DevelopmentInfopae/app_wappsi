@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/config/theme/app_theme.dart';
 import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/routes.dart';
 
@@ -63,48 +63,20 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          locale: _locale,
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate
-          ],
-          supportedLocales: const [Locale('es')],
-          theme: ThemeData(
-            primaryColor: const Color.fromRGBO(28, 122, 190, 1),
-            scaffoldBackgroundColor: Colors.grey[100],
-            inputDecorationTheme:
-                const InputDecorationTheme(fillColor: Colors.white),
-            appBarTheme: const AppBarTheme(
-              backgroundColor: Colors.white,
-              toolbarTextStyle: TextStyle(color: Colors.black, fontSize: 20),
-            ),
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ButtonStyle(
-                // backgroundColor: MaterialStateProperty.all(Colors.green)
-                elevation: MaterialStateProperty.all(5),
-                backgroundColor: MaterialStateProperty.all(Colors.white),
-              ),
-            ),
-            iconTheme: const IconThemeData(color: Colors.black),
-            primaryIconTheme: const IconThemeData(color: Colors.white),
-            buttonTheme: const ButtonThemeData(
-                // textTheme: buttonTextTheme.primary
-                ),
-            textTheme: GoogleFonts.poppinsTextTheme(
-              Theme.of(context).textTheme,
-            ),
-            backgroundColor: Colors.white,
-          ),
-          title: 'WappsiPOSApp',
-          initialRoute: '/',
-          routes: Routes.getRoutes(),
-        );
-      },
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      navigatorKey: GetIt.instance.get<GlobalKey<NavigatorState>>(),
+      locale: _locale,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
+      ],
+      supportedLocales: const [Locale('es')],
+      theme: globalTheme(),
+      title: 'WappsiPOSApp',
+      initialRoute: '/',
+      routes: Routes.getRoutes(),
     );
   }
 }

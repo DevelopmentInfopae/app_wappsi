@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/components/products/product_card_info.dart';
@@ -48,9 +49,12 @@ class _ProductCardListState extends State<ProductCardList> {
         ListView.separated(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           controller: _controller,
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 8,
+          ),
           addAutomaticKeepAlives: false,
-          physics: const ClampingScrollPhysics(),
+          physics: AppConstants.scrollPhysics,
           itemCount: widget.products.length + (_allLoaded ? 1 : 0),
           separatorBuilder: (context, index) => const Divider(
             height: 5,
