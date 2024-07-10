@@ -9,9 +9,9 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 // import 'package:pos_wappsi/bloc/sync_bloc.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/input_decoration.dart';
-import 'package:pos_wappsi/components/widgets.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/input_decoration.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/config/documents_types.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
@@ -676,7 +676,6 @@ class _SalePaymentState extends State<SalePayment> {
 
                   await dataBloc.syncElements(
                     ['Precios de Productos', 'Productos de Sucursales'],
-                    context,
                   );
 
                   /// update JWT token

@@ -4,17 +4,14 @@ import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 // import 'package:flutter/services.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/components/button_global.dart';
-import 'package:pos_wappsi/components/input_decoration.dart';
+import 'package:pos_wappsi/screens/components/button_global.dart';
+import 'package:pos_wappsi/screens/components/input_decoration.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/permissions_model.dart';
 import 'package:pos_wappsi/models/register_model.dart';
 import 'package:pos_wappsi/models/user_model.dart';
-
 import 'package:pos_wappsi/providers/login_form_provider.dart';
-
 import 'package:pos_wappsi/utils/alerts.dart';
-
 import 'package:provider/provider.dart';
 
 class LoginFormInputs extends StatefulWidget {
@@ -151,6 +148,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
     } else {
       userFocusNode.requestFocus();
     }
+    loginForm.isLoading = false;
   }
 
   Future<void> _saveData(Map res) async {

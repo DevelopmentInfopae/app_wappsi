@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/location/zone_szone_data.dart';
-import 'package:pos_wappsi/components/widgets.dart';
-
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/location/zone_szone_data.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/addresses_list.dart';
-
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/favorites.dart';
 

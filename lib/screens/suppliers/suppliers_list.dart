@@ -6,8 +6,8 @@ import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/components/appbar_leading.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/appbar_leading.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';

@@ -2,9 +2,9 @@ import 'package:auto_size_text_pk/auto_size_text_pk.dart';
 import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
-import 'package:pos_wappsi/components/appbar.dart';
-import 'package:pos_wappsi/components/basic_widgets.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/screens/components/appbar.dart';
+import 'package:pos_wappsi/screens/components/basic_widgets.dart';
 
 Widget _back(BuildContext context, {Function? onPop}) {
   final _size = MediaQuery.of(context).size;

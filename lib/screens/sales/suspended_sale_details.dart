@@ -7,11 +7,11 @@ import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
-import 'package:pos_wappsi/components/appbar_leading.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/products/product_card_info.dart';
-import 'package:pos_wappsi/components/products/product_card_w_unit.dart';
-import 'package:pos_wappsi/components/widgets.dart';
+import 'package:pos_wappsi/screens/components/appbar_leading.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/products/product_card_info.dart';
+import 'package:pos_wappsi/screens/components/products/product_card_w_unit.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';

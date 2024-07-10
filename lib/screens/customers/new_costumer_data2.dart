@@ -9,11 +9,11 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/go_back_bottom.dart';
-import 'package:pos_wappsi/components/location/subzone_dropdown.dart';
-import 'package:pos_wappsi/components/location/zone_dropdown.dart';
-import 'package:pos_wappsi/components/widgets.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/go_back_bottom.dart';
+import 'package:pos_wappsi/screens/components/location/subzone_dropdown.dart';
+import 'package:pos_wappsi/screens/components/location/zone_dropdown.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/models/subzone_model.dart';
 import 'package:pos_wappsi/models/zone_model.dart';
 import 'package:pos_wappsi/params/regimen_person_type_form_params.dart';

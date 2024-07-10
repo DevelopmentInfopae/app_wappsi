@@ -1,30 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-// import 'package:nb_utils/nb_utils.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
 // import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
+import 'package:pos_wappsi/config/colors.dart';
+import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
+// import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/column_with_padding.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/db_sync/components/sync_element.dart';
 import 'package:pos_wappsi/screens/db_sync/components/widgets.dart';
+import 'package:pos_wappsi/screens/db_sync/state/syn_state.dart';
 import 'package:pos_wappsi/screens/home/home.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/global_locator.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
-class DBSync extends StatefulWidget {
+class DBSync extends ConsumerStatefulWidget {
   const DBSync({Key? key, this.syncElements}) : super(key: key);
   final List<String>? syncElements;
   @override
-  State<DBSync> createState() => _DBSyncState();
+  ConsumerState<DBSync> createState() => _DBSyncState();
 }
 
-class _DBSyncState extends State<DBSync> {
+class _DBSyncState extends ConsumerState<DBSync> {
   late List _options;
-  SyncDBProvider syncDB = SyncDBProvider();
+
+  int index = 0;
+
   final Map<String, bool> _status = {};
 
   bool successAlertShown = false;
@@ -42,12 +50,22 @@ class _DBSyncState extends State<DBSync> {
         },
       ),
     );
+    Future.delayed(
+      const Duration(seconds: 1),
+      () {
+        ref
+            .read(currentSyncStateProvider.notifier)
+            .update((state) => _options[index]);
+        if (_options.length < index + 1) {
+          index += 1;
+        }
+      },
+    );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // _size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: appBar(
         context,
@@ -61,13 +79,55 @@ class _DBSyncState extends State<DBSync> {
 
   _body(BuildContext context) {
     return Column(
-      children: [_elementsLoading().expand()],
+      children: [
+        ref.watch(dbSyncProvider).when(
+          data: (data) {
+            final option = _options[index];
+            if (data) {
+              ref
+                  .read(currentSyncStateProvider.notifier)
+                  .update((state) => option);
+              if (_options.length < index + 1) {
+                index += 1;
+              } else {
+                _navigate();
+              }
+              ref.read(syncStateProvider).add(option);
+            } else {
+              toast(
+                'Error al sincronizar ${ref.read(currentSyncStateProvider)}, reintentando',
+                bgColor: AppColors.cancelColor,
+              );
+              Future.delayed(const Duration(seconds: 1), () {
+                ref
+                    .read(currentSyncStateProvider.notifier)
+                    .update((state) => '');
+                ref
+                    .read(currentSyncStateProvider.notifier)
+                    .update((state) => option);
+              });
+            }
+            return const SizedBox();
+          },
+          error: (error, stackTrace) {
+            GlobalLocator.appLogger.e(error);
+            return const SizedBox();
+          },
+          loading: () {
+            return const SizedBox();
+          },
+        ),
+        LinearProgressIndicator(
+          value: (ref.watch(syncStateProvider).length / _options.length),
+        ),
+        _elementsLoading().expand(),
+      ],
     );
   }
 
-  FutureBuilder _syncCSC() {
+  Widget _syncCSC() {
     return FutureBuilder(
-      future: syncDB.loadCSC(),
+      future: SyncDBProvider.loadCSC(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data == true) {
@@ -97,7 +157,11 @@ class _DBSyncState extends State<DBSync> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           return SingleChildScrollView(
-            child: Column(children: _syncElements(context)),
+            padding: const EdgeInsets.symmetric(
+              vertical: 8,
+            ),
+            physics: AppConstants.scrollPhysics,
+            child: ColumnWithPadding(children: _syncElements(context)),
           );
         } else {
           return Center(
@@ -108,44 +172,32 @@ class _DBSyncState extends State<DBSync> {
     );
   }
 
-  List<FutureBuilder<dynamic>> _syncElements(BuildContext context) {
-    final elements = _options.map((option) {
-      return FutureBuilder(
-        future: syncDB.syncOption(context, option),
-        // future: null,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            // setState(() {
-            _status[option] = true;
-            // });
-            _navigate();
-            return Column(
-              children: [
-                elementSync(option, completed: true),
-                const Divider(
-                  color: Colors.black38,
-                  height: 2,
-                ),
-              ],
-            );
-          } else {
-            // _navigate();
-            return Column(
-              children: [
-                ElementSync(
-                  context: context,
-                  optionInfo: enabledOptions[option]!,
-                  optionName: option,
-                  status: false,
-                ),
-                const Divider(
-                  color: Colors.black38,
-                  height: 2,
-                ),
-              ],
-            );
-          }
-        },
+  List<Widget> _syncElements(BuildContext context) {
+    // _size = MediaQuery.of(context).size;
+    Future.delayed(
+      Duration.zero,
+      () {
+        final value = ref.watch(currentSyncStateProvider);
+        if (value.isNotEmpty) {
+          toast(
+            'Sincronizando $value',
+          );
+        }
+      },
+    );
+    final List<Widget> elements = _options.map((option) {
+      return Column(
+        children: [
+          ElementSync(
+            optionInfo: enabledOptions[option]!,
+            optionName: option,
+            status: ref.watch(syncStateProvider).contains(option),
+          ),
+          const Divider(
+            color: Colors.black38,
+            height: 2,
+          ),
+        ],
       );
     }).toList();
     elements.add(_syncCSC());
@@ -159,7 +211,7 @@ class _DBSyncState extends State<DBSync> {
         Image.asset(
           'assets/images/' +
               (enabledOptions[option]?['image'] ?? 'countries.png'),
-        ).paddingSymmetric(horizontal: 10, vertical: 3).withHeight(50),
+        ).paddingSymmetric(horizontal: 8, vertical: 3).withHeight(50),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

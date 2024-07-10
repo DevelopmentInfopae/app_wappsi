@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
-
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/order_model.dart';
 import 'package:pos_wappsi/models/order_sale_items.dart';
-
 // import 'package:pos_wappsi/models/sale_model.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
@@ -14,7 +12,6 @@ import 'package:pos_wappsi/providers/local_orders_provider.dart';
 import 'package:pos_wappsi/providers/order_sale_items_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/providers/zone_provider.dart';
-
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
@@ -210,10 +207,7 @@ class OrdersProvider {
           'assets/images/dizzy-robot.png',
         );
       } else if (!(res['error'] ?? true)) {
-        final dbProvider = SyncDBProvider();
-
-        final result = await dbProvider.syncOption(
-          context,
+        final result = await SyncDBProvider.syncOption(
           tableNamesToSyncOpt['sma_order_sales']!,
         );
         return result;

@@ -7,20 +7,18 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/quotes_bloc.dart';
-// import 'package:pos_wappsi/bloc/sync_bloc.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/input_decoration.dart';
-import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/documents_types.dart';
-
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/global_form_const.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/providers/document_types_provider.dart';
 import 'package:pos_wappsi/providers/quotes_provider.dart';
 import 'package:pos_wappsi/screens/Quotes/print_quotes.dart';
+// import 'package:pos_wappsi/bloc/sync_bloc.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/input_decoration.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
-
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';

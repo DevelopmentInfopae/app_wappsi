@@ -145,12 +145,11 @@ class DataBloc {
     }
   }
 
-  Future<List> syncElements(List<String> elements, BuildContext context) async {
+  Future<List> syncElements(List<String> elements) async {
     dataBloc.homeKey?.currentState?.syncLoader(true);
-    final syncDB = SyncDBProvider();
     final res = await Future.wait(
       elements.map((element) {
-        return syncDB.syncOption(context, element);
+        return SyncDBProvider.syncOption(element);
       }).toList(),
     );
 

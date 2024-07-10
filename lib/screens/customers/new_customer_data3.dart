@@ -10,21 +10,20 @@ import 'package:nb_utils/nb_utils.dart';
 // import 'package:place_picker/place_picker.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-
-// import 'package:nb_utils/src/extensions/widget_extensions.dart';
-
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/go_back_bottom.dart';
-// import 'package:pos_wappsi/components/image_file.dart';
-import 'package:pos_wappsi/components/image_preview.dart';
-import 'package:pos_wappsi/components/location/location_picker.dart';
-import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/customer_groups_model.dart';
 import 'package:pos_wappsi/models/price_groups_model.dart';
 import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/providers/customer_groups_provider.dart';
 import 'package:pos_wappsi/providers/price_groups_provider.dart';
+// import 'package:nb_utils/src/extensions/widget_extensions.dart';
+
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/go_back_bottom.dart';
+// import 'package:pos_wappsi/components/image_file.dart';
+import 'package:pos_wappsi/screens/components/image_preview.dart';
+import 'package:pos_wappsi/screens/components/location/location_picker.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/add_favorites.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/screens/components/loading.dart';
 
 // Widget syncronizeText(BuildContext context) {
 //   return StreamBuilder<Object>(
@@ -72,12 +74,12 @@ Widget syncStatus(bool completed) {
   if (completed) {
     return const CircleAvatar(
       backgroundColor: Colors.white,
-      child: Icon(
-        Icons.check_rounded,
+      child: FaIcon(
+        FontAwesomeIcons.check,
         color: Colors.greenAccent,
       ),
     ).paddingRight(10);
   } else {
-    return Loader().paddingRight(10);
+    return const SizedCustomProgressIndicator().paddingRight(8);
   }
 }

@@ -7,13 +7,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/basic_widgets.dart';
-import 'package:pos_wappsi/components/widgets.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/basic_widgets.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-import 'package:pos_wappsi/components/appbar_leading.dart';
+import 'package:pos_wappsi/screens/components/appbar_leading.dart';
 import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
 import 'package:pos_wappsi/providers/suspended_sales_provider.dart';

@@ -1,10 +1,9 @@
 // ignore: must_be_immutable
 import 'package:flutter/material.dart';
-import 'package:pos_wappsi/components/button_global.dart';
 import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/screens/cash_accounting/components/functions.dart';
 import 'package:pos_wappsi/screens/cash_accounting/components/widgets.dart';
-
+import 'package:pos_wappsi/screens/components/button_global.dart';
 import 'package:provider/provider.dart';
 
 import '../../../constant.dart';

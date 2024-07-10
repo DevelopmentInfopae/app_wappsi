@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/components/image_file.dart';
-import 'package:pos_wappsi/components/image_preview.dart';
 import 'package:pos_wappsi/config/host_params.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/screens/components/image_file.dart';
+import 'package:pos_wappsi/screens/components/image_preview.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/local_storage/local_files.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';

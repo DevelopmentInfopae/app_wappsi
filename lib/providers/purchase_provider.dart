@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/purchases_bloc.dart';
-
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/purchase_items_model.dart';
 import 'package:pos_wappsi/models/purchase_model.dart';
-
 // import 'package:pos_wappsi/models/sale_model.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
@@ -84,7 +82,7 @@ class PurchaseProvider {
 
           // if (purchaseSaveR && purchaseItemsSaveR) {
           // }
-          await dataBloc.syncElements(['Compras'], context);
+          await dataBloc.syncElements(['Compras']);
           scaffoldAlert(
             context,
             'Compra registrada exitosamente',

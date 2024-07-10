@@ -5,7 +5,7 @@ import 'dart:math';
 // import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/components/alerts/product_changes_alert.dart';
+import 'package:pos_wappsi/screens/components/alerts/product_changes_alert.dart';
 // import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';

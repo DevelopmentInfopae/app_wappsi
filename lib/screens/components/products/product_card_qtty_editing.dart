@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 // import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:nb_utils/nb_utils.dart';
-// ignore: implementation_imports
-// import 'package:nb_utils/src/extensions/widget_extensions.dart';
-
-import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
+// ignore: implementation_imports
+// import 'package:nb_utils/src/extensions/widget_extensions.dart';
+
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/products/product_details.dart';
 import 'package:pos_wappsi/utils/alerts.dart';

@@ -2,13 +2,13 @@ import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-// import 'package:pos_wappsi/bloc/data_bloc.dart';
-
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/preview_print/preview_widgets.dart';
-import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/img_dir.dart';
 import 'package:pos_wappsi/constant.dart';
+// import 'package:pos_wappsi/bloc/data_bloc.dart';
+
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/preview_print/preview_widgets.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';
 import 'package:pos_wappsi/screens/sales/new_sale.dart';

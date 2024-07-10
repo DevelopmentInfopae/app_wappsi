@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 // import 'package:pos_wappsi/components/image_file.dart';
 
 class ImagePreview extends StatelessWidget {

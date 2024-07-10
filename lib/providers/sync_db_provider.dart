@@ -1,10 +1,8 @@
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/bloc/printer_bloc.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-
 import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/providers/cities_provider.dart';
 import 'package:pos_wappsi/providers/countries_provider.dart';
@@ -19,9 +17,9 @@ import 'biller_data_provider.dart';
 class SyncDBProvider {
   String updateDate = '';
   String syncDate = '';
-  bool firstTime = false;
+  static bool firstTime = false;
 
-  _getUpdates(Map<String, dynamic> options, {bool isPost = true}) async {
+  static _getUpdates(Map<String, dynamic> options, {bool isPost = true}) async {
     String? updateDate;
     DataProvider api = DataProvider();
 
@@ -50,7 +48,7 @@ class SyncDBProvider {
   }
 
   /// Load sma_countries, sma_states and sma_cities from local json files
-  Future<bool> loadCSC() async {
+  static Future<bool> loadCSC() async {
     bool res = true;
     List<Map<String, dynamic>>? temp =
         await CountriesProvider.allCountries() ?? [];
@@ -69,7 +67,7 @@ class SyncDBProvider {
     return res;
   }
 
-  Future<Map> update(
+  static Future<Map> update(
     String option, {
     Map<String, dynamic>? selectedOption,
     bool isSpecial = false,
@@ -152,7 +150,7 @@ class SyncDBProvider {
     return result;
   }
 
-  Future<Map> updateBillerTables() async {
+  static Future<Map> updateBillerTables() async {
     // String updateDate = '';
     Map<String, dynamic> billerSync = enabledOptions['Datos de Facturación']!;
     DataProvider api = DataProvider();
@@ -224,7 +222,7 @@ class SyncDBProvider {
     };
   }
 
-  Future<void> _updateBillerInDataBLoc() async {
+  static Future<void> _updateBillerInDataBLoc() async {
     final companyData = await CompanyModel.getCompanyBiller();
     try {
       dataBloc.setBillerCompany(companyData!);
@@ -245,7 +243,10 @@ class SyncDBProvider {
     }
   }
 
-  Future<bool> _writeIntoLocalDB(Map<String, dynamic> res, String table) async {
+  static Future<bool> _writeIntoLocalDB(
+    Map<String, dynamic> res,
+    String table,
+  ) async {
     bool result = false;
     if ((res['body']['data'] != null) ||
         (res['body']['data'] != '[]') ||
@@ -308,54 +309,19 @@ class SyncDBProvider {
     return result;
   }
 
-  Future syncOption(
-    BuildContext context,
+  //TODO: Remove context from here, manage alerts in a better way
+  static Future<bool> syncOption(
     String option, {
     bool deleteBefore = false,
   }) async {
+    Map res = {};
     if (option == 'Datos de Facturación') {
-      final res = await updateBillerData(context);
-      if (res['status'] == -1) {
-        await reloadDialog(
-          context,
-          'Sesión expirada, es necesario a iniciar sesión',
-          'assets/images/warning.png',
-        );
-      } else {
-        if (res['error'] == true) {
-          return await syncOption(context, option);
-        }
-      }
-      return res;
+      res = await updateBillerData();
     } else {
       final res = await update(option);
-      if (res['status'] == -1) {
-        await reloadDialog(
-          context,
-          'Sesión expirada, es necesario a iniciar sesión',
-          'assets/images/warning.png',
-        );
-      } else {
-        if (res['error'] == true) {
-          final choice = await choiceAlert(
-            context,
-            res['message'] + '¿Intentar nuevamente?',
-            'assets/images/warning.png',
-          );
-
-          if (choice) {
-            return await syncOption(context, option);
-          }
-        }
-      }
-      if (option == 'Terceros') {
-        // update current companyBiller on dataBloc
-        await _updateBillerInDataBLoc();
-      }
-      // Environment().env!='DEV'?null:print('xd');
-      // return res;
-      return true;
     }
+
+    return res['error'] == false;
   }
 
   Future<bool> synSelectedOption(
@@ -456,28 +422,9 @@ class SyncDBProvider {
   //       columnName: optionInfo['column_name']);
   // }
 
-  Future<Map> updateBillerData(BuildContext context) async {
+  static Future<Map> updateBillerData() async {
     final res = await updateBillerTables();
 
-    if (res['status'] == -1) {
-      reloadDialog(
-        context,
-        'Sesión expirada, es necesario a iniciar sesión',
-        'assets/images/warning.png',
-      );
-    } else {
-      if (res['error'] == true) {
-        final choice = await choiceAlert(
-          context,
-          res['message'] + '¿Intentar nuevamente?',
-          'assets/images/warning.png',
-        );
-
-        if (choice) {
-          return await updateBillerData(context);
-        }
-      }
-    }
     return res;
   }
 }

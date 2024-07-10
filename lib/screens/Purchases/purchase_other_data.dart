@@ -8,9 +8,9 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/purchases_bloc.dart';
 // import 'package:pos_wappsi/bloc/sync_bloc.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/input_decoration.dart';
-import 'package:pos_wappsi/components/widgets.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/input_decoration.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/global_form_const.dart';

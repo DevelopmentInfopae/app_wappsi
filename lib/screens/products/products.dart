@@ -5,7 +5,7 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:path_provider/path_provider.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';

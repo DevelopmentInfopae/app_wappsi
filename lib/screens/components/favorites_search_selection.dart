@@ -4,11 +4,11 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/bloc/quotes_bloc.dart';
-import 'package:pos_wappsi/components/products/product_card_info.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/wishlist_provider.dart';
+import 'package:pos_wappsi/screens/components/products/product_card_info.dart';
 
 class FavoritesOrderSelection extends StatefulWidget {
   const FavoritesOrderSelection({

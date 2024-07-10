@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
-import 'package:pos_wappsi/components/widgets.dart';
 // ignore: implementation_imports
 // import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/constant.dart';
@@ -10,6 +9,7 @@ import 'package:pos_wappsi/models/preference_category_model.dart';
 import 'package:pos_wappsi/models/preference_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 // import 'package:provider/single_child_widget.dart';
 

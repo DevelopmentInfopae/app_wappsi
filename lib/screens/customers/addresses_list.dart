@@ -1,17 +1,15 @@
 // ignore_for_file: unnecessary_statements
 
 import 'package:flutter/material.dart';
-
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/go_back_bottom.dart';
-import 'package:pos_wappsi/components/widgets.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
-
-import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/go_back_bottom.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/add_customer_address.dart';
 
 // import 'package:pos_wappsi/utils/text_formating/functions.dart';

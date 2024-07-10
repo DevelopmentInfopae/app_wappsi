@@ -2,12 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/register_form_provider.dart';
 import 'package:pos_wappsi/screens/cash_accounting/components/open_register_alert.dart';
 import 'package:pos_wappsi/screens/cash_accounting/register_movements.dart';
-
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:provider/provider.dart';
 
 class RegisterOptions extends StatefulWidget {

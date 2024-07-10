@@ -54,11 +54,10 @@ class SalesProvider {
             final Map<String, dynamic> changes = res['body']['data'];
             // to show changes in costumer or products
             // String chText = _getChangesString(changes);
-            final syncDB = SyncDBProvider();
             await Future.forEach(changes.keys.toList(), (String key) async {
               // here update tables who are supposed to be not updated
               if (changes[key]) {
-                await syncDB.syncOption(context, tableNamesToSyncOpt[key]!);
+                await SyncDBProvider.syncOption(tableNamesToSyncOpt[key]!);
               }
             });
             final reload = await posBloc.reloadPOSData(context);

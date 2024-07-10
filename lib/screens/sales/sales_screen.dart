@@ -5,7 +5,6 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/environment/environment.dart';
 // import 'package:pos_wappsi/constant.dart';
@@ -13,6 +12,7 @@ import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/local_sales_model.dart';
 import 'package:pos_wappsi/providers/local_sales_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/screens/sales/components/sales_card_list.dart';
 
 class SalesList extends StatefulWidget {

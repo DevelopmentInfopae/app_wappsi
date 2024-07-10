@@ -4,11 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
-import 'package:pos_wappsi/components/appbar_leading.dart';
+import 'package:pos_wappsi/screens/components/appbar_leading.dart';
 
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/products/product_card_info.dart';
-import 'package:pos_wappsi/components/widgets.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/products/product_card_info.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';

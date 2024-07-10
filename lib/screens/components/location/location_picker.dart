@@ -7,8 +7,8 @@ import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 
 class SearchLocationPage extends StatefulWidget {
   @override

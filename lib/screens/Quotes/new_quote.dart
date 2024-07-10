@@ -2,25 +2,24 @@
 
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/quotes_bloc.dart';
-// import 'package:pos_wappsi/bloc/pos_bloc.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/basic_widgets.dart';
-import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
-import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
+import 'package:pos_wappsi/models/customer_addresses_model.dart';
 // import 'package:pos_wappsi/components/app_bar_leading.dart';
 import 'package:pos_wappsi/providers/companies_provider.dart';
 import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
 import 'package:pos_wappsi/screens/Quotes/quote_products.dart';
+// import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/basic_widgets.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 // import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
-
-import 'package:nb_utils/nb_utils.dart';
 // import 'package:pos_wappsi/screens/sales/suspended_sales.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';

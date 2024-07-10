@@ -5,20 +5,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:nb_utils/nb_utils.dart';
-
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
-
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
-
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
-import '../../components/location/zone_szone_data.dart';
 import '../../utils/location/custom_controller.dart';
+import '../components/location/zone_szone_data.dart';
 
 class AddressDetails extends StatefulWidget {
   const AddressDetails({

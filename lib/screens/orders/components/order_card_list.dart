@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
-import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/models/order_model.dart';
 import 'package:pos_wappsi/providers/local_orders_provider.dart';
 import 'package:pos_wappsi/providers/orders_provider.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/orders/print_order.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/text_formating/date_to_text.dart';

@@ -16,9 +16,9 @@ import 'package:pos_wappsi/providers/price_groups_provider.dart';
 import 'package:pos_wappsi/providers/wishlist_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
+import 'package:pos_wappsi/utils/nav_utils.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/validation_encoding/encode_pass.dart';
-import 'package:pos_wappsi/utils/nav_utils.dart';
 
 class CompaniesProvider {
   /// Load default customer from db to posBloc
@@ -524,7 +524,7 @@ class CompaniesProvider {
         // DBSyncElements(
         //   options: {'Terceros': true, 'Sucursales': true},
         // ).launch(context);
-        await dataBloc.syncElements(['Terceros', 'Sucursales'], context);
+        await dataBloc.syncElements(['Terceros', 'Sucursales']);
         confirmDialog(
           context,
           res['body']['message'],
@@ -621,7 +621,7 @@ class CompaniesProvider {
         // DBSyncElements(
         //   options: {'Terceros': true, 'Sucursales': true},
         // ).launch(context);
-        await dataBloc.syncElements(['Terceros', 'Sucursales'], context);
+        await dataBloc.syncElements(['Terceros', 'Sucursales']);
         confirmDialog(
           context,
           res['body']['message'],
@@ -723,7 +723,7 @@ class CompaniesProvider {
         // DBSyncElements(
         //   options: {'Terceros': true, 'Sucursales': true},
         // ).launch(context);
-        await dataBloc.syncElements(['Terceros', 'Sucursales'], context);
+        await dataBloc.syncElements(['Terceros', 'Sucursales']);
         confirmDialog(
           context,
           res['body']['message'],

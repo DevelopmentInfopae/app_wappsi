@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/go_back_bottom.dart';
-import 'package:pos_wappsi/components/widgets.dart';
-
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/errors_provider.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/go_back_bottom.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 
 class ReportErrorScreen extends StatefulWidget {

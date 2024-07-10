@@ -3,10 +3,10 @@ import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 // import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/db_sync/db_sync_elements.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 

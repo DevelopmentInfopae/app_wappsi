@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:pos_wappsi/components/button_global.dart';
+import 'package:pos_wappsi/screens/components/button_global.dart';
 
 import '../../constant.dart';
 

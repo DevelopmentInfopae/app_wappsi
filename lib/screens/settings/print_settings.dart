@@ -1,22 +1,22 @@
+import 'dart:async';
 import 'dart:io' as io;
+
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 // import 'dart:typed_data';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/printer_bloc.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/widgets.dart';
-import 'package:pos_wappsi/params/print_settings_options.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/environment/environment.dart';
+import 'package:pos_wappsi/params/print_settings_options.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
-
 // import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/blue_print/blue_print.dart';

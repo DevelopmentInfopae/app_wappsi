@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:pos_wappsi/components/location/subzone_dropdown.dart';
-import 'package:pos_wappsi/components/location/zone_future_dropdown.dart';
+import 'package:pos_wappsi/screens/components/location/subzone_dropdown.dart';
+import 'package:pos_wappsi/screens/components/location/zone_future_dropdown.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
@@ -105,7 +105,7 @@ class _ZoneSZoneSelectionState extends State<ZoneSZoneSelection> {
                     'Zona y subzona asignadas con éxito.',
                     'assets/images/success.png',
                   );
-                  await SyncDBProvider().syncOption(context, 'Sucursales');
+                  await SyncDBProvider.syncOption('Sucursales');
                 } else {
                   await confirmDialog(
                     context,

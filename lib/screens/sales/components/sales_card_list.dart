@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
-import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/models/local_sales_model.dart';
 import 'package:pos_wappsi/providers/local_sales_provider.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/sales/print_sale.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';

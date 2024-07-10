@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:pos_wappsi/components/alerts/prefs_selection.dart';
+import 'package:pos_wappsi/screens/components/alerts/prefs_selection.dart';
 import 'package:pos_wappsi/models/preference_category_model.dart';
 import 'package:pos_wappsi/models/preference_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';

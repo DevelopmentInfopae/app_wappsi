@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../models/subzone_model.dart';
-import '../../models/zone_model.dart';
-import '../../providers/zone_provider.dart';
+import '../../../models/subzone_model.dart';
+import '../../../models/zone_model.dart';
+import '../../../providers/zone_provider.dart';
 import '../widgets.dart';
 
 class ZoneSZoneData extends StatelessWidget {

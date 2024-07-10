@@ -321,7 +321,7 @@ class CustomerAddressesProvider {
       // DBSyncElements(
       //   options: {'Terceros': true, 'Sucursales': true},
       // ).launch(context);
-      await dataBloc.syncElements(['Sucursales'], context);
+      await dataBloc.syncElements(['Sucursales']);
       confirmDialog(
         context,
         res['body']['message'],

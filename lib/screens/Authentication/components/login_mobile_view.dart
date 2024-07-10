@@ -6,6 +6,7 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/login_form_provider.dart';
 import 'package:pos_wappsi/screens/Authentication/components/login_form.dart';
 import 'package:pos_wappsi/screens/Authentication/components/login_logo.dart';
+import 'package:pos_wappsi/utils/responsive.dart';
 import 'package:provider/provider.dart';
 
 class LoginMobileView extends StatelessWidget {
@@ -19,6 +20,7 @@ class LoginMobileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveDesign(context);
     return SingleChildScrollView(
       child: Card(
         color: Colors.white,
@@ -28,7 +30,7 @@ class LoginMobileView extends StatelessWidget {
           children: [
             Logo(
               width: _size.width,
-              height: _size.height * 0.19,
+              height: responsive.maxHeightValue(150),
               fit: BoxFit.fitHeight,
               image: 'assets/logos/logo_wappsi.png',
             ).paddingOnly(top: _size.height * 0.15),

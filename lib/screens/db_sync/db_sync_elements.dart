@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-// ignore: implementation_imports
-// import 'package:nb_utils/src/extensions/widget_extensions.dart';
-// import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
+// ignore: implementation_imports
+// import 'package:nb_utils/src/extensions/widget_extensions.dart';
+// import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 // import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/db_sync/components/sync_element.dart';
 // import 'package:pos_wappsi/screens/db_sync/components/widgets.dart';
@@ -27,7 +27,6 @@ class _DBSyncElementsState extends State<DBSyncElements> {
   late Size _size;
   late Color _pc;
 
-  final syncDB = SyncDBProvider();
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
@@ -64,7 +63,7 @@ class _DBSyncElementsState extends State<DBSyncElements> {
       child: Column(
         children: widget.options.keys.map((option) {
           return FutureBuilder(
-            future: syncDB.syncOption(context, option),
+            future: SyncDBProvider.syncOption(option),
             // future: null,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
@@ -84,7 +83,6 @@ class _DBSyncElementsState extends State<DBSyncElements> {
 
   Widget elementSync(String option, {bool completed = false}) {
     return ElementSync(
-      context: context,
       status: completed,
       optionInfo: enabledOptions[option]!,
       optionName: option,

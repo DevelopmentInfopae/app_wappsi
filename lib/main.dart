@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:logger/logger.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/routes.dart';
@@ -15,6 +17,14 @@ void main() async {
     'ENVIRONMENT',
     defaultValue: Environment.PROD,
   );
+  final getIt = GetIt.instance;
+
+  getIt.registerLazySingleton<Logger>(
+    () => Logger(),
+  );
+  getIt.registerLazySingleton<GlobalKey<NavigatorState>>(
+    () => GlobalKey<NavigatorState>(),
+  );
 
   Environment().initConfig(environment);
   // add these lines
@@ -22,7 +32,10 @@ void main() async {
   SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
   );
-  runApp(const MyApp());
+  runApp(
+    // Adding ProviderScope enables Riverpod for the entire project
+    ProviderScope(child: Responsive(mobile: const MyApp())),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -50,44 +63,48 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      locale: _locale,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate
-      ],
-      supportedLocales: const [Locale('es')],
-      theme: ThemeData(
-        primaryColor: const Color.fromRGBO(28, 122, 190, 1),
-        scaffoldBackgroundColor: Colors.grey[100],
-        inputDecorationTheme:
-            const InputDecorationTheme(fillColor: Colors.white),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          toolbarTextStyle: TextStyle(color: Colors.black, fontSize: 20),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ButtonStyle(
-            // backgroundColor: MaterialStateProperty.all(Colors.green)
-            elevation: MaterialStateProperty.all(5),
-            backgroundColor: MaterialStateProperty.all(Colors.white),
-          ),
-        ),
-        iconTheme: const IconThemeData(color: Colors.black),
-        primaryIconTheme: const IconThemeData(color: Colors.white),
-        buttonTheme: const ButtonThemeData(
-            // textTheme: buttonTextTheme.primary
+    return Builder(
+      builder: (context) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          locale: _locale,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate
+          ],
+          supportedLocales: const [Locale('es')],
+          theme: ThemeData(
+            primaryColor: const Color.fromRGBO(28, 122, 190, 1),
+            scaffoldBackgroundColor: Colors.grey[100],
+            inputDecorationTheme:
+                const InputDecorationTheme(fillColor: Colors.white),
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.white,
+              toolbarTextStyle: TextStyle(color: Colors.black, fontSize: 20),
             ),
-        textTheme: GoogleFonts.poppinsTextTheme(
-          Theme.of(context).textTheme,
-        ),
-        backgroundColor: Colors.white,
-      ),
-      title: 'WappsiPOSApp',
-      initialRoute: '/',
-      routes: Routes.getRoutes(),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ButtonStyle(
+                // backgroundColor: MaterialStateProperty.all(Colors.green)
+                elevation: MaterialStateProperty.all(5),
+                backgroundColor: MaterialStateProperty.all(Colors.white),
+              ),
+            ),
+            iconTheme: const IconThemeData(color: Colors.black),
+            primaryIconTheme: const IconThemeData(color: Colors.white),
+            buttonTheme: const ButtonThemeData(
+                // textTheme: buttonTextTheme.primary
+                ),
+            textTheme: GoogleFonts.poppinsTextTheme(
+              Theme.of(context).textTheme,
+            ),
+            backgroundColor: Colors.white,
+          ),
+          title: 'WappsiPOSApp',
+          initialRoute: '/',
+          routes: Routes.getRoutes(),
+        );
+      },
     );
   }
 }

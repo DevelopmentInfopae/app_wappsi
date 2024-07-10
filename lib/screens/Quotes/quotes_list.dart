@@ -6,7 +6,7 @@ import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/constant.dart';
@@ -82,13 +82,11 @@ class _ProductsState extends State<QuotesList> {
           displacement: 0,
           onRefresh: () async {
             /// sync sma_quotes
-            final dbProvider = SyncDBProvider();
 
-            final result = await dbProvider.syncOption(
-              context,
+            final result = await SyncDBProvider.syncOption(
               tableNamesToSyncOpt['sma_quotes']!,
             );
-            if (result['error'] == false) {
+            if (result) {
               final orders = await QuotesProvider.listLocalQuotes(
                 search: _searchParams['search'] ?? '',
                 filters: _filters,

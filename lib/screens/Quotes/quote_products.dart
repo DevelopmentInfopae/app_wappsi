@@ -5,20 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/quotes_bloc.dart';
-import 'package:pos_wappsi/components/appbar_leading.dart';
-import 'package:pos_wappsi/components/back_app_bar.dart';
-import 'package:pos_wappsi/components/widgets.dart';
+import 'package:pos_wappsi/screens/components/appbar_leading.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
-import 'package:pos_wappsi/components/products/product_list.dart';
+import 'package:pos_wappsi/screens/components/products/product_list.dart';
 import 'package:pos_wappsi/screens/Quotes/quote_other_data.dart';
-import 'package:pos_wappsi/components/favorites_search_selection.dart';
+import 'package:pos_wappsi/screens/components/favorites_search_selection.dart';
 // import 'package:pos_wappsi/screens/orders/order_other_details.dart';
 // import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
 
-import 'package:pos_wappsi/components/search_products.dart';
+import 'package:pos_wappsi/screens/components/search_products.dart';
 
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';

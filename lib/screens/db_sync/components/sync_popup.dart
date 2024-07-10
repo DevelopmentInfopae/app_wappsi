@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/constant.dart';
-
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
 
 /// Custom alert dialog to manage open and close operations on Register, to open action = 'open'
@@ -67,7 +66,7 @@ class SyncAlertDialogState extends State<SyncAlertDialog> {
     return ListView(
       children: widget.options.keys.map((option) {
         return FutureBuilder(
-          future: syncDB.syncOption(context, option),
+          future: SyncDBProvider.syncOption(option),
           // future: null,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {

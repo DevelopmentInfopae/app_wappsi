@@ -2,32 +2,33 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/models/zone_model.dart';
 
-import '../../models/subzone_model.dart';
+import '../../../providers/zone_provider.dart';
 
-class SubZoneDropDown extends StatefulWidget {
-  const SubZoneDropDown({
+class ZoneFutureDropDown extends StatefulWidget {
+  const ZoneFutureDropDown({
     Key? key,
-    required this.stream,
-    required this.dropDownKey,
+    required this.selectedCityCode,
+    this.dropDownKey,
     required this.required,
     required this.onChange,
-    required this.selectedSZoneCode,
+    required this.selectedZone,
   }) : super(key: key);
 
-  final Stream<List<SubzoneModel>> stream;
-  final int? selectedSZoneCode;
+  final String? selectedCityCode;
+  final int? selectedZone;
   final bool required;
 
-  final Function(SubzoneModel?) onChange;
+  final Function(ZoneModel?) onChange;
 
-  final GlobalKey<DropdownSearchState<SubzoneModel?>>? dropDownKey;
+  final GlobalKey<DropdownSearchState<ZoneModel?>>? dropDownKey;
 
   @override
-  State<SubZoneDropDown> createState() => _SubZoneDropDownState();
+  State<ZoneFutureDropDown> createState() => _ZoneFutureDropDownState();
 }
 
-class _SubZoneDropDownState extends State<SubZoneDropDown> {
+class _ZoneFutureDropDownState extends State<ZoneFutureDropDown> {
   final TextEditingController _subzoneController = TextEditingController();
   @override
   void dispose() {
@@ -37,30 +38,31 @@ class _SubZoneDropDownState extends State<SubZoneDropDown> {
 
   bool alreadyLoaded = false;
 
+  ZoneModel? _selectedZone;
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<SubzoneModel>>(
-      //load city if already defined in customer data, if not load default city
-      stream: widget.stream,
-      initialData: const [],
-      builder:
-          (BuildContext context, AsyncSnapshot<List<SubzoneModel>> snapshot) {
-        SubzoneModel? _selectedSZone;
-        try {
-          _selectedSZone = snapshot.data
-              ?.where((element) => element.id == widget.selectedSZoneCode)
-              .first;
-        } catch (e) {
-          log(e);
+    return FutureBuilder<List<ZoneModel>?>(
+      future: (widget.selectedCityCode != null)
+          ? ZonesProvider.loadCityZones(widget.selectedCityCode ?? '')
+          : null,
+      builder: (context, AsyncSnapshot snapshot) {
+        if (_selectedZone == null) {
+          try {
+            _selectedZone = snapshot.data
+                ?.where((element) => element.id == widget.selectedZone)
+                .first;
+          } catch (e) {
+            log(e);
+          }
         }
-
-        return DropdownSearch<SubzoneModel>(
+        return DropdownSearch<ZoneModel>(
           key: widget.dropDownKey,
           searchFieldProps: TextFieldProps(
             controller: _subzoneController,
             // autofocus: true,
             decoration: InputDecoration(
-              labelText: 'Barrio',
+              labelText: 'Zona',
               suffixIcon: IconButton(
                 icon: const Icon(Icons.clear),
                 onPressed: () {
@@ -85,12 +87,12 @@ class _SubZoneDropDownState extends State<SubZoneDropDown> {
           showSelectedItems: true,
           clearButton: const Icon(Icons.clear_rounded),
           compareFn: (item, selectedItem) =>
-              item?.subzoneCode == selectedItem?.subzoneCode,
+              item?.zoneCode == selectedItem?.zoneCode,
           showSearchBox: true,
-          selectedItem: _selectedSZone,
+          selectedItem: _selectedZone,
           items: snapshot.data,
           dropdownSearchDecoration: InputDecoration(
-            labelText: 'Barrio :',
+            labelText: 'Zona :',
             labelStyle: const TextStyle(color: pColor),
             filled: true,
             fillColor: Theme.of(context).inputDecorationTheme.fillColor,
@@ -99,12 +101,12 @@ class _SubZoneDropDownState extends State<SubZoneDropDown> {
           onFind: (String? filter) async {
             try {
               final data = (snapshot.data)?.where((element) {
-                final result = element.subzoneName
+                final result = element.zoneName
                     .toUpperCase()
                     .contains(filter?.toUpperCase() ?? '');
                 return result;
               }).toList();
-              return data ?? (<SubzoneModel>[]);
+              return data ?? (<ZoneModel>[]);
             } catch (e) {
               log(e);
               return [];

@@ -3,10 +3,10 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:pos_wappsi/components/products/product_card_info.dart';
-import 'package:pos_wappsi/components/widgets.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
+import 'package:pos_wappsi/screens/components/products/product_card_info.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 
 class ProductCardList extends StatefulWidget {
