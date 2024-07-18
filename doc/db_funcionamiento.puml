@@ -1,0 +1,17 @@
+@startuml Traer datos para guardar en la base de datos Local
+U_I -> LocalDB_Provider: Solicita datos
+LocalDB_Provider --> LocalDB: Solicita fechas de sincronizacion
+LocalDB --> LocalDB_Provider: Retorna fechas de sincronizacion
+LocalDB_Provider --> API_Provider: Solicita datos al servidor mediante una peticion HTTP
+API_Provider --> LocalDB_Provider: Retorna el listado de datos deseado
+LocalDB_Provider --> LocalDB: Guarda los datos en la base de datos local
+LocalDB_Provider --> U_I: <font color=green><b> Se notifica al UI
+
+LocalDB --> LocalDB_Provider: <font color=red><b>Error al guardar en la base de datos local
+
+API_Provider --> LocalDB_Provider: <font color=red><b>Message 400 : Retorna error del servidor
+LocalDB_Provider --> U_I: <font color=red><b> Se notifica al UI del error
+
+
+LocalDB_Provider --> U_I: <font color=red><b> Se notifica al UI del error
+@enduml

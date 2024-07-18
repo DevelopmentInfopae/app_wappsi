@@ -1,0 +1,14 @@
+@startuml Guardar datos en la base de datos local
+U.I -> x_Provider: Solicita guardar un modelo de datos
+x_Provider --> LocalDB_Provider: Envia el modelo de datos a guardar
+LocalDB_Provider --> LocalDB: Parsea el modelo a JSON y ejecuta la consulta
+LocalDB --> LocalDB_Provider: Retorna resultado de la consulta
+LocalDB_Provider --> x_Provider: Retorna el mensaje de confirmacion o el modelo de objeto
+x_Provider --> U.I: <font color=green><b> Se notifica al UI
+
+LocalDB --> LocalDB_Provider: <font color=red><b>Error al guardar datos
+
+LocalDB_Provider --> x_Provider: <font color=red><b>Retorna error de guardado
+x_Provider --> U.I: <font color=red><b> Se notifica al UI del error
+
+@enduml

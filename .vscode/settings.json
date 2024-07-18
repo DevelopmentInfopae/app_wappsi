@@ -141,6 +141,7 @@
   "java.configuration.updateBuildConfiguration": "interactive",
   "dart.flutterSdkPath": ".fvm/versions/3.3.1",
   "conventionalCommits.scopes": [
-    "DB-SYNC"
+    "DB-SYNC",
+    "Project Structure and Functionality Doc"
   ]
 }

@@ -1,0 +1,14 @@
+@startuml Buscar datos en la base de datos local
+U.I -> x_Provider: Solicita datos
+x_Provider --> LocalDB_Provider: Solicita datos con filtros respectivos
+LocalDB_Provider --> LocalDB: Realiza la consulta SQLite
+LocalDB --> LocalDB_Provider: Retorna resultado de la consulta
+LocalDB_Provider --> x_Provider: Parsea los datos a los modelos respectivos
+x_Provider --> U.I: <font color=green><b> Se notifica al UI
+
+LocalDB --> LocalDB_Provider: <font color=red><b>Error al consultar datos
+
+LocalDB_Provider --> x_Provider: <font color=red><b>Retorna error en la consulta
+x_Provider --> U.I: <font color=red><b> Se notifica al UI del error
+
+@enduml
