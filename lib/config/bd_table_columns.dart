@@ -241,7 +241,7 @@ const List<String> billerDataColumns = [
   'random_pin_code_date',
   'last_update',
   'order_sales_document_type_default',
-  'min_sale_amount'
+  'min_sale_amount',
 ];
 const List<String> customerGroupsColumns = [
   'id_cloud',
@@ -484,7 +484,7 @@ const List<String> settingsColumns = [
   'last_update',
   'product_preferences_management',
   'management_order_sale_delivery_time',
-  'delivery_day_max_orders'
+  'delivery_day_max_orders',
 ];
 const List<String> addressesColumns = [
   'id_cloud',
@@ -655,13 +655,13 @@ const List<String> posSettingsColumns = [
   'order_to_table_default_restobar',
   'mobile_print_wait_time',
   'show_client_modal_on_select',
-  'last_update'
+  'last_update',
 ];
 const List<String> documentypesColumns = [
   'id_cloud',
   'nombre',
   'abreviacion',
-  'codigo_doc'
+  'codigo_doc',
 ];
 const List<String> countriesColumns = [
   'CODIGO',
@@ -1017,7 +1017,7 @@ const List<String> paymentsColumns = [
   'rete_bomberil_assumed_account',
   'rete_autoaviso_assumed_account',
   'comm_paid_payments_ids',
-  'comm_paid_sale_reference'
+  'comm_paid_sale_reference',
 ];
 const List<String> wishlistColumns = ['id_cloud', 'user_id', 'product_id'];
 const List<String> unitPricesColumns = [

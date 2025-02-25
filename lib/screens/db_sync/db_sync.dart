@@ -206,7 +206,7 @@ class _DBSyncState extends ConsumerState<DBSync> {
                 .flexible(flex: 5),
             syncStatus(completed).flexible(),
           ],
-        ).flexible(flex: 5)
+        ).flexible(flex: 5),
       ],
     ).paddingSymmetric(horizontal: 7, vertical: 4);
   }

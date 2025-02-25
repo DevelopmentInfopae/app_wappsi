@@ -8,10 +8,6 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
-// import 'package:pos_wappsi/bloc/sync_bloc.dart';
-import 'package:pos_wappsi/screens/components/back_app_bar.dart';
-import 'package:pos_wappsi/screens/components/input_decoration.dart';
-import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/config/documents_types.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
@@ -21,6 +17,10 @@ import 'package:pos_wappsi/params/pos_params.dart';
 import 'package:pos_wappsi/providers/document_types_provider.dart';
 import 'package:pos_wappsi/providers/payment_methods_provider.dart';
 import 'package:pos_wappsi/providers/sale_provider.dart';
+// import 'package:pos_wappsi/bloc/sync_bloc.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/input_decoration.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 // import 'package:pos_wappsi/screens/db_sync/components/sync_popup.dart';
@@ -138,7 +138,7 @@ class _SalePaymentState extends State<SalePayment> {
           _documentPOS().paddingSymmetric(vertical: 6),
           _inputs(),
           _invoiceNote().paddingSymmetric(vertical: 6),
-          _dispatchNote().paddingSymmetric(vertical: 6)
+          _dispatchNote().paddingSymmetric(vertical: 6),
         ],
       ),
     );
@@ -155,8 +155,8 @@ class _SalePaymentState extends State<SalePayment> {
             children: [
               TextSpan(
                 text: '${posBloc.getProductsCount()}',
-                style: _textTheme.headline6,
-              )
+                style: _textTheme.headlineSmall,
+              ),
             ],
           ),
           // style: textTheme,
@@ -168,8 +168,8 @@ class _SalePaymentState extends State<SalePayment> {
             children: [
               TextSpan(
                 text: '${posBloc.getItemsCount()}',
-                style: _textTheme.headline6,
-              )
+                style: _textTheme.headlineSmall,
+              ),
             ],
           ),
           // style: textTheme,
@@ -350,7 +350,7 @@ class _SalePaymentState extends State<SalePayment> {
                     : Container(),
                 posBloc.getPaymentMethod?.code == 'Credito'
                     ? _paymentTerm()
-                    : Container()
+                    : Container(),
               ]
             : [Container()],
       ),
@@ -366,7 +366,7 @@ class _SalePaymentState extends State<SalePayment> {
       ),
       enabled: posBloc.getPaymentMethod?.code == 'Credito',
       textFieldType: TextFieldType.PHONE,
-      textStyle: Theme.of(context).textTheme.subtitle1,
+      textStyle: Theme.of(context).textTheme.labelMedium,
       autoFocus: false,
       isValidationRequired: true,
       validator: (value) {
@@ -435,7 +435,7 @@ class _SalePaymentState extends State<SalePayment> {
           enabled: (posBloc.getPaymentMethod?.code != 'Credito' ||
               posBloc.getPaymentMethod?.code != 'credito'),
           textFieldType: TextFieldType.PHONE,
-          textStyle: Theme.of(context).textTheme.subtitle1,
+          textStyle: Theme.of(context).textTheme.labelMedium,
           autoFocus: false,
           isValidationRequired: true,
           validator: (value) {
@@ -513,7 +513,7 @@ class _SalePaymentState extends State<SalePayment> {
         _defaultValuesWidget(_count5000, 5000),
         _defaultValuesWidget(_count10000, 10000),
         _defaultValuesWidget(_count20000, 20000),
-        _defaultValuesWidget(_count50000, 50000)
+        _defaultValuesWidget(_count50000, 50000),
       ],
     );
   }
@@ -554,13 +554,13 @@ class _SalePaymentState extends State<SalePayment> {
       child: RichText(
         text: TextSpan(
           text: valueString.substring(0, valueString.length),
-          style: _textTheme.bodyText1!.apply(color: Colors.black),
+          style: _textTheme.bodyLarge!.apply(color: Colors.black),
           children: [
             TextSpan(
               text: (counter == 0 ? '' : 'x$counter'),
-              style: _textTheme.bodyText1!
+              style: _textTheme.bodyLarge!
                   .apply(color: Colors.black87, fontSizeFactor: 0.95),
-            )
+            ),
           ],
         ),
       ),
@@ -596,7 +596,7 @@ class _SalePaymentState extends State<SalePayment> {
             blurRadius: 2.5,
             spreadRadius: 0.0,
             offset: Offset(2.0, 2.0), // shadow direction: bottom right
-          )
+          ),
         ],
       ),
       child: Row(
@@ -620,7 +620,7 @@ class _SalePaymentState extends State<SalePayment> {
                 style: buttonsSmallTextStyle(context).apply(color: _pc),
               ),
             ],
-          ).withWidth(_size.width * 0.45)
+          ).withWidth(_size.width * 0.45),
         ],
       ),
     );

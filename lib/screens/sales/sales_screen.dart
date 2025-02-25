@@ -93,7 +93,7 @@ class _ProductsState extends State<SalesList> {
             'path': 'sync/allSales',
             'table': 'sma_sales',
             'sync_id': 22,
-            'image': 'order-list.png'
+            'image': 'order-list.png',
           },
           context,
           isPost: false,
@@ -133,7 +133,7 @@ class _ProductsState extends State<SalesList> {
             color: Colors.grey,
             offset: Offset(0.0, 1.0), //(x,y)
             blurRadius: 2.0,
-          )
+          ),
         ],
       ),
     );

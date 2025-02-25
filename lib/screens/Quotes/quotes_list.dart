@@ -6,7 +6,6 @@ import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/constant.dart';
@@ -15,6 +14,7 @@ import 'package:pos_wappsi/models/quotes_model.dart';
 import 'package:pos_wappsi/providers/quotes_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/Quotes/components/quotes_card_list.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 
 class QuotesList extends StatefulWidget {
   const QuotesList({Key? key}) : super(key: key);
@@ -95,7 +95,7 @@ class _ProductsState extends State<QuotesList> {
             }
           },
           child: _quotesList(),
-        ).paddingTop(8).expand()
+        ).paddingTop(8).expand(),
       ],
     );
   }
@@ -120,7 +120,7 @@ class _ProductsState extends State<QuotesList> {
             color: Colors.grey,
             offset: Offset(0.0, 1.0), //(x,y)
             blurRadius: 2.0,
-          )
+          ),
         ],
       ),
     );

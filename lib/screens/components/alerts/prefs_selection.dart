@@ -108,7 +108,7 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
               textAlign: TextAlign.center,
               style: buttonsSmallTextStyle(context),
             ),
-            _productName(context)
+            _productName(context),
           ],
         ),
 
@@ -219,7 +219,7 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
                               .paddingSymmetric(horizontal: 2, vertical: 3);
                         }).toList(),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -229,7 +229,7 @@ class SelectProductPrefsDialogState extends State<SelectProductPrefsDialog> {
                       textAlign: TextAlign.center,
                       style: normalTextStyle(context, color: errorColor),
                     ).paddingTop(4)
-                  : const SizedBox()
+                  : const SizedBox(),
             ],
           );
         }).toList(),

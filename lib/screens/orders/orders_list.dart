@@ -8,7 +8,6 @@ import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/constant.dart';
 // import 'package:pos_wappsi/constant.dart';
@@ -16,6 +15,7 @@ import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/order_model.dart';
 import 'package:pos_wappsi/providers/local_orders_provider.dart';
 import 'package:pos_wappsi/providers/sync_db_provider.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/screens/orders/components/order_card_list.dart';
 import 'package:pos_wappsi/utils/text_formating/order_status_mapping.dart';
 
@@ -127,7 +127,7 @@ class _ProductsState extends State<OrdersList> {
               });
             }
           },
-        ).paddingTop(8).expand()
+        ).paddingTop(8).expand(),
       ],
     );
   }
@@ -141,7 +141,7 @@ class _ProductsState extends State<OrdersList> {
             color: Colors.grey,
             offset: Offset(0.0, 1.0), //(x,y)
             blurRadius: 2.0,
-          )
+          ),
         ],
       ),
       width: double.infinity,
@@ -211,7 +211,7 @@ class _ProductsState extends State<OrdersList> {
                   color: Colors.grey,
                   offset: Offset(0.0, 1.0), //(x,y)
                   blurRadius: 2.0,
-                )
+                ),
               ],
       ),
     );
@@ -250,7 +250,7 @@ class _ProductsState extends State<OrdersList> {
                 showFilters = !showFilters;
               });
             },
-          )
+          ),
         ],
         automaticallyImplyBackButton: false,
         color: Colors.grey[200],

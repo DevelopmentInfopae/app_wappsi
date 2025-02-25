@@ -93,7 +93,7 @@ TextStyle buttonsTextStyle(
   fontWeightDelta = 1,
   color = Colors.white,
 }) {
-  return Theme.of(context).primaryTextTheme.headline6!.apply(
+  return Theme.of(context).primaryTextTheme.titleLarge!.apply(
         fontSizeFactor: fontSizeFactor,
         color: color,
         fontWeightDelta: fontWeightDelta,
@@ -107,7 +107,7 @@ TextStyle buttonsSmallTextStyle(
 }) {
   return Theme.of(context)
       .primaryTextTheme
-      .headline6!
+      .titleLarge!
       .apply(fontSizeFactor: fontSizeFactor, color: color ?? greyColor);
 }
 
@@ -121,7 +121,7 @@ TextStyle normalTextStyle(
   int fontWeightDelta = 0,
   Color? color,
 }) {
-  return Theme.of(context).primaryTextTheme.subtitle1!.apply(
+  return Theme.of(context).primaryTextTheme.labelMedium!.apply(
         fontSizeFactor: fontSizeFactor,
         color: color ?? greyDarkerColor,
         fontWeightDelta: fontWeightDelta,
@@ -134,7 +134,7 @@ TextStyle smallTextStyle(
   int fontWeightDelta = 0,
   Color? color,
 }) {
-  return Theme.of(context).primaryTextTheme.caption!.apply(
+  return Theme.of(context).primaryTextTheme.labelSmall!.apply(
         fontSizeFactor: fontSizeFactor,
         color: color ?? greyDarkerColor,
         fontWeightDelta: fontWeightDelta,
@@ -147,7 +147,7 @@ TextStyle smallTextStyle2(
   int fontWeightDelta = 0,
   Color? color,
 }) {
-  return Theme.of(context).primaryTextTheme.caption!.apply(
+  return Theme.of(context).primaryTextTheme.labelSmall!.apply(
         fontSizeFactor: fontSizeFactor,
         color: color ?? greyDarkerColor,
         fontWeightDelta: fontWeightDelta,

@@ -151,7 +151,7 @@ class _ProductCardState extends State<ProductCard> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ).expand(),
-        _baseUnitPrice(widget.unit!)
+        _baseUnitPrice(widget.unit!),
       ],
     );
   }
@@ -170,7 +170,7 @@ class _ProductCardState extends State<ProductCard> {
             color: greyMediumLight,
           ),
           child: _productPriceTotal(),
-        ).paddingOnly(right: 10).expand()
+        ).paddingOnly(right: 10).expand(),
       ],
     );
   }
@@ -263,7 +263,7 @@ class _ProductCardState extends State<ProductCard> {
         // focusNode: quantityFocusNode,
         // textFieldType: TextFieldType.PHONE,5
         keyboardType: TextInputType.number,
-        style: Theme.of(context).textTheme.headline6,
+        style: Theme.of(context).textTheme.headlineMedium,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           // fillColor: Colors.red,
@@ -427,7 +427,7 @@ class _ProductCardState extends State<ProductCard> {
                     },
                   ))
             .paddingRight(4),
-        _productPrice()
+        _productPrice(),
       ],
     );
   }

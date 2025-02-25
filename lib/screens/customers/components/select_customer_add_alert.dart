@@ -57,7 +57,7 @@ class SelectCustomerAddressAlertState
           Text(
             capitalizeText(widget.customer.name!),
             style: normalTextStyle(context, fontSizeFactor: 1.1),
-          ).paddingTop(8)
+          ).paddingTop(8),
         ],
       ).paddingBottom(10),
       content: Column(

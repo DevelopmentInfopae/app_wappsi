@@ -1,16 +1,13 @@
 import 'dart:async';
-
 import 'dart:math';
 
 // import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/screens/components/alerts/product_changes_alert.dart';
+import 'package:pos_wappsi/models/companies_model.dart';
 // import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
-import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
-
 import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/models/preference_category_model.dart';
 import 'package:pos_wappsi/models/preference_model.dart';
@@ -18,13 +15,12 @@ import 'package:pos_wappsi/models/product_model.dart';
 // import 'package:pos_wappsi/models/suspended_sale_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/price_policy_provider.dart';
-
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
+import 'package:pos_wappsi/screens/components/alerts/product_changes_alert.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
-
 // import 'package:pos_wappsi/utils/local_storage/local_db.dart';
 
 import 'package:rxdart/rxdart.dart';
@@ -216,7 +212,6 @@ class POSBloc {
       }
 
       // product.quantity = 1;
-
     }
     reloadProductStream();
     return res;
@@ -559,7 +554,7 @@ class POSBloc {
           element.getPriceWithoutIVA() * element.quantity;
       ivasMap[element.taxRate] = {
         'value': temp[element.taxRate],
-        'name': element.taxRateName
+        'name': element.taxRateName,
       };
       // printConsole('xd');
     }

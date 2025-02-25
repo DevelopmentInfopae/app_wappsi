@@ -34,7 +34,7 @@ class ErrorsProvider {
               {
                 'error': 'No error',
                 'from': 'sended report without error register',
-                'date': DateTime.now().toIso8601String()
+                'date': DateTime.now().toIso8601String(),
               }
             ],
       'message': message ?? '',

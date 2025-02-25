@@ -59,7 +59,7 @@ class _ProductCardWUnitState extends State<ProductCardWUnit> {
           productPhoto(
             widget.product.image == '' ? 'no_image.png' : widget.product.image,
           ).flexible(flex: 2),
-          _productInfo().flexible(flex: 7)
+          _productInfo().flexible(flex: 7),
         ],
       ),
       onTap: () async {
@@ -148,7 +148,7 @@ class _ProductCardWUnitState extends State<ProductCardWUnit> {
               tValue.substring(0, tValue.length),
               style: normalTextStyle(context),
             ),
-            uValueWidget
+            uValueWidget,
           ],
         ),
       ],

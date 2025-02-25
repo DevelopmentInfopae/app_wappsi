@@ -33,7 +33,7 @@ class SyncDBProvider {
       }
       Map<String, dynamic> body = {
         'last_sync': updateDate,
-        'first_time': firstTime
+        'first_time': firstTime,
       };
       res = await api.postPetition(
         options['path'],
@@ -82,7 +82,7 @@ class SyncDBProvider {
       return {
         'error': true,
         'status': -1,
-        'message': "Error al sincronizar, ${res['body']['message']}"
+        'message': "Error al sincronizar, ${res['body']['message']}",
       };
     } else {
       if (res['error']) {
@@ -130,14 +130,14 @@ class SyncDBProvider {
           return {
             'error': false,
             'status': 1,
-            'message': '$option sincronizados'
+            'message': '$option sincronizados',
           };
         } else {
           // syncBloc.setProgressMessage('Error al sincronizar $option');
           return {
             'error': true,
             'status': 2,
-            'message': 'Error al sincronizar $option'
+            'message': 'Error al sincronizar $option',
           };
         }
       }
@@ -171,14 +171,14 @@ class SyncDBProvider {
       return {
         'error': true,
         'status': -1,
-        'message': "Error al sincronizar, ${res['body']['message']}"
+        'message': "Error al sincronizar, ${res['body']['message']}",
       };
     } else {
       // syncBloc.setProgressMessage('Error al sincronizar datos de sucursal');
       return {
         'error': true,
         'status': 2,
-        'message': 'Error al sincronizar datos de sucursal'
+        'message': 'Error al sincronizar datos de sucursal',
       };
     }
     if (result) {
@@ -195,14 +195,14 @@ class SyncDBProvider {
         return {
           'error': true,
           'status': -1,
-          'message': "Error al sincronizar, ${res['body']['message']}"
+          'message': "Error al sincronizar, ${res['body']['message']}",
         };
       } else {
         // syncBloc.setProgressMessage('Error al sincronizar datos de sucursal');
         return {
           'error': true,
           'status': 2,
-          'message': 'Error al sincronizar datos de sucursal'
+          'message': 'Error al sincronizar datos de sucursal',
         };
       }
     } else {
@@ -210,14 +210,14 @@ class SyncDBProvider {
       return {
         'error': true,
         'status': 2,
-        'message': 'Error al sincronizar datos de sucursal'
+        'message': 'Error al sincronizar datos de sucursal',
       };
     }
 
     return {
       'error': false,
       'status': 1,
-      'message': 'Datos de sucursal sincronizados'
+      'message': 'Datos de sucursal sincronizados',
     };
   }
 

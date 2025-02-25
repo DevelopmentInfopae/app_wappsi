@@ -384,22 +384,22 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
     if (registerFormProvider.movementType == '') {
       return {
         'error': true,
-        'message': 'Debe seleccionar el tipo de movimiento'
+        'message': 'Debe seleccionar el tipo de movimiento',
       };
     } else if (registerFormProvider.documentType == '') {
       return {
         'error': true,
-        'message': 'Debe seleccionar el tipo de documento para el movimiento'
+        'message': 'Debe seleccionar el tipo de documento para el movimiento',
       };
     } else if (registerFormProvider.paymentDestiny == null) {
       return {
         'error': true,
-        'message': 'Debe seleccionar la forma de pago de destino'
+        'message': 'Debe seleccionar la forma de pago de destino',
       };
     } else if (registerFormProvider.paymentOrigin == null) {
       return {
         'error': true,
-        'message': 'Debe seleccionar la forma de pago de origen'
+        'message': 'Debe seleccionar la forma de pago de origen',
       };
     } else {
       return {'error': false};
@@ -466,7 +466,7 @@ class _RegisterMovementsFormType extends State<RegisterMovementsForm> {
                       'value': registerFormProvider.value,
                       'movement_note': registerFormProvider.movementNote ?? '',
                       'user_name': (dataBloc.userData?.firstName ?? '') +
-                          (dataBloc.userData?.lastName ?? '')
+                          (dataBloc.userData?.lastName ?? ''),
                     };
                     WidgetsBinding.instance.addPostFrameCallback((_) async {
                       Navigator.pushAndRemoveUntil(

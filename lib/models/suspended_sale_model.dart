@@ -74,7 +74,7 @@ class SuspendedSales {
         'total_value': totalValue,
         'key_word': keyWord,
         'created_date': items,
-        'seller_name': sellerName
+        'seller_name': sellerName,
       };
   static List<SuspendedSales> fromJsonList(List<Map> list) {
     List<SuspendedSales> suspSales = [];

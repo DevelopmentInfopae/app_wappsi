@@ -86,7 +86,7 @@ class _OnBoardState extends State<OnBoard> {
           ),
           const SizedBox(
             width: 30.0,
-          )
+          ),
         ],
       ),
       body: Column(

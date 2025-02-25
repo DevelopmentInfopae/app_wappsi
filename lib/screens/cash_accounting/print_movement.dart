@@ -185,7 +185,7 @@ class _PrintMovementState extends State<PrintMovement> {
             'Imprimir ',
             style: buttonsSmallTextStyle(context),
           ),
-          const Icon(Icons.print)
+          const Icon(Icons.print),
         ],
       ),
     );
@@ -213,7 +213,7 @@ class _PrintMovementState extends State<PrintMovement> {
             'Salir ',
             style: buttonsSmallTextStyle(context),
           ),
-          const Icon(Icons.exit_to_app)
+          const Icon(Icons.exit_to_app),
         ],
       ),
     );
@@ -226,7 +226,7 @@ class _PrintMovementState extends State<PrintMovement> {
           '____________________________________',
           style: normalTextStyle(context),
         ),
-        Text('Firma y sello', style: normalTextStyle(context))
+        Text('Firma y sello', style: normalTextStyle(context)),
       ],
     );
   }

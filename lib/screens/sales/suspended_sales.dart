@@ -54,7 +54,7 @@ class _SuspendedSalesScreenState extends State<SuspendedSalesScreen> {
         _searchBar(),
         SingleChildScrollView(
           child: _suspendedSales().paddingSymmetric(horizontal: 8, vertical: 4),
-        ).expand()
+        ).expand(),
         // bottom(_buttons(), pColor, _size)
       ],
     );
@@ -80,7 +80,7 @@ class _SuspendedSalesScreenState extends State<SuspendedSalesScreen> {
             color: Colors.grey,
             offset: Offset(0.0, 1.0), //(x,y)
             blurRadius: 2.0,
-          )
+          ),
         ],
       ),
     );

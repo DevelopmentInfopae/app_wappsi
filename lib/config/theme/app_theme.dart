@@ -99,7 +99,7 @@ ThemeData globalTheme() {
       tertiary: const Color(0xff323231),
       onTertiaryContainer: const Color(0xffD9DBD8),
       onPrimaryContainer: AppColors.primary_50,
-      background: Colors.white,
+      surface: Colors.white,
       error: AppColors.danger_700,
       onError: Colors.white,
     );
@@ -142,7 +142,7 @@ ThemeData globalTheme() {
         width: 1,
       ),
     );
-    const outlineBorder = BorderSide.none;
+    // const outlineBorder = BorderSide.none;
     return theme.copyWith(
       border: border,
       focusedBorder: focusedBorder,
@@ -244,6 +244,6 @@ ThemeData globalTheme() {
     ),
     listTileTheme: listTileThemeData(theme.listTileTheme),
     colorScheme: colorSchemeTheme(theme.colorScheme)
-        .copyWith(background: AppColors.background),
+        .copyWith(surface: AppColors.background),
   );
 }

@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-// import 'package:path_provider/path_provider.dart';
-import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
+// import 'package:path_provider/path_provider.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/screens/products/components/product_card_list.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
-import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/services/barcode_camera_scan.dart';
+import 'package:pos_wappsi/utils/alerts.dart';
 
 class Products extends StatefulWidget {
   const Products({Key? key}) : super(key: key);
@@ -114,7 +114,7 @@ class _ProductsState extends State<Products> {
             color: Colors.grey,
             offset: Offset(0.0, 1.0), //(x,y)
             blurRadius: 2.0,
-          )
+          ),
         ],
       ),
     );
@@ -168,7 +168,7 @@ class _ProductsState extends State<Products> {
               // });
             },
           ),
-          Container(width: _size.width * 0.15)
+          Container(width: _size.width * 0.15),
         ],
         // leadingActions: [Icon(Icons.search)],
         automaticallyImplyBackButton: false,

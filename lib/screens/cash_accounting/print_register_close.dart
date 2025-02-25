@@ -197,7 +197,7 @@ class _PrintRegisterCloseState extends State<PrintRegisterClose> {
           const Icon(
             Icons.print,
             color: pColor,
-          )
+          ),
         ],
       ),
     );
@@ -221,7 +221,7 @@ class _PrintRegisterCloseState extends State<PrintRegisterClose> {
           const Icon(
             Icons.exit_to_app,
             color: pColor,
-          )
+          ),
         ],
       ),
     );
@@ -234,7 +234,7 @@ class _PrintRegisterCloseState extends State<PrintRegisterClose> {
           '____________________________________',
           style: normalTextStyle(context),
         ),
-        Text('Firma y sello', style: normalTextStyle(context))
+        Text('Firma y sello', style: normalTextStyle(context)),
       ],
     );
   }

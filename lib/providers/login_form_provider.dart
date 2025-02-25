@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart' hide Key;
-
+import 'package:pos_wappsi/config/endpoints.dart';
 // import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
-import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/utils/validation_encoding/encode_pass.dart';
 
 class LoginFormProvider extends ChangeNotifier {
@@ -52,7 +51,7 @@ class LoginFormProvider extends ChangeNotifier {
     return {
       'username': user.replaceAll(' ', ''),
       'password': encodePass(password),
-      'override_login': override
+      'override_login': override,
     };
   }
 

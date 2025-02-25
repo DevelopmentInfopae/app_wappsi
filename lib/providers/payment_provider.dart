@@ -44,7 +44,7 @@ class PaymentProvider {
       _getPosBalance(
         (posBloc.getPaymentValue ?? 0).toDouble(),
         posBloc.getSubTotal(),
-      )
+      ),
     ];
     List<PaymentMethods> paymentMethods = [posBloc.getPaymentMethod!];
     for (int i = 0; i < paymentValues.length; i++) {
@@ -57,7 +57,7 @@ class PaymentProvider {
         'mean_payment_code_fe': '',
         'seller_id': dataBloc.userData!.billerId,
         'pos_paid': paymentValues[i],
-        'pos_balance': balanceValues[i]
+        'pos_balance': balanceValues[i],
       };
       payments.add(PaymentsModel.fromJson(temp));
     }

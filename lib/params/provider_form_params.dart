@@ -25,5 +25,5 @@ final supplierType = {
   '10': DropdDownSItem(
     name: 'Servicio Nacional de Aprendizaje (SENA)',
     value: '10',
-  )
+  ),
 };

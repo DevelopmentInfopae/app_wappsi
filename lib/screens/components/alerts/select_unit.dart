@@ -146,7 +146,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
           style: buttonsSmallTextStyle(context).apply(fontSizeDelta: 1.2),
           textAlign: TextAlign.center,
         ),
-        _productName(context)
+        _productName(context),
       ],
     );
   }
@@ -177,7 +177,7 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                     color: Colors.grey,
                     blurRadius: 2.0,
                     spreadRadius: 0.0, // shadow direction: bottom right
-                  )
+                  ),
                 ],
               ),
               child: Material(
@@ -198,10 +198,10 @@ class SelectProductUnitDialogState extends State<SelectProductUnitDialog> {
                 ),
               ),
             ),
-            _addQty()
+            _addQty(),
           ],
         ),
-        _selectUnition != null ? _unitSelectedName(context) : Container()
+        _selectUnition != null ? _unitSelectedName(context) : Container(),
       ],
     );
   }

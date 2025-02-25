@@ -126,7 +126,7 @@ class _ProductCardCostEditableState extends State<ProductCardCostEditable> {
                 ? _unitDetails().paddingOnly(left: 10, right: 14, top: 4)
                 : _productWithoutInfoPrice()
                     .paddingOnly(left: 10, right: 14, top: 4),
-            _baseUnitQtty(unit)
+            _baseUnitQtty(unit),
           ],
         ).paddingTop(4).expand(),
       ],
@@ -156,7 +156,7 @@ class _ProductCardCostEditableState extends State<ProductCardCostEditable> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ).expand(),
-        _baseUnitPrice(unit!)
+        _baseUnitPrice(unit!),
       ],
     );
   }
@@ -175,7 +175,7 @@ class _ProductCardCostEditableState extends State<ProductCardCostEditable> {
             color: greyMediumLight,
           ),
           child: _productPriceTotal(),
-        ).paddingOnly(right: 10).expand()
+        ).paddingOnly(right: 10).expand(),
       ],
     );
   }
@@ -246,7 +246,7 @@ class _ProductCardCostEditableState extends State<ProductCardCostEditable> {
         // focusNode: quantityFocusNode,
         // textFieldType: TextFieldType.PHONE,5
         keyboardType: TextInputType.number,
-        style: Theme.of(context).textTheme.headline6,
+        style: Theme.of(context).textTheme.headlineMedium,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           // fillColor: Colors.red,
@@ -411,7 +411,7 @@ class _ProductCardCostEditableState extends State<ProductCardCostEditable> {
                     },
                   ))
             .paddingRight(4),
-        _productPrice()
+        _productPrice(),
       ],
     );
   }

@@ -188,7 +188,7 @@ class ProductsList extends StatelessWidget {
                 Text(
                   'Quitar elemento',
                   style: buttonsTextStyle(context, fontSizeFactor: 1.05),
-                )
+                ),
               ],
             ),
           ).paddingSymmetric(vertical: 4),

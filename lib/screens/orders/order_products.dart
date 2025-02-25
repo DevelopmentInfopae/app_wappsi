@@ -5,15 +5,15 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
+import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/components/appbar_leading.dart';
 import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/screens/components/favorites_search_selection.dart';
 import 'package:pos_wappsi/screens/components/products/product_list.dart';
 import 'package:pos_wappsi/screens/components/search_products.dart';
 import 'package:pos_wappsi/screens/components/widgets.dart';
-import 'package:pos_wappsi/constant.dart';
-import 'package:pos_wappsi/models/product_model.dart';
-import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/orders/order_other_details.dart';
 // import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/screens/products/components/widgets.dart';
@@ -136,7 +136,7 @@ class _OrderProductsState extends State<OrderProducts> {
           controller: pageController,
           children: [_searchbar(), buildFloatingSearchBar()],
         ).expand(),
-        bottom(_bottom(), pColor, _size)
+        bottom(_bottom(), pColor, _size),
       ],
     );
   }
@@ -220,7 +220,7 @@ class _OrderProductsState extends State<OrderProducts> {
             color: Colors.grey,
             offset: Offset(0.0, 1.0), //(x,y)
             blurRadius: 2.0,
-          )
+          ),
         ],
       ),
     );
@@ -327,7 +327,6 @@ class _OrderProductsState extends State<OrderProducts> {
               }
               // final xd = orderBloc.settings['set_focus'];
               // printConsole();
-
             } else if (_productsCount - 2 == snapshot.data!.length) {
               // Nothing to do when items are removed from cart
             } else {

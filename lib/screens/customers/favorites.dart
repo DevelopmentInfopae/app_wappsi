@@ -2,25 +2,21 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
-import 'package:pos_wappsi/screens/components/appbar_leading.dart';
-
-import 'package:pos_wappsi/screens/components/back_app_bar.dart';
-import 'package:pos_wappsi/screens/components/products/product_card_info.dart';
-import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/user_provider.dart';
 import 'package:pos_wappsi/providers/wishlist_provider.dart';
+import 'package:pos_wappsi/screens/components/appbar_leading.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/products/product_card_info.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/add_favorites.dart';
-
-import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/screens/customers/components/create_user_alert.dart';
 import 'package:pos_wappsi/screens/customers/print_fav.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-
 import 'package:pos_wappsi/utils/manage_server_resp.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
@@ -166,7 +162,7 @@ class _ListFavoritesState extends State<ListFavorites> {
                   Text(
                     'Remover favorito',
                     style: buttonsTextStyle(context, fontSizeFactor: 1.05),
-                  )
+                  ),
                 ],
               ),
             ).paddingSymmetric(vertical: 8),

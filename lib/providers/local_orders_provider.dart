@@ -1,5 +1,4 @@
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-
 import 'package:pos_wappsi/models/order_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
@@ -166,7 +165,7 @@ class LocalOrdersProvider {
         'resolucion': order.resolucion,
         'date': order.registrationDate,
         'status': order.saleStatus,
-        'order_id': order.idCloud
+        'order_id': order.idCloud,
       },
       'zone_szone_data': await ZonesProvider.getZoneSzoneDataJson(
         zoneId: customerAddress?.location,
@@ -182,7 +181,7 @@ class LocalOrdersProvider {
       'company_data': biller,
       'biller_data': billerData,
       'settings': settings,
-      'footer': temp
+      'footer': temp,
     };
   }
 
@@ -201,7 +200,7 @@ class LocalOrdersProvider {
           'name': item.productName,
           'unit': unit?.toJson(),
           'preferences': item.preferences,
-          'base_unit': bUnit?.toJson()
+          'base_unit': bUnit?.toJson(),
         };
         productsMap.add(tItempMap);
         final taxRate =
@@ -212,7 +211,7 @@ class LocalOrdersProvider {
         } else {
           ivasMap[taxRate] = {
             'value': (item.priceBeforeTax * item.quantity),
-            'name': item.tax
+            'name': item.tax,
           };
         }
       }

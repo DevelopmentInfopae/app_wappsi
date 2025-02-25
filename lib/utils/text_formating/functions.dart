@@ -127,7 +127,7 @@ String capitalizeText(String value) {
     'pvp',
     'iva',
     'fb',
-    '"adis"'
+    '"adis"',
   ];
   final specialLowerCases = ['de', 'la', 'el', 'los', 'las', 'y', 'o', 'con'];
   if (value.endsWith(' ')) {

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/constant.dart';
-
 
 // ignore: must_be_immutable
 class CategoryList extends StatefulWidget {
@@ -96,5 +94,3 @@ class _CategoryListState extends State<CategoryList> {
     );
   }
 }
-
-

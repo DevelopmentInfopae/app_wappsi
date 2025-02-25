@@ -10,7 +10,6 @@ import 'package:pos_wappsi/screens/home/components/bottom_navigation.dart';
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 import 'package:pos_wappsi/screens/home/components/tab_navigator.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-
 import 'package:restart_app/restart_app.dart';
 
 class Home extends StatefulWidget {
@@ -105,7 +104,7 @@ class HomeState extends State<Home> {
             color: Colors.grey,
             offset: Offset(1.0, 0.0), //(x,y)
             blurRadius: 5.0,
-          )
+          ),
         ],
       ),
 
@@ -114,7 +113,7 @@ class HomeState extends State<Home> {
       child: Stack(
         children: [
           _bottomNavBar(_bottomIndex).paddingTop(2),
-          syncing ? const LinearProgressIndicator() : Container()
+          syncing ? const LinearProgressIndicator() : Container(),
         ],
       ),
     );
@@ -129,7 +128,7 @@ class HomeState extends State<Home> {
           onSelectTab: selectTab,
         ),
         // bottom(_bottom(), Colors.white, _size,elevation: true)
-        _bottom()
+        _bottom(),
       ],
     );
   }
@@ -166,7 +165,7 @@ class HomeState extends State<Home> {
           width: _size.width * 0.55 > 270
               ? 270
               : (_size.width * 0.5 > 280 ? 280 : _size.width * 0.55),
-        )
+        ),
       ],
     );
   }

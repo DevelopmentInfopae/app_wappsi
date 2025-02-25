@@ -10,9 +10,9 @@ import 'package:pos_wappsi/providers/local_db_provider.dart';
 // import 'package:pos_wappsi/providers/price_policy_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/manage_server_resp.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
-import 'package:pos_wappsi/utils/manage_server_resp.dart';
 
 class WishlistProvider {
   /// given a list of product ids, load them into
@@ -280,7 +280,7 @@ class WishlistProvider {
       // "customer_address": customerAddress?.toJson() ?? {},
       'company_data': biller,
       'biller_data': billerData,
-      'settings': settings
+      'settings': settings,
     };
   }
 }

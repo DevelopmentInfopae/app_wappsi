@@ -79,7 +79,7 @@ class HomeGridCards extends StatelessWidget {
         gridItems.title,
         maxLines: 2,
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.subtitle1,
+        style: Theme.of(context).textTheme.labelMedium,
       ),
     );
   }

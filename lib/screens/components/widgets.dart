@@ -42,7 +42,7 @@ Widget labelContent(
           capitalize ? capitalizeText(content) : content,
           textAlign: contentAlign ?? TextAlign.start,
           style: const TextStyle(fontSize: 17),
-        )
+        ),
       ],
     ),
   );
@@ -136,7 +136,7 @@ Widget labelContentH(
           content,
           textAlign: TextAlign.end,
           style: normalTextStyle(context),
-        ).flexible(flex: flexCol2)
+        ).flexible(flex: flexCol2),
       ],
     ),
   );
@@ -206,7 +206,7 @@ Widget bottom(
                 color: Colors.grey,
                 offset: Offset(1.0, 0.0), //(x,y)
                 blurRadius: 5.0,
-              )
+              ),
             ]
           : null,
     ),

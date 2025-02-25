@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
-
 // import 'package:image_downloader/image_downloader.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/printer_bloc.dart';
@@ -526,7 +525,7 @@ class PrintFormat {
     final valuesSeller = [
       innerPrinter
           ? replaceSpecialCharacters(dataBloc.userData!.sellerName)
-          : dataBloc.userData!.sellerName
+          : dataBloc.userData!.sellerName,
     ];
     if (printDate) {
       labelsSeller.add('Fecha/Hora:');
@@ -603,13 +602,13 @@ class PrintFormat {
       'Total         ',
       'Valor recibido',
       'Cambio        ',
-      'Pagado en     '
+      'Pagado en     ',
     ];
     final valuesPayDetails = [
       getFormatedCurrency((printData!['total']! ?? '')).toString().substring(1),
       valueRec,
       getFormatedCurrency(cambio < 0 ? 0 : cambio).toString().substring(1),
-      printData['payment_method']['name'].toString()
+      printData['payment_method']['name'].toString(),
     ];
     generator.reset();
     bytes = printLabeledValues(
@@ -647,7 +646,7 @@ class PrintFormat {
     final valuesPayDetails = [
       getFormatedCurrency((printData?['total']! ?? '')),
       getFormatedCurrency((printData?['total_discount']! ?? '')),
-      getFormatedCurrency((printData?['grand_total']! ?? ''))
+      getFormatedCurrency((printData?['grand_total']! ?? '')),
     ];
     generator.reset();
     bytes = printLabeledValues(

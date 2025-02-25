@@ -76,7 +76,7 @@ class _ProductCardListState extends State<ProductCardList> {
             // return Container();
           },
         ),
-        if (_loading) ...[loadingIndicator(_size.width)]
+        if (_loading) ...[loadingIndicator(_size.width)],
       ],
     );
   }

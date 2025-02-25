@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/quotes_bloc.dart';
-
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/models/quote_items_model.dart';
-
 import 'package:pos_wappsi/models/quotes_model.dart';
-
 // import 'package:pos_wappsi/models/sale_model.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/quote_items_provider.dart';
-
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
@@ -129,7 +125,7 @@ class QuotesProvider {
       'company_data': dataBloc.getBillerCompany,
       'biller_data': dataBloc.getBIllerData,
       'settings': settings,
-      'footer': temp
+      'footer': temp,
     };
   }
 

@@ -124,7 +124,7 @@ class CreateUserAlertDialogState extends State<CreateUserAlertDialog> {
                 }
               },
               () {},
-            ).paddingSymmetric(vertical: 5)
+            ).paddingSymmetric(vertical: 5),
           ],
         ),
       ),

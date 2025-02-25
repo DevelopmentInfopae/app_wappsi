@@ -35,7 +35,7 @@ class ZoneModel {
         'codigo_ciudad': codigoCiudad,
         'zone_name': zoneName,
         'zone_code': zoneCode,
-        'id': id
+        'id': id,
       };
   static List<ZoneModel> fromJsonList(List data) {
     List<ZoneModel> list = [];

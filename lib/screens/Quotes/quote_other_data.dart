@@ -112,7 +112,7 @@ class Validations extends State<QuoteOtherData> {
               ? _orderDiscount().paddingSymmetric(vertical: 6)
               : Container(),
           _note().paddingSymmetric(vertical: 6),
-          _dispatchNote().paddingSymmetric(vertical: 6)
+          _dispatchNote().paddingSymmetric(vertical: 6),
         ],
       ).paddingOnly(left: 16, right: 16, top: 6),
     );
@@ -133,7 +133,7 @@ class Validations extends State<QuoteOtherData> {
               style: buttonsTextStyle(context, color: pColor),
             ),
             const Spacer(),
-            Text('${quoteBloc.getItemsCount()}', style: numbersTextStyle())
+            Text('${quoteBloc.getItemsCount()}', style: numbersTextStyle()),
           ],
           // style: textTheme,
         ),
@@ -144,7 +144,7 @@ class Validations extends State<QuoteOtherData> {
               style: buttonsTextStyle(context, color: pColor),
             ),
             const Spacer(),
-            Text(totalBeforeDisc, style: numbersTextStyle())
+            Text(totalBeforeDisc, style: numbersTextStyle()),
           ],
         ),
         StreamBuilder<double?>(
@@ -162,7 +162,7 @@ class Validations extends State<QuoteOtherData> {
                 Text(
                   getFormatedCurrency(snapshot.data ?? 0),
                   style: numbersTextStyle(),
-                )
+                ),
               ],
             );
           },
@@ -183,7 +183,7 @@ class Validations extends State<QuoteOtherData> {
                 Text(
                   getFormatedCurrency(snapshot.data ?? 0),
                   style: numbersTextStyle(),
-                )
+                ),
               ],
             );
           },
@@ -273,7 +273,7 @@ class Validations extends State<QuoteOtherData> {
     return Row(
       children: [
         _discountTSelector().withWidth(190).paddingRight(8),
-        _discountValue().expand()
+        _discountValue().expand(),
       ],
     );
   }
@@ -289,7 +289,7 @@ class Validations extends State<QuoteOtherData> {
       ),
 
       textFieldType: TextFieldType.PHONE,
-      textStyle: Theme.of(context).textTheme.subtitle1,
+      textStyle: Theme.of(context).textTheme.labelMedium,
       autoFocus: false,
       isValidationRequired: true,
       validator: (value) {
@@ -352,7 +352,6 @@ class Validations extends State<QuoteOtherData> {
             quoteBloc.setQuoteDiscount(oDiscount);
 
             // update subtotal
-
           }
         }
         quoteBloc.getSubTotal();

@@ -123,7 +123,7 @@ class DocumentsTypes {
         'not_accounting': notAccounting,
         'invoice_header': invoiceHeader,
         'add_consecutive_left_zeros': addConsecutiveLeftZeros,
-        'last_update': lastUpdate
+        'last_update': lastUpdate,
       };
 
   @override

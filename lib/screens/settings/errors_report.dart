@@ -62,7 +62,7 @@ class _ReportErrorScreenState extends State<ReportErrorScreen> {
                   'A continuación realice una breve descripción del error a reportar',
                   style: buttonsSmallTextStyle(context),
                 ).paddingSymmetric(horizontal: 14, vertical: 16),
-                _message().paddingSymmetric(horizontal: 16, vertical: 16)
+                _message().paddingSymmetric(horizontal: 16, vertical: 16),
               ],
             ),
           ).expand(),

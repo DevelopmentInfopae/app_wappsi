@@ -85,7 +85,7 @@ class SuspendedSalesProvider {
         'seller_name': dataBloc.userData?.sellerName ?? '',
         'customer_name':
             posBloc.getCustomer!.name ?? posBloc.getCustomer!.company,
-        'status': 1
+        'status': 1,
       };
       final res = await DBProvider.db
           .insertQuery('suspended_sales', saleBasicData, returnId: true);
@@ -144,7 +144,7 @@ class SuspendedSalesProvider {
         res = await posBloc.addProduct(
           {
             'product': p,
-            'product_unit': units.isNotEmpty ? units[index] : null
+            'product_unit': units.isNotEmpty ? units[index] : null,
           },
           getPrices: getPrices,
           getQttys: false,

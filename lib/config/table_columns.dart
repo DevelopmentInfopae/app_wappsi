@@ -39,5 +39,5 @@ Map<String, List<String>> tablesColumnsNames = {
   'sma_quotes': quoteColumns,
   'sma_quote_items': quoteItemsColumns,
   'sma_purchase_items': purchaseItemsColumns,
-  'sma_purchases': purchasesColumns
+  'sma_purchases': purchasesColumns,
 };

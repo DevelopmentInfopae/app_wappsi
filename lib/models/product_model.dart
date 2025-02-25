@@ -6,11 +6,9 @@ import 'dart:convert';
 
 // import 'package:intl/intl.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-
 import 'package:pos_wappsi/models/biller_data_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
-
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
@@ -297,7 +295,7 @@ class ProductModel {
         'inventory': inventory,
         'tax_rate': taxRateId,
         'rate': taxRate,
-        'tax_rate_name': taxRateName
+        'tax_rate_name': taxRateName,
       };
 
   /// Customer's price for a product
@@ -430,7 +428,7 @@ class ProductModel {
               products[key]!.getPriceWithIVA() * products[key]!.quantity,
           'price_before_tax': products[key]!.getPriceWithoutIVA(),
           'unit_quantity': products[key]!.quantity,
-          'product_preferences_text': getProdPrefText(key)
+          'product_preferences_text': getProdPrefText(key),
         });
       }
     }
@@ -455,7 +453,7 @@ class ProductModel {
       'product_unit_id_selected': _unitsSelected,
       'product_base_quantity': _quantities,
       'product_detail_list': productsDetails,
-      'product_preferences_text': _productPrefsText
+      'product_preferences_text': _productPrefsText,
     };
   }
 
@@ -543,7 +541,7 @@ class ProductModel {
           'subtotal':
               products[key]!.getPriceWithIVA() * products[key]!.quantity,
           'price_before_tax': products[key]!.getCOstWithoutIVA(),
-          'unit_quantity': products[key]!.quantity
+          'unit_quantity': products[key]!.quantity,
         });
       }
     }
@@ -567,7 +565,7 @@ class ProductModel {
       'product_unit': _units,
       'product_unit_id_selected': _unitsSelected,
       'product_base_quantity': _quantitys,
-      'product_detail_list': productsDetails
+      'product_detail_list': productsDetails,
     };
   }
 

@@ -62,7 +62,7 @@ class _SupplierCardListState extends State<SuppliersCardList> {
             // return Container();
           },
         ),
-        if (_loading) ...[loadingIndicator(_size.width)]
+        if (_loading) ...[loadingIndicator(_size.width)],
       ],
     );
   }
@@ -158,7 +158,7 @@ class _SuppliersCardState extends State<SuppliersCard> {
           _name(),
           _company(),
           _docNumber(),
-          _phone()
+          _phone(),
           // Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
 
           // ]),

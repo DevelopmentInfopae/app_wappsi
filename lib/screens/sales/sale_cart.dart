@@ -4,33 +4,32 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
-import 'package:pos_wappsi/screens/components/appbar_leading.dart';
-import 'package:pos_wappsi/screens/components/back_app_bar.dart';
-import 'package:pos_wappsi/screens/components/products/product_list.dart';
-import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
-// import 'package:pos_wappsi/providers/units_provider.dart';
-import 'package:pos_wappsi/screens/home/home_screen.dart';
+import 'package:pos_wappsi/screens/components/appbar_leading.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/screens/components/favorites_search_selection.dart';
-import 'package:pos_wappsi/screens/products/components/widgets.dart';
+import 'package:pos_wappsi/screens/components/products/product_list.dart';
 // import 'package:pos_wappsi/screens/sales/components/sale_product_list_widget.dart';
 
 import 'package:pos_wappsi/screens/components/search_products.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
+// import 'package:pos_wappsi/providers/units_provider.dart';
+import 'package:pos_wappsi/screens/home/home_screen.dart';
+import 'package:pos_wappsi/screens/products/components/widgets.dart';
 // import 'package:pos_wappsi/screens/sales/components/select_product_unit_alert.dart';
 import 'package:pos_wappsi/screens/sales/components/suspend_sale_alert.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pos_wappsi/screens/sales/components/widgets.dart';
 import 'package:pos_wappsi/screens/sales/new_sale.dart';
 import 'package:pos_wappsi/screens/sales/sale_payment.dart';
-import 'package:nb_utils/nb_utils.dart';
-import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/services/barcode_camera_scan.dart';
+import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/alerts.dart';
 
@@ -124,7 +123,7 @@ class _SaleCartState extends State<SaleCart> {
               controller: pageController,
               children: [_searchbar(), buildFloatingSearchBar()],
             ).expand(),
-            bottom(_bottom(), pColor, _size)
+            bottom(_bottom(), pColor, _size),
           ],
         ),
       ),
@@ -227,7 +226,7 @@ class _SaleCartState extends State<SaleCart> {
             color: Colors.grey,
             offset: Offset(0.0, 1.0), //(x,y)
             blurRadius: 2.0,
-          )
+          ),
         ],
       ),
     );
@@ -263,7 +262,7 @@ class _SaleCartState extends State<SaleCart> {
         FloatingSearchBarAction.searchToClear(),
         Container(
           width: _size.width * 0.15,
-        )
+        ),
       ],
       openWidth: _size.width,
 

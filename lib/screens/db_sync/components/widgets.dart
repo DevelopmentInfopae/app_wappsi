@@ -11,14 +11,14 @@ import 'package:pos_wappsi/screens/components/loading.dart';
 //           return Text(
 //             snapshot.data.toString(),
 //             textAlign: TextAlign.center,
-//             style: Theme.of(context).textTheme.headline6,
+//             style: Theme.of(context).textTheme.headlineMedium,
 //           );
 //         } else {
 //           return Center(
 //             child: Text(
 //               'Sincronizando base de datos',
 //               textAlign: TextAlign.center,
-//               style: Theme.of(context).textTheme.headline6,
+//               style: Theme.of(context).textTheme.headlineMedium,
 //             ),
 //           );
 //         }

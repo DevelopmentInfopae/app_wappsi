@@ -36,7 +36,7 @@ class CustomerCard extends StatelessWidget {
               fit: BoxFit.cover,
             ).withSize(height: 90, width: 90),
             vDivider(width: 2, heigh: 80),
-            _description(context).flexible(flex: 7)
+            _description(context).flexible(flex: 7),
           ],
         ).withHeight(100),
       ),
@@ -63,7 +63,7 @@ class CustomerCard extends StatelessWidget {
             'NIT/CC : ${customer.vatNo}',
             style: normalTextStyle(context),
             overflow: TextOverflow.ellipsis,
-          )
+          ),
 
           // ]),
         ],

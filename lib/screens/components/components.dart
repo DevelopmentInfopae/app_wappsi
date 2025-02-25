@@ -18,7 +18,6 @@ export 'package:pos_wappsi/screens/components/icon_buttons.dart';
 export 'package:pos_wappsi/screens/components/image_file.dart';
 export 'package:pos_wappsi/screens/components/image_preview.dart';
 export 'package:pos_wappsi/screens/components/input_decoration.dart';
-export 'package:pos_wappsi/screens/components/input_decoration.dart';
 export 'package:pos_wappsi/screens/components/loading.dart';
 export 'package:pos_wappsi/screens/components/search_products.dart';
 export 'package:pos_wappsi/screens/components/spacers.dart';

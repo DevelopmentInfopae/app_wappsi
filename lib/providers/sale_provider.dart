@@ -162,7 +162,7 @@ class SalesProvider {
       'company_data': dataBloc.getBillerCompany,
       'biller_data': dataBloc.getBIllerData,
       'settings': settings,
-      'footer': temp
+      'footer': temp,
     };
   }
 }

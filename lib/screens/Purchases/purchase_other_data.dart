@@ -7,16 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/purchases_bloc.dart';
+import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/global_form_const.dart';
+import 'package:pos_wappsi/providers/purchase_provider.dart';
 // import 'package:pos_wappsi/bloc/sync_bloc.dart';
 import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/screens/components/input_decoration.dart';
 import 'package:pos_wappsi/screens/components/widgets.dart';
-
-import 'package:pos_wappsi/constant.dart';
-import 'package:pos_wappsi/global_form_const.dart';
-import 'package:pos_wappsi/providers/purchase_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/drop_down_s_item.dart';
-
 // import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/home/home_screen.dart';
@@ -106,7 +104,7 @@ class Validations extends State<PurchaseOtherData> {
           dataBloc.userData!.allowDiscount == 1
               ? _orderDiscount().paddingSymmetric(vertical: 6)
               : Container(),
-          _note().paddingSymmetric(vertical: 6)
+          _note().paddingSymmetric(vertical: 6),
         ],
       ).paddingOnly(left: 16, right: 16, top: 6),
     );
@@ -127,7 +125,7 @@ class Validations extends State<PurchaseOtherData> {
               style: buttonsTextStyle(context, color: pColor),
             ),
             const Spacer(),
-            Text('${purchaseBloc.getItemsCount()}', style: numbersTextStyle())
+            Text('${purchaseBloc.getItemsCount()}', style: numbersTextStyle()),
           ],
           // style: textTheme,
         ),
@@ -138,7 +136,7 @@ class Validations extends State<PurchaseOtherData> {
               style: buttonsTextStyle(context, color: pColor),
             ),
             const Spacer(),
-            Text(totalBeforeDisc, style: numbersTextStyle())
+            Text(totalBeforeDisc, style: numbersTextStyle()),
           ],
         ),
         // StreamBuilder<double?>(
@@ -174,7 +172,7 @@ class Validations extends State<PurchaseOtherData> {
                 Text(
                   getFormatedCurrency(snapshot.data ?? 0),
                   style: numbersTextStyle(),
-                )
+                ),
               ],
             );
           },
@@ -199,7 +197,7 @@ class Validations extends State<PurchaseOtherData> {
     return Row(
       children: [
         _discountTSelector().withWidth(190).paddingRight(8),
-        _discountValue().expand()
+        _discountValue().expand(),
       ],
     );
   }
@@ -215,7 +213,7 @@ class Validations extends State<PurchaseOtherData> {
       ),
 
       textFieldType: TextFieldType.PHONE,
-      textStyle: Theme.of(context).textTheme.subtitle1,
+      textStyle: Theme.of(context).textTheme.labelMedium,
       autoFocus: false,
       isValidationRequired: true,
       validator: (value) {
@@ -278,7 +276,6 @@ class Validations extends State<PurchaseOtherData> {
             purchaseBloc.setDiscount(oDiscount);
 
             // update subtotal
-
           }
         }
         purchaseBloc.getSubTotalCost();

@@ -120,8 +120,8 @@ class _SyncElementsScreenState extends State<SyncElementsScreen> {
           key,
           textAlign: TextAlign.center,
           maxLines: 2,
-          style: Theme.of(context).textTheme.subtitle1,
-        ).center().paddingBottom(4).flexible(flex: 4)
+          style: Theme.of(context).textTheme.labelMedium,
+        ).center().paddingBottom(4).flexible(flex: 4),
       ],
     );
   }

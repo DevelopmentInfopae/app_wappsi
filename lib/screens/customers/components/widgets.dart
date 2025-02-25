@@ -35,7 +35,7 @@ Widget descRichText(
             fontSizeFactor: fontSizeFactor,
             color: color,
           ),
-        )
+        ),
       ],
     ),
     // style: textTheme,
@@ -115,7 +115,7 @@ Widget customerPhotoAndName(BuildContext context, CompanyModel customer) {
       children: [
         customerPhoto(customer.customerProfilePhoto ?? '')
             .withSize(width: 120, height: 120),
-        customerDesc(context, customer).expand()
+        customerDesc(context, customer).expand(),
       ],
     ),
   );

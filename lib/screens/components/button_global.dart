@@ -34,7 +34,7 @@ class ButtonGlobal extends StatelessWidget {
               buttonText,
               style: GoogleFonts.jost(
                 fontSize: 20.0,
-                color: Theme.of(context).primaryTextTheme.button!.color,
+                color: Theme.of(context).primaryTextTheme.labelMedium!.color,
               ),
             ),
             Icon(
@@ -78,7 +78,7 @@ class ButtonGlobalWithoutIcon extends StatelessWidget {
               buttonText,
               style: GoogleFonts.jost(
                 fontSize: 20.0,
-                color: Theme.of(context).primaryTextTheme.button!.color,
+                color: Theme.of(context).primaryTextTheme.labelLarge!.color,
               ),
             ),
           ],

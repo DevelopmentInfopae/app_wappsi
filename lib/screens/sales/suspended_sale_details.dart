@@ -7,15 +7,14 @@ import 'package:nb_utils/nb_utils.dart';
 // ignore: implementation_imports
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/screens/components/appbar_leading.dart';
 import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/screens/components/products/product_card_info.dart';
 import 'package:pos_wappsi/screens/components/products/product_card_w_unit.dart';
 import 'package:pos_wappsi/screens/components/widgets.dart';
-import 'package:pos_wappsi/constant.dart';
-import 'package:pos_wappsi/models/product_model.dart';
-import 'package:pos_wappsi/models/units_model.dart';
-import 'package:pos_wappsi/providers/suspended_sales_provider.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/screens/sales/components/product_price_dif_alert.dart';
 import 'package:pos_wappsi/screens/sales/new_sale.dart';
@@ -114,7 +113,7 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
                               fontSizeFactor: 1.1,
                               color: pColor,
                             ),
-                          )
+                          ),
                         ],
                       ),
                       alignment: Alignment.center,
@@ -142,10 +141,10 @@ class _SuspendedSaleDetailsState extends State<SuspendedSaleDetails> {
                 ),
               ),
             ),
-            _productList()
+            _productList(),
           ],
         ).expand(),
-        bottom(_buttons(), pColor, _size)
+        bottom(_buttons(), pColor, _size),
       ],
     );
   }

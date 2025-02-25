@@ -27,7 +27,7 @@ Widget registerInput(
       autofocus: autoFocus,
       inputFormatters: [CurrencyInputFormatter()],
       initialValue: cashAccForm.value,
-      style: style ?? Theme.of(context).textTheme.subtitle1,
+      style: style ?? Theme.of(context).textTheme.labelMedium,
       keyboardType: TextInputType.number,
       textAlign: textAlign,
       decoration: InputDecoration(
@@ -80,7 +80,7 @@ Widget movementDetails(
             movementInfo['user_name'] ?? '',
             style: normalTextStyle(context),
             textAlign: TextAlign.end,
-          ).expand()
+          ).expand(),
         ],
       ),
       Row(
@@ -93,7 +93,7 @@ Widget movementDetails(
             movementInfo['date'] ?? '',
             style: normalTextStyle(context),
             textAlign: TextAlign.end,
-          ).expand()
+          ).expand(),
         ],
       ),
       Row(
@@ -106,7 +106,7 @@ Widget movementDetails(
             movementInfo['reference_no'] ?? '',
             style: normalTextStyle(context),
             textAlign: TextAlign.end,
-          ).expand()
+          ).expand(),
         ],
       ),
       Row(
@@ -119,7 +119,7 @@ Widget movementDetails(
             capitalizeText(movementInfo['biller_name'] ?? ''),
             style: normalTextStyle(context),
             textAlign: TextAlign.end,
-          ).expand()
+          ).expand(),
         ],
       ),
       Row(
@@ -132,7 +132,7 @@ Widget movementDetails(
             movementInfo['movement_type'] ?? '',
             style: normalTextStyle(context),
             textAlign: TextAlign.end,
-          ).expand()
+          ).expand(),
         ],
       ),
       Row(
@@ -145,7 +145,7 @@ Widget movementDetails(
             value,
             style: normalTextStyle(context),
             textAlign: TextAlign.end,
-          ).expand()
+          ).expand(),
         ],
       ),
 
@@ -187,7 +187,7 @@ Widget closeRegisterDetails(
             closeRegisterInfo['user_name'] ?? '',
             style: normalTextStyle(context),
             textAlign: TextAlign.end,
-          ).expand()
+          ).expand(),
         ],
       ),
       Row(
@@ -201,7 +201,7 @@ Widget closeRegisterDetails(
             closeRegisterInfo['date'] ?? '',
             style: normalTextStyle(context),
             textAlign: TextAlign.end,
-          ).expand()
+          ).expand(),
         ],
       ),
       // Row(
@@ -228,7 +228,7 @@ Widget closeRegisterDetails(
             capitalizeText(closeRegisterInfo['biller_name'] ?? ''),
             style: normalTextStyle(context),
             textAlign: TextAlign.end,
-          ).expand()
+          ).expand(),
         ],
       ),
       // Row(
@@ -255,7 +255,7 @@ Widget closeRegisterDetails(
             value,
             style: normalTextStyle(context),
             textAlign: TextAlign.end,
-          ).expand()
+          ).expand(),
         ],
       ),
 

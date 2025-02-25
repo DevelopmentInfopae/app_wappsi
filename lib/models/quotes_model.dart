@@ -265,7 +265,7 @@ class QuoteModel {
         'destination_reference_no': destinationReferenceNo,
         'payment_status': paymentStatus,
         'payment_term': paymentTerm,
-        'payment_method': paymentMethod ?? ''
+        'payment_method': paymentMethod ?? '',
       };
     } else {
       return {
@@ -420,7 +420,7 @@ class QuoteModel {
       'company_data': biller,
       'biller_data': billerData,
       'settings': settings,
-      'footer': temp
+      'footer': temp,
     };
   }
 
@@ -438,7 +438,7 @@ class QuoteModel {
           'price': item.unitPrice,
           'name': item.productName,
           'unit': unit?.toJson(),
-          'base_unit': bUnit?.toJson()
+          'base_unit': bUnit?.toJson(),
         };
         productsMap.add(tItempMap);
         final taxRate =
@@ -449,7 +449,7 @@ class QuoteModel {
         } else {
           ivasMap[taxRate] = {
             'value': (item.priceBeforeTax * item.quantity),
-            'name': item.tax
+            'name': item.tax,
           };
         }
       }

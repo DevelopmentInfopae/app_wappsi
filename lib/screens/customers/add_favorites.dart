@@ -42,7 +42,7 @@ class _AddFavoritesState extends State<AddFavorites> {
         Icons.search,
         // color: _pc,
       ).paddingLeft(7),
-    )
+    ),
   ];
 
   late Size _size;
@@ -110,7 +110,7 @@ class _AddFavoritesState extends State<AddFavorites> {
             color: Colors.grey,
             offset: Offset(0.0, 1.0), //(x,y)
             blurRadius: 2.0,
-          )
+          ),
         ],
       ),
     );
@@ -130,7 +130,7 @@ class _AddFavoritesState extends State<AddFavorites> {
       actions: [
         Container(
           width: _size.width * 0.17,
-        )
+        ),
       ],
       openWidth: _size.width,
 
@@ -209,7 +209,7 @@ class _AddFavoritesState extends State<AddFavorites> {
                             context,
                             fontSizeFactor: 1.05,
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ).paddingSymmetric(vertical: 8),

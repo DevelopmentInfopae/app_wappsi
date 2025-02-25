@@ -76,7 +76,7 @@ class EditProductAlertState extends State<EditProductAlert> {
             Text(
               product.taxMethod == 0 ? 'IVA incluido' : 'IVA no incluido',
               style: normalTextStyle(context, fontSizeFactor: 0.8),
-            ).paddingBottom(10)
+            ).paddingBottom(10),
           ],
         ),
         content: Material(
@@ -95,7 +95,7 @@ class EditProductAlertState extends State<EditProductAlert> {
                         : 'Valor unitario',
                   ),
                   textFieldType: TextFieldType.PHONE,
-                  textStyle: Theme.of(context).textTheme.subtitle1,
+                  textStyle: Theme.of(context).textTheme.labelMedium,
                   autoFocus: false,
                   isValidationRequired: true,
                   validator: (value) {

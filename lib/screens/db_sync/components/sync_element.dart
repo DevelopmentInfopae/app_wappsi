@@ -66,7 +66,7 @@ class ElementSync extends StatelessWidget {
                 syncStatus(status).paddingLeft(8),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

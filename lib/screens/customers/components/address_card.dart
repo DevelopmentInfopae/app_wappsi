@@ -57,7 +57,7 @@ class AddressCard extends StatelessWidget {
                 style: normalTextStyle(context),
               ),
             ],
-          ).paddingSymmetric(horizontal: 8,vertical: 4).expand()
+          ).paddingSymmetric(horizontal: 8, vertical: 4).expand(),
         ],
       ),
     );

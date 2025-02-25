@@ -79,7 +79,7 @@ Widget _content(
           .expand(),
       (leading ?? Container())
           .withSize(height: 55, width: leading != null ? 55 : 0)
-          .paddingRight(leading != null ? 10 : 16)
+          .paddingRight(leading != null ? 10 : 16),
     ],
   );
 }

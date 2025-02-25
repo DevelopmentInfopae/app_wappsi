@@ -3,16 +3,9 @@ import 'dart:async';
 
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+// import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/customer_bloc.dart';
-
-import 'package:pos_wappsi/screens/components/back_app_bar.dart';
-import 'package:pos_wappsi/screens/components/go_back_bottom.dart';
-import 'package:pos_wappsi/screens/components/location/location_picker.dart';
-import 'package:pos_wappsi/screens/components/location/subzone_dropdown.dart';
-import 'package:pos_wappsi/screens/components/location/zone_dropdown.dart';
-import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/cities_model.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
@@ -23,6 +16,11 @@ import 'package:pos_wappsi/providers/cities_provider.dart';
 import 'package:pos_wappsi/providers/countries_provider.dart';
 import 'package:pos_wappsi/providers/customer_addresses_provider.dart';
 import 'package:pos_wappsi/providers/states_provider.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/go_back_bottom.dart';
+import 'package:pos_wappsi/screens/components/location/subzone_dropdown.dart';
+import 'package:pos_wappsi/screens/components/location/zone_dropdown.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 
 import '../../models/subzone_model.dart';
@@ -78,7 +76,7 @@ class _NewAddress extends State<NewAddress> {
   final FocusNode _phoneFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
 
-  GeoPoint? geoLoc;
+  // GeoPoint? geoLoc;
 
   DocumentypeModel? _doc;
 
@@ -404,21 +402,21 @@ class _NewAddress extends State<NewAddress> {
   }
 
   Future<void> _getLocation() async {
-    GeoPoint? result = await SearchLocationPage(
-      geoLoc: (customerBloc.getAddress.latitude != null &&
-              customerBloc.getAddress.longitude != null)
-          ? GeoPoint(
-              latitude: customerBloc.getAddress.latitude!,
-              longitude: customerBloc.getAddress.longitude!,
-            )
-          : null,
-    ).launch(context);
-    if (result != null) {
-      setState(() {
-        customerBloc.getAddress.latitude = result.latitude;
-        customerBloc.getAddress.longitude = result.longitude;
-      });
-    }
+    // GeoPoint? result = await SearchLocationPage(
+    //   geoLoc: (customerBloc.getAddress.latitude != null &&
+    //           customerBloc.getAddress.longitude != null)
+    //       ? GeoPoint(
+    //           latitude: customerBloc.getAddress.latitude!,
+    //           longitude: customerBloc.getAddress.longitude!,
+    //         )
+    //       : null,
+    // ).launch(context);
+    // if (result != null) {
+    //   setState(() {
+    //     customerBloc.getAddress.latitude = result.latitude;
+    //     customerBloc.getAddress.longitude = result.longitude;
+    //   });
+    // }
   }
 
   Widget _countriesDropdown() {

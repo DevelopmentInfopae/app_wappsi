@@ -141,7 +141,7 @@ class CustomerAddressesModel {
         'postal_code': postalCode,
         'line1': line1,
         'line2': line2,
-        'customer_address_seller_id_assigned': customerAddressSellerIdAssigned
+        'customer_address_seller_id_assigned': customerAddressSellerIdAssigned,
       };
     } else {
       return {
@@ -168,7 +168,7 @@ class CustomerAddressesModel {
         'postal_code': postalCode,
         'line1': line1,
         'line2': line2,
-        'customer_address_seller_id_assigned': customerAddressSellerIdAssigned
+        'customer_address_seller_id_assigned': customerAddressSellerIdAssigned,
       };
     }
   }

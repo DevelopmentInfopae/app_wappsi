@@ -25,7 +25,7 @@ Map<String, String> tableNamesToSyncOpt = {
   'sma_unit_prices': 'sma_unit_prices',
   'sma_order_sales': 'Ordenes de pedido',
   'sma_quotes': 'Cotizaciones',
-  'sma_purchases': 'Compras'
+  'sma_purchases': 'Compras',
 };
 
 List<String> specialSync = [
@@ -34,7 +34,7 @@ List<String> specialSync = [
   'Cotizaciones',
   'Compras',
   'Ventas',
-  'Preferencias de productos'
+  'Preferencias de productos',
 ];
 
 Map<String, Map<String, dynamic>> _options = {
@@ -47,7 +47,7 @@ Map<String, Map<String, dynamic>> _options = {
     'dependent_table': 'sma_unit_prices',
     'delete_before': true,
     'id_key': 'id_cloud',
-    'column_name': 'id_product'
+    'column_name': 'id_product',
   },
   'Preferencias de productos': {
     'path': 'sync/productPreferences',
@@ -61,19 +61,19 @@ Map<String, Map<String, dynamic>> _options = {
     'id_key': 'preference_id',
     'id_key_2': 'preference_category_id',
     'column_name': 'id',
-    'column_name_2': 'id'
+    'column_name_2': 'id',
   },
   'Sucursales': {
     'path': 'sync/addresses',
     'table': 'sma_addresses',
     'sync_id': 2,
-    'image': 'locations.png'
+    'image': 'locations.png',
   },
   'Terceros': {
     'path': 'sync/companies',
     'table': 'sma_companies',
     'sync_id': 3,
-    'image': 'people.png'
+    'image': 'people.png',
   },
 
   // 'Favoritos': {
@@ -86,19 +86,19 @@ Map<String, Map<String, dynamic>> _options = {
     'path': 'sync/productPhotos',
     'table': 'sma_product_photos',
     'sync_id': 4,
-    'image': 'photos.png'
+    'image': 'photos.png',
   },
   'Variantes de Productos': {
     'path': 'sync/productVariants',
     'table': 'sma_product_variants',
     'sync_id': 5,
-    'image': 'product-range.png'
+    'image': 'product-range.png',
   },
   'Precios de Productos': {
     'path': 'sync/productPrices',
     'table': 'sma_product_prices',
     'sync_id': 6,
-    'image': 'price-tag.png'
+    'image': 'price-tag.png',
   },
   'Datos de Facturación': {
     'path_data': 'sync/billerData',
@@ -106,91 +106,91 @@ Map<String, Map<String, dynamic>> _options = {
     'table_data': 'sma_biller_data',
     'table_documents_data': 'sma_biller_documents_types',
     'sync_id': 7,
-    'image': 'report.png'
+    'image': 'report.png',
   },
   'Grupos de Clientes': {
     'path': 'sync/customerGroups',
     'table': 'sma_customer_groups',
     'sync_id': 8,
-    'image': 'meeting.png'
+    'image': 'meeting.png',
   },
   'Grupos de Precios': {
     'path': 'sync/priceGroups',
     'table': 'sma_price_groups',
     'sync_id': 9,
-    'image': 'prices.png'
+    'image': 'prices.png',
   },
   'Productos de Sucursales': {
     'path': 'sync/warehousesProducts',
     'table': 'sma_warehouses_products',
     'sync_id': 10,
-    'image': 'inventory.png'
+    'image': 'inventory.png',
   },
   'Marcas': {
     'path': 'sync/brands',
     'table': 'sma_brands',
     'sync_id': 11,
-    'image': 'brand.png'
+    'image': 'brand.png',
   },
   'Métodos de Pago': {
     'path': 'sync/paymentMethods',
     'table': 'sma_payment_methods',
     'sync_id': 12,
-    'image': 'wallet.png'
+    'image': 'wallet.png',
   },
   'Parámetros Generales': {
     'path': 'sync/settings',
     'table': 'sma_settings',
     'sync_id': 13,
-    'image': 'settings.png'
+    'image': 'settings.png',
   },
   'Grupos': {
     'path': 'sync/companyGroups',
     'table': 'sma_groups',
     'sync_id': 13,
-    'image': 'group.png'
+    'image': 'group.png',
   },
   'Tasas de Impuesto': {
     'path': 'sync/taxRates',
     'table': 'sma_tax_rates',
     'sync_id': 14,
-    'image': 'rates.png'
+    'image': 'rates.png',
   },
   'Ajustes POS': {
     'path': 'sync/posSettings',
     'table': 'sma_pos_settings',
     'sync_id': 15,
-    'image': 'settings.png'
+    'image': 'settings.png',
   },
   'Tipos de documento': {
     'path': 'sync/documentypes',
     'table': 'sma_documentypes',
     'sync_id': 16,
-    'image': 'document.png'
+    'image': 'document.png',
   },
   'Documentos para operaciones': {
     'path': 'sync/documentsTypes',
     'table': 'sma_documents_types',
     'sync_id': 17,
-    'image': 'document.png'
+    'image': 'document.png',
   },
   'Categorías productos': {
     'path': 'sync/productCategories',
     'table': 'sma_categories',
     'sync_id': 18,
-    'image': 'categories.png'
+    'image': 'categories.png',
   },
   'Unidades': {
     'path': 'sync/units',
     'table': 'sma_units',
     'sync_id': 19,
-    'image': 'packages.png'
+    'image': 'packages.png',
   },
   'Bodegas': {
     'path': 'sync/warehouses',
     'table': 'sma_warehouses',
     'sync_id': 20,
-    'image': 'packages.png'
+    'image': 'packages.png',
   },
   // 'Precios de unidades': {
   //   'path': 'sync/unitPrices',
@@ -207,7 +207,7 @@ Map<String, Map<String, dynamic>> _options = {
     'dependent_table': 'sma_order_sale_items',
     'delete_before': true,
     'id_key': 'id_cloud',
-    'column_name': 'sale_id'
+    'column_name': 'sale_id',
   },
   'Compras': {
     'path': 'sync/purchases',
@@ -218,7 +218,7 @@ Map<String, Map<String, dynamic>> _options = {
     'dependent_table': 'sma_purchase_items',
     'delete_before': true,
     'id_key': 'id_cloud',
-    'column_name': 'purchase_id'
+    'column_name': 'purchase_id',
   },
   'Ventas': {
     'path': 'sync/sales',
@@ -230,7 +230,7 @@ Map<String, Map<String, dynamic>> _options = {
     'dependent_table_2': 'sma_payments',
     'delete_before': true,
     'id_key': 'id_cloud',
-    'column_name': 'sale_id'
+    'column_name': 'sale_id',
   },
   'Cotizaciones': {
     'path': 'sync/quotes',
@@ -241,13 +241,13 @@ Map<String, Map<String, dynamic>> _options = {
     'dependent_table': 'sma_quote_items',
     'delete_before': true,
     'id_key': 'id_cloud',
-    'column_name': 'quote_id'
+    'column_name': 'quote_id',
   },
   'Proveedores': {
     'path': 'sync/suppliers',
     'table': 'sma_companies',
     'sync_id': 24,
-    'image': 'enterprise.png'
+    'image': 'enterprise.png',
   },
 };
 

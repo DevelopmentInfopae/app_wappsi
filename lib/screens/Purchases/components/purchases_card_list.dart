@@ -67,7 +67,7 @@ class _PurchasesCardListState extends State<PurchasesCardList> {
             // return Container();
           },
         ),
-        if (_loading) ...[loadingIndicator(_size.width)]
+        if (_loading) ...[loadingIndicator(_size.width)],
       ],
     );
   }
@@ -205,7 +205,7 @@ class PurchaseCard extends StatelessWidget {
                   withInnerPadding: false,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                )
+                ),
               ],
             ),
           ),

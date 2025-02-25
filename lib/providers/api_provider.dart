@@ -50,7 +50,7 @@ class DataProvider {
         return {
           'status': 2,
           'error': true,
-          'body': {'message': 'Respuesta inesperada', 'data': []}
+          'body': {'message': 'Respuesta inesperada', 'data': []},
         };
       }
 
@@ -68,7 +68,7 @@ class DataProvider {
         return {
           'status': -1,
           'error': decodedRespBody['error'],
-          'body': decodedRespBody
+          'body': decodedRespBody,
         };
       } else {
         if (decodedRespBody['status'] == 200 ||
@@ -76,14 +76,14 @@ class DataProvider {
           return {
             'status': 1,
             'error': decodedRespBody['error'],
-            'body': decodedRespBody
+            'body': decodedRespBody,
           };
         } else {
           // printConsole(resp['status']);
           return {
             'status': 2,
             'error': decodedRespBody['error'],
-            'body': decodedRespBody
+            'body': decodedRespBody,
           };
         }
       }
@@ -93,7 +93,7 @@ class DataProvider {
         'error': true,
         'body': {
           'message': 'Verifica tu conexión a internet',
-        }
+        },
       };
       // controlador = 'sinConexión';
     } on TimeoutException {
@@ -102,7 +102,7 @@ class DataProvider {
         'error': true,
         'body': {
           'message': 'Sin respuesta, intenta de nuevo',
-        }
+        },
       };
     } catch (e) {
       await logError(e, from: 'Api provider, http.post');
@@ -113,7 +113,7 @@ class DataProvider {
         'body': {
           'message': 'Error de conexión con el servidor',
           // 'message': 'Error de conexión con el servidor: ${e.toString()}',
-        }
+        },
       };
     }
   }
@@ -146,7 +146,7 @@ class DataProvider {
         return {
           'status': 2,
           'error': true,
-          'body': {'message': 'Respuesta inesperada'}
+          'body': {'message': 'Respuesta inesperada'},
         };
       }
 
@@ -166,7 +166,7 @@ class DataProvider {
         return {
           'status': -1,
           'error': decodedRespBody['error'],
-          'body': decodedRespBody
+          'body': decodedRespBody,
         };
       } else {
         if (decodedRespBody['status'] == 200 ||
@@ -174,14 +174,14 @@ class DataProvider {
           return {
             'status': 1,
             'error': decodedRespBody['error'],
-            'body': decodedRespBody
+            'body': decodedRespBody,
           };
         } else {
           // printConsole(resp['status']);
           return {
             'status': 2,
             'error': decodedRespBody['error'],
-            'body': decodedRespBody
+            'body': decodedRespBody,
           };
         }
       }
@@ -191,7 +191,7 @@ class DataProvider {
         'error': true,
         'body': {
           'message': 'Verifica tu conexión a internet',
-        }
+        },
       };
       // controlador = 'sinConexión';
     } on TimeoutException {
@@ -200,7 +200,7 @@ class DataProvider {
         'error': true,
         'body': {
           'message': 'Sin respuesta, intenta de nuevo',
-        }
+        },
       };
     } catch (e) {
       await logError(e, from: 'Api provider, http.get');
@@ -209,7 +209,7 @@ class DataProvider {
         'error': true,
         'body': {
           'message': 'Petición fallida',
-        }
+        },
       };
     }
   }

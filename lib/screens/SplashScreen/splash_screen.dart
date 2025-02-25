@@ -1,7 +1,6 @@
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/screens/SplashScreen/on_board.dart';
 
@@ -50,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Text(
                 'Powered By Wappsi',
                 style: GoogleFonts.poppins(
-                  color: Theme.of(context).primaryTextTheme.bodyText1!.color,
+                  color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
                   fontWeight: FontWeight.normal,
                   fontSize: 20.0,
                 ),
@@ -60,7 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Text(
                 'V 1.0.0',
                 style: GoogleFonts.poppins(
-                  color: Theme.of(context).primaryTextTheme.bodyText1!.color,
+                  color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
                   fontWeight: FontWeight.normal,
                   fontSize: 15.0,
                 ),

@@ -116,7 +116,7 @@ class RegisterAlertDialogState extends State<RegisterAlertDialog> {
               cashAccForm,
               _valueFocus,
               action: widget.action,
-            )
+            ),
           ],
         ),
       ),

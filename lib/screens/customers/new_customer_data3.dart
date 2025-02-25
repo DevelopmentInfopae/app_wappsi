@@ -2,7 +2,6 @@
 
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -22,12 +21,10 @@ import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/screens/components/go_back_bottom.dart';
 // import 'package:pos_wappsi/components/image_file.dart';
 import 'package:pos_wappsi/screens/components/image_preview.dart';
-import 'package:pos_wappsi/screens/components/location/location_picker.dart';
 import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/add_favorites.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
-import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
 class NewCustomerData3 extends StatefulWidget {
   const NewCustomerData3({Key? key}) : super(key: key);
@@ -218,101 +215,101 @@ class _NewCustomerData3State extends State<NewCustomerData3> {
 
   Widget _locationSelector() {
     return Row(
-      children: [
-        AppButton(
-          // color: ,
-          // width: double.infinity,
-          padding: kButtonPadding,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Icon(
-                customerBloc.getLocation != null
-                    ? Icons.location_on_outlined
-                    : Icons.add_location_outlined,
-                size: kIconSize,
-                color: pColor,
-              ),
-              Text(
-                customerBloc.getLocation != null
-                    ? 'Lat: ' +
-                        roundDouble(customerBloc.getLocation!.latitude, 3)
-                            .toString() +
-                        ', Lon: ' +
-                        roundDouble(customerBloc.getLocation!.longitude, 3)
-                            .toString()
-                    : ' Añadir localización',
-                style: buttonsSmallTextStyle(context, color: pColor),
-              ),
-            ],
-          ),
-          onTap: () async {
-            _passwdFocus.unfocus();
-            _unameFocus.unfocus();
-            await Future.delayed(const Duration(milliseconds: 500));
-            if (customerBloc.getLocation != null) {
-              await _getLocation();
-            } else {
-              await _getLocation();
-            }
-          },
-        ).paddingRight(10).expand(),
-        Tooltip(
-          message: 'Eliminar',
-          child: AppButton(
-            // color: greyLight,
-            enabled: customerBloc.getLocation != null,
-            color: cancelColor,
-            disabledColor: grey,
-            width: 35,
-            child: const Icon(
-              Icons.disabled_by_default_outlined,
-              // size: kIconSize,
-              color: Colors.white,
-            ),
-            padding: kButtonPadding,
-            onTap: () async {
-              setState(() {
-                customerBloc.setLocation(null);
-              });
-            },
-          ),
-        ).paddingRight(4),
-        Tooltip(
-          message: 'Seleccionar localización',
-          child: AppButton(
-            // color: greyLight,
-            width: 35,
-            child: Icon(
-              customerBloc.getLocation != null
-                  ? Icons.edit_location_alt_outlined
-                  : Icons.add_location_alt_outlined,
-              // size: kIconSize,
-              color: pColor,
-            ),
-            padding: kButtonPadding,
-            onTap: () async {
-              if (customerBloc.getLocation != null) {
-                await _getLocation();
-              } else {
-                await _getLocation();
-              }
-            },
-          ),
-        ),
+      children: const [
+        // AppButton(
+        //   // color: ,
+        //   // width: double.infinity,
+        //   padding: kButtonPadding,
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.start,
+        //     children: [
+        //       Icon(
+        //         customerBloc.getLocation != null
+        //             ? Icons.location_on_outlined
+        //             : Icons.add_location_outlined,
+        //         size: kIconSize,
+        //         color: pColor,
+        //       ),
+        //       Text(
+        //         customerBloc.getLocation != null
+        //             ? 'Lat: ' +
+        //                 roundDouble(customerBloc.getLocation!.latitude, 3)
+        //                     .toString() +
+        //                 ', Lon: ' +
+        //                 roundDouble(customerBloc.getLocation!.longitude, 3)
+        //                     .toString()
+        //             : ' Añadir localización',
+        //         style: buttonsSmallTextStyle(context, color: pColor),
+        //       ),
+        //     ],
+        //   ),
+        //   onTap: () async {
+        //     _passwdFocus.unfocus();
+        //     _unameFocus.unfocus();
+        //     await Future.delayed(const Duration(milliseconds: 500));
+        //     if (customerBloc.getLocation != null) {
+        //       await _getLocation();
+        //     } else {
+        //       await _getLocation();
+        //     }
+        //   },
+        // ).paddingRight(10).expand(),
+        // Tooltip(
+        //   message: 'Eliminar',
+        //   child: AppButton(
+        //     // color: greyLight,
+        //     enabled: customerBloc.getLocation != null,
+        //     color: cancelColor,
+        //     disabledColor: grey,
+        //     width: 35,
+        //     child: const Icon(
+        //       Icons.disabled_by_default_outlined,
+        //       // size: kIconSize,
+        //       color: Colors.white,
+        //     ),
+        //     padding: kButtonPadding,
+        //     onTap: () async {
+        //       // setState(() {
+        //       //   customerBloc.setLocation(null);
+        //       // });
+        //     },
+        //   ),
+        // ).paddingRight(4),
+        // Tooltip(
+        //   message: 'Seleccionar localización',
+        //   child: AppButton(
+        //     // color: greyLight,
+        //     width: 35,
+        //     child: Icon(
+        //       customerBloc.getLocation != null
+        //           ? Icons.edit_location_alt_outlined
+        //           : Icons.add_location_alt_outlined,
+        //       // size: kIconSize,
+        //       color: pColor,
+        //     ),
+        //     padding: kButtonPadding,
+        //     onTap: () async {
+        //       // if (customerBloc.getLocation != null) {
+        //       //   await _getLocation();
+        //       // } else {
+        //       //   await _getLocation();
+        //       // }
+        //     },
+        //   ),
+        // ),
       ],
     );
   }
 
   Future<void> _getLocation() async {
-    GeoPoint? result = await SearchLocationPage(
-      geoLoc: customerBloc.getLocation,
-    ).launch(context);
-    if (result != null) {
-      setState(() {
-        customerBloc.setLocation(result);
-      });
-    }
+    // GeoPoint? result = await SearchLocationPage(
+    //   geoLoc: customerBloc.getLocation,
+    // ).launch(context);
+    // if (result != null) {
+    //   setState(() {
+    //     customerBloc.setLocation(result);
+    //   });
+    // }
   }
 
   CheckboxListTile _createCustomerUserCheck() {

@@ -57,7 +57,7 @@ class _CustomerDetailsState extends State<CustomerDetails> {
           ),
           pColor,
           size,
-        )
+        ),
       ],
     );
   }

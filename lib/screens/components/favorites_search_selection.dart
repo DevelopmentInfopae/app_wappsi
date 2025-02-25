@@ -79,7 +79,7 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
             await _reloadFavorites(context);
           },
           child: _products(),
-        ).expand()
+        ).expand(),
       ],
     );
   }
@@ -159,7 +159,7 @@ class _FavoritesOrderSelectionState extends State<FavoritesOrderSelection> {
             color: Colors.grey,
             offset: Offset(0.0, 1.0), //(x,y)
             blurRadius: 2.0,
-          )
+          ),
         ],
       ),
       child: child,

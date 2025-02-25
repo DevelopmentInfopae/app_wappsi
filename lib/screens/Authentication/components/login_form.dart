@@ -50,7 +50,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
       // focus: passwordFocusNode,
       focusNode: passwordFocusNode,
       obscureText: true,
-      style: Theme.of(context).textTheme.subtitle1,
+      style: Theme.of(context).textTheme.labelMedium,
       initialValue: loginForm.password,
       keyboardType: TextInputType.visiblePassword,
       validator: (value) {
@@ -78,7 +78,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
       // controller: TextEditingController(),
       keyboardType: TextInputType.text,
       initialValue: loginForm.user,
-      style: Theme.of(context).textTheme.subtitle1,
+      style: Theme.of(context).textTheme.labelMedium,
       // nextFocus: passwordFocusNode,
 
       validator: (value) {
@@ -131,7 +131,6 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
       await _action(res, loginForm, context, override);
 
       // hide loading snackbar
-
     } else {
       userFocusNode.requestFocus();
     }
@@ -261,7 +260,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
             const SafeSpacer(
               height: 36,
             ),
-            _loginButton(context, loginForm)
+            _loginButton(context, loginForm),
           ],
         ),
       ),

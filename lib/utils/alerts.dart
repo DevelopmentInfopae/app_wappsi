@@ -40,7 +40,7 @@ void scaffoldAlert(
             message,
             style: Theme.of(context)
                 .textTheme
-                .headline6!
+                .titleLarge!
                 .apply(fontSizeFactor: 0.8, color: textColor),
           ).paddingSymmetric(horizontal: 8),
           backGroundColor,
@@ -79,7 +79,7 @@ confirmDialog(BuildContext context, String msg, String img) async {
           child: Text(
             msg,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.subtitle1,
+            style: Theme.of(context).textTheme.labelMedium,
           ),
         ),
         actions: <Widget>[
@@ -165,7 +165,7 @@ Future<XFile?> imagePickerDialog(BuildContext context) async {
                   );
                 },
               ),
-            )
+            ),
           ],
         ),
         actions: <Widget>[
@@ -206,7 +206,7 @@ reloadDialog(BuildContext context, String msg, String img) async {
         content: Text(
           msg,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.subtitle1,
+          style: Theme.of(context).textTheme.labelMedium,
         ),
         actions: <Widget>[
           Container(
@@ -270,15 +270,15 @@ Future<bool> choiceAlert(
                   Text(
                     msj,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.labelMedium,
                   ),
-                  widget ?? Container()
+                  widget ?? Container(),
                 ],
               )
             : Text(
                 msj,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.subtitle1,
+                style: Theme.of(context).textTheme.labelMedium,
               ),
         actions: <Widget>[
           Container(
@@ -331,7 +331,7 @@ loadCart(BuildContext context, String msj, String img) {
         content: Text(
           msj,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.subtitle1,
+          style: Theme.of(context).textTheme.labelMedium,
         ),
         actions: <Widget>[
           Container(
@@ -405,7 +405,7 @@ void loading(
                 message,
                 style: Theme.of(context)
                     .textTheme
-                    .headline6!
+                    .headlineMedium!
                     .apply(fontSizeFactor: 0.8),
               ),
         title: Padding(
@@ -445,7 +445,7 @@ listInfoDialog(
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
-                  .subtitle1!
+                  .titleSmall!
                   .apply(fontWeightDelta: 2),
             ),
             Row(
@@ -523,7 +523,7 @@ Future<bool> listInfoDialogChoice(
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
-                  .subtitle1!
+                  .titleMedium!
                   .apply(fontWeightDelta: 2),
             ),
             Row(

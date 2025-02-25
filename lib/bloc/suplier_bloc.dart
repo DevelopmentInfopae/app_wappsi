@@ -1,13 +1,11 @@
 // ignore_for_file: implementation_imports
 
 // import 'package:flutter/material.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+// import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 // ignore: unused_import
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 // import 'package:place_picker/entities/location_result.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-// import 'package:pos_wappsi/models/customer_addresses_model.dart';
-
 // import 'package:pos_wappsi/providers/user_supplier.dart';
 
 import 'package:rxdart/subjects.dart';
@@ -25,7 +23,7 @@ class SupplierBloc {
   // BehaviorSubject<String?> _userNameController = BehaviorSubject<String?>();
   // BehaviorSubject<String?> _passwordController = BehaviorSubject<String?>();
   BehaviorSubject<String?> _imageController = BehaviorSubject<String?>();
-  BehaviorSubject<GeoPoint?> _locationController = BehaviorSubject<GeoPoint?>();
+  // BehaviorSubject<GeoPoint?> _locationController = BehaviorSubject<GeoPoint?>();
 
   //-----------------------------------------------------------------------------
   //                                Streams
@@ -112,9 +110,9 @@ class SupplierBloc {
     return _imageController.valueOrNull;
   }
 
-  GeoPoint? get getLocation {
-    return _locationController.valueOrNull;
-  }
+  // GeoPoint? get getLocation {
+  //   return _locationController.valueOrNull;
+  // }
 
   // Map<String, ProductModel>? getProducts() {
   //   // return _favoritesController.valueOrNull;
@@ -127,7 +125,7 @@ class SupplierBloc {
 
   // Function(String) get setUserName => _userNameController.sink.add;
   Function(String?) get setImage => _imageController.sink.add;
-  Function(GeoPoint?) get setLocation => _locationController.sink.add;
+  // Function(GeoPoint?) get setLocation => _locationController.sink.add;
   // Function(String) get setPassword => _passwordController.sink.add;
 
   dispose() {
@@ -137,7 +135,7 @@ class SupplierBloc {
     // _passwordController.close();
     // _favoritesController.close();
     _imageController.close();
-    _locationController.close();
+    // _locationController.close();
     // _addressController.close();
   }
 
@@ -149,7 +147,7 @@ class SupplierBloc {
     // _userNameController =  BehaviorSubject<String?>();
     // _passwordController =  BehaviorSubject<String?>();
     _imageController = BehaviorSubject<String?>();
-    _locationController = BehaviorSubject<GeoPoint?>();
+    // _locationController = BehaviorSubject<GeoPoint?>();
   }
 
   clearAdressCreationData() {

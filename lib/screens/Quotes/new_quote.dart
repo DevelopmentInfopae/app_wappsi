@@ -107,7 +107,7 @@ class _NewQuoteState extends State<NewQuote> {
             _sellerInfo(),
             _customers().paddingBottom(8),
 
-            _customerAddresses()
+            _customerAddresses(),
           ],
         ),
       ),
@@ -265,7 +265,6 @@ class _NewQuoteState extends State<NewQuote> {
       _addressesDropDownKey.currentState?.changeSelectedItem(null);
 
       // _addressesDropDownKey.currentState?.openDropDownSearch();
-
     }
   }
 

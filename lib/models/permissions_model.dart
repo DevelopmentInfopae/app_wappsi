@@ -2,8 +2,9 @@
 //
 //     final permissionsModel = permissionsModelFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
+
+import 'package:meta/meta.dart';
 
 class PermissionsModel {
   PermissionsModel({
@@ -137,6 +138,6 @@ class PermissionsModel {
         'quotes-index': quotesIndex,
         'quotes-add': quotesAdd,
         'pos-pos_register_movements': posPosRegisterMovements,
-        'pos-pos_register_add_movement': posPosRegisterAddMovement
+        'pos-pos_register_add_movement': posPosRegisterAddMovement,
       };
 }

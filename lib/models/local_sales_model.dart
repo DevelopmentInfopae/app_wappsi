@@ -8,7 +8,6 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/models/payment_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
-
 import 'package:pos_wappsi/models/user_model.dart';
 import 'package:pos_wappsi/providers/biller_data_provider.dart';
 import 'package:pos_wappsi/providers/companies_provider.dart';
@@ -786,7 +785,7 @@ class SalesModel {
       'sale_data': {
         'reference_no': referenceNo,
         'resolucion': resolucion,
-        'date': date ?? registrationDate
+        'date': date ?? registrationDate,
       },
       'pos_note': note ?? '',
       'payment': payment.posPaid,
@@ -795,7 +794,7 @@ class SalesModel {
       'company_data': biller,
       'biller_data': billerData,
       'settings': settings,
-      'footer': temp
+      'footer': temp,
     };
   }
 
@@ -818,7 +817,7 @@ class SalesModel {
           'price': item.unitPrice,
           'name': item.productName,
           'unit': pUnit?.toJson(),
-          'base_unit': baseUnit?.toJson()
+          'base_unit': baseUnit?.toJson(),
         };
         productsMap.add(tItempMap);
         final taxRate =
@@ -829,7 +828,7 @@ class SalesModel {
         } else {
           ivasMap[taxRate] = {
             'value': (item.priceBeforeTax * item.quantity),
-            'name': item.tax
+            'name': item.tax,
           };
         }
       }

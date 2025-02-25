@@ -37,7 +37,7 @@ class SubzoneModel {
         'zone_code': zoneCode,
         'subzone_name': subzoneName,
         'subzone_code': subzoneCode,
-        'id': id
+        'id': id,
       };
 
   static List<SubzoneModel> fromJsonList(List data) {

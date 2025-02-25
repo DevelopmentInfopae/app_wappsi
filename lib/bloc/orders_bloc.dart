@@ -1,12 +1,11 @@
 import 'dart:async';
-
 import 'dart:math';
 
 // import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/models/companies_model.dart';
 // import 'package:pos_wappsi/environment/environment.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
-import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/delivery_time_model.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
@@ -19,7 +18,6 @@ import 'package:pos_wappsi/models/product_model.dart';
 // import 'package:pos_wappsi/models/suspended_sale_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
-
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
@@ -243,7 +241,6 @@ class OrderBloc {
       }
 
       // product.quantity = 1;
-
     }
     reloadProductStream();
     return res;
@@ -297,7 +294,6 @@ class OrderBloc {
             _productsController.value[key]!.quantity =
                 _productsController.value[key]!.inventory.toDouble();
             // setProductView(_productsController.value);
-
           } else {
             _productsController.value.remove(key);
             res = false;
@@ -547,7 +543,7 @@ class OrderBloc {
           element.getPriceWithoutIVA() * element.quantity;
       ivasMap[element.taxRate] = {
         'value': temp[element.taxRate],
-        'name': element.taxRateName
+        'name': element.taxRateName,
       };
       // printConsole('xd');
     }

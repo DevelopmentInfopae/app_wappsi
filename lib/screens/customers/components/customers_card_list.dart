@@ -62,7 +62,7 @@ class _CustomerCardListState extends State<CustomerCardList> {
             // return Container();
           },
         ),
-        if (_loading) ...[loadingIndicator(_size.width)]
+        if (_loading) ...[loadingIndicator(_size.width)],
       ],
     );
   }

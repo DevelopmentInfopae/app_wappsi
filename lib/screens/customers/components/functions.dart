@@ -7,7 +7,7 @@ Map getVerificationCode(String nit) {
     return {
       'error': true,
       'message': 'El NIT $nit no es válido(a).',
-      'value': ''
+      'value': '',
     };
   }
 
@@ -40,6 +40,6 @@ Map getVerificationCode(String nit) {
   return {
     'error': false,
     'message': 'Exito',
-    'value': y > 1 ? (11 - y).toString() : y.toString()
+    'value': y > 1 ? (11 - y).toString() : y.toString(),
   };
 }

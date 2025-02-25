@@ -61,7 +61,7 @@ class Application extends State<HomeScreen> {
           (dataBloc.getBillerCompany != null
               ? _companyNameLogo(dataBloc.getBillerCompany!)
               : _futureCompNameLogo()),
-          _notifications()
+          _notifications(),
         ],
       ).paddingSymmetric(horizontal: 8),
       _size,

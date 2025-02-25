@@ -134,7 +134,7 @@ class OrdersProvider {
       'company_data': dataBloc.getBillerCompany,
       'biller_data': dataBloc.getBIllerData,
       'settings': settings,
-      'footer': temp
+      'footer': temp,
     };
   }
 
@@ -157,7 +157,7 @@ class OrdersProvider {
           'status_filter': filters,
           'limit': limit,
           'local_orders': localIds,
-          'biller_id': dataBloc.userData?.billerId
+          'biller_id': dataBloc.userData?.billerId,
         },
         dataBloc.getHeaders(),
       );

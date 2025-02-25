@@ -160,7 +160,7 @@ class DataBloc {
   Map<String, String> getHeaders() {
     return {
       'content-Type': 'application/json',
-      'Authorization': dataBloc.getToken()
+      'Authorization': dataBloc.getToken(),
     };
   }
 

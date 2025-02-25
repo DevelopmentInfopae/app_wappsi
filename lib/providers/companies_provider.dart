@@ -399,7 +399,7 @@ class CompaniesProvider {
     if (customerGroup == null) {
       return {
         'error': true,
-        'body': {'message': 'No fue posible seleccionar grupo de company'}
+        'body': {'message': 'No fue posible seleccionar grupo de company'},
       };
     } else {
       customerBloc.getCustomer.groupId = customerGroup.idCloud.toString();
@@ -453,8 +453,8 @@ class CompaniesProvider {
 
     address.city = customerBloc.getCustomer.city;
     address.cityCode = customerBloc.getCustomer.cityCode;
-    address.latitude = customerBloc.getLocation?.latitude;
-    address.longitude = customerBloc.getLocation?.longitude;
+    // address.latitude = customerBloc.getLocation?.latitude;
+    // address.longitude = customerBloc.getLocation?.longitude;
     address.direccion = customerBloc.getCustomer.address;
     address.sucursal = customerBloc.getCustomer.buildName();
     address.customerAddressSellerIdAssigned =
@@ -554,7 +554,7 @@ class CompaniesProvider {
     if (supplierGroup == null) {
       return {
         'error': true,
-        'body': {'message': 'No fue posible seleccionar grupo proveedor'}
+        'body': {'message': 'No fue posible seleccionar grupo proveedor'},
       };
     } else {
       supplierBloc.getCustomer.groupId = supplierGroup.idCloud.toString();

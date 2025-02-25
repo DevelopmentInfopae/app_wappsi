@@ -22,18 +22,18 @@ Widget legalInformation(TextTheme textTheme, Map<dynamic, dynamic> printData) {
       RichText(
         text: TextSpan(
           text: 'NIT: ',
-          style: textTheme.bodyText1!.apply(fontWeightDelta: 2),
+          style: textTheme.bodyMedium!.apply(fontWeightDelta: 2),
           children: [
             TextSpan(
               text: settings['numero_documento'] ?? '',
-              style: textTheme.bodyText1,
-            )
+              style: textTheme.bodyMedium,
+            ),
           ],
         ),
       ),
       Text(
         regimenT[settings['tipo_regimen'].toString()]?.name ?? '',
-        style: textTheme.bodyText1!.apply(fontWeightDelta: 2),
+        style: textTheme.bodyMedium!.apply(fontWeightDelta: 2),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -49,9 +49,12 @@ Widget legalInformation(TextTheme textTheme, Map<dynamic, dynamic> printData) {
       RichText(
         text: TextSpan(
           text: 'Teléfono: ',
-          style: textTheme.bodyText1!.apply(fontWeightDelta: 2),
+          style: textTheme.bodyMedium!.apply(fontWeightDelta: 2),
           children: [
-            TextSpan(text: companyData?.phone ?? '', style: textTheme.bodyText1)
+            TextSpan(
+              text: companyData?.phone ?? '',
+              style: textTheme.bodyMedium,
+            ),
           ],
         ),
       ),
@@ -62,7 +65,7 @@ Widget legalInformation(TextTheme textTheme, Map<dynamic, dynamic> printData) {
 Text socialReason(String? socialReason, TextTheme textTheme) {
   return Text(
     socialReason ?? '',
-    style: textTheme.bodyText1,
+    style: textTheme.bodyMedium,
   );
 }
 
@@ -78,12 +81,12 @@ Widget invoiceRef(TextTheme textTheme, Map<dynamic, dynamic> printData) {
     children: [
       Text(
         'Factura POS',
-        style: textTheme.bodyText1,
+        style: textTheme.bodyMedium,
       ),
       Text(
         data['reference_no'] ?? '',
-        style:
-            textTheme.bodyText1!.apply(fontWeightDelta: 5, fontSizeFactor: 1.2),
+        style: textTheme.bodyMedium!
+            .apply(fontWeightDelta: 5, fontSizeFactor: 1.2),
       ),
     ],
   );
@@ -95,12 +98,12 @@ Widget orderRef(TextTheme textTheme, Map<dynamic, dynamic> printData) {
     children: [
       Text(
         'Orden de Pedido',
-        style: textTheme.bodyText1,
+        style: textTheme.bodyMedium,
       ),
       Text(
         data['reference_no'] ?? '',
-        style:
-            textTheme.bodyText1!.apply(fontWeightDelta: 5, fontSizeFactor: 1.2),
+        style: textTheme.bodyMedium!
+            .apply(fontWeightDelta: 5, fontSizeFactor: 1.2),
       ),
     ],
   );
@@ -112,12 +115,12 @@ Widget quoteRef(TextTheme textTheme, Map<dynamic, dynamic> printData) {
     children: [
       Text(
         'Cotización',
-        style: textTheme.bodyText1,
+        style: textTheme.bodyMedium,
       ),
       Text(
         data['reference_no'] ?? '',
-        style:
-            textTheme.bodyText1!.apply(fontWeightDelta: 5, fontSizeFactor: 1.2),
+        style: textTheme.bodyMedium!
+            .apply(fontWeightDelta: 5, fontSizeFactor: 1.2),
       ),
     ],
   );
@@ -140,42 +143,48 @@ Widget headerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
       RichText(
         text: TextSpan(
           text: 'Fecha/hora: ',
-          style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+          style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
           children: [
             TextSpan(
               text: parseDateStrES(date) + ' ' + parseTimeStrES(date),
-              style: textTheme.bodyText1,
-            )
+              style: textTheme.bodyMedium,
+            ),
           ],
         ),
       ),
       RichText(
         text: TextSpan(
           text: 'Cliente: ',
-          style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+          style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
           children: [
             TextSpan(
               text: capitalizeText(customer['name'] ?? ''),
-              style: textTheme.bodyText1,
-            )
+              style: textTheme.bodyMedium,
+            ),
           ],
         ),
       ),
       RichText(
         text: TextSpan(
           text: 'NIT/CC: ',
-          style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+          style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
           children: [
-            TextSpan(text: customer['vat_no'] ?? '', style: textTheme.bodyText1)
+            TextSpan(
+              text: customer['vat_no'] ?? '',
+              style: textTheme.bodyMedium,
+            ),
           ],
         ),
       ),
       RichText(
         text: TextSpan(
           text: 'Tel: ',
-          style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+          style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
           children: [
-            TextSpan(text: customer['phone'] ?? '', style: textTheme.bodyText1)
+            TextSpan(
+              text: customer['phone'] ?? '',
+              style: textTheme.bodyMedium,
+            ),
           ],
         ),
       ),
@@ -185,29 +194,29 @@ Widget headerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
                 RichText(
                   text: TextSpan(
                     text: 'Zona: ',
-                    style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+                    style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
                     children: [
                       TextSpan(
                         text: capitalizeText(
                           (zoneSzoneData['zone_data']?['zone_name'] ?? '--'),
                         ),
-                        style: textTheme.bodyText1,
-                      )
+                        style: textTheme.bodyMedium,
+                      ),
                     ],
                   ),
                 ),
                 RichText(
                   text: TextSpan(
                     text: 'Barrio: ',
-                    style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+                    style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
                     children: [
                       TextSpan(
                         text: capitalizeText(
                           (zoneSzoneData['subzone_data']?['subzone_name'] ??
                               '--'),
                         ),
-                        style: textTheme.bodyText1,
-                      )
+                        style: textTheme.bodyMedium,
+                      ),
                     ],
                   ),
                 ),
@@ -217,26 +226,26 @@ Widget headerData(TextTheme textTheme, Map<dynamic, dynamic> printData) {
       RichText(
         text: TextSpan(
           text: 'Dirección: ',
-          style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+          style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
           children: [
             TextSpan(
               text: capitalizeText(
                 (customer['address'] ?? '') + ' - ' + (customer['city'] ?? ''),
               ),
-              style: textTheme.bodyText1,
-            )
+              style: textTheme.bodyMedium,
+            ),
           ],
         ),
       ),
       Text(
         customer['email'] ?? '',
-        style: textTheme.bodyText1?.apply(fontWeightDelta: 2),
+        style: textTheme.bodyMedium?.apply(fontWeightDelta: 2),
       ),
       RichText(
         text: TextSpan(
           text: 'Vendedor: ',
-          style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
-          children: [TextSpan(text: sellerName, style: textTheme.bodyText1)],
+          style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
+          children: [TextSpan(text: sellerName, style: textTheme.bodyMedium)],
         ),
       ),
     ],
@@ -268,7 +277,7 @@ Widget productsFavorites(Map<dynamic, dynamic> printData) {
         'Productos',
         style: TextStyle(fontWeight: FontWeight.bold),
       ).paddingBottom(5),
-    )
+    ),
   ];
   for (Map element in products) {
     final pName = Text(
@@ -490,11 +499,11 @@ Widget paymentDetails(TextTheme textTheme, Map<dynamic, dynamic> printData) {
         children: [
           Text(
             'Total a pagar: ',
-            style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+            style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
           ),
           Text(
             total,
-            style: textTheme.bodyText1,
+            style: textTheme.bodyMedium,
           ),
         ],
       ),
@@ -503,11 +512,11 @@ Widget paymentDetails(TextTheme textTheme, Map<dynamic, dynamic> printData) {
         children: [
           Text(
             'Valor recibido: ',
-            style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+            style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
           ),
           Text(
             payment,
-            style: textTheme.bodyText1,
+            style: textTheme.bodyMedium,
           ),
         ],
       ),
@@ -516,11 +525,11 @@ Widget paymentDetails(TextTheme textTheme, Map<dynamic, dynamic> printData) {
         children: [
           Text(
             'Cambio: ',
-            style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+            style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
           ),
           Text(
             getFormatedCurrency(cambio < 0 ? 0 : cambio),
-            style: textTheme.bodyText1,
+            style: textTheme.bodyMedium,
           ),
         ],
       ),
@@ -529,11 +538,11 @@ Widget paymentDetails(TextTheme textTheme, Map<dynamic, dynamic> printData) {
         children: [
           Text(
             'Pagado en: ',
-            style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+            style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
           ),
           Text(
             payMethod,
-            style: textTheme.bodyText1,
+            style: textTheme.bodyMedium,
           ),
         ],
       ),
@@ -559,11 +568,11 @@ Widget ordQuotValueDetails(
           children: [
             Text(
               'Subtotal: ',
-              style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+              style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
             ),
             Text(
               total,
-              style: textTheme.bodyText1,
+              style: textTheme.bodyMedium,
             ),
           ],
         ),
@@ -572,11 +581,11 @@ Widget ordQuotValueDetails(
           children: [
             Text(
               'Descuento: ',
-              style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+              style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
             ),
             Text(
               discount,
-              style: textTheme.bodyText1,
+              style: textTheme.bodyMedium,
             ),
           ],
         ),
@@ -585,11 +594,11 @@ Widget ordQuotValueDetails(
           children: [
             Text(
               'Total a pagar: ',
-              style: textTheme.bodyText1!.apply(fontWeightDelta: 5),
+              style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
             ),
             Text(
               grandTotal,
-              style: textTheme.bodyText1,
+              style: textTheme.bodyMedium,
             ),
           ],
         ),
@@ -605,7 +614,7 @@ Widget taxRatesValues(TextTheme textTheme, Map<dynamic, dynamic> printData) {
     children: [
       Text(
         'Resumen de impuestos',
-        style: textTheme.bodyText1,
+        style: textTheme.bodyMedium,
       ),
       DataTable(
         columns: _taxValuesColumns(),
@@ -678,7 +687,7 @@ Widget posNote(TextTheme textTheme, Map<dynamic, dynamic> printData) {
                 'p': Style(
                   textAlign: TextAlign.justify,
                   fontSize: FontSize.medium,
-                )
+                ),
               },
             ),
             emptyLine(),
@@ -691,7 +700,7 @@ Widget resolution(TextTheme textTheme, Map<dynamic, dynamic> printData) {
       printData['sale_data']?['resolucion'];
   return Text(
     resolution ?? '',
-    style: textTheme.bodyText1,
+    style: textTheme.bodyMedium,
     textAlign: TextAlign.center,
   );
 }
@@ -733,7 +742,7 @@ Widget wappsiSpam(TextTheme textTheme, Map<dynamic, dynamic> printData) {
           children: footer.map((element) {
             return Text(
               element,
-              style: textTheme.bodyText1,
+              style: textTheme.bodyMedium,
               textAlign: TextAlign.center,
             );
           }).toList(),

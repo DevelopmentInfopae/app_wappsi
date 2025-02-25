@@ -121,7 +121,7 @@ class SuspendSaleAlertDialogState extends State<SuspendSaleAlertDialog> {
               hintText: '',
               labelText: 'Palabra clave',
             ),
-          )
+          ),
         ],
       ),
     );

@@ -83,13 +83,11 @@ class UserModel {
     String res = '';
     try {
       final t = jsonDecode(data);
-      if(t is List){
+      if (t is List) {
         return t.first.toString();
       }
       return jsonEncode(t);
-    } catch (e) {
-      
-    }
+    } catch (e) {}
     return res;
   }
 
@@ -112,6 +110,6 @@ class UserModel {
         'warehouse_id': warehouseId,
         'company_name': companyName,
         'warehouse_name': warehouseName,
-        'document_type_id': documentTypeId
+        'document_type_id': documentTypeId,
       };
 }

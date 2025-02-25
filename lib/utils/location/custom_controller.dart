@@ -1,22 +1,20 @@
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+// import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 
-class CustomController extends MapController {
-  CustomController({
-    bool initMapWithUserPosition = true,
-    GeoPoint? initPosition,
-    BoundingBox? areaLimit = const BoundingBox.world(),
-  })  : assert(
-          initMapWithUserPosition || initPosition != null,
-        ),
-        super(
-          initMapWithUserPosition: initMapWithUserPosition,
-          initPosition: initPosition,
-          areaLimit: areaLimit,
-        );
+// class CustomController extends MapController {
+//   CustomController({
+//     // UserTrackingOption? initMapWithUserPosition =
+//     //     const UserTrackingOption.withoutUserPosition(),
+//     GeoPoint? initPosition,
+//     BoundingBox? areaLimit = const BoundingBox.world(),
+//   }) : super(
+//           // initMapWithUserPosition: initMapWithUserPosition,
+//           initPosition: initPosition,
+//           areaLimit: areaLimit,
+//         );
 
-  @override
-  // ignore: unnecessary_overrides
-  void init() {
-    super.init();
-  }
-}
+//   @override
+//   // ignore: unnecessary_overrides
+//   void init() {
+//     super.init();
+//   }
+// }

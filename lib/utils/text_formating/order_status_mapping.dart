@@ -28,37 +28,37 @@ Map<String, Color> mapStatusColor(String status) {
   if (status == 'pending') {
     mappedStatusColor = {
       'background': const Color.fromRGBO(248, 171, 91, 1),
-      'text': Colors.white
+      'text': Colors.white,
     };
   } else if (status == 'received') {
     mappedStatusColor = {
       'background': const Color.fromRGBO(29, 132, 199, 1),
-      'text': Colors.white
+      'text': Colors.white,
     };
   } else if (status == 'partial') {
     mappedStatusColor = {
       'background': const Color.fromRGBO(34, 198, 200, 1),
-      'text': Colors.white
+      'text': Colors.white,
     };
   } else if (status == 'completed') {
     mappedStatusColor = {
       'background': const Color.fromRGBO(29, 132, 199, 1),
-      'text': Colors.white
+      'text': Colors.white,
     };
   } else if (status == 'enlistment') {
     mappedStatusColor = {
       'background': const Color.fromRGBO(34, 204, 203, 1),
-      'text': Colors.white
+      'text': Colors.white,
     };
   } else if (status == 'sent') {
     mappedStatusColor = {
       'background': const Color.fromRGBO(207, 218, 224, 1),
-      'text': greyColor
+      'text': greyColor,
     };
   } else if (status == 'delivered') {
     mappedStatusColor = {
       'background': const Color.fromRGBO(37, 170, 143, 1),
-      'text': Colors.white
+      'text': Colors.white,
     };
   }
   return mappedStatusColor;

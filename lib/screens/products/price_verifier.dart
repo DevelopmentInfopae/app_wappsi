@@ -130,7 +130,7 @@ class _ProductPriceState extends State<ProductPrice> {
             color: Colors.grey,
             offset: Offset(0.0, 1.0), //(x,y)
             blurRadius: 2.0,
-          )
+          ),
         ],
       ),
     );
@@ -185,7 +185,6 @@ class _ProductPriceState extends State<ProductPrice> {
     if (query == '') {
       _productsStream.sink.add(null);
       // _searchFocusNode.requestFocus();
-
     } else {
       final res = await ProductsProvider.findProducts(query);
       if ((res ?? []).isEmpty) {

@@ -1,20 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/customer_addresses_model.dart';
 import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
-import 'package:pos_wappsi/utils/print_errors.dart';
 
-import '../../utils/location/custom_controller.dart';
+// import '../../utils/location/custom_controller.dart';
 import '../components/location/zone_szone_data.dart';
 
 class AddressDetails extends StatefulWidget {
@@ -34,8 +29,8 @@ class AddressDetails extends StatefulWidget {
 class _AddressDetailsState extends State<AddressDetails> {
   // late Size _size = MediaQuery.of(context).size;
   // late Color _pc;
-  late CustomController? controller;
-  late GeoPoint? gLoc;
+  // late CustomController? controller;
+  // late GeoPoint? gLoc;
   late GlobalKey<ScaffoldState> scaffoldKey;
   bool markerDraw = false;
   Key mapGlobalKey = UniqueKey();
@@ -44,21 +39,21 @@ class _AddressDetailsState extends State<AddressDetails> {
     super.initState();
     if (widget.address.latitude != null && widget.address.longitude != null) {
       try {
-        gLoc = GeoPoint(
-          latitude: widget.address.latitude!,
-          longitude: widget.address.longitude!,
-        );
-        controller = CustomController(
-          initMapWithUserPosition: false,
-          initPosition: gLoc,
+        // gLoc = GeoPoint(
+        //   latitude: widget.address.latitude!,
+        //   longitude: widget.address.longitude!,
+        // );
+        // controller = CustomController(
+        //   initMapWithUserPosition: UserTrackingOption(enableTracking: true),
+        //   initPosition: gLoc,
 
-          // areaLimit: BoundingBox(
-          //   east: 10.4922941,
-          //   north: 47.8084648,
-          //   south: 45.817995,
-          //   west: 5.9559113,
-          // ),
-        );
+        //   // areaLimit: BoundingBox(
+        //   //   east: 10.4922941,
+        //   //   north: 47.8084648,
+        //   //   south: 45.817995,
+        //   //   west: 5.9559113,
+        //   // ),
+        // );
       } catch (e) {
         logError(e);
       }
@@ -67,9 +62,8 @@ class _AddressDetailsState extends State<AddressDetails> {
       // controller!.changeLocation(gLoc!);
       // controller!.setMarkerIcon(
       //     gLoc!, const MarkerIcon(icon: Icon(Icons.location_on_outlined)));
-
     } else {
-      controller = null;
+      // controller = null;
     }
   }
 
@@ -109,7 +103,7 @@ class _AddressDetailsState extends State<AddressDetails> {
           ).withSize(width: 100, height: 100),
           addressDesc(context, widget.customer, widget.address)
               .paddingSymmetric(vertical: 4)
-              .expand()
+              .expand(),
         ],
       ),
     );
@@ -142,14 +136,14 @@ class _AddressDetailsState extends State<AddressDetails> {
             ],
           ),
         ),
-        Card(
-          elevation: 5,
-          child: controller != null
-              ? _map()
-                  .paddingSymmetric(horizontal: 4, vertical: 4)
-                  .withHeight(300)
-              : Container(),
-        ).expand(),
+        // Card(
+        //   elevation: 5,
+        //   child: controller != null
+        //       ? _map()
+        //           .paddingSymmetric(horizontal: 4, vertical: 4)
+        //           .withHeight(300)
+        //       : Container(),
+        // ).expand(),
       ],
     );
   }
@@ -166,45 +160,50 @@ class _AddressDetailsState extends State<AddressDetails> {
   Widget _map() {
     // to make this shit draw position marker
     if (!markerDraw) {
-      Timer(const Duration(seconds: 2), () {
-        try {
-          controller!.addMarker(
-            gLoc!,
-            markerIcon: const MarkerIcon(
-              icon: Icon(
-                Icons.location_on,
-                color: Colors.red,
-                size: kIconSize + 50,
-              ),
-            ),
-          );
-          controller!.osmBaseController;
-          setState(() {
-            markerDraw = true;
-          });
-        } catch (e) {
-          printConsole(e);
-        }
-      });
+      // Timer(const Duration(seconds: 2), () {
+      //   try {
+      //     controller!.addMarker(
+      //       gLoc!,
+      //       markerIcon: const MarkerIcon(
+      //         icon: Icon(
+      //           Icons.location_on,
+      //           color: Colors.red,
+      //           size: kIconSize + 50,
+      //         ),
+      //       ),
+      //     );
+      //     controller!.osmBaseController;
+      //     setState(() {
+      //       markerDraw = true;
+      //     });
+      //   } catch (e) {
+      //     printConsole(e);
+      //   }
+      // });
     }
-    return OSMFlutter(
-      // androidHotReloadSupport: true,
-      // showDefaultInfoWindow: true,
-      showZoomController: true,
-      mapIsLoading: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Loader(),
-            const Text('Cargando mapa..'),
-          ],
-        ),
-      ),
-      // showZoomController: true,
-      controller: controller!,
-      initZoom: 16,
-    );
+    return Container();
+    // return OSMFlutter(
+    //   // androidHotReloadSupport: true,
+    //   // showDefaultInfoWindow: true,
+    //   osmOption: OSMOption(
+    //     showZoomController: true,
+    //     zoomOption: ZoomOption(
+    //       initZoom: 16,
+    //     ),
+    //   ),
+    //   mapIsLoading: Center(
+    //     child: Column(
+    //       mainAxisSize: MainAxisSize.min,
+    //       mainAxisAlignment: MainAxisAlignment.center,
+    //       crossAxisAlignment: CrossAxisAlignment.center,
+    //       children: [
+    //         Loader(),
+    //         const Text('Cargando mapa..'),
+    //       ],
+    //     ),
+    //   ),
+    //   // showZoomController: true,
+    //   controller: controller!,
+    // );
   }
 }

@@ -36,7 +36,7 @@ class PreferenceCategoryModel {
         'id': id,
         'name': name,
         'selection_limit': selectionLimit,
-        'required': required
+        'required': required,
       };
 
   static List<PreferenceCategoryModel> fromJsonList(List<Map> list) {

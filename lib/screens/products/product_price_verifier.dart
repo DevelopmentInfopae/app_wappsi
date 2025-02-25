@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
-import 'package:pos_wappsi/screens/components/back_app_bar.dart';
-import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/providers/units_provider.dart';
+import 'package:pos_wappsi/screens/components/back_app_bar.dart';
+import 'package:pos_wappsi/screens/components/widgets.dart';
 import 'package:pos_wappsi/screens/customers/components/widgets.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 
@@ -73,9 +73,9 @@ class ProductPriceVerifier extends StatelessWidget {
                                 fweigth: 1,
                                 color: greyColor,
                               ),
-                              _taxInfo()
+                              _taxInfo(),
                             ],
-                          )
+                          ),
                         ],
                       ).center(),
                     ],

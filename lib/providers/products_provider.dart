@@ -4,7 +4,6 @@ import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/bloc/quotes_bloc.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
-
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
@@ -53,7 +52,7 @@ class ProductsProvider {
       dif = {
         'product_name': res['name'],
         'price': prodP.price,
-        'sp_price': res['sp_price']
+        'sp_price': res['sp_price'],
       };
     }
 
@@ -367,7 +366,7 @@ class ProductsProvider {
     Map<String, dynamic> req = {
       'product': product,
       'product_unit': null,
-      'product_prefs': null
+      'product_prefs': null,
     };
     Map<String, dynamic>? productDetails;
     bool prefsSelection =
@@ -442,7 +441,6 @@ class ProductsProvider {
 
       return product2;
       //apply discount
-
     } else {
       await dataBloc.getSettings();
       return getProductPrices(product);
@@ -477,7 +475,6 @@ class ProductsProvider {
       result;
       return result;
       //apply discount
-
     } else {
       await dataBloc.getSettings();
       return getPOSProductPrices(productKey);
@@ -500,7 +497,6 @@ class ProductsProvider {
 
       return result;
       //apply discount
-
     } else {
       await dataBloc.getSettings();
       return getPOSProductPrices(productKey);

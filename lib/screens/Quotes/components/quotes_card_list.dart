@@ -69,7 +69,7 @@ class _QuotesCardListState extends State<QuotesCardList> {
             // return Container();
           },
         ),
-        if (_loading) ...[loadingIndicator(_size.width)]
+        if (_loading) ...[loadingIndicator(_size.width)],
       ],
     );
   }
@@ -203,7 +203,7 @@ class QuotesCard extends StatelessWidget {
                   withInnerPadding: false,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                )
+                ),
               ],
             ),
           ),

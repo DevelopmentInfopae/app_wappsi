@@ -39,7 +39,7 @@ class LoginMobileView extends StatelessWidget {
               providers: [
                 ChangeNotifierProvider(
                   create: (_) => LoginFormProvider(),
-                )
+                ),
               ],
               child: const LoginFormInputs(),
             ),
@@ -52,7 +52,7 @@ class LoginMobileView extends StatelessWidget {
                 ),
                 CurrentVersion(),
               ],
-            )
+            ),
           ],
         ).withSize(
           height: _size.height,

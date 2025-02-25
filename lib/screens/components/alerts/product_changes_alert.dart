@@ -105,7 +105,7 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
               style: buttonsSmallTextStyle(context, fontSizeFactor: 1),
             ).paddingTop(8),
             _productName(context).paddingTop(8),
-            _unitSelectedName(context)
+            _unitSelectedName(context),
           ],
         ),
 
@@ -191,7 +191,7 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
                     Text(
                       'Selección',
                       style: normalTextStyle(context),
-                    ).paddingTop(2)
+                    ).paddingTop(2),
                   ],
                 ),
                 padding: kButtonPadding,
@@ -215,7 +215,7 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
                     Text(
                       'Stock',
                       style: normalTextStyle(context),
-                    ).paddingTop(2)
+                    ).paddingTop(2),
                   ],
                 ),
                 padding: kButtonPadding,
@@ -232,7 +232,7 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
           'Se fijará el stock disponible como cantidad seleccionada del producto.',
           textAlign: TextAlign.center,
           style: normalTextStyle(context),
-        ).paddingTop(10)
+        ).paddingTop(10),
       ],
     );
   }
@@ -299,7 +299,7 @@ class ProductChangesAlertState extends State<ProductChangesAlert> {
               : 'Conservar precio actual.',
           textAlign: TextAlign.center,
           style: normalTextStyle(context),
-        ).paddingTop(10)
+        ).paddingTop(10),
       ],
     );
   }

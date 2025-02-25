@@ -4,10 +4,10 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
+import 'package:pos_wappsi/config/endpoints.dart';
 // import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
-import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/screens/cash_accounting/print_register_close.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 
@@ -86,7 +86,7 @@ class RegisterFormProvider extends ChangeNotifier {
       'mv_origin_paid_by': paymentOrigin!.idCloud,
       'mv_destination_paid_by': paymentDestiny!.idCloud,
       'mv_note': movementNote,
-      'created_by': dataBloc.userData!.id
+      'created_by': dataBloc.userData!.id,
       // 'destination_mv_biller':mvBiller,
       // 'mv_user':mvUser,
     };
@@ -115,7 +115,7 @@ class RegisterFormProvider extends ChangeNotifier {
     final apiProvider = DataProvider();
     final headers = {
       'content-Type': 'application/json',
-      'Authorization': dataBloc.getToken()
+      'Authorization': dataBloc.getToken(),
     };
     // ignore: unnecessary_null_comparison
     if (value == '' || value == null) {
@@ -145,7 +145,7 @@ class RegisterFormProvider extends ChangeNotifier {
             .toString(),
         'date': (res['body']['date'] ?? '').toString(),
         'biller_name': (dataBloc.userData?.billerName ?? '').toString(),
-        'value': (body['total_cash_submitted'] ?? '')..toString()
+        'value': (body['total_cash_submitted'] ?? '')..toString(),
       };
       Navigator.pop(context);
       // Navigator.pop(context);
