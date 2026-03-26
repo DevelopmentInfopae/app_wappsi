@@ -1199,7 +1199,8 @@ CREATE TABLE `sma_payments` (
 `rete_bomberil_assumed_account` INTEGER DEFAULT NULL,
 `rete_autoaviso_assumed_account` INTEGER DEFAULT NULL,
 `comm_paid_payments_ids` INTEGER DEFAULT NULL,
-`comm_paid_sale_reference` TEXT  DEFAULT NULL
+`comm_paid_sale_reference` TEXT  DEFAULT NULL,
+`last_update` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 ''';

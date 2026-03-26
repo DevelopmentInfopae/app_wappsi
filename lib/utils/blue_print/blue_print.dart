@@ -743,6 +743,18 @@ class PrintFormat {
     return bytes;
   }
 
+  String sanitizeForPrinter(String text) {
+    return text.runes.map((rune) {
+      // CP1252 soporta 0x00-0xFF con algunos huecos
+      // caracteres seguros para impresoras térmicas
+      if (rune < 0x20 || (rune > 0x7E && rune > 0xFF)) {
+        return ''; // elimina el carácter problemático
+        // o puedes reemplazarlo: return '?';
+      }
+      return String.fromCharCode(rune);
+    }).join();
+  }
+
   Future<List<int>> ticketProductsPP6(
     Generator generator,
     bool innerPrinter, {
@@ -832,7 +844,7 @@ class PrintFormat {
         }
       }
       bytes += generator.text(
-        text,
+        sanitizeForPrinter(text), 
         styles: const PosStyles(bold: false, align: PosAlign.left),
       );
     }

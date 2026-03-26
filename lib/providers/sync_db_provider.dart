@@ -56,9 +56,9 @@ class SyncDBProvider {
         awaitTime: 150,
       );
 
-      if (options['path'] == 'sync/warehousesProducts' ) {
-        print('resssssssssssssssssssss 46 $res');
-      }
+      // if (options['path'] == 'sync/sales' ) {
+      //   print('resssssssssssssssssssss 46 $res');
+      // }
     } else {
       res = await api.getPetition(options['path'], dataBloc.getHeaders());
     }
