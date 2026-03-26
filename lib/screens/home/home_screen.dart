@@ -83,16 +83,26 @@ class Application extends State<HomeScreen> {
   }
 
   Widget _companyNameLogo(CompanyModel company) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const SizedBox(
-          width: 50,
-        ),
-        billerThumbNail(company.logo ?? '')
-            .paddingOnly(top: 3, bottom: 4, right: 2, left: 8),
-      ],
-    ).withWidth(_size.width * 0.8);
+    return SizedBox(
+      width: _size.width * 0.6, // limite externo
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(width: 50),
+          // El logo ahora se ajusta al espacio restante
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(8, 3, 2, 4),
+              child: FittedBox(
+                fit: BoxFit.contain,
+                alignment: Alignment.centerLeft,
+                child: billerThumbNail(company.logo ?? ''),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // show notification icon and shows notification's page

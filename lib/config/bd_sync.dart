@@ -26,6 +26,7 @@ Map<String, String> tableNamesToSyncOpt = {
   'sma_order_sales': 'Ordenes de pedido',
   'sma_quotes': 'Cotizaciones',
   'sma_purchases': 'Compras',
+  'sma_countries' : 'Countries',
 };
 
 List<String> specialSync = [
@@ -38,10 +39,18 @@ List<String> specialSync = [
 ];
 
 Map<String, Map<String, dynamic>> _options = {
+
+  'Parámetros Generales': {
+    'path': 'sync/settings',
+    'table': 'sma_settings',
+    'sync_id': 1,
+    'image': 'settings.png',
+  },
+
   'Productos': {
     'path': 'sync/products',
     'table': 'sma_products',
-    'sync_id': 1,
+    'sync_id': 2,
     'image': 'box.png',
     'independent_table': 'sma_products',
     'dependent_table': 'sma_unit_prices',
@@ -66,13 +75,13 @@ Map<String, Map<String, dynamic>> _options = {
   'Sucursales': {
     'path': 'sync/addresses',
     'table': 'sma_addresses',
-    'sync_id': 2,
+    'sync_id': 3,
     'image': 'locations.png',
   },
   'Terceros': {
     'path': 'sync/companies',
     'table': 'sma_companies',
-    'sync_id': 3,
+    'sync_id': 4,
     'image': 'people.png',
   },
 
@@ -85,19 +94,19 @@ Map<String, Map<String, dynamic>> _options = {
   'Fotos de Productos': {
     'path': 'sync/productPhotos',
     'table': 'sma_product_photos',
-    'sync_id': 4,
+    'sync_id': 5,
     'image': 'photos.png',
   },
   'Variantes de Productos': {
     'path': 'sync/productVariants',
     'table': 'sma_product_variants',
-    'sync_id': 5,
+    'sync_id': 6,
     'image': 'product-range.png',
   },
   'Precios de Productos': {
     'path': 'sync/productPrices',
     'table': 'sma_product_prices',
-    'sync_id': 6,
+    'sync_id': 7,
     'image': 'price-tag.png',
   },
   'Datos de Facturación': {
@@ -105,44 +114,38 @@ Map<String, Map<String, dynamic>> _options = {
     'path_documents_data': 'sync/billerDocumentsTypes',
     'table_data': 'sma_biller_data',
     'table_documents_data': 'sma_biller_documents_types',
-    'sync_id': 7,
+    'sync_id': 8,
     'image': 'report.png',
   },
   'Grupos de Clientes': {
     'path': 'sync/customerGroups',
     'table': 'sma_customer_groups',
-    'sync_id': 8,
+    'sync_id': 9,
     'image': 'meeting.png',
   },
   'Grupos de Precios': {
     'path': 'sync/priceGroups',
     'table': 'sma_price_groups',
-    'sync_id': 9,
+    'sync_id': 10,
     'image': 'prices.png',
   },
   'Productos de Sucursales': {
     'path': 'sync/warehousesProducts',
     'table': 'sma_warehouses_products',
-    'sync_id': 10,
+    'sync_id': 11,
     'image': 'inventory.png',
   },
   'Marcas': {
     'path': 'sync/brands',
     'table': 'sma_brands',
-    'sync_id': 11,
+    'sync_id': 12,
     'image': 'brand.png',
   },
   'Métodos de Pago': {
     'path': 'sync/paymentMethods',
     'table': 'sma_payment_methods',
-    'sync_id': 12,
-    'image': 'wallet.png',
-  },
-  'Parámetros Generales': {
-    'path': 'sync/settings',
-    'table': 'sma_settings',
     'sync_id': 13,
-    'image': 'settings.png',
+    'image': 'wallet.png',
   },
   'Grupos': {
     'path': 'sync/companyGroups',
@@ -248,6 +251,24 @@ Map<String, Map<String, dynamic>> _options = {
     'table': 'sma_companies',
     'sync_id': 24,
     'image': 'enterprise.png',
+  },
+  'Paises': {
+    'path': 'sync/countries',
+    'table': 'sma_countries',
+    'sync_id': 29,
+    'image': 'location.png',
+  },
+  'Departamentos': {
+    'path': 'sync/states',
+    'table': 'sma_states',
+    'sync_id': 30,
+    'image': 'location.png',
+  },
+  'Ciudades': {
+    'path': 'sync/cities',
+    'table': 'sma_cities',
+    'sync_id': 31,
+    'image': 'location.png',
   },
 };
 

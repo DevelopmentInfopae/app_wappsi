@@ -119,8 +119,9 @@ class _PrintSettingsState extends State<PrintSettings> {
     final img = image;
     //if img is png convert to png
     if (img.substring(img.length - 4) == '.png') {
-      imgURL = dataBloc.userData!.hostUrl +
-          '/wappsi_apis/utils/pngToJpg?img=' +
+      const hostUrl = "https://wposmovil.com/git_repos/WappsiAPI7.2/public";
+      imgURL = hostUrl +
+          '/utils/pngToJpg?img=' +
           imgURL;
     }
 

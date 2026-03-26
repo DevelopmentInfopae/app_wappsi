@@ -68,7 +68,7 @@ class CompanyModel {
     this.birthDay,
     this.customerOnlyForPos,
     this.customerSellerIdAssigned,
-    this.customerSpecialDiscount,
+    // this.customerSpecialDiscount,
     this.fuenteRetainer,
     this.ivaRetainer,
     this.icaRetainer,
@@ -138,7 +138,7 @@ class CompanyModel {
   String? birthDay;
   String? customerOnlyForPos;
   int? customerSellerIdAssigned;
-  String? customerSpecialDiscount;
+  // String? customerSpecialDiscount;
   String? fuenteRetainer;
   String? ivaRetainer;
   String? icaRetainer;
@@ -244,7 +244,7 @@ class CompanyModel {
         customerSellerIdAssigned: int.tryParse(
           json['customer_seller_id_assigned']?.toString() ?? '0',
         ),
-        customerSpecialDiscount: json['customer_special_discount']?.toString(),
+        // customerSpecialDiscount: json['customer_special_discount']?.toString(),
         fuenteRetainer: json['fuente_retainer']?.toString(),
         ivaRetainer: json['iva_retainer']?.toString(),
         icaRetainer: json['ica_retainer']?.toString(),
@@ -318,7 +318,7 @@ class CompanyModel {
         'birth_day': birthDay,
         'customer_only_for_pos': customerOnlyForPos,
         'customer_seller_id_assigned': customerSellerIdAssigned,
-        'customer_special_discount': customerSpecialDiscount,
+        // 'customer_special_discount': customerSpecialDiscount,
         'fuente_retainer': fuenteRetainer,
         'iva_retainer': ivaRetainer,
         'ica_retainer': icaRetainer,
@@ -388,7 +388,7 @@ class CompanyModel {
         'birth_day': birthDay,
         'customer_only_for_pos': customerOnlyForPos ?? 0,
         'customer_seller_id_assigned': customerSellerIdAssigned,
-        'customer_special_discount': customerSpecialDiscount,
+        // 'customer_special_discount': customerSpecialDiscount,
         'fuente_retainer': fuenteRetainer,
         'iva_retainer': ivaRetainer,
         'ica_retainer': icaRetainer,

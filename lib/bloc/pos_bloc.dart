@@ -763,6 +763,19 @@ class POSBloc {
     _customerController.sink.add(customer);
   }
 
+  BehaviorSubject<bool> _isElectronicController = BehaviorSubject<bool>.seeded(true);
+  Stream<bool> get isElectronicStream => _isElectronicController.stream;
+  bool get isElectronicValue => _isElectronicController.value;
+  setDocumentType(bool value) {
+    // Si por alguna razón está cerrado (no debería si la página está activa), lo recreamos
+    if (_isElectronicController.isClosed) {
+      _isElectronicController = BehaviorSubject<bool>.seeded(value);
+    } else {
+      _isElectronicController.sink.add(value);
+    }
+    print("Documento cambiado a: ${value ? 'Electrónico' : 'No electrónico'}");
+  }
+
   // Function(bool) get setPrintState => _printStateController.sink.add;
 
   Function(Map) get setPrintData => _printDataController.sink.add;
@@ -801,6 +814,7 @@ class POSBloc {
     isDisposed = true;
     _productsController.close();
     _productSearchController.close();
+    _isElectronicController.close();
     // _productsViewController.close();
     _subtotalController.close();
     _paymentValueController.close();

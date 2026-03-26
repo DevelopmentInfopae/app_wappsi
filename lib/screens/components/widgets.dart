@@ -393,8 +393,9 @@ Widget billerImage(String image) {
   // if img is png convert to png
   try {
     if (img.substring(img.length - 4) == '.png') {
-      imgURL = dataBloc.userData!.hostUrl +
-          '/wappsi_apis/utils/pngToJpg?img=' +
+      const hostUrl = "https://wposmovil.com/git_repos/WappsiAPI7.2/public"; // <- Esta ruta va a ser fija
+      imgURL = hostUrl +
+          '/utils/pngToJpg?img=' +
           imgURL;
       img = img.substring(0, img.length - 4) + '.jpg';
     }
@@ -430,3 +431,53 @@ Widget billerImage(String image) {
     ),
   );
 }
+
+Widget tencnologyProviderLogo(int provider){
+  if (provider != 3) {
+      return Container();
+  }
+  String imgURL = dataBloc.userData!.hostUrl +
+      dataBloc.userData!.companyFolder +
+      'assets/images/simba_logo.png';
+
+  // if img is png convert to png
+  var img = 'simba_logo.png';
+  try {
+      const hostUrl = "https://wposmovil.com/git_repos/WappsiAPI7.2/public"; // <- Esta ruta va a ser fija
+      imgURL = hostUrl +
+          '/utils/pngToJpg?img=' +
+          imgURL;
+      img = img.substring(0, img.length - 4) + '.jpg';
+  } catch (e) {
+    logError(e);
+  }
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+    child: FutureBuilder(
+      future: initSaveToPath(img, 'images/biller/', imgURL),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          try {
+            return AppButton(
+              child: imageFile(snapshot.data),
+              elevation: 0,
+              padding: EdgeInsets.zero,
+              onTap: () {
+                ImagePreview(
+                  imagePath: snapshot.data,
+                  isFileImage: true,
+                ).launch(context);
+              },
+            );
+          } catch (e) {
+            printConsole(e);
+          }
+        }
+        return Image.asset(
+          'assets/images/no_image.png',
+        );
+      },
+    ),
+  );
+}
+

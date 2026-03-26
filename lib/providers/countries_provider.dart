@@ -46,6 +46,9 @@ class CountriesProvider {
     }
     List<CountriesModel> list = [];
     if (data != null) {
+      print('***************************** countries ***');
+      print(data);
+      print('***************************** countries ***');
       Map<String, dynamic> temp = {};
       for (var item in data) {
         for (var i = 0; i < item.keys.length; i++) {

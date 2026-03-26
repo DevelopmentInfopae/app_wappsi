@@ -1,4 +1,8 @@
-import 'dart:typed_data';
+import 'dart:ui';
+import 'package:flutter/services.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:image/image.dart' as img;
+import 'package:intl/intl.dart';
 
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
@@ -478,6 +482,8 @@ class PrintFormat {
     final Map zoneSzoneData = printData?['zone_szone_data'] ?? {};
     final companyData = printData?['company_data'];
     final regType = settings?['tipo_regimen'];
+    var feAceptado = printData?['sale_data']?['feAceptado'];
+    feAceptado ??= int.tryParse(printData?['sale_data']?['data']?['fe_aceptado']?.toString() ?? '');
 
     final labelsCustomer = [
       'Cliente: ',
@@ -544,6 +550,7 @@ class PrintFormat {
       settings,
       regType,
       companyData,
+      feAceptado,
     );
     bytes += generator.emptyLines(1);
     //invoice data
@@ -676,7 +683,7 @@ class PrintFormat {
     // generator.
     generator.setGlobalCodeTable('CP1252');
     generator.setGlobalFont(PosFontType.fontB);
-    bytes = _footer(generator, bytes, innerPrinter, printData);
+    bytes = await _footer(generator, bytes, innerPrinter, printData);
     // // ignore: unnecessary_statements
     bytes += generator.feed(1);
     // ignore: unnecessary_statements
@@ -1122,16 +1129,29 @@ class PrintFormat {
     return bytes;
   }
 
-  List<int> _footer(
+  Future<List<int>> _footer(
     Generator generator,
     List<int> bytes,
     bool _innerPrinter,
     Map<dynamic, dynamic>? printData,
-  ) {
+  ) async {
     final data = printData?['sale_data']?['data'] ??
         printData?['sale_data'] ??
         printData?['order_data'];
     bytes += generator.emptyLines(1);
+
+    if ( printData?['pos_note'] != null && printData?['pos_note'] != '' ) {
+      final pNote = 'Nota: ' +
+          (_innerPrinter
+              ? replaceSpecialCharacters(printData?['pos_note'] ?? '')
+              : printData?['pos_note']);
+      bytes += generator.emptyLines(1);
+      bytes += generator.text(
+        pNote,
+        styles: const PosStyles(bold: false, align: PosAlign.center),
+      );
+    }
+
     if (data != null) {
       if (data['resolucion'] != null) {
         final resolution = _innerPrinter
@@ -1143,17 +1163,7 @@ class PrintFormat {
         );
       }
     }
-    if (data?['pos_note'] != null) {
-      final pNote = 'Nota: ' +
-          (_innerPrinter
-              ? replaceSpecialCharacters(data?['pos_note'] ?? '')
-              : data?['pos_note']);
-      bytes += generator.emptyLines(1);
-      bytes += generator.text(
-        pNote,
-        styles: const PosStyles(bold: false, align: PosAlign.center),
-      );
-    }
+    
     final List<String>? footer = data?['footer'];
     String _companyFooter = '';
     if (footer != null) {
@@ -1167,8 +1177,124 @@ class PrintFormat {
         styles: const PosStyles(bold: false, align: PosAlign.center),
       );
     }
+    bytes  += generator.feed(1);
 
-    bytes = wappsiSpam(_innerPrinter, bytes, generator);
+    final feAccepted = data['feAceptado'] ?? data['fe_aceptado'];
+    final feAceptado = int.tryParse( feAccepted?.toString() ?? '' );
+    if (feAceptado == 2 ) {
+      final cufe = data?['cufe'];
+      if ( cufe != null && cufe != '') {
+        bytes += generator.text(
+          'CUFE : ' + cufe,
+          styles: const PosStyles(bold: false, align: PosAlign.center),
+        );
+      }
+
+      final codigoQr = data['codigoQr'] ?? data['codigo_qr'];
+      if ( codigoQr != null && codigoQr != '') {
+        try {
+          final qrValidationResult = QrValidator.validate(
+            data: codigoQr,
+            version: QrVersions.auto,
+            errorCorrectionLevel: QrErrorCorrectLevel.L, 
+          );
+
+          if (qrValidationResult.status == QrValidationStatus.valid) {
+            final qrCode = qrValidationResult.qrCode;
+            final painter = QrPainter.withQr(
+              qr: qrCode!,
+              color: const Color(0xFF000000), 
+              emptyColor: const Color(0xFFFFFFFF), 
+              gapless: false, 
+            );
+
+            const double qrSize = 250.0;
+            final ByteData? byteData = await painter.toImageData(qrSize, format: ImageByteFormat.png);
+
+            if (byteData != null) {
+              final Uint8List pngBytes = byteData.buffer.asUint8List();
+              final img.Image? image = img.decodePng(pngBytes);
+
+              if (image != null) {
+                final img.Image grayscaleImage = img.grayscale(image);
+                bytes += generator.image(grayscaleImage);
+                bytes += generator.text(
+                  'Representación gráfica de la factura electrónica',
+                  styles: const PosStyles(bold: false, align: PosAlign.center),
+                );
+                bytes  += generator.feed(1);
+              }
+            }
+          } else {
+            print('QR Validation failed: ${qrValidationResult.error}');
+            bytes += generator.text('Error al generar QR');
+          }
+        } catch (e) {
+          print('Error al generar o imprimir QR: $e');
+          bytes += generator.text('Error inesperado al generar QR'); 
+        }
+      }
+
+      final userName = dataBloc.userData?.userName;
+      if (userName != null) {
+        bytes += generator.text(
+          'Creado por : ' + userName,
+          styles: const PosStyles(bold: false, align: PosAlign.center),
+        );
+      }
+
+      final dateCreated = data?['date'];
+      if ( dateCreated != null && dateCreated.isNotEmpty ) {
+        final DateTime dateTimeValid = DateFormat('yyyy-MM-dd HH:mm:ss').parse(dateCreated);
+        final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
+        final dateTimeFormated = formatter.format(dateTimeValid);
+        if (dateTimeFormated != '') {
+          bytes += generator.text(
+            'Fecha creación : ' + dateTimeFormated,
+            styles: const PosStyles(bold: false, align: PosAlign.center),
+          );
+          bytes  += generator.feed(1);
+        }
+      }
+
+      final feValidationDian =  data['feValidationDian'] ?? data['fe_validation_dian'];
+      if ( feValidationDian != null && feValidationDian != '' ) {
+        final DateTime dateTimeValid = DateFormat('yyyy-MM-dd HH:mm:ss').parse(feValidationDian);
+        final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
+        final dateTimeFormated = formatter.format(dateTimeValid);
+        if (dateTimeFormated != '') {
+          bytes += generator.text(
+            'Fecha/hora validación DIAN: ' + dateTimeFormated,
+            styles: const PosStyles(bold: false, align: PosAlign.center),
+          );
+          bytes  += generator.feed(1);
+        }
+      }
+
+      final technologyProvider = printData?['settings']?['fe_technology_provider'];
+      if (technologyProvider != null && technologyProvider == 3) {
+        final ByteData imBytes = await rootBundle.load('assets/logos/simba_logo.png');
+        final Uint8List originalPngBytes = imBytes.buffer.asUint8List();
+        final img.Image? image = img.decodePng(originalPngBytes);
+
+        if (image != null) {
+          final img.Image grayscaleImage = img.grayscale(image);
+          const int targetWidth = 450; // Puedes probar con 100, 120, 180, etc.
+          final int newHeight = (grayscaleImage.height * targetWidth / grayscaleImage.width).round();
+
+          final img.Image resizedImage = img.copyResize(
+            grayscaleImage,
+            width: targetWidth,
+            height: newHeight,
+          );
+          bytes += generator.image(resizedImage);
+          bytes += generator.feed(1); // Salto de línea
+        } else {
+          print('Error: No se pudo cargar o procesar el logo de simba_logo.png.');
+        }
+      }
+      bytes = wappsiSpam(_innerPrinter, bytes, generator);
+    }
     return bytes;
   }
 

@@ -72,6 +72,8 @@ dependencies:
   flutter_riverpod: ^2.3.7
   get_it: ^7.6.0
   logger: ^2.3.0
+  cached_network_image: ^3.2.3
+  qr_flutter: ^4.0.0
 
 dev_dependencies:
   flutter_test:

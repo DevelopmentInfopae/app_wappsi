@@ -999,6 +999,7 @@ CREATE TABLE `sma_sales` (
 `fe_aceptado` tinyINTEGER NOT NULL DEFAULT '0' ,
 `fe_recibido` tinyINTEGER DEFAULT NULL ,
 `cufe` TEXT  DEFAULT NULL ,
+`fe_validation_dian` datetime DEFAULT NULL,
 `codigo_qr` TEXT  DEFAULT NULL ,
 `fe_id_transaccion` TEXT  DEFAULT NULL ,
 `fe_mensaje` TEXT  DEFAULT NULL ,

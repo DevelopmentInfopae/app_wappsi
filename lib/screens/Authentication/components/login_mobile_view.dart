@@ -31,9 +31,9 @@ class LoginMobileView extends StatelessWidget {
             const SizedBox(),
             Logo(
               width: _size.width,
-              height: responsive.maxHeightValue(150),
+              height: responsive.maxHeightValue(100),
               fit: BoxFit.fitHeight,
-              image: 'assets/logos/logo_wappsi.png',
+              image: 'assets/logos/WAPPSIPOSMOVIL_autoventa.png',
             ),
             MultiProvider(
               providers: [
@@ -48,7 +48,7 @@ class LoginMobileView extends StatelessWidget {
                 Logo(
                   width: 250,
                   fit: BoxFit.fitWidth,
-                  image: 'assets/images/logo_wappsi_pos_movil.png',
+                  image: 'assets/logos/WAPPSIPOSMOVIL_footer.png',
                 ),
                 CurrentVersion(),
               ],

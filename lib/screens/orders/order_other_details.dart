@@ -36,6 +36,7 @@ import 'package:pos_wappsi/utils/sale_functions/percent_formating.dart';
 import 'package:pos_wappsi/utils/text_formating/currency_formatter.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
+import 'package:intl/intl.dart';
 
 class OrderOtherDetails extends StatefulWidget {
   const OrderOtherDetails({Key? key}) : super(key: key);
@@ -638,7 +639,13 @@ class Validations extends State<OrderOtherDetails> {
           return element.time1 == time;
         }).first;
       } else {
-        selectedDeliveryTime = null;
+        // Si es null, asignamos la fecha y hora actuales
+        selectedDeliveryTime = DeliveryTime(
+          id: 0, // ID temporal
+          day: DateFormat('EEEE').format(DateTime.now()), // Día actual
+          time1: TimeOfDay.now(), // Hora actual
+          time2: TimeOfDay(hour: TimeOfDay.now().hour + 1, minute: TimeOfDay.now().minute), // +1 hora
+        ); 
       }
     });
     orderBloc.setDeliveryTime(selectedDeliveryTime);
@@ -688,6 +695,9 @@ class Validations extends State<OrderOtherDetails> {
   }
 
   RoundedLoadingButton sendButton() {
+    if (orderBloc.getDeliveryTime == null || orderBloc.getDeliveryTime?.time1 == null) {
+      _updateDeliveryTime(null);
+    }
     // bool enabled = true;
     return RoundedLoadingButton(
       color: pColor,

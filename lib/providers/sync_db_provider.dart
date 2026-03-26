@@ -19,7 +19,13 @@ class SyncDBProvider {
   String syncDate = '';
   static bool firstTime = false;
 
-  static _getUpdates(Map<String, dynamic> options, {bool isPost = true}) async {
+  static _getUpdates(
+    Map<String, dynamic> options, 
+    {bool isPost = true, 
+    int warehouseId = 0, 
+    int overselling = 0}
+  ) async {
+
     String? updateDate;
     DataProvider api = DataProvider();
 
@@ -31,16 +37,28 @@ class SyncDBProvider {
         updateDate = DateFormat('yyyy-MM-dd kk:mm:ss').format(DateTime.now());
         firstTime = true;
       }
+
+      // body que se envia en la petición 
       Map<String, dynamic> body = {
         'last_sync': updateDate,
         'first_time': firstTime,
       };
+
+      if ( options['table'] == 'sma_warehouses_products' ) {
+        body['overselling'] = overselling;
+        body['warehouse_id'] = warehouseId;
+      }
+
       res = await api.postPetition(
         options['path'],
         body,
         dataBloc.getHeaders(),
         awaitTime: 150,
       );
+
+      if (options['path'] == 'sync/warehousesProducts' ) {
+        print('resssssssssssssssssssss 46 $res');
+      }
     } else {
       res = await api.getPetition(options['path'], dataBloc.getHeaders());
     }
@@ -73,9 +91,21 @@ class SyncDBProvider {
     bool isSpecial = false,
     bool post = true,
   }) async {
+
+    int overselling = 0;
+    int warehouseId = 0; 
+    if ((selectedOption ?? enabledOptions[option])!['table'] == 'sma_warehouses_products') {
+      await dataBloc.getSettings();
+      final Map<String, dynamic> settings = await dataBloc.getSettings();
+      overselling = settings['overselling'];
+      warehouseId = dataBloc.userData!.warehouseId;
+    }
+
     final res = await _getUpdates(
       selectedOption ?? enabledOptions[option]!,
       isPost: post,
+      overselling : overselling, 
+      warehouseId : warehouseId,
     );
     //check if JWT is ok, if not logout
     if (res['status'] == -1) {

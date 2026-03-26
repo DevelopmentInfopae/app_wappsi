@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 
+import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/models/user_model.dart';
@@ -508,6 +509,17 @@ class SaleModel {
     if (posBloc.getPaymentTerm != null) {
       dueDate = today.add(Duration(days: posBloc.getPaymentTerm!));
     }
+
+    int documentTypeId = user.documentTypeId ?? 0;
+    int posId = user.pos_document_type_id ?? 0;
+    int feId = user.fe_pos_document_type_id ?? 0;
+
+    if (posBloc.isElectronicValue && feId != 0) {
+      documentTypeId = feId;
+    }else if(!posBloc.isElectronicValue && posId != 0){
+      documentTypeId = posId;
+    }
+    
     return SaleModel(
       typePos: 1,
       amount: [posBloc.getSubTotal().toInt()],
@@ -523,7 +535,7 @@ class SaleModel {
       unitPrice: productsDetails['unit_price'],
       meanPaymentCodeFe: posBloc.getPaymentMethod?.codeFe.toString(),
       posbiller: user.billerId,
-      docTypeId: user.documentTypeId ?? 0,
+      docTypeId: documentTypeId,
       warehouse: user.warehouseId,
       seller: user.sellerId,
       customer: customer.idCloud!,
@@ -544,7 +556,7 @@ class SaleModel {
       unitProductTax: productsDetails['unit_product_tax'],
       productPreferencesText: productsDetails['product_preferences_text'],
       customerBranch: customerAddress.idCloud,
-      documentTypeId: user.documentTypeId,
+      documentTypeId: documentTypeId,
       orderSaleOrigin: 2,
       productTaxRate: productsDetails['product_tax_rate'],
       productDiscount: productsDetails['product_discount'],

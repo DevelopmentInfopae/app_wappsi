@@ -150,7 +150,8 @@ List<int> legalInfo(
   bool _innerPrinter,
   settings,
   regType,
-  companyData,
+  companyData, 
+  feAceptado,
 ) {
   bytes += generator.text(
     _innerPrinter
@@ -174,7 +175,8 @@ List<int> legalInfo(
     styles: const PosStyles(bold: true, align: PosAlign.center),
   );
 
-  final dir = _innerPrinter
+  if (feAceptado == 2) {
+    final dir = _innerPrinter
       ? capitalizeText(
           replaceSpecialCharacters(
             (companyData!.address ?? '') + '-' + companyData.city ?? '',
@@ -183,17 +185,19 @@ List<int> legalInfo(
       : capitalizeText(
           (companyData!.address ?? '') + '-' + (companyData.city ?? ''),
         );
-  bytes += generator.text(
-    dir,
-    styles: const PosStyles(bold: false, align: PosAlign.center),
-  );
-  bytes += generator.text(
-    'Telefono:' +
-        (_innerPrinter
-            ? replaceSpecialCharacters(companyData.phone ?? '')
-            : (companyData.phone ?? '').toString()),
-    styles: const PosStyles(bold: false, align: PosAlign.center),
-  );
+    final paddeDir = '     $dir     ';      
+    bytes += generator.text(
+      paddeDir,
+      styles: const PosStyles(bold: false, align: PosAlign.center),
+    );
+    bytes += generator.text(
+      'Telefono:' +
+          (_innerPrinter
+              ? replaceSpecialCharacters(companyData.phone ?? '')
+              : (companyData.phone ?? '').toString()),
+      styles: const PosStyles(bold: false, align: PosAlign.center),
+    );
+  }
   return bytes;
 }
 

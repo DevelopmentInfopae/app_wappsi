@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+
 // ignore: implementation_imports, unnecessary_import
 import 'package:nb_utils/src/extensions/widget_extensions.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
@@ -13,6 +16,8 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 import 'package:pos_wappsi/utils/text_formating/html_formating.dart';
 
 Widget legalInformation(TextTheme textTheme, Map<dynamic, dynamic> printData) {
+  var feAceptado = printData['sale_data']?['feAceptado'];
+  feAceptado ??= int.tryParse(printData['sale_data']?['data']?['fe_aceptado']?.toString() ?? '');
   final companyData = printData['company_data'];
   final settings = printData['settings'];
   return Column(
@@ -35,29 +40,32 @@ Widget legalInformation(TextTheme textTheme, Map<dynamic, dynamic> printData) {
         regimenT[settings['tipo_regimen'].toString()]?.name ?? '',
         style: textTheme.bodyMedium!.apply(fontWeightDelta: 2),
       ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Text(
-          capitalizeText(
-            (companyData?.address ?? '') +
-                ' - ' +
-                (printData['company_data']?.city ?? ''),
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
-      RichText(
-        text: TextSpan(
-          text: 'Teléfono: ',
-          style: textTheme.bodyMedium!.apply(fontWeightDelta: 2),
-          children: [
-            TextSpan(
-              text: companyData?.phone ?? '',
-              style: textTheme.bodyMedium,
+      if(feAceptado == 2) ...[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            capitalizeText(
+              (companyData?.address ?? '') +
+                  ' - ' +
+                  (printData['company_data']?.city ?? ''),
             ),
-          ],
+            textAlign: TextAlign.center,
+          ),
         ),
-      ),
+
+        RichText(
+          text: TextSpan(
+            text: 'Teléfono: ',
+            style: textTheme.bodyMedium!.apply(fontWeightDelta: 2),
+            children: [
+              TextSpan(
+                text: companyData?.phone ?? '',
+                style: textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ),
+      ]
     ],
   );
 }
@@ -682,7 +690,7 @@ Widget posNote(TextTheme textTheme, Map<dynamic, dynamic> printData) {
       : Column(
           children: [
             Html(
-              data: htmlFormating(posNote.toString()),
+              data: htmlFormating('<strong> Nota de factura: </strong>' + posNote.toString()),
               style: {
                 'p': Style(
                   textAlign: TextAlign.justify,
@@ -702,6 +710,132 @@ Widget resolution(TextTheme textTheme, Map<dynamic, dynamic> printData) {
     resolution ?? '',
     style: textTheme.bodyMedium,
     textAlign: TextAlign.center,
+  );
+}
+
+Widget cufe(TextTheme textTheme, String? cufe)
+{
+  var text = '';
+  if (cufe != null && cufe != '') {
+      text += 'CUFE : $cufe'; 
+  }
+  return Text(
+    text,
+    style: textTheme.bodyMedium,
+    textAlign: TextAlign.center,
+  );
+}
+
+Widget codeQr(TextTheme textTheme, String? codigoQr)
+{
+  if (codigoQr != null && codigoQr.isNotEmpty) {
+    final qrValidationResult = QrValidator.validate(
+      data: codigoQr,
+      version: QrVersions.auto,
+      errorCorrectionLevel: QrErrorCorrectLevel.L, 
+    );
+
+    if (qrValidationResult.status == QrValidationStatus.valid) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          QrImage(
+            data: codigoQr,
+            version: QrVersions.auto,
+            size: 150.0,
+            gapless: false,
+            errorStateBuilder: (cxt, err) {
+              return Center(
+                  child: Text(
+                    '¡Ups! No se pudo generar el QR: $err',
+                    textAlign: TextAlign.center,
+                    style: textTheme.bodySmall?.copyWith(color: Colors.red),
+                  ),
+                );
+            },
+          ),
+          const SizedBox(height: 8), // Espacio entre el QR y el texto
+          Text(
+            'Representación gráfica de la factura electrónica',
+              style: textTheme.bodySmall?.copyWith(
+                fontStyle: FontStyle.italic,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      );
+    } else {
+      return Text(
+        'Error de validación del QR: ${qrValidationResult.error}',
+        style: textTheme.bodySmall?.copyWith(color: Colors.red),
+      );   
+    }
+  }
+  else {
+    return const SizedBox.shrink(); 
+  }
+}
+
+Widget software(TextTheme textTheme){
+  return Text(
+      'Software Wappsi POS desarrollado por Web Apps Innovation SAS NIT 901.090.070-9 www.wappsi.com',
+      style: textTheme.bodyMedium,
+      textAlign: TextAlign.center,
+  );
+}
+
+Widget validationDian(TextTheme textTheme, String dateDianValidation)
+{
+  var text = '';
+  final feValidationDian = dateDianValidation;
+  if (feValidationDian != '') {
+    final DateTime dateTime = DateFormat('yyyy-MM-dd HH:mm:ss').parse(feValidationDian);
+    final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
+    final dateFormated = formatter.format(dateTime);
+    text += 'Fecha/hora validación : $dateFormated'; 
+  }
+  return Text(
+    text,
+    style: textTheme.bodyMedium,
+    textAlign: TextAlign.center,
+  );
+}
+
+Widget createdBy(TextTheme textTheme, String name){
+  return RichText(
+        text: TextSpan(
+          text: 'Creado por : ',
+          style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
+          children: [
+            TextSpan(
+              text: name,
+              style: textTheme.bodyMedium,
+            ),
+          ],
+        ),
+      );
+}
+
+
+Widget dateCreated(TextTheme textTheme, String? saleDate){
+  var text = '';
+  if (saleDate != null && saleDate != '') {
+    final DateTime dateTime = DateFormat('yyyy-MM-dd HH:mm:ss').parse(saleDate);
+    final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
+    final dateFormated = formatter.format(dateTime);
+    text = dateFormated; 
+  }
+  return RichText(
+    text: TextSpan(
+      text: 'Fecha creación : ',
+      style: textTheme.bodyMedium!.apply(fontWeightDelta: 5),
+      children: [
+        TextSpan(
+          text: text,
+          style: textTheme.bodyMedium,
+        ),
+      ],
+    ),
   );
 }
 

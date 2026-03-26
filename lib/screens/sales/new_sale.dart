@@ -37,6 +37,7 @@ class _NewSaleState extends State<NewSale> {
   late Color _pc;
   final TextEditingController _customerController = TextEditingController();
   final TextEditingController _customerAddrController = TextEditingController();
+  bool _esElectronico = true;
 
   final _addressesDropDownKey =
       GlobalKey<DropdownSearchState<CustomerAddressesModel?>>();
@@ -104,7 +105,8 @@ class _NewSaleState extends State<NewSale> {
         child: ListView(
           children: [
             _branchOffice(),
-            // _document(),
+            if ((user['pos_document_type_id'] ?? 0) != 0 && (user['fe_pos_document_type_id'] ?? 0) != 0)
+              _document(),
             _warehouse(),
             _sellerInfo(),
             _customers(),
@@ -119,9 +121,24 @@ class _NewSaleState extends State<NewSale> {
     return informationText(user['biller_name'], 'Sucursal');
   }
 
-  // Widget _document() {
-  //   return informationText('CFG123', 'Documento');
-  // }
+  Widget _document() {
+    return SwitchListTile(
+      title: const Text(
+        'Documento Electrónico',
+        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color.fromRGBO(0, 97, 224, 1)),
+      ),
+      value: _esElectronico, // Una variable booleana de tu BLoC o State
+      subtitle: Text(_esElectronico ? 'Electrónico' : 'No electrónico', 
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),
+                    ),
+      onChanged: (bool value) {
+        if (mounted) { 
+          setState(() => _esElectronico = value);
+          posBloc.setDocumentType(value);
+        }
+      },
+    );
+  }
 
   Widget _warehouse() {
     return informationText(user['warehouse_name'], 'Bodega');

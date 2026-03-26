@@ -43,60 +43,66 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
   }
 
   Widget _password(BuildContext context, LoginFormProvider loginForm) {
-    return TextFormField(
-      // controller: TextEditingController(), // Optional
-      // textFieldType: TextFieldType.PASSWORD,
-      // isPassword: true,
-      // focus: passwordFocusNode,
-      focusNode: passwordFocusNode,
-      obscureText: true,
-      style: Theme.of(context).textTheme.labelMedium,
-      initialValue: loginForm.password,
-      keyboardType: TextInputType.visiblePassword,
-      validator: (value) {
-        if (value!.length < 6) {
-          return 'La contraseña debe tener mínimo 6 caracteres';
-        }
-        return null;
-      },
-      onChanged: (value) {
-        loginForm.password = value;
-      },
-      decoration: InputDecorations.authInputDecoration(
-        hintText: '',
-        labelText: 'Contraseña',
-        prefixIcon: FontAwesomeIcons.key,
+    return SizedBox(
+      width: 250,
+      child: TextFormField(
+        // controller: TextEditingController(), // Optional
+        // textFieldType: TextFieldType.PASSWORD,
+        // isPassword: true,
+        // focus: passwordFocusNode,
+        focusNode: passwordFocusNode,
+        obscureText: true,
+        style: Theme.of(context).textTheme.labelMedium,
+        initialValue: loginForm.password,
+        keyboardType: TextInputType.visiblePassword,
+        validator: (value) {
+          if (value!.length < 6) {
+            return 'La contraseña debe tener mínimo 6 caracteres';
+          }
+          return null;
+        },
+        onChanged: (value) {
+          loginForm.password = value;
+        },
+        decoration: InputDecorations.authInputDecoration(
+          hintText: '',
+          labelText: 'Contraseña',
+          prefixIcon: FontAwesomeIcons.key,
+        ),
       ),
     );
   }
 
   Widget _userName(LoginFormProvider loginForm) {
-    return TextFormField(
-      // textFieldType: TextFieldType.USERNAME,
-      // focus: userFocusNode,
-      focusNode: userFocusNode,
-      // controller: TextEditingController(),
-      keyboardType: TextInputType.text,
-      initialValue: loginForm.user,
-      style: Theme.of(context).textTheme.labelMedium,
-      // nextFocus: passwordFocusNode,
+    return SizedBox(
+      width: 250,
+      child: TextFormField(
+        // textFieldType: TextFieldType.USERNAME,
+        // focus: userFocusNode,
+        focusNode: userFocusNode,
+        // controller: TextEditingController(),
+        keyboardType: TextInputType.text,
+        initialValue: loginForm.user,
+        style: Theme.of(context).textTheme.labelMedium,
+        // nextFocus: passwordFocusNode,
 
-      validator: (value) {
-        if (value!.isEmpty) {
-          return 'Debe suministrar un nombre de usuario';
-        }
-        return null;
-      },
-      onChanged: (value) {
-        loginForm.user = value;
-      },
-      onFieldSubmitted: (_) {
-        passwordFocusNode.requestFocus();
-      },
-      decoration: InputDecorations.authInputDecoration(
-        hintText: '',
-        labelText: 'Nombre de usuario',
-        prefixIcon: FontAwesomeIcons.user,
+        validator: (value) {
+          if (value!.isEmpty) {
+            return 'Debe suministrar un nombre de usuario';
+          }
+          return null;
+        },
+        onChanged: (value) {
+          loginForm.user = value;
+        },
+        onFieldSubmitted: (_) {
+          passwordFocusNode.requestFocus();
+        },
+        decoration: InputDecorations.authInputDecoration(
+          hintText: '',
+          labelText: 'Nombre de usuario',
+          prefixIcon: FontAwesomeIcons.user,
+        ),
       ),
     );
   }
@@ -105,12 +111,15 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
     BuildContext context,
     LoginFormProvider loginForm,
   ) {
-    return CustomButtonWithState(
-      onTap: loginForm.loading
-          // ignore: unnecessary_statements
-          ? () {}
-          : () async => await _login(loginForm, context),
-      text: 'Iniciar sesión',
+    return SizedBox(
+      width: 250,
+      child: CustomButtonWithState(
+        onTap: loginForm.loading
+            // ignore: unnecessary_statements
+            ? () {}
+            : () async => await _login(loginForm, context),
+        text: 'Iniciar sesión',
+      ),
     );
   }
 

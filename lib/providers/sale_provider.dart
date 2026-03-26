@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
@@ -42,7 +44,7 @@ class SalesProvider {
         if (res['error'] ?? true) {
           if (res['body']['data'] != [] &&
               res['body']['data'] != null &&
-              res['body']['sync']) {
+              res['body']['sync'] != null) {
             scaffoldAlert(
               context,
               'Se encontraron cambios en los detalles de la venta.',
@@ -117,6 +119,7 @@ class SalesProvider {
               // Verify if sale items were saved successfully
               if (saleItemsStatus && paymentsStatus) {
                 posBloc.setPrintData(printData);
+                posBloc.setDocumentType(true);
                 scaffoldAlert(
                   context,
                   'Venta creada',

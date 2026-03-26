@@ -32,7 +32,7 @@ def keystoreProperties = new Properties()
 // }
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -40,11 +40,11 @@ android {
 
     defaultConfig {
         applicationId "com.wappsi.wappsi_pos_app"
-        minSdkVersion 20
-        targetSdkVersion 30
+        minSdkVersion 21
+        targetSdkVersion 33
         // lapappaya
         versionCode 24
-        versionName "1.0.24"
+        versionName "1.0.30"
         // dulcelandia
         // versionCode 2
         // versionName "1.0.2"
@@ -70,6 +70,11 @@ android {
         checkReleaseBuilds false
 
    }
+
+   compileOptions {
+        sourceCompatibility JavaVersion.VERSION_15
+        targetCompatibility JavaVersion.VERSION_15
+    }
 }
 
 flutter {

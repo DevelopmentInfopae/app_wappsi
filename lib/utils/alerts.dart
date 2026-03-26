@@ -41,7 +41,7 @@ void scaffoldAlert(
             style: Theme.of(context)
                 .textTheme
                 .titleLarge!
-                .apply(fontSizeFactor: 0.8, color: textColor),
+                .apply(fontSizeFactor: 0.3, color: textColor),
           ).paddingSymmetric(horizontal: 8),
           backGroundColor,
           _size,

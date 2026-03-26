@@ -86,6 +86,22 @@ class _PrintSaleState extends State<PrintSale> {
 
   Widget _preview() {
     final textTheme = Theme.of(context).textTheme;
+    var feAceptado = widget.printData['sale_data']?['feAceptado'];
+    feAceptado ??= int.tryParse(widget.printData['sale_data']?['data']?['fe_aceptado']?.toString() ?? '');
+
+    var dataCufe = widget.printData['sale_data']?['cufe'];
+    dataCufe ??= widget.printData['sale_data']?['data']?['cufe'];
+
+    var codigoQr = widget.printData['sale_data']?['codigoQr'];
+    codigoQr ??= widget.printData['sale_data']?['data']?['codigo_qr'];
+
+    var dateDianValidation = widget.printData['sale_data']?['feValidationDian'];
+    dateDianValidation ??= widget.printData['sale_data']?['data']?['fe_validation_dian'];
+
+    var saleDate = widget.printData['sale_data']?['date'];
+    saleDate ??= widget.printData['sale_data']?['data']?['date'];
+
+    final userName = dataBloc.userData?.userName;
     return Container(
       width: _size.width * 0.9,
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -122,9 +138,28 @@ class _PrintSaleState extends State<PrintSale> {
               resolution(textTheme, widget.printData)
                   .paddingSymmetric(horizontal: 10)
                   .center(),
-              // emptyLine(),
-              wappsiSpam(textTheme, widget.printData)
+              emptyLine(),    
+              if(feAceptado == 2) ...[
+                cufe(textTheme, dataCufe)
                   .paddingSymmetric(horizontal: 10),
+                codeQr(textTheme, codigoQr),
+                emptyLine(),  
+                software(textTheme)
+                  .paddingSymmetric(horizontal: 10),
+                emptyLine(),  
+                createdBy(textTheme, userName!),  
+                dateCreated(textTheme, saleDate),
+                emptyLine(), 
+                validationDian(textTheme, dateDianValidation)
+                  .paddingSymmetric(horizontal: 10),
+                tencnologyProviderLogo(widget.printData['settings']?['fe_technology_provider'] ?? 0)
+                  .paddingSymmetric(horizontal: 40)
+                  .withHeight(
+                    _size.height * 0.09 > 60 ? _size.height * 0.09 : 60,
+                  ),
+                wappsiSpam(textTheme, widget.printData)
+                    .paddingSymmetric(horizontal: 10),
+              ],
               emptyLine(),
               emptyLine(),
             ],

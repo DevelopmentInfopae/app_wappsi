@@ -95,6 +95,7 @@ class SalesModel {
     this.feAceptado,
     this.feRecibido,
     this.cufe,
+    this.feValidationDian,
     this.codigoQr,
     this.feIdTransaccion,
     this.feMensaje,
@@ -222,6 +223,7 @@ class SalesModel {
   int? feAceptado;
   int? feRecibido;
   dynamic cufe;
+  String? feValidationDian;
   dynamic codigoQr;
   dynamic feIdTransaccion;
   dynamic feMensaje;
@@ -363,6 +365,7 @@ class SalesModel {
         feAceptado: json['fe_aceptado'],
         feRecibido: int.tryParse(json['fe_recibido'].toString()),
         cufe: json['cufe'],
+        feValidationDian : json['fe_validation_dian'] ?? '',
         codigoQr: json['codigo_qr'],
         feIdTransaccion: json['fe_id_transaccion'],
         feMensaje: json['fe_mensaje'],
@@ -542,10 +545,11 @@ class SalesModel {
       // reteOtherBase: json["rete_other_base"],
       resolucion: pData?['resolucion'] ?? '',
       // feCorreoEnviado: json["fe_correo_enviado"],
-      // feAceptado: json["fe_aceptado"],
+      feAceptado: int.tryParse(pData['fe_aceptado'].toString()) ?? 0,
       // feRecibido: json["fe_recibido"],
-      // cufe: json["cufe"],
-      // codigoQr: json["codigo_qr"],
+      cufe: pData['cufe'] ?? '',
+      feValidationDian : pData['fe_validation_dian'] ?? '',
+      codigoQr: pData['codigo_qr'] ?? '',
       // feIdTransaccion: json["fe_id_transaccion"],
       // feMensaje: json["fe_mensaje"],
       // feMensajeSoporteTecnico: json["fe_mensaje_soporte_tecnico"],
@@ -677,6 +681,7 @@ class SalesModel {
         'fe_aceptado': feAceptado,
         'fe_recibido': feRecibido,
         'cufe': cufe,
+        'fe_validation_dian' : feValidationDian,
         'codigo_qr': codigoQr,
         'fe_id_transaccion': feIdTransaccion,
         'fe_mensaje': feMensaje,
@@ -786,6 +791,10 @@ class SalesModel {
         'reference_no': referenceNo,
         'resolucion': resolucion,
         'date': date ?? registrationDate,
+        'cufe' : cufe,
+        'codigoQr' : codigoQr,
+        'feAceptado' : feAceptado,
+        'feValidationDian' : feValidationDian,
       },
       'pos_note': note ?? '',
       'payment': payment.posPaid,

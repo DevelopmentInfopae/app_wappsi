@@ -670,18 +670,25 @@ class _SalePaymentState extends State<SalePayment> {
                 );
                 final result = await SalesProvider.sendPosData(context);
                 if (result) {
-                  // to let message be read
-                  // await Future.delayed(Duration(seconds: 1));
-                  // hideCurrentScaffoldAlert(context);
+                  // 1. Obtén datos antes de disponer el bloc
+                  final printData = posBloc.getPrintData!;
+                  await posBloc.dispose();
 
-                  await dataBloc.syncElements(
+                  // 2. Sincroniza en background sin await
+                  dataBloc.syncElements(
                     ['Precios de Productos', 'Productos de Sucursales'],
                   );
 
-                  /// update JWT token
+                  // 3. Refresca token
                   await dataBloc.refreshToken(context);
 
                   WidgetsBinding.instance.addPostFrameCallback((_) async {
+                    // 4. Primero imprime con el context aún válido
+                    await PrintSale(
+                      printData: printData,
+                    ).launch(context);
+
+                    // 5. Navega al home después de imprimir
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
@@ -689,11 +696,6 @@ class _SalePaymentState extends State<SalePayment> {
                       ),
                       (route) => false,
                     );
-                    final printData = posBloc.getPrintData!;
-                    await posBloc.dispose();
-                    PrintSale(
-                      printData: printData,
-                    ).launch(context);
                   });
                 } else {
                   setState(() {
