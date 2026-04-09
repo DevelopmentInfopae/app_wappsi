@@ -27,12 +27,16 @@ class LoginFormInputs extends StatefulWidget {
 class _LoginFormInputsState extends State<LoginFormInputs> {
   late FocusNode passwordFocusNode;
   late FocusNode userFocusNode;
+  late TextEditingController _userController;    
+  late TextEditingController _passwordController; 
 
   @override
   void dispose() {
     super.dispose();
     userFocusNode.dispose();
     passwordFocusNode.dispose();
+    _userController.dispose();
+    _passwordController.dispose();
   }
 
   @override
@@ -40,6 +44,30 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
     super.initState();
     userFocusNode = FocusNode();
     passwordFocusNode = FocusNode();
+    _userController     = TextEditingController(); 
+    _passwordController = TextEditingController(); 
+    _cargarCredencialesGuardadas();
+  }
+
+  Future<void> _cargarCredencialesGuardadas() async {
+    final prefs = await SharedPreferences.getInstance();
+    final loginForm = Provider.of<LoginFormProvider>(context, listen: false);
+
+    final usuarioGuardado  = prefs.getString('usuario_guardado') ?? '';
+
+    final passwordGuardado = prefs.getString('password_guardado') ?? '';
+
+    if (usuarioGuardado.isNotEmpty) {
+      loginForm.user            = usuarioGuardado;
+      loginForm.recordarUsuario = true;
+      _userController.text      = usuarioGuardado; // 👈 Setea el controller
+    }
+    if (passwordGuardado.isNotEmpty) {
+      loginForm.password         = passwordGuardado;
+      loginForm.recordarPassword = true;
+      _passwordController.text   = passwordGuardado; // 👈 Setea el controller
+    }
+    loginForm.notifyListeners();
   }
 
   Widget _password(BuildContext context, LoginFormProvider loginForm) {
@@ -53,7 +81,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
         focusNode: passwordFocusNode,
         obscureText: true,
         style: Theme.of(context).textTheme.labelMedium,
-        initialValue: loginForm.password,
+        controller: _passwordController,
         keyboardType: TextInputType.visiblePassword,
         validator: (value) {
           if (value!.length < 6) {
@@ -82,7 +110,7 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
         focusNode: userFocusNode,
         // controller: TextEditingController(),
         keyboardType: TextInputType.text,
-        initialValue: loginForm.user,
+        controller: _userController,
         style: Theme.of(context).textTheme.labelMedium,
         // nextFocus: passwordFocusNode,
 
@@ -234,6 +262,22 @@ class _LoginFormInputsState extends State<LoginFormInputs> {
   Future<void> _navigate(BuildContext context, Map res) async {
     // ScaffoldMessenger.of(context).hideCurrentSnackBar();
     Navigator.pop(context);
+
+    // 👇 Guardar credenciales si está marcado
+    final loginForm = Provider.of<LoginFormProvider>(context, listen: false);
+    final prefs = await SharedPreferences.getInstance();
+
+    if (loginForm.recordarUsuario) {
+      await prefs.setString('usuario_guardado', loginForm.user);
+    } else {
+      await prefs.remove('usuario_guardado'); // 👈 Si desmarcó, borra
+    }
+
+    if (loginForm.recordarPassword) {
+      await prefs.setString('password_guardado', loginForm.password);
+    } else {
+      await prefs.remove('password_guardado'); // 👈 Si desmarcó, borra
+    }
 
     // change current user value
 

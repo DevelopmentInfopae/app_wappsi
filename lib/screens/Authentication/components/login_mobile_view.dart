@@ -6,6 +6,7 @@ import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/login_form_provider.dart';
 import 'package:pos_wappsi/screens/Authentication/components/login_form.dart';
 import 'package:pos_wappsi/screens/Authentication/components/login_logo.dart';
+import 'package:pos_wappsi/screens/Authentication/components/remember_checks.dart';
 import 'package:pos_wappsi/utils/responsive.dart';
 import 'package:provider/provider.dart';
 
@@ -41,7 +42,12 @@ class LoginMobileView extends StatelessWidget {
                   create: (_) => LoginFormProvider(),
                 ),
               ],
-              child: const LoginFormInputs(),
+              child: Column(
+                children: const [
+                  LoginFormInputs(),
+                  RememberChecks(),
+                ],
+              ),
             ),
             Column(
               children: const [

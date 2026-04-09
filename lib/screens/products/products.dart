@@ -180,7 +180,7 @@ class _ProductsState extends State<Products> {
 
   Widget _productsList() {
     return FutureBuilder<List<Map>?>(
-      future: ProductsProvider.getAllProducts(offset: true, offsetValue: 1),
+      future: ProductsProvider.getAllProducts(offset: true, offsetValue: 1, overselling: false),
       builder: (BuildContext context, AsyncSnapshot<List<Map>?> snapshot) {
         if (snapshot.hasData) {
           return StreamBuilder<List<ProductModel>?>(

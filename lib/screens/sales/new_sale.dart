@@ -371,10 +371,20 @@ class _NewSaleState extends State<NewSale> {
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
       autoValidateMode: AutovalidateMode.onUserInteraction,
-      onFind: (String? filter) => CustomerAddressesProvider.getDataAdrreses(
-        filter,
-        posBloc.getCustomerId(),
-      ),
+      onFind: (String? filter) async {
+        final List<CustomerAddressesModel> result = await CustomerAddressesProvider.getDataAdrreses(
+          filter,
+          posBloc.getCustomerId(),
+        );
+
+        // Si solo hay uno y aún no hay nada seleccionado en el Bloc
+        if (result.length == 1 && posBloc.getCustomerAddresses == null) {
+          // Usamos un microtask para no interferir con el renderizado actual
+          Future.microtask(() => _customerAddrSelection(result.first));
+        }
+        
+        return result;
+      },
       onChanged: _customerAddrSelection,
       validator: (value) {
         if (value == null) {

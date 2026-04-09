@@ -248,7 +248,7 @@ class _ProductCardState extends State<ProductCard> {
   Widget _textQty() {
     return SizedBox(
       width: 55,
-      height: 35,
+      height: 38,
       child: TextFormField(
         onEditingComplete: () {
           widget.quantityFocusNode.unfocus();
@@ -263,7 +263,10 @@ class _ProductCardState extends State<ProductCard> {
         // focusNode: quantityFocusNode,
         // textFieldType: TextFieldType.PHONE,5
         keyboardType: TextInputType.number,
-        style: Theme.of(context).textTheme.headlineMedium,
+        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+          fontSize: 14.0, // Ajusta este número a tu gusto
+          fontWeight: FontWeight.bold, // Opcional, por si quieres que sea negrita
+        ),
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           // fillColor: Colors.red,
@@ -297,7 +300,8 @@ class _ProductCardState extends State<ProductCard> {
                         _updateQuantityValue();
                       });
                     }
-                  } else {
+                  } // Solo mostrar el diálogo si el valor no es exactamente "0"
+                  else if (value != '0') { 
                     confirmDialog(
                       context,
                       'Cantidad de producto no valida',
@@ -476,6 +480,8 @@ class _ProductCardState extends State<ProductCard> {
       }
     }
 
+    print('479');
+    print(_quantityController.text);
     printConsole(_quantityController.text);
 
     if (value == 1.0) {

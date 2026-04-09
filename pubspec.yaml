@@ -74,6 +74,7 @@ dependencies:
   logger: ^2.3.0
   cached_network_image: ^3.2.3
   qr_flutter: ^4.0.0
+  shared_preferences: ^2.2.0
 
 dev_dependencies:
   flutter_test:

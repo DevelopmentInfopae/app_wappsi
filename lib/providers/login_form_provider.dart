@@ -3,10 +3,35 @@ import 'package:pos_wappsi/config/endpoints.dart';
 // import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
 import 'package:pos_wappsi/utils/validation_encoding/encode_pass.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginFormProvider extends ChangeNotifier {
   String user = '';
   String password = '';
+  bool recordarUsuario = false;
+  bool recordarPassword = false;
+
+  Future<void> cargarRecordados() async {
+    final prefs = await SharedPreferences.getInstance();
+    recordarUsuario  = prefs.getBool('recordar_usuario') ?? false;
+    recordarPassword = prefs.getBool('recordar_password') ?? false;
+    notifyListeners();
+  }
+
+  // Al hacer toggle, guarda el valor
+  void toggleRecordarUsuario(bool? value) async {
+    recordarUsuario = value ?? false;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('recordar_usuario', recordarUsuario);
+    notifyListeners();
+  }
+
+  void toggleRecordarPassword(bool? value) async {
+    recordarPassword = value ?? false;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('recordar_password', recordarPassword);
+    notifyListeners();
+  }
 
   // to enable or disable send loginFormData to backend while waiting for response
 
