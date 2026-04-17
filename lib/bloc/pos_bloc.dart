@@ -128,6 +128,20 @@ class POSBloc {
     return res;
   }
 
+  Future<bool> updateProductPrice(String productKey, double newPrice) async{
+    bool res = false;
+    if (_productsController.hasValue) {
+      final products = Map<String, ProductModel>.from(_productsController.value);
+      if (products.containsKey(productKey)) {
+        products[productKey]!.price = newPrice;
+        _productsController.add(products);
+        setSubTotal(getSubTotal());
+        res = true;
+      }
+    }
+    return res;
+  }
+
   /// Add product to sale product list, if getPrices = true, calculate
   /// product prices
   Future<bool> _addProductToProductPOSMap(

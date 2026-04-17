@@ -46,6 +46,7 @@ class ProductsList extends StatelessWidget {
 
         Function getQtty;
         Function(double) editQtty;
+        Function(double) editPrice;
         Function addQtty;
         Function rmQtty;
         Function delete;
@@ -78,6 +79,9 @@ class ProductsList extends StatelessWidget {
           editQtty = (double qttyVal) async {
             return await orderBloc.addProductQuantity(product.key, qttyVal);
           };
+          editPrice = (double newPrice) async {
+            return await posBloc.updateProductPrice(product.key, newPrice);
+          };
           rmQtty = () {
             if (orderBloc.getProductData(product.key)!.quantity > uOperator) {
               // setState(() {
@@ -102,6 +106,9 @@ class ProductsList extends StatelessWidget {
           };
           editQtty = (double qttyVal) async {
             return await quoteBloc.addProductQuantity(product.key, qttyVal);
+          };
+          editPrice = (double newPrice) async {
+            return await posBloc.updateProductPrice(product.key, newPrice);
           };
           rmQtty = () {
             if (quoteBloc.getProductData(product.key)!.quantity > uOperator) {
@@ -129,6 +136,10 @@ class ProductsList extends StatelessWidget {
             return await posBloc.addProductQuantity(product.key, qttyVal);
           };
 
+          editPrice = (double newPrice) async {
+            return await posBloc.updateProductPrice(product.key, newPrice);
+          };
+
           rmQtty = () {
             if (posBloc.getProductData(product.key)!.quantity > uOperator) {
               // setState(() {
@@ -147,6 +158,7 @@ class ProductsList extends StatelessWidget {
             requestFocus: requestFocus,
           );
         } else {
+          // Cards de producto en ventas
           productCard = ProductCard(
             key: UniqueKey(),
             quantityFocusNode: FocusNode(),
@@ -155,6 +167,7 @@ class ProductsList extends StatelessWidget {
             product: product.value,
             getQtty: getQtty,
             editQtty: editQtty,
+            editPrice: editPrice,
             addQtty: addQtty,
             prefsSelection: prefsText,
             rmQtty: rmQtty,

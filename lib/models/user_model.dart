@@ -20,6 +20,7 @@ class UserModel {
     required this.hostUrl,
     required this.lastName,
     required this.viewRight,
+    required this.editRight,
     required this.sellerId,
     required this.firstName,
     required this.companyName,
@@ -44,6 +45,7 @@ class UserModel {
   String email;
   String? gender;
   int viewRight;
+  int editRight;
 
   String companyFolder;
   String hostUrl;
@@ -72,6 +74,7 @@ class UserModel {
             : json['host_url'] ?? Environment().config.apiHost,
         warehouseId: int.parse(json['warehouse_id']),
         viewRight: int.parse(json['view_right'] ?? '0'),
+        editRight: int.parse(json['edit_right'] ?? '0'),
         sellerId: int.parse(json['seller_id']),
         companyName: json['company_name'],
         warehouseName: json['warehouse_name'],
@@ -107,6 +110,7 @@ class UserModel {
         'biller_id': billerId,
         'seller_id': sellerId,
         'view_right': viewRight,
+        'edit_right' : editRight,
         'first_name': firstName,
         'company_folder': companyFolder,
         'seller_name': sellerName,

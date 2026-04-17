@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 // import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pos_wappsi/bloc/data_bloc.dart';
+// import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/constant.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
@@ -28,6 +30,7 @@ class ProductCard extends StatefulWidget {
     required this.product,
     required this.getQtty,
     required this.editQtty,
+    required this.editPrice,
     required this.addQtty,
     required this.rmQtty,
     required this.prefsSelection,
@@ -36,6 +39,7 @@ class ProductCard extends StatefulWidget {
   }) : super(key: key);
   final Function getQtty;
   final Function(double) editQtty;
+  final Function(double) editPrice;
   final Function addQtty;
   final Function rmQtty;
   final Function delete;
@@ -56,6 +60,8 @@ class _ProductCardState extends State<ProductCard> {
   // final widget.formKey = GlobalKey<FormState>();
 
   final _quantityController = TextEditingController();
+  final _priceController = TextEditingController();
+  final _priceFocusNode = FocusNode();
 
   ProductModel? product;
   String unitInfo = '';
@@ -63,6 +69,8 @@ class _ProductCardState extends State<ProductCard> {
   @override
   void dispose() {
     _quantityController.dispose();
+    _priceController.dispose();
+    _priceFocusNode.dispose();
     widget.quantityFocusNode.dispose();
     super.dispose();
   }
@@ -70,6 +78,19 @@ class _ProductCardState extends State<ProductCard> {
   @override
   void initState() {
     product = widget.product;
+
+    _priceController.text = getFormatedCurrency(
+      (product?.getPriceWithIVA() ?? 1) * (product?.quantity ?? 1),
+    ).toString();
+
+    _priceFocusNode.addListener(() {
+      if (_priceFocusNode.hasFocus) {
+        _priceController.selection = TextSelection(
+          baseOffset: 0,
+          extentOffset: _priceController.text.length,
+        );
+      }
+    });
 
     if (widget.unit != null) {
       final unitQtty = product!.quantity / (widget.unit!.operationValue);
@@ -452,14 +473,71 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
+  // Widget _productPriceTotal() {
+  //   return Text(
+  //     (getFormatedCurrency(
+  //       (product?.getPriceWithIVA() ?? 1) * (product?.quantity ?? 1),
+  //     )).toString(),
+  //     style:
+  //         numbersTextStyle(fontWeight: FontWeight.bold, color: greyDarkerColor),
+  //     overflow: TextOverflow.ellipsis,
+  //   );
+  // }
+
   Widget _productPriceTotal() {
-    return Text(
-      (getFormatedCurrency(
-        (product?.getPriceWithIVA() ?? 1) * (product?.quantity ?? 1),
-      )).toString(),
-      style:
-          numbersTextStyle(fontWeight: FontWeight.bold, color: greyDarkerColor),
-      overflow: TextOverflow.ellipsis,
+    final bool canEditPrice = dataBloc.userDataMap['edit_right'].toString() == '1';
+
+    if (!canEditPrice) {
+      return Text(
+        (getFormatedCurrency(
+          (product?.getPriceWithIVA() ?? 1) * (product?.quantity ?? 1),
+        )).toString(),
+        style:
+            numbersTextStyle(fontWeight: FontWeight.bold, color: greyDarkerColor),
+        overflow: TextOverflow.ellipsis,
+      );
+    }
+
+    return SizedBox(
+      width: 90,
+      height: 32,
+      child: TextFormField(
+        controller: _priceController,
+        focusNode: _priceFocusNode,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        textAlign: TextAlign.right,
+        style: numbersTextStyle(
+          fontWeight: FontWeight.bold,
+          color: greyDarkerColor,
+        ),
+        decoration: const InputDecoration(
+          contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+          border: InputBorder.none,
+          isDense: true,
+        ),
+        onChanged: (value)  {
+          final newPrice = double.tryParse(value);
+          if (newPrice != null && newPrice > 0) {
+            setState(() {
+              product?.price = newPrice; // ajusta según tu modelo
+            });
+          }
+        },
+        onEditingComplete: () async {
+          FocusScope.of(context).unfocus();
+          // Recalcular y formatear al terminar de editar
+          if (product?.price != null) {
+            final res = await widget.editPrice(product!.price);;
+            if (res) {
+              setState(() {
+                _priceController.text = getFormatedCurrency(
+                  (product?.getPriceWithIVA() ?? 1) * (product?.quantity ?? 1),
+                ).toString();
+              });
+            }
+          }
+        },
+      ),
     );
   }
 
@@ -480,10 +558,6 @@ class _ProductCardState extends State<ProductCard> {
       }
     }
 
-    print('479');
-    print(_quantityController.text);
-    printConsole(_quantityController.text);
-
     if (value == 1.0) {
       _quantityController.selection = TextSelection(
         baseOffset: 0,
@@ -494,6 +568,9 @@ class _ProductCardState extends State<ProductCard> {
         TextPosition(offset: _quantityController.text.length),
       );
     }
+    _priceController.text = getFormatedCurrency(
+      (product?.getPriceWithIVA() ?? 1) * (product?.quantity ?? 1),
+    ).toString();
   }
 
   @override
