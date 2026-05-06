@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
@@ -15,6 +15,8 @@ import 'package:pos_wappsi/providers/sync_db_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/text_formating/functions.dart';
+import 'package:pos_wappsi/utils/conection/connectivity_functions.dart';
+import '../utils/sale_functions/sale_local_format.dart';
 
 class SalesProvider {
   /// Send current pos data to server, if there is any changes between local db and server,
@@ -24,10 +26,69 @@ class SalesProvider {
   static Future<bool> sendPosData(BuildContext context) async {
     bool result = false;
     final productsDetails = posBloc.getProductDetailMapLists();
+    final documentTypeId = posBloc.getDocumentTypeId(dataBloc.userData!);
+    final docDetails =
+        await DBProvider.db.getDocumentDetails(documentTypeId.toString());
+
+    // Now, buildSale includes mobile_reference_no because it must be sent to the server when working offline.
     final sale =
-        SaleModel.buildSale(dataBloc.userData!, productsDetails).toJson();
-    // final debug = sale.toString();
+        SaleModel.buildSale(dataBloc.userData!, productsDetails, docDetails!)
+            .toJson();
+
+    // debugPrint(const JsonEncoder.withIndent('  ').convert(sale),
+    //     wrapWidth: 1024);
+    // return false;
+
     final api = DataProvider();
+    final bool hasInternet = await ConnectionHelper.hasInternetConnection();
+    if (!hasInternet) {
+      // <- No tiene internet
+      try {
+        final res = await formatedSale(
+          sale,
+        ); // <- Retorna el mismo formato que retorna el api
+        // debugPrint(const JsonEncoder.withIndent('  ').convert(res),
+        //     wrapWidth: 1024);
+        // return false;
+        final printData = await _buildPrintDataMap(res['body']);
+        final salesModel = SalesModel.fromPosBloc(
+          productsDetails,
+          salePrintData: res['body'],
+        );
+
+        final saleId = await salesModel.saveSaleData(); // <- Guarda localmente
+
+        if (saleId != null) {
+          // Verify if sale was saved successfully
+          final saleItemsStatus = await SaleItemsProvider.saveAllIntoDB(
+            // Save sale items into dbUpdated
+            productsDetails['product_detail_list'],
+            saleId,
+          );
+
+          final paymentsStatus = await PaymentProvider.saveAllIntoDB(saleId);
+          if (saleItemsStatus && paymentsStatus) {
+            // Verify if sale items were saved successfully
+            await dataBloc
+                .incrementSalesConsecutive(sale['document_type_id'].toString());
+            posBloc.setPrintData(printData);
+            posBloc.setDocumentType(true);
+            scaffoldAlert(
+              context,
+              'Venta creada',
+              const Duration(seconds: 1),
+            );
+            result = true;
+          }
+        }
+      } catch (e) {
+        await logError(e, from: 'Writing sale data from local info');
+        hideCurrentScaffoldAlert(context);
+        confirmDialog(context, e.toString(), 'assets/images/browser.png');
+      }
+      hideCurrentScaffoldAlert(context);
+      return result;
+    }
 
     try {
       final res =
@@ -118,6 +179,8 @@ class SalesProvider {
                   await PaymentProvider.saveAllIntoDB(saleId);
               // Verify if sale items were saved successfully
               if (saleItemsStatus && paymentsStatus) {
+                await dataBloc.incrementSalesConsecutive(
+                    sale['document_type_id'].toString());
                 posBloc.setPrintData(printData);
                 posBloc.setDocumentType(true);
                 scaffoldAlert(

@@ -164,6 +164,14 @@ class DataBloc {
     };
   }
 
+  Future<Map<String, dynamic>?> getDocumentDetails(String id) async {
+    return await DBProvider.db.getDocumentDetails(id);
+  }
+
+  Future<void> incrementSalesConsecutive(String documentTypeId) async {
+    await DBProvider.db.incrementSalesConsecutive(documentTypeId);
+  }
+
   reload() {
     _userController.value = null;
     _registerController.value = null;

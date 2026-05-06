@@ -63,20 +63,12 @@ class LocalSalesProvider {
       return [];
     }
   }
-  // static Future<bool> insertLocalTest() async {
-  //   final sql = '''select * from sma_sales s
-  //   ''';
-  //   final res = await DBProvider.db.sqlRawQuery(sql);
-  //   if (res != null) {
-  //     List<SalesModel> sales = [];
-  //     try {
-  //       sales = SalesModel.fromJsonList(res);
-  //     } catch (e) {
-  //       printConsole(e);
-  //     }
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
+
+  static Future<void> updateSyncStatus(int saleId, String response) async {
+    await DBProvider.db.updateSyncStatus(saleId, response);
+  }
+
+  static Future<void> getSales() async {
+    await DBProvider.db.getAllSales();
+  }
 }

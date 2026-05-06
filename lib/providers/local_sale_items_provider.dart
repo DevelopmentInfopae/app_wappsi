@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:pos_wappsi/models/local_sale_items_model.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 
@@ -20,6 +23,8 @@ class SaleItemsProvider {
     for (var pD in productsDetails) {
       productsD.add(LocalSaleItems.fromJson(pD, saleId: saleId).toJson());
     }
+    debugPrint(const JsonEncoder.withIndent('  ').convert(productsD),
+        wrapWidth: 1024);
     return await DBProvider.db.insertQueryJsonList('sma_sale_items', productsD);
   }
 }

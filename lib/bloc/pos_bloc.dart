@@ -24,6 +24,7 @@ import 'package:pos_wappsi/utils/print_errors.dart';
 // import 'package:pos_wappsi/utils/local_storage/local_db.dart';
 
 import 'package:rxdart/rxdart.dart';
+import '../models/user_model.dart';
 
 class POSBloc {
   // to save data of user
@@ -787,7 +788,19 @@ class POSBloc {
     } else {
       _isElectronicController.sink.add(value);
     }
-    print("Documento cambiado a: ${value ? 'Electrónico' : 'No electrónico'}");
+  }
+
+  int getDocumentTypeId(UserModel user) {
+    int documentTypeId = user.documentTypeId ?? 0;
+    int posId = user.pos_document_type_id ?? 0;
+    int feId = user.fe_pos_document_type_id ?? 0;
+
+    if (posBloc.isElectronicValue && feId != 0) {
+      documentTypeId = feId;
+    } else if (!posBloc.isElectronicValue && posId != 0) {
+      documentTypeId = posId;
+    }
+    return documentTypeId;
   }
 
   // Function(bool) get setPrintState => _printStateController.sink.add;

@@ -1,6 +1,7 @@
 // import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -273,7 +274,7 @@ class DBProvider {
       // id of query inserted
       return returnId ? res : true;
     } catch (e) {
-      // printConsole(e);
+      // debugPrint('ERROR INSERT sma_sales: $e', wrapWidth: 1024);
       await printAndSaveError(e);
       return returnId ? 0 : false;
     }
@@ -573,5 +574,41 @@ class DBProvider {
     }
 
     // id of query inserted
+  }
+
+  Future<void> incrementSalesConsecutive(String documentTypeId) async {
+    final db = await database;
+    await db!.rawUpdate('''
+      UPDATE sma_documents_types 
+      SET sales_consecutive = sales_consecutive + 1
+      WHERE id_cloud = ?
+    ''', [documentTypeId]);
+  }
+
+  Future<bool> updateSyncStatus(int saleId, response) async {
+    final db = await database;
+    final res = await db!.update(
+      'sma_sales',
+      {'sync_status': 1, 'id_cloud': response},
+      where: 'id = ?',
+      whereArgs: [saleId],
+    );
+    return res > 0;
+  }
+
+  Future<bool> getAllSales() async {
+    final db = await database;
+    final res =
+        await db!.rawQuery('SELECT id, reference_no, id_cloud FROM sma_sales');
+    debugPrint(res.toString(), wrapWidth: 1024);
+    return false;
+  }
+
+  Future<Map<String, dynamic>?> getSaleByIdCloud(String id) async {
+    return await sqlFirstQuery(
+      'sma_sales',
+      // columns: _customerColumns,
+      where: 'id_cloud=$id',
+    );
   }
 }

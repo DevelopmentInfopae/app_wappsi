@@ -1,9 +1,6 @@
-// To parse this JSON data, do
-//
-//     final salesModel = salesModelFromJson(jsonString);
-
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/models/payment_model.dart';
@@ -23,6 +20,7 @@ import 'package:pos_wappsi/utils/text_formating/functions.dart';
 class SalesModel {
   SalesModel({
     this.id,
+    this.sync_status,
     this.idCloud,
     this.date,
     this.referenceNo,
@@ -150,6 +148,7 @@ class SalesModel {
     this.reteAutoavisoId,
   });
 
+  int? sync_status;
   int? id;
   int? idCloud;
   String? date;
@@ -284,6 +283,7 @@ class SalesModel {
 
   factory SalesModel.fromJson(Map<String, dynamic> json) => SalesModel(
         id: json['id'],
+        sync_status: json['sync_status'],
         idCloud: json['id_cloud'],
         date: json['date'] ?? '',
         referenceNo: json['reference_no'],
@@ -365,7 +365,7 @@ class SalesModel {
         feAceptado: json['fe_aceptado'],
         feRecibido: int.tryParse(json['fe_recibido'].toString()),
         cufe: json['cufe'],
-        feValidationDian : json['fe_validation_dian'] ?? '',
+        feValidationDian: json['fe_validation_dian'] ?? '',
         codigoQr: json['codigo_qr'],
         feIdTransaccion: json['fe_id_transaccion'],
         feMensaje: json['fe_mensaje'],
@@ -450,6 +450,12 @@ class SalesModel {
     final total = posBloc.getSubTotal();
     final pData = salePrintData?['data'];
     final vDate = salePrintData?['current_server_date'];
+    final sync_status = salePrintData?['sync_status'] ?? 1;
+    final documentTypeId = int.tryParse(
+          salePrintData?['data']['document_type_id'].toString() ?? '',
+        ) ??
+        userData.documentTypeId ??
+        0;
     String paymentStatus = '';
     double pDiscount = 0;
     double orderDiscount = 0;
@@ -507,6 +513,7 @@ class SalesModel {
       totalItems: posBloc.getItemsCount(),
       pos: pos,
       paid: paid,
+      sync_status: sync_status,
       // returnId: json["return_id"],
       // surcharge: json["surcharge"],
       // attachment: json["attachment"],
@@ -548,7 +555,7 @@ class SalesModel {
       feAceptado: int.tryParse(pData['fe_aceptado'].toString()) ?? 0,
       // feRecibido: json["fe_recibido"],
       cufe: pData['cufe'] ?? '',
-      feValidationDian : pData['fe_validation_dian'] ?? '',
+      feValidationDian: pData['fe_validation_dian'] ?? '',
       codigoQr: pData['codigo_qr'] ?? '',
       // feIdTransaccion: json["fe_id_transaccion"],
       // feMensaje: json["fe_mensaje"],
@@ -559,7 +566,7 @@ class SalesModel {
       // saleCurrency: json["sale_currency"],
       // saleCurrencyTrm: json["sale_currency_trm"],
       // costCenterId: json["cost_center_id"],
-      documentTypeId: userData.documentTypeId!,
+      documentTypeId: documentTypeId,
       paymentMethodFe: (payment.codeFe),
       paymentMeanFe: paymentMeanFe,
       // tipAmount: json["tip_amount"],
@@ -609,7 +616,9 @@ class SalesModel {
 
   Map<String, dynamic> toJson() => {
         'id': id,
+        'id_cloud': idCloud != 0 ? idCloud : null,
         'date': date ?? '',
+        'sync_status': sync_status ?? 1,
         'reference_no': referenceNo,
         'customer_id': customerId,
         'customer': customer,
@@ -681,7 +690,7 @@ class SalesModel {
         'fe_aceptado': feAceptado,
         'fe_recibido': feRecibido,
         'cufe': cufe,
-        'fe_validation_dian' : feValidationDian,
+        'fe_validation_dian': feValidationDian,
         'codigo_qr': codigoQr,
         'fe_id_transaccion': feIdTransaccion,
         'fe_mensaje': feMensaje,
@@ -693,7 +702,7 @@ class SalesModel {
         'sale_currency_trm': saleCurrencyTrm,
         'cost_center_id': costCenterId,
         'document_type_id': documentTypeId,
-        'payment_method_fe': paymentMethodFe,
+        'payment_method_fe': paymentMethodFe ?? 0,
         'payment_mean_fe': paymentMeanFe,
         'tip_amount': tipAmount,
         'shipping_in_grand_total': shippingInGrandTotal,
@@ -737,6 +746,9 @@ class SalesModel {
         'rete_autoaviso_id': reteAutoavisoId,
       };
   Future<int?> saveSaleData() async {
+    debugPrint(const JsonEncoder.withIndent('  ').convert(toJson()),
+        wrapWidth: 1024);
+    await DBProvider.db.getAllSales();
     return await DBProvider.db
         .insertQuery('sma_sales', toJson(), returnId: true);
   }
@@ -791,10 +803,10 @@ class SalesModel {
         'reference_no': referenceNo,
         'resolucion': resolucion,
         'date': date ?? registrationDate,
-        'cufe' : cufe,
-        'codigoQr' : codigoQr,
-        'feAceptado' : feAceptado,
-        'feValidationDian' : feValidationDian,
+        'cufe': cufe,
+        'codigoQr': codigoQr,
+        'feAceptado': feAceptado,
+        'feValidationDian': feValidationDian,
       },
       'pos_note': note ?? '',
       'payment': payment.posPaid,

@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
@@ -12,7 +15,6 @@ class PaymentProvider {
     String type = 'received',
   }) async {
     final payments = _buildPaymentList(saleId);
-
     try {
       await Future.forEach(payments, (
         PaymentsModel element,
@@ -58,6 +60,7 @@ class PaymentProvider {
         'seller_id': dataBloc.userData!.billerId,
         'pos_paid': paymentValues[i],
         'pos_balance': balanceValues[i],
+        'document_type_id': posBloc.getPaymentDocument?.idCloud.toString()
       };
       payments.add(PaymentsModel.fromJson(temp));
     }

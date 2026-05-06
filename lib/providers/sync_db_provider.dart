@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 // import 'package:pos_wappsi/bloc/printer_bloc.dart';
@@ -9,6 +12,7 @@ import 'package:pos_wappsi/providers/countries_provider.dart';
 import 'package:pos_wappsi/providers/local_db_provider.dart';
 import 'package:pos_wappsi/providers/states_provider.dart';
 import 'package:pos_wappsi/utils/alerts.dart';
+import 'package:pos_wappsi/utils/conection/connectivity_functions.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 import 'package:pos_wappsi/utils/print_errors.dart';
 
@@ -19,13 +23,8 @@ class SyncDBProvider {
   String syncDate = '';
   static bool firstTime = false;
 
-  static _getUpdates(
-    Map<String, dynamic> options, 
-    {bool isPost = true, 
-    int warehouseId = 0, 
-    int overselling = 0}
-  ) async {
-
+  static _getUpdates(Map<String, dynamic> options,
+      {bool isPost = true, int warehouseId = 0, int overselling = 0}) async {
     String? updateDate;
     DataProvider api = DataProvider();
 
@@ -38,13 +37,13 @@ class SyncDBProvider {
         firstTime = true;
       }
 
-      // body que se envia en la petición 
+      // body que se envia en la petición
       Map<String, dynamic> body = {
         'last_sync': updateDate,
         'first_time': firstTime,
       };
 
-      if ( options['table'] == 'sma_warehouses_products' ) {
+      if (options['table'] == 'sma_warehouses_products') {
         body['overselling'] = overselling;
         body['warehouse_id'] = warehouseId;
       }
@@ -56,9 +55,12 @@ class SyncDBProvider {
         awaitTime: 150,
       );
 
-      // if (options['path'] == 'sync/sales' ) {
-      //   print('resssssssssssssssssssss 46 $res');
-      // }
+      if (options['path'] == 'sync/sales') {
+        // debugPrint(const JsonEncoder.withIndent('  ').convert(res),
+        //     wrapWidth: 1024);
+
+        // print('resssssssssssssssssssss 46 $res[]');
+      }
     } else {
       res = await api.getPetition(options['path'], dataBloc.getHeaders());
     }
@@ -91,10 +93,10 @@ class SyncDBProvider {
     bool isSpecial = false,
     bool post = true,
   }) async {
-
     int overselling = 0;
-    int warehouseId = 0; 
-    if ((selectedOption ?? enabledOptions[option])!['table'] == 'sma_warehouses_products') {
+    int warehouseId = 0;
+    if ((selectedOption ?? enabledOptions[option])!['table'] ==
+        'sma_warehouses_products') {
       await dataBloc.getSettings();
       final Map<String, dynamic> settings = await dataBloc.getSettings();
       overselling = settings['overselling'];
@@ -104,8 +106,8 @@ class SyncDBProvider {
     final res = await _getUpdates(
       selectedOption ?? enabledOptions[option]!,
       isPost: post,
-      overselling : overselling, 
-      warehouseId : warehouseId,
+      overselling: overselling,
+      warehouseId: warehouseId,
     );
     //check if JWT is ok, if not logout
     if (res['status'] == -1) {
@@ -310,6 +312,7 @@ class SyncDBProvider {
         // data always come organized in father table and son table
         await Future.forEach(data.keys, (String key) async {
           if (deleteBefore) {
+            // Esto se define en db_sync.dart
             String? idValue;
 
             if (key == independentTable) {
@@ -317,6 +320,17 @@ class SyncDBProvider {
                 idValue = data?[key]?[i]?[idKey];
                 final idValue2 = data?[key]?[i]?[idKey2];
                 if (idValue != null) {
+                  if (key == 'sma_sales') {
+                    // Del servidor llega el id_cloud, pero localmente esta guardado el id de la venta
+                    // La ídea es obtener el id local buscando localmente ya que esta guardado como id_cloud en la tabla sma_sales local
+                    print('325 esta sincronizando desde la creación');
+                    final localSale =
+                        await DBProvider.db.getSaleByIdCloud(idValue);
+                    if (localSale != null) {
+                      idValue = localSale['id'].toString();
+                    }
+                  }
+
                   await DBProvider.db
                       .deleteQuery(dependentTable!, '$columnName=$idValue');
                   if (dependentTable2 != null) {
@@ -343,6 +357,11 @@ class SyncDBProvider {
     String option, {
     bool deleteBefore = false,
   }) async {
+    final bool hasInternet = await ConnectionHelper.hasInternetConnection();
+    if (!hasInternet) {
+      return true;
+    }
+
     Map res = {};
     if (option == 'Datos de Facturación') {
       res = await updateBillerData();

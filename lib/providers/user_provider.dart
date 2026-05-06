@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
+import 'package:pos_wappsi/utils/conection/connectivity_functions.dart';
 import 'package:pos_wappsi/utils/manage_server_resp.dart';
-import 'package:pos_wappsi/utils/print_errors.dart';
 
 class UserProvider {
   static Future<Map<String, dynamic>> logout() async {
@@ -23,22 +23,23 @@ class UserProvider {
   }
 
   static Future refreshToken() async {
-    DataProvider api = DataProvider();
+    final bool hasInternet = await ConnectionHelper.hasInternetConnection();
+    if (hasInternet) {
+      DataProvider api = DataProvider();
 
-    Map<String, String> headers = {'Authorization': dataBloc.getToken()};
+      Map<String, String> headers = {'Authorization': dataBloc.getToken()};
 
-    final res = await api.getPetition(refreshTokenEndP, headers);
+      final res = await api.getPetition(refreshTokenEndP, headers);
 
-    if (res['status'] == 1) {
-      dataBloc.userData?.token =
-          res['body']['token'] ?? dataBloc.userData?.token;
-    } else if (res['status'] == -1) {
-      return res;
-    } else {
-      return res;
+      if (res['status'] == 1) {
+        dataBloc.userData?.token =
+            res['body']['token'] ?? dataBloc.userData?.token;
+      } else if (res['status'] == -1) {
+        return res;
+      } else {
+        return res;
+      }
     }
-
-    printConsole(res);
   }
 
   static Future<bool> verifyIfUserNameExist(

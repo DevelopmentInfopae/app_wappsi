@@ -928,6 +928,7 @@ const String SalesSql = '''
 CREATE TABLE `sma_sales` (
 `id` INTEGER PRIMARY KEY,
 `id_cloud` INTEGER,
+`sync_status` INTEGER NOT NULL DEFAULT 1,
 `date` datetime DEFAULT NULL,
 `reference_no` TEXT  NOT NULL,
 `customer_id` INTEGER NOT NULL,
@@ -1010,7 +1011,7 @@ CREATE TABLE `sma_sales` (
 `sale_currency_trm` decimal(25,4) DEFAULT NULL,
 `cost_center_id` INTEGER DEFAULT NULL,
 `document_type_id` INTEGER DEFAULT NULL,
-`payment_method_fe` INTEGER NOT NULL ,
+`payment_method_fe` INTEGER NOT NULL DEFAULT 0,
 `payment_mean_fe` TEXT  NOT NULL ,
 `tip_amount` decimal(25,4) DEFAULT '0.0000',
 `shipping_in_grand_total` INTEGER DEFAULT '1' ,
@@ -1200,6 +1201,9 @@ CREATE TABLE `sma_payments` (
 `rete_autoaviso_assumed_account` INTEGER DEFAULT NULL,
 `comm_paid_payments_ids` INTEGER DEFAULT NULL,
 `comm_paid_sale_reference` TEXT  DEFAULT NULL,
+`invoice_affected_balance` decimal(25,4) DEFAULT NULL,
+`accounting_status` INTEGER DEFAULT 0,
+`account_message` TEXT  DEFAULT NULL,
 `last_update` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 

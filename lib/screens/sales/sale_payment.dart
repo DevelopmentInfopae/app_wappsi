@@ -274,7 +274,10 @@ class _SalePaymentState extends State<SalePayment> {
       builder:
           (BuildContext context, AsyncSnapshot<List<DocumentsTypes>> snapshot) {
         if (snapshot.hasData && (snapshot.data?.isNotEmpty ?? false)) {
+          // WidgetsBinding.instance.addPostFrameCallback((_) {
           posBloc.setPaymentDocument(snapshot.data?.first);
+          // });
+
           if (snapshot.data!.length > 1) {
             return _documentType(items: snapshot.data!);
           } else {

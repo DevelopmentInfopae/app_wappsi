@@ -1,10 +1,4 @@
-// To parse this JSON data, do
-//
-//     final saleModel = saleModelFromJson(jsonString);
-
 import 'dart:convert';
-
-import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/models/user_model.dart';
@@ -15,6 +9,7 @@ String saleModelToJson(SaleModel data) => json.encode(data.toJson());
 
 class SaleModel {
   SaleModel({
+    required this.mobile_reference_no,
     required this.typePos,
     this.test,
     required this.posbiller,
@@ -131,6 +126,7 @@ class SaleModel {
   });
 
   int typePos;
+  String mobile_reference_no;
   dynamic test;
   String? date;
   int posbiller;
@@ -245,6 +241,7 @@ class SaleModel {
   dynamic reteApplied;
 
   factory SaleModel.fromJson(Map<String, dynamic> json) => SaleModel(
+        mobile_reference_no: json['mobile_reference_no'],
         typePos: json['type_pos'],
         test: json['test'],
         date: json['date'],
@@ -381,6 +378,7 @@ class SaleModel {
   Map<String, dynamic> toJson() => {
         'type_pos': typePos,
         'test': test,
+        'mobile_reference_no': mobile_reference_no,
         'posbiller': posbiller,
         'doc_type_id': docTypeId,
         'warehouse': warehouse,
@@ -499,6 +497,7 @@ class SaleModel {
   static SaleModel buildSale(
     UserModel user,
     Map<String, dynamic> productsDetails,
+    Map<String, dynamic> docDetails,
   ) {
     final customer = posBloc.getCustomer!;
     final customerAddress = posBloc.getCustomerAddresses!;
@@ -510,18 +509,14 @@ class SaleModel {
       dueDate = today.add(Duration(days: posBloc.getPaymentTerm!));
     }
 
-    int documentTypeId = user.documentTypeId ?? 0;
-    int posId = user.pos_document_type_id ?? 0;
-    int feId = user.fe_pos_document_type_id ?? 0;
+    int documentTypeId = docDetails['id_cloud'];
+    String mobileRefNo = docDetails['sales_prefix'].toString() +
+        '-' +
+        docDetails['sales_consecutive'].toString();
 
-    if (posBloc.isElectronicValue && feId != 0) {
-      documentTypeId = feId;
-    }else if(!posBloc.isElectronicValue && posId != 0){
-      documentTypeId = posId;
-    }
-    
     return SaleModel(
       typePos: 1,
+      mobile_reference_no: mobileRefNo,
       amount: [posBloc.getSubTotal().toInt()],
       customerGroup: posBloc.getCustomer!.customerGroupId,
       customerPrices: posBloc.getCustomer!.priceGroupId,
@@ -563,7 +558,7 @@ class SaleModel {
       productDiscountVal: productsDetails['product_discount_val'],
       productBaseQuantity: productsDetails['product_base_quantity'],
       productUnitIdSelected: productsDetails['product_unit_id_selected'],
-      paymentDocumentTypeId: posBloc.getPaymentDocument!.idCloud.toString(),
+      paymentDocumentTypeId: posBloc.getPaymentDocument?.idCloud.toString(),
     );
   }
 }
