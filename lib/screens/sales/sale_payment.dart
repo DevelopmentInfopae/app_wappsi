@@ -10,6 +10,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/config/documents_types.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/entities/paymentEntryEntity.dart';
 import 'package:pos_wappsi/models/documents_types_model.dart';
 // import 'package:pos_wappsi/models/documents_types_model.dart';
 import 'package:pos_wappsi/models/payment_methods_model.dart';
@@ -46,6 +47,9 @@ class _SalePaymentState extends State<SalePayment> {
   late TextTheme _textTheme;
   final int _paymentM = 1;
   int _valueP = 0;
+  final List<PaymentEntry> _payments = [PaymentEntry()];
+  final ScrollController _scrollController = ScrollController();
+  final _formKey = GlobalKey<FormState>();
   // PaymentMethods? _payment;
   // DocumentsTypes? _pDoc;
 
@@ -63,8 +67,6 @@ class _SalePaymentState extends State<SalePayment> {
   //     TextEditingController();
 
   late Size _size;
-
-  final GlobalKey<FormState> _inputsKey = GlobalKey<FormState>();
 
   final TextEditingController _valuePController = TextEditingController();
   final TextEditingController _paymentTermController = TextEditingController();
@@ -102,6 +104,9 @@ class _SalePaymentState extends State<SalePayment> {
     _valuePController.dispose();
     _invoiceNController.dispose();
     _dispatchNController.dispose();
+    for (var p in _payments) {
+      p.dispose();
+    }
     super.dispose();
   }
 
@@ -112,6 +117,7 @@ class _SalePaymentState extends State<SalePayment> {
     _textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar:
           appBar(context, 'Venta POS', image: 'assets/images/add-to-cart.png'),
       body: _body(),
@@ -131,15 +137,108 @@ class _SalePaymentState extends State<SalePayment> {
   Widget _form() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: ListView(
-        children: [
-          _productsInfo().paddingSymmetric(vertical: 6),
-          _paymentMethod().paddingSymmetric(vertical: 6),
-          _documentPOS().paddingSymmetric(vertical: 6),
-          _inputs(),
-          _invoiceNote().paddingSymmetric(vertical: 6),
-          _dispatchNote().paddingSymmetric(vertical: 6),
-        ],
+      child: Form(
+        key: _formKey,
+        // autovalidateMode: AutovalidateMode.onUserInteraction,
+        autovalidateMode: AutovalidateMode.disabled,
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (notification) {
+            if (notification is ScrollUpdateNotification &&
+                notification.dragDetails == null) {
+              return true;
+            }
+            return false;
+          },
+          child: ListView(
+            controller: _scrollController,
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            physics: const ClampingScrollPhysics(), // ← agrega esto
+            // Esto evita que Flutter haga scroll automático hacia campos con foco/error
+            cacheExtent: 9999,
+            children: [
+              _productsInfo().paddingSymmetric(vertical: 6),
+              // _paymentMethod().paddingSymmetric(vertical: 6),
+              _documentPOS().paddingSymmetric(vertical: 6),
+              // _inputs(),
+              ...List.generate(
+                _payments.length,
+                (index) => Column(
+                  key: ValueKey(_payments[index]),
+                  children: [
+                    _paymentMethod(index).paddingSymmetric(vertical: 6),
+                    _inputs(index)
+                        .paddingSymmetric(vertical: 6), // cada uno con su index
+                  ],
+                ),
+              ),
+
+              ElevatedButton.icon(
+                focusNode: FocusNode(skipTraversal: true),
+                onPressed: () {
+                  FocusScope.of(context).unfocus();
+                  setState(() {
+                    _payments.add(PaymentEntry());
+                  });
+                  Future.delayed(const Duration(milliseconds: 500), () {
+                    if (_scrollController.hasClients) {
+                      _scrollController.jumpTo(
+                        // jumpTo en lugar de animateTo
+                        _scrollController.position.maxScrollExtent,
+                      );
+                    }
+                  });
+                },
+
+                // Opcional: si quieres cambiar el color por defecto del ElevatedButton
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue.shade400, // Fondo verde
+                  foregroundColor: Colors.white, // Texto/Ícono blanco
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                ),
+                icon: const Icon(Icons.add),
+                label: const Text('Agregar más pagos'),
+              ),
+
+              if (_payments.length > 1)
+                ElevatedButton.icon(
+                  focusNode: FocusNode(skipTraversal: true),
+                  onPressed: () {
+                    setState(() {
+                      _payments.last.dispose();
+                      _payments.removeLast();
+                      // Recalcula el total sin el último entry
+                      final total =
+                          _payments.fold<int>(0, (sum, e) => sum + e.valueP);
+                      posBloc.setPaymentValue(total);
+                    });
+                  },
+                  // 🔽 CONFIGURACIÓN DEL ESTILO EN ROJO
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors
+                        .red.shade400, // Fondo rojo para alertar eliminación
+                    foregroundColor: Colors
+                        .white, // Texto e ícono en blanco para buen contraste
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                          8), // Bordes redondeados iguales al anterior
+                    ),
+                  ),
+                  icon: const Icon(
+                      Icons.remove_circle_outline), // Limpiado el color manual
+                  label:
+                      const Text('Eliminar pago'), // Limpiado el style manual
+                ),
+              const SizedBox(
+                height: 20,
+              ),
+              _invoiceNote().paddingSymmetric(vertical: 6),
+              _dispatchNote().paddingSymmetric(vertical: 6),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -178,32 +277,30 @@ class _SalePaymentState extends State<SalePayment> {
     );
   }
 
-  Widget _paymentMethod() {
+  Widget _paymentMethod(int index) {
     return FutureBuilder(
       future: PaymentMethodsProvider.loadDefaultPaymentMethod(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          return _paymentMethodDropDown();
-        } else {
-          return _paymentMethodDropDown();
-        }
+        return _paymentMethodDropDown(index);
       },
     );
   }
 
-  Widget _paymentMethodDropDown() {
+  Widget _paymentMethodDropDown(int index) {
+    final entry = _payments[index];
+
     return DropdownSearch<PaymentMethods>(
       searchFieldProps: TextFieldProps(
-        controller: _paymentMethodController,
+        controller: entry.paymentMethodController, // ← controller del index
         decoration: InputDecoration(
           labelText: 'Forma de pago',
           suffixIcon: IconButton(
             icon: const Icon(Icons.clear),
             onPressed: () {
-              if (_paymentMethodController.text.isNotEmpty) {
+              if (entry.paymentMethodController.text.isNotEmpty) {
                 Navigator.pop(context);
               }
-              _paymentMethodController.clear();
+              entry.paymentMethodController.clear();
             },
           ),
         ),
@@ -213,53 +310,42 @@ class _SalePaymentState extends State<SalePayment> {
         if (item == null) return 'Campo requerido';
         return null;
       },
-
       maxHeight: _size.width * 0.9,
       dialogMaxWidth: _size.width * 0.8,
-
       isFilteredOnline: true,
       showClearButton: true,
       showSelectedItems: true,
       clearButton: const Icon(Icons.clear_rounded),
       compareFn: (item, selectedItem) => item?.name == selectedItem?.name,
       showSearchBox: true,
-
       dropdownSearchDecoration: InputDecoration(
         labelText: 'Forma de pago :',
         labelStyle: TextStyle(color: _pc),
         filled: true,
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
       ),
-      autoValidateMode: AutovalidateMode.onUserInteraction,
-
+      // autoValidateMode: AutovalidateMode.onUserInteraction,
+      autoValidateMode: AutovalidateMode.disabled,
       onFind: (String? filter) =>
           PaymentMethodsProvider.getPaymentMethods(filter),
       onChanged: (data) {
-        printConsole(data);
-
         setState(() {
-          posBloc.setPaymentMethod(data);
+          entry.selectedPaymentMethod =
+              data; // ← guarda en el entry, no en posBloc global
         });
-        if (posBloc.getPaymentMethod?.code != 'Credito' &&
-            posBloc.getPaymentMethod?.code != 'credito') {
-          posBloc.setPaymentTerm(null);
-          _paymentTermController.text = '';
-          if (posBloc.getPaymentMethod?.code != 'cash') {
-            posBloc.setPaymentValue(posBloc.getSubTotal().toInt());
 
-            _valueP = posBloc.getSubTotal().toInt();
-            _valuePController.text = getFormatedCurrency(posBloc.getSubTotal());
+        if (data?.code != 'Credito' && data?.code != 'credito') {
+          posBloc.setPaymentTerm(null);
+          entry.paymentMethodController.text = '';
+          if (data?.code != 'cash') {
+            entry.valuePController.text =
+                index == 0 ? getFormatedCurrency(posBloc.getSubTotal()) : '';
           }
         } else {
-          posBloc.setPaymentValue(0);
-          setState(() {
-            _valueP = 0;
-          });
-          _valuePController.text = '';
+          entry.valuePController.text = '';
         }
       },
-      // selectedItem: ,
-      selectedItem: posBloc.getPaymentMethod,
+      selectedItem: entry.selectedPaymentMethod, // ← selected del entry
       popupSafeArea: const PopupSafeAreaProps(top: true, bottom: true),
       scrollbarProps: ScrollbarProps(
         isAlwaysShown: true,
@@ -318,7 +404,8 @@ class _SalePaymentState extends State<SalePayment> {
         'No se encontraron documentos para realizar ventas POS',
         textAlign: TextAlign.center,
       ).center(),
-      autoValidateMode: AutovalidateMode.onUserInteraction,
+      // autoValidateMode: AutovalidateMode.onUserInteraction,
+      autoValidateMode: AutovalidateMode.disabled,
       onChanged: (data) {
         // Environment().env!='DEV'?null:print(data);
 
@@ -336,38 +423,35 @@ class _SalePaymentState extends State<SalePayment> {
     );
   }
 
-  Widget _inputs() {
-    return Form(
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      key: _inputsKey,
-      child: Column(
-        children: _paymentM == 1
-            ? [
-                (posBloc.getPaymentMethod?.code == 'cash' ||
-                        DEFPAYMENTM == 'cash')
-                    ? _defaultValues().paddingSymmetric(vertical: 6)
-                    : Container(),
-                (posBloc.getPaymentMethod?.code != 'Credito' &&
-                        posBloc.getPaymentMethod?.code != 'credito')
-                    ? _value().paddingSymmetric(vertical: 6)
-                    : Container(),
-                posBloc.getPaymentMethod?.code == 'Credito'
-                    ? _paymentTerm()
-                    : Container(),
-              ]
-            : [Container()],
-      ),
+  Widget _inputs(int index) {
+    final entry = _payments[index];
+
+    if (_paymentM != 1)
+      return const SizedBox.shrink(); // Reemplazo limpio para Container()
+
+    return Column(
+      children: [
+        if (entry.selectedPaymentMethod?.code == 'cash' ||
+            DEFPAYMENTM == 'cash')
+          _defaultValues(index).paddingSymmetric(vertical: 6),
+        if (entry.selectedPaymentMethod?.code != 'Credito' &&
+            entry.selectedPaymentMethod?.code != 'credito')
+          _value(index).paddingSymmetric(vertical: 6),
+        if (entry.selectedPaymentMethod?.code == 'Credito') _paymentTerm(index),
+      ],
     );
   }
 
-  AppTextField _paymentTerm() {
+  Widget _paymentTerm(int index) {
+    final entry = _payments[index];
+
     return AppTextField(
-      controller: _paymentTermController,
+      controller: entry.paymentTermController, // ← controller del entry
       decoration: InputDecorations.authInputDecoration(
         hintText: '',
         labelText: 'Plazo de pago (Dias)',
       ),
-      enabled: posBloc.getPaymentMethod?.code == 'Credito',
+      enabled: entry.selectedPaymentMethod?.code == 'Credito',
       textFieldType: TextFieldType.PHONE,
       textStyle: Theme.of(context).textTheme.labelMedium,
       autoFocus: false,
@@ -376,7 +460,6 @@ class _SalePaymentState extends State<SalePayment> {
         if (value == null || value == '') {
           return 'Debe suministrar un valor valido';
         }
-
         try {
           int.parse(value.replaceAll(',', ''));
         } catch (e) {
@@ -384,11 +467,9 @@ class _SalePaymentState extends State<SalePayment> {
         }
         return null;
       },
-      // textStyle: const TextStyle(fontSize: 20),
       onChanged: (value) {
-        int val;
         try {
-          val = int.parse(value.replaceAll(',', ''));
+          final val = int.parse(value.replaceAll(',', ''));
           setState(() {
             posBloc.setPaymentTerm(val);
           });
@@ -425,18 +506,20 @@ class _SalePaymentState extends State<SalePayment> {
     );
   }
 
-  Widget _value() {
+  Widget _value(int index) {
+    final entry = _payments[index];
+
     return Row(
       children: [
         AppTextField(
-          controller: _valuePController,
+          controller: entry.valuePController, // ← controller del entry
           inputFormatters: [CurrencyInputFormatter()],
           decoration: InputDecorations.authInputDecoration(
             hintText: '',
             labelText: 'Valor',
           ),
-          enabled: (posBloc.getPaymentMethod?.code != 'Credito' ||
-              posBloc.getPaymentMethod?.code != 'credito'),
+          enabled: (entry.selectedPaymentMethod?.code != 'Credito' ||
+              entry.selectedPaymentMethod?.code != 'credito'),
           textFieldType: TextFieldType.PHONE,
           textStyle: Theme.of(context).textTheme.labelMedium,
           autoFocus: false,
@@ -444,43 +527,32 @@ class _SalePaymentState extends State<SalePayment> {
           validator: (value) {
             if (value == null || value == '') {
               return 'Debe suministrar un valor';
-            } else {
-              try {
-                final val = double.parse(
-                  value
-                      .replaceAll('\$', '')
-                      .replaceAll(',', '')
-                      .replaceAll('.', ''),
-                );
-                if (val < posBloc.getSubTotal()) {
-                  return 'El valor suministrado no cubre el total de la venta';
-                }
-              } catch (e) {
-                return 'El valor suministrado no es valido';
-              }
             }
-
             return null;
           },
-          // textStyle: const TextStyle(fontSize: 20),
           onChanged: (value) {
             setState(() {
-              _updateCounts(zero: true);
+              entry.resetCounts();
               if (value != '') {
                 try {
-                  _valueP = int.parse(
+                  entry.valueP = int.parse(
                     value
                         .replaceAll('\$', '')
                         .replaceAll(',', '')
                         .replaceAll('.', ''),
                   );
-                  posBloc.setPaymentValue(_valueP);
+                  // Si quieres sumar todos los pagos al bloc:
+                  final total =
+                      _payments.fold<int>(0, (sum, e) => sum + e.valueP);
+                  posBloc.setPaymentValue(total);
                 } catch (e) {
-                  _valueP = 0;
+                  entry.valueP = 0;
                 }
               } else {
-                posBloc.setPaymentValue(0);
-                _valueP = 0;
+                entry.valueP = 0;
+                final total =
+                    _payments.fold<int>(0, (sum, e) => sum + e.valueP);
+                posBloc.setPaymentValue(total);
               }
             });
           },
@@ -489,40 +561,40 @@ class _SalePaymentState extends State<SalePayment> {
           shapeBorder: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
-          child: const Icon(
-            Icons.delete,
-            color: Colors.red,
-          ),
+          child: const Icon(Icons.delete, color: Colors.red),
           padding: EdgeInsets.zero,
-          // margin: EdgeInsets.only(right: 10),
           width: 35,
           onTap: () {
             setState(() {
-              _updateCounts(zero: true);
-              _valueP = 0;
+              entry.resetCounts();
+              entry.valueP = 0;
+              entry.valuePController.text = '';
+              final total = _payments.fold<int>(0, (sum, e) => sum + e.valueP);
+              posBloc.setPaymentValue(total);
             });
-            posBloc.setPaymentValue(0);
-            _valuePController.text = '';
           },
         ),
       ],
     );
   }
 
-  Widget _defaultValues() {
+  Widget _defaultValues(int index) {
+    final entry = _payments[index];
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _defaultValuesWidget(_count5000, 5000),
-        _defaultValuesWidget(_count10000, 10000),
-        _defaultValuesWidget(_count20000, 20000),
-        _defaultValuesWidget(_count50000, 50000),
+        _defaultValuesWidget(entry.count5000, 5000, index),
+        _defaultValuesWidget(entry.count10000, 10000, index),
+        _defaultValuesWidget(entry.count20000, 20000, index),
+        _defaultValuesWidget(entry.count50000, 50000, index),
       ],
     );
   }
 
-  AppButton _defaultValuesWidget(int counter, int value) {
+  AppButton _defaultValuesWidget(int counter, int value, int index) {
+    final entry = _payments[index];
     final valueString = getFormatedCurrency(value.toDouble(), decimals: 0);
+
     return AppButton(
       color: Colors.white,
       padding: kButtonPadding,
@@ -531,26 +603,28 @@ class _SalePaymentState extends State<SalePayment> {
         borderRadius: BorderRadius.circular(radius2),
         side: BorderSide(color: counter != 0 ? _pc : Colors.white, width: 1),
       ),
-      // padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       onTap: () {
         setState(() {
-          if (posBloc.getPaymentMethod?.code != 'Credito' &&
-              posBloc.getPaymentMethod?.code != 'credito') {
-            if (counter == 0) {
-              _valueP += value;
-              _updateCounts(value: value);
-              // counter;
-            } else {
-              _valueP += value;
-              counter += 1;
-              _updateCounts(value: value);
-            }
-            // this is to format currency, it didn't work with input formatters in textField because
-            // here we are modifying its value directly
-            final tempValue = getFormatedCurrency((_valueP.toDouble()));
-            _valuePController.text =
+          if (entry.selectedPaymentMethod?.code != 'Credito' &&
+              entry.selectedPaymentMethod?.code != 'credito') {
+            entry.valueP += value;
+
+            // Actualiza el contador correcto del entry
+            if (value == 5000)
+              entry.count5000 += 1;
+            else if (value == 10000)
+              entry.count10000 += 1;
+            else if (value == 20000)
+              entry.count20000 += 1;
+            else if (value == 50000) entry.count50000 += 1;
+
+            final tempValue = getFormatedCurrency(entry.valueP.toDouble());
+            entry.valuePController.text =
                 tempValue.substring(0, tempValue.length - 3);
-            posBloc.setPaymentValue(_valueP);
+
+            // Suma todos los pagos al bloc
+            final total = _payments.fold<int>(0, (sum, e) => sum + e.valueP);
+            posBloc.setPaymentValue(total);
           }
         });
       },
@@ -590,6 +664,7 @@ class _SalePaymentState extends State<SalePayment> {
   }
 
   Widget _moneyBack() {
+    final currentValue = posBloc.getPaymentValue ?? 0;
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -609,7 +684,7 @@ class _SalePaymentState extends State<SalePayment> {
             children: [
               const Text('Total entregado: '),
               Text(
-                getFormatedCurrency(_valueP.toDouble()),
+                getFormatedCurrency(currentValue.toDouble()),
                 style: buttonsSmallTextStyle(context).apply(color: _pc),
               ),
             ],
@@ -619,7 +694,7 @@ class _SalePaymentState extends State<SalePayment> {
             children: [
               const Text('Cambio: '),
               Text(
-                getFormatedCurrency(_valueP - posBloc.getSubTotal()),
+                getFormatedCurrency(currentValue - posBloc.getSubTotal()),
                 style: buttonsSmallTextStyle(context).apply(color: _pc),
               ),
             ],
@@ -644,25 +719,17 @@ class _SalePaymentState extends State<SalePayment> {
   }
 
   AppButton sendButton() {
-    // bool enabled = false;
-    // if ((posBloc.getPaymentMethod?.code != 'Credito' &&
-    //         posBloc.getPaymentMethod?.code != 'credito') &&
-    //     _valueP >= posBloc.getSubTotal()) {
-    //   enabled = true;
-    // } else if ((posBloc.getPaymentMethod?.code == 'Credito' ||
-    //         posBloc.getPaymentMethod?.code == 'credito') &&
-    //     (posBloc.getPaymentTerm ?? 0) != 0) {
-    //   enabled = true;
-    // }
     return AppButton(
       padding: kButtonPadding,
       color: Colors.white,
       disabledColor: Colors.grey[300],
-      // enabled: enabled,
       onTap: _sending
           ? null
           : () async {
-              if (_inputsKey.currentState?.validate() ?? false) {
+              final subTotal = posBloc.getSubTotal();
+              final paid = _payments.fold<int>(0, (sum, e) => sum + e.valueP);
+              if ((_formKey.currentState?.validate() ?? false) &&
+                  subTotal <= paid) {
                 setState(() {
                   _sending = true;
                 });
@@ -671,7 +738,8 @@ class _SalePaymentState extends State<SalePayment> {
                   'Registrando venta',
                   const Duration(seconds: 5),
                 );
-                final result = await SalesProvider.sendPosData(context);
+                final result =
+                    await SalesProvider.sendPosData(context, _payments);
                 if (result) {
                   // 1. Obtén datos antes de disponer el bloc
                   final printData = posBloc.getPrintData!;

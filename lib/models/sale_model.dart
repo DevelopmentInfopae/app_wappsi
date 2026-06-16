@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
+import 'package:pos_wappsi/entities/paymentEntryEntity.dart';
 import 'package:pos_wappsi/models/user_model.dart';
 
 SaleModel saleModelFromJson(String str) => SaleModel.fromJson(json.decode(str));
@@ -498,6 +500,7 @@ class SaleModel {
     UserModel user,
     Map<String, dynamic> productsDetails,
     Map<String, dynamic> docDetails,
+    List<PaymentEntry> payments,
   ) {
     final customer = posBloc.getCustomer!;
     final customerAddress = posBloc.getCustomerAddresses!;
@@ -517,11 +520,11 @@ class SaleModel {
     return SaleModel(
       typePos: 1,
       mobile_reference_no: mobileRefNo,
-      amount: [posBloc.getSubTotal().toInt()],
+      amount: payments.map((e) => e.valueP).toList(),
       customerGroup: posBloc.getCustomer!.customerGroupId,
       customerPrices: posBloc.getCustomer!.priceGroupId,
       biller: user.billerId,
-      paidBy: [payment.code],
+      paidBy: payments.map((e) => e.selectedPaymentMethod!.code).toList(),
       posNote: posBloc.getInvoiceNote ?? '',
       verifyPrices: posBloc.getVerifyPrices ?? 1,
       sellerId: user.sellerId,

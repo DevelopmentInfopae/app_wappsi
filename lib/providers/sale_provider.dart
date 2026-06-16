@@ -5,6 +5,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/config/bd_sync.dart';
 import 'package:pos_wappsi/config/endpoints.dart';
+import 'package:pos_wappsi/entities/paymentEntryEntity.dart';
 import 'package:pos_wappsi/models/local_sales_model.dart';
 import 'package:pos_wappsi/models/sale_model.dart';
 import 'package:pos_wappsi/providers/api_provider.dart';
@@ -23,7 +24,10 @@ class SalesProvider {
   /// server response will contain those changes and they'll be written into local db, then
   /// reload POS data
   ///
-  static Future<bool> sendPosData(BuildContext context) async {
+  static Future<bool> sendPosData(
+    BuildContext context,
+    List<PaymentEntry> payments,
+  ) async {
     bool result = false;
     final productsDetails = posBloc.getProductDetailMapLists();
     final documentTypeId = posBloc.getDocumentTypeId(dataBloc.userData!);
@@ -31,9 +35,12 @@ class SalesProvider {
         await DBProvider.db.getDocumentDetails(documentTypeId.toString());
 
     // Now, buildSale includes mobile_reference_no because it must be sent to the server when working offline.
-    final sale =
-        SaleModel.buildSale(dataBloc.userData!, productsDetails, docDetails!)
-            .toJson();
+    final sale = SaleModel.buildSale(
+      dataBloc.userData!,
+      productsDetails,
+      docDetails!,
+      payments,
+    ).toJson();
 
     // debugPrint(const JsonEncoder.withIndent('  ').convert(sale),
     //     wrapWidth: 1024);
