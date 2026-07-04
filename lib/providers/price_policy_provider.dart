@@ -2,10 +2,13 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/orders_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/bloc/quotes_bloc.dart';
+import 'package:pos_wappsi/entities/PriceSettings.dart';
 import 'package:pos_wappsi/models/companies_model.dart';
 import 'package:pos_wappsi/models/product_model.dart';
 import 'package:pos_wappsi/models/units_model.dart';
 import 'package:pos_wappsi/providers/companies_provider.dart';
+import 'package:pos_wappsi/providers/local_settings_provider.dart';
+import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/utils/local_storage/error_log.dart';
 
 class PricePoliciesProvider {
@@ -31,6 +34,24 @@ class PricePoliciesProvider {
     UnitsModel? unit,
   }) async {
     //tax rate for IVA
+    final localSettings = await LocalSettingsProvider.getPriceSettings();
+    if (localSettings.politica == PoliticaPrecios.app &&
+        localSettings.defaultPriceList != null) {
+      final productPrice = await ProductsProvider.findProductPrice(
+        product.idCloud.toString(),
+        localSettings.defaultPriceList.toString(),
+      );
+      if (productPrice != null) {
+        final price = double.tryParse(productPrice['price'].toString()) ??
+            product.getPriceWithoutIVA();
+        product.priceWithoutDiscount = price;
+        product.price = price;
+        product.pricePolicyPrices = price;
+        product.discount = 0;
+        return product;
+      }
+      // si no hay precio en esa lista para este producto, cae al comportamiento ERP como fallback
+    }
 
     double price = product.getPriceWithoutIVA();
 

@@ -35,6 +35,7 @@ class UserModel {
     required this.companyFolder,
     required this.pos_document_type_id,
     required this.fe_pos_document_type_id,
+    required this.priceGroups,
   });
   String id;
   String token;
@@ -59,6 +60,7 @@ class UserModel {
   int? documentTypeId;
   int? pos_document_type_id;
   int? fe_pos_document_type_id;
+  String? priceGroups;
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
         id: json['id'],
@@ -84,8 +86,11 @@ class UserModel {
         billerName: json['biller_name'],
         companyFolder: json['company_folder'] ?? Environment().config.cFolder,
         documentTypeId: int.tryParse(json['document_type_id'].toString()),
-        pos_document_type_id: int.tryParse(json['pos_document_type_id'].toString()),
-        fe_pos_document_type_id: int.tryParse(json['fe_pos_document_type_id'].toString()),
+        pos_document_type_id:
+            int.tryParse(json['pos_document_type_id'].toString()),
+        fe_pos_document_type_id:
+            int.tryParse(json['fe_pos_document_type_id'].toString()),
+        priceGroups: json['user_price_groups'],
       );
 
   static String getFirstStringList(dynamic data) {
@@ -110,7 +115,7 @@ class UserModel {
         'biller_id': billerId,
         'seller_id': sellerId,
         'view_right': viewRight,
-        'edit_right' : editRight,
+        'edit_right': editRight,
         'first_name': firstName,
         'company_folder': companyFolder,
         'seller_name': sellerName,
@@ -121,7 +126,8 @@ class UserModel {
         'company_name': companyName,
         'warehouse_name': warehouseName,
         'document_type_id': documentTypeId,
-        'pos_document_type_id' : pos_document_type_id,
-        'fe_pos_document_type_id' : fe_pos_document_type_id,
+        'pos_document_type_id': pos_document_type_id,
+        'fe_pos_document_type_id': fe_pos_document_type_id,
+        'user_price_groups': priceGroups,
       };
 }

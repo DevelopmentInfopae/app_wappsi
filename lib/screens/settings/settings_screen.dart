@@ -4,6 +4,7 @@ import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/screens/components/back_app_bar.dart';
 import 'package:pos_wappsi/screens/home/components/tab_item.dart';
 import 'package:pos_wappsi/screens/settings/errors_report.dart';
+import 'package:pos_wappsi/screens/settings/price_settings.dart';
 import 'package:pos_wappsi/screens/settings/print_settings.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -61,6 +62,19 @@ class SettingsScreen extends StatelessWidget {
         ),
         onTap: () {
           const ReportErrorScreen().launch(context);
+        },
+      ),
+      SettingItemWidget(
+        title: 'Configurar precios',
+        subTitle:
+            'Ajusta la modalidad de precios que se utilizara en el sistema.',
+        decoration: BoxDecoration(borderRadius: radius()),
+        trailing: Icon(
+          Icons.keyboard_arrow_right_rounded,
+          color: context.dividerColor,
+        ),
+        onTap: () {
+          const PriceSettingsScreen().launch(context);
         },
       ),
       // SettingItemWidget(

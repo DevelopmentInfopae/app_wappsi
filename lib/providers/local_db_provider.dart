@@ -94,6 +94,7 @@ class DBProvider {
         await db.execute(QuotesTableSql);
         await db.execute(QuoteItemsTableSql);
         await db.execute(PurchaseItemsSql);
+        await db.execute(LocalSettingsSql);
 
         ///Errors log
         await db.execute(ErrorsDataSql);

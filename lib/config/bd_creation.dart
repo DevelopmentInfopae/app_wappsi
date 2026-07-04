@@ -1624,6 +1624,13 @@ CREATE TABLE `sma_purchases` (
 );
 ''';
 
+const String LocalSettingsSql = '''
+  CREATE TABLE IF NOT EXISTS local_settings (
+    clave TEXT PRIMARY KEY,
+    valor TEXT
+  )
+''';
+
 List<String> indexCreation = [
   'CREATE UNIQUE INDEX sma_products_id ON sma_products (id_cloud);',
   'CREATE UNIQUE INDEX sma_sales_id ON sma_sales (id_cloud);',
