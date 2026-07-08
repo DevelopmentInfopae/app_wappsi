@@ -75,7 +75,7 @@ class LocalSettingsProvider {
       loadAllPriceGroupsForDropdown() async {
     final res = await DBProvider.db.sqlQuery(
       'sma_price_groups',
-      columns: ['id', 'name'],
+      columns: ['id_cloud as id', 'name'],
       limit: null, // sin límite, trae todos
       orderBy: 'name ASC',
     );

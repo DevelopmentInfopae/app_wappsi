@@ -9,7 +9,9 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:pos_wappsi/bloc/data_bloc.dart';
 import 'package:pos_wappsi/bloc/pos_bloc.dart';
 import 'package:pos_wappsi/constant.dart';
+import 'package:pos_wappsi/entities/PriceSettings.dart';
 import 'package:pos_wappsi/models/product_model.dart';
+import 'package:pos_wappsi/providers/local_settings_provider.dart';
 import 'package:pos_wappsi/providers/products_provider.dart';
 import 'package:pos_wappsi/screens/components/appbar_leading.dart';
 import 'package:pos_wappsi/screens/components/back_app_bar.dart';
@@ -499,9 +501,24 @@ class _SaleCartState extends State<SaleCart> {
     );
   }
 
+  // funcion para setear el listado de productos en la venta
   _onQueryChanged(String query) async {
     List<ProductModel> products = [];
     final settings = await dataBloc.getSettings();
+
+    int? defaultPriceGroupId;
+    try {
+      final localSettings = await LocalSettingsProvider.getPriceSettings();
+      if (localSettings.politica == PoliticaPrecios.app &&
+          localSettings.defaultPriceList != null) {
+        defaultPriceGroupId = localSettings.defaultPriceList.toInt();
+        posBloc.setVerifyPrices(0);
+      } else {
+        defaultPriceGroupId = settings['price_group'];
+      }
+    } catch (e) {
+      printConsole(e);
+    }
     List<Map>? res;
     if (settings['overselling'] == 1) {
       res = await ProductsProvider.findProducts(query, limit: true);
@@ -545,7 +562,11 @@ class _SaleCartState extends State<SaleCart> {
         } else {
           _queryLen = query.length;
           if (query != '') {
-            products = ProductModel.fromJsonList(res);
+            products = ProductModel.fromJsonList(
+              res,
+              defaultPriceGroupId: defaultPriceGroupId,
+            );
+            // [PRACTIPASTA, PAPAS 500G, VERDURAS, FRASCO MAYONESA 4K, FRASCO MOSTAZA 4K, FRASCO TOMATE 1K, FRASCO TOMATE 4K, COSTILLITAS AHUMADAS, ALITAS ADOBADAS PIMPOLLO]
           } else {
             products = [];
           }

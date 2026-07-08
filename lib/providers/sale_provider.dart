@@ -30,6 +30,7 @@ class SalesProvider {
   ) async {
     bool result = false;
     final productsDetails = posBloc.getProductDetailMapLists();
+
     final documentTypeId = posBloc.getDocumentTypeId(dataBloc.userData!);
     final docDetails =
         await DBProvider.db.getDocumentDetails(documentTypeId.toString());
@@ -100,6 +101,10 @@ class SalesProvider {
     try {
       final res =
           await api.postPetition(newSaleEndP, sale, dataBloc.getHeaders());
+
+      // debugPrint(const JsonEncoder.withIndent('  ').convert(res),
+      //     wrapWidth: 1024);
+      // return false;
       if (res['status'] == -1) {
         reloadDialog(
           context,

@@ -46,6 +46,7 @@ class ProductModel {
     required this.type,
     required this.taxRateName,
     this.discount = 0.0,
+    this.priceGroupId,
   });
   String type;
   String slug;
@@ -71,6 +72,7 @@ class ProductModel {
   int unit;
   double discount;
   double inventory;
+  int? priceGroupId;
 
   // other data
   // ignore: avoid_init_to_null
@@ -143,13 +145,13 @@ class ProductModel {
     String qttyKey = 'initial_qtty',
     bool initialPrice = false,
     String initialPriceKey = '',
+    int? defaultPriceGroupId,
   }) {
     List<ProductModel> products = [];
     // to check product promo
 
-    Map temp = {};
-
     for (var item in list) {
+      Map temp = {};
       for (var i = 0; i < item.keys.length; i++) {
         // printConsole(item.values.toList()[i]);
         // printConsole(item.keys.toList()[i]);
@@ -170,13 +172,15 @@ class ProductModel {
         }
       }
 
-      products.add(
-        ProductModel.fromJson(
-          temp,
-          loadInitialQtty: loadInitialQtty,
-          qtyKey: qttyKey,
-        ),
+      final product = ProductModel.fromJson(
+        temp,
+        loadInitialQtty: loadInitialQtty,
+        qtyKey: qttyKey,
       );
+
+      product.priceGroupId = defaultPriceGroupId;
+
+      products.add(product);
     }
 
     return products;
@@ -367,6 +371,7 @@ class ProductModel {
     List<double> _realPrices = [];
     List<int> _taxRateIds = [];
     List<String> _productPrefsText = [];
+    List<int?> _priceGroupIds = [];
 
     // to order
 
@@ -402,6 +407,7 @@ class ProductModel {
         _realPrices.add(products[key]!.priceWithoutDiscount!);
         _taxRateIds.add(products[key]!.taxRateId);
         _productPrefsText.add(getProdPrefText(key) ?? '');
+        _priceGroupIds.add(products[key]!.priceGroupId);
 
         double discountPercent = 1 -
             (products[key]!.price /
@@ -429,6 +435,7 @@ class ProductModel {
           'price_before_tax': products[key]!.getPriceWithoutIVA(),
           'unit_quantity': products[key]!.quantity,
           'product_preferences_text': getProdPrefText(key),
+          'price_group_id': products[key]!.priceGroupId,
         });
       }
     }
@@ -454,6 +461,7 @@ class ProductModel {
       'product_base_quantity': _quantities,
       'product_detail_list': productsDetails,
       'product_preferences_text': _productPrefsText,
+      'price_group_id': _priceGroupIds,
     };
   }
 

@@ -114,14 +114,8 @@ class PricePoliciesProvider {
     bool toOrder = false,
     bool toQuote = false,
   }) async {
-    //tax rate for IVA
-
-    double price = 0.0;
-
     bool result = false;
-
     ProductModel product;
-
     if (toOrder) {
       product = orderBloc.getProducts![productKey]!;
     } else if (toQuote) {
@@ -131,17 +125,39 @@ class PricePoliciesProvider {
     }
 
     try {
+      // Chequeo de lista de precios local (mismo comportamiento que policyCases)
+      final localSettings = await LocalSettingsProvider.getPriceSettings();
+      if (localSettings.politica == PoliticaPrecios.app &&
+          localSettings.defaultPriceList != null) {
+        final productPrice = await ProductsProvider.findProductPrice(
+          product.idCloud.toString(),
+          localSettings.defaultPriceList.toString(),
+        );
+        if (productPrice != null) {
+          final price = double.tryParse(productPrice['price'].toString()) ??
+              product.getPriceWithoutIVA();
+          product.priceWithoutDiscount = price;
+          product.price = price;
+          product.pricePolicyPrices = price;
+          product.discount = 0;
+
+          if (toOrder) {
+            orderBloc.getProducts![productKey!] = product;
+          } else if (toQuote) {
+            quoteBloc.getProducts![productKey!] = product;
+          } else {
+            posBloc.getProducts![productKey!] = product;
+          }
+          return true;
+        }
+        // si no hay precio en esa lista para este producto, cae al comportamiento ERP como fallback
+      }
+
+      double price = product.getPriceWithoutIVA();
+
       /// For price_policy with id 6
       if (policy == 6) {
-        ProductModel? t;
-        if (toOrder) {
-          t = orderBloc.getProducts?[productKey];
-        } else if (toQuote) {
-          t = quoteBloc.getProducts?[productKey];
-        } else {
-          t = posBloc.getProducts?[productKey];
-        }
-        if (t?.promoPrice != null) {
+        if (product.promoPrice != null) {
           product.price = product.promoPrice!;
           product.discount = 0;
           product.priceWithoutDiscount = product.promoPrice!;
@@ -155,7 +171,6 @@ class PricePoliciesProvider {
             } else {
               price = await product.billerPrice(product.getPrice());
             }
-            // printConsole(price);
             final values = await priceWDiscount(price, customer);
             product.price = values[0];
             product.priceWithoutDiscount = price;
@@ -169,11 +184,8 @@ class PricePoliciesProvider {
             product.discount = values[1];
           }
         }
-        result = true;
       } else if (policy == 10) {
-        // posBloc.getProducts![productKey]!.price= posBloc.getProductUnits[]
         UnitsModel unit;
-
         if (toOrder) {
           unit = orderBloc.getProductUnits![productKey]!;
         } else if (toQuote) {
@@ -188,6 +200,7 @@ class PricePoliciesProvider {
         product.price = price;
         product.discount = 0;
       }
+
       if (toOrder) {
         orderBloc.getProducts![productKey!] = product;
       } else if (toQuote) {
@@ -198,7 +211,6 @@ class PricePoliciesProvider {
       result = true;
     } catch (e) {
       await logError(e, from: 'policyCasesPrice');
-      // printConsole(e);
       result = false;
     }
     return result;

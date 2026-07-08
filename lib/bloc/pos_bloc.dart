@@ -129,10 +129,11 @@ class POSBloc {
     return res;
   }
 
-  Future<bool> updateProductPrice(String productKey, double newPrice) async{
+  Future<bool> updateProductPrice(String productKey, double newPrice) async {
     bool res = false;
     if (_productsController.hasValue) {
-      final products = Map<String, ProductModel>.from(_productsController.value);
+      final products =
+          Map<String, ProductModel>.from(_productsController.value);
       if (products.containsKey(productKey)) {
         products[productKey]!.price = newPrice;
         _productsController.add(products);
@@ -778,7 +779,8 @@ class POSBloc {
     _customerController.sink.add(customer);
   }
 
-  BehaviorSubject<bool> _isElectronicController = BehaviorSubject<bool>.seeded(true);
+  BehaviorSubject<bool> _isElectronicController =
+      BehaviorSubject<bool>.seeded(true);
   Stream<bool> get isElectronicStream => _isElectronicController.stream;
   bool get isElectronicValue => _isElectronicController.value;
   setDocumentType(bool value) {

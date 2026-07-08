@@ -34,6 +34,7 @@ class ProductsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Listado de productos
     return ListView.builder(
       itemCount: productList.keys.length,
       physics: AppConstants.scrollPhysics,

@@ -125,6 +125,7 @@ class SaleModel {
     this.reteAutoavisoValor,
     this.reteApplied,
     this.verifyPrices,
+    this.priceGroupId,
   });
 
   int typePos;
@@ -165,6 +166,7 @@ class SaleModel {
   List<double>? productTaxVal2;
   List<double> netPrice;
   List<double> unitPrice;
+  List<int?>? priceGroupId;
   List<double?> realUnitPrice;
   List<double> quantity;
   List<int> productUnit;
@@ -492,6 +494,7 @@ class SaleModel {
         'rete_autoaviso_tax': reteAutoavisoTax,
         'rete_autoaviso_valor': reteAutoavisoValor,
         'rete_applied': reteApplied,
+        'price_group_id': priceGroupId,
       };
 
   /// Build an instance of SaleModel given productDetails, user, customer and
@@ -561,6 +564,7 @@ class SaleModel {
       productDiscountVal: productsDetails['product_discount_val'],
       productBaseQuantity: productsDetails['product_base_quantity'],
       productUnitIdSelected: productsDetails['product_unit_id_selected'],
+      priceGroupId: productsDetails['price_group_id'],
       paymentDocumentTypeId: posBloc.getPaymentDocument?.idCloud.toString(),
     );
   }
