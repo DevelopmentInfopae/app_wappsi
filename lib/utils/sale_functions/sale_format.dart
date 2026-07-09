@@ -36,6 +36,7 @@ Future<Map<String, dynamic>> getFormatedSale(SalesModel sale) async {
     'quantity': <double?>[],
     'product_unit': <int?>[],
     'product_preferences_text': <String?>[],
+    'price_group_id': <int?>[],
   };
 
   for (var element in saleItems) {
@@ -60,9 +61,12 @@ Future<Map<String, dynamic>> getFormatedSale(SalesModel sale) async {
     dataItems['quantity']!.add(element.quantity);
     dataItems['product_unit']!.add(element.productUnitId);
     dataItems['product_preferences_text']!.add(element.preferences);
+    dataItems['price_group_id']!.add(element.priceGroupid);
   }
 
   return {
+    'verify_prices':
+        0, // Si la venta esta en local vamos a omitir la validación del servidor
     'type_pos': '1',
     'test': null,
     'mobile_reference_no': saleData['reference_no'],
@@ -77,7 +81,6 @@ Future<Map<String, dynamic>> getFormatedSale(SalesModel sale) async {
     'customer_group_id': 1,
     'customer_branch': sale.addressId,
     'add_item': null,
-    'verify_prices': 1,
     'product_ordered_product_id': null,
     'under_cost_authorized': null,
     'product_id': dataItems['product_id'],
@@ -110,6 +113,7 @@ Future<Map<String, dynamic>> getFormatedSale(SalesModel sale) async {
     'product_base_quantity': dataItems['quantity'],
     'product_aqty': null,
     'product_preferences_text': dataItems['product_preferences_text'],
+    'price_group_id': dataItems['price_group_id'],
     'biller': sale.billerId,
     'pos_note': sale.note,
     'staff_note': sale.staffNote,

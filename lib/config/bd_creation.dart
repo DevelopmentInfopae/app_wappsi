@@ -1100,7 +1100,8 @@ CREATE TABLE `sma_sale_items` (
 `returned_quantity` decimal(15,4) DEFAULT NULL,
 `price_before_promo` decimal(25,4) DEFAULT '0.0000',
 `registration_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-`under_cost_authorized` INTEGER DEFAULT '0'
+`under_cost_authorized` INTEGER DEFAULT '0',
+`price_group_id` INTEGER DEFAULT NULL
 );
 ''';
 

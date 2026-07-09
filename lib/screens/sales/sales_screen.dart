@@ -192,11 +192,6 @@ class _ProductsState extends State<SalesList> {
               stream: _salesListStream.stream,
               builder: (context, AsyncSnapshot<List<SalesModel>> snapshot2) {
                 if (snapshot2.hasData) {
-                  for (var sale in snapshot2.data!) {
-                    debugPrint(
-                        '${sale.referenceNo} | ${sale.paid} | ${sale.grandTotal}',
-                        wrapWidth: 1024);
-                  }
                   return SalesCardList(
                     sales: snapshot2.data!,
                     searchParams: _searchParams,

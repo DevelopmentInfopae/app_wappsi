@@ -58,6 +58,7 @@ class LocalSaleItems {
     this.priceBeforePromo,
     this.registrationDate,
     this.underCostAuthorized,
+    this.priceGroupid,
   });
 
   int? id;
@@ -103,6 +104,7 @@ class LocalSaleItems {
   double? priceBeforePromo;
   String? registrationDate;
   int? underCostAuthorized;
+  int? priceGroupid;
 
   factory LocalSaleItems.fromJson(Map<String, dynamic> json, {int? saleId}) =>
       LocalSaleItems(
@@ -155,6 +157,7 @@ class LocalSaleItems {
         registrationDate: json['registration_date'],
         underCostAuthorized:
             int.tryParse(json['under_cost_authorized'].toString()),
+        priceGroupid: int.tryParse(json['price_group_id'].toString()),
       );
 
   Map<String, dynamic> toJson() => {
@@ -201,6 +204,7 @@ class LocalSaleItems {
         'price_before_promo': priceBeforePromo,
         'registration_date': registrationDate ?? '',
         'under_cost_authorized': underCostAuthorized,
+        'price_group_id': priceGroupid,
       };
 
   static List<LocalSaleItems> fromJsonList(List<Map> list) {
