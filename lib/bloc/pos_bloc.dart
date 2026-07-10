@@ -812,8 +812,11 @@ class POSBloc {
   Function(PaymentMethods?) get setPaymentMethod =>
       _paymentMethodController.sink.add;
 
-  Function(DocumentsTypes?) get setPaymentDocument =>
-      _paymentDocumentController.sink.add;
+  Function(DocumentsTypes?) get setPaymentDocument => (value) {
+        if (!_paymentDocumentController.isClosed) {
+          _paymentDocumentController.sink.add(value);
+        }
+      };
 
   // Function get setSettings =>
   // _settingsController.sink.add;

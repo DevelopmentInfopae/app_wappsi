@@ -44,7 +44,7 @@ android {
         targetSdkVersion 33
         // lapappaya
         versionCode 24
-        versionName "1.0.36"
+        versionName "1.0.38"
         // dulcelandia
         // versionCode 2
         // versionName "1.0.2"

@@ -66,7 +66,7 @@ class PaymentMethodsProvider {
     String where = '';
     if (pos) {
       where =
-          "(name LIKE '%$search%' OR code LIKE '%$search%') AND state_sale = 1 AND code!='deposit' AND code != 'Credito' ";
+          "(name LIKE '%$search%' OR code LIKE '%$search%') AND state_sale = 1 AND code!='deposit' ";
     } else {
       where = "name LIKE '%$search%' OR code LIKE '%$search%'";
     }

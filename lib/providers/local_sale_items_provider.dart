@@ -23,8 +23,8 @@ class SaleItemsProvider {
     for (var pD in productsDetails) {
       productsD.add(LocalSaleItems.fromJson(pD, saleId: saleId).toJson());
     }
-    debugPrint(const JsonEncoder.withIndent('  ').convert(productsD),
-        wrapWidth: 1024);
+    // debugPrint(const JsonEncoder.withIndent('  ').convert(productsD),
+    //     wrapWidth: 1024);
     return await DBProvider.db.insertQueryJsonList('sma_sale_items', productsD);
   }
 }

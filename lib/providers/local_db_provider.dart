@@ -601,7 +601,7 @@ class DBProvider {
     final db = await database;
     final res =
         await db!.rawQuery('SELECT id, reference_no, id_cloud FROM sma_sales');
-    debugPrint(res.toString(), wrapWidth: 1024);
+    // debugPrint(res.toString(), wrapWidth: 1024);
     return false;
   }
 

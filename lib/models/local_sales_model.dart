@@ -746,8 +746,8 @@ class SalesModel {
         'rete_autoaviso_id': reteAutoavisoId,
       };
   Future<int?> saveSaleData() async {
-    debugPrint(const JsonEncoder.withIndent('  ').convert(toJson()),
-        wrapWidth: 1024);
+    // debugPrint(const JsonEncoder.withIndent('  ').convert(toJson()),
+    //     wrapWidth: 1024);
     await DBProvider.db.getAllSales();
     return await DBProvider.db
         .insertQuery('sma_sales', toJson(), returnId: true);

@@ -2,6 +2,8 @@
 
 // import 'dart:io';
 
+import 'dart:convert';
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -135,6 +137,9 @@ class _SalePaymentState extends State<SalePayment> {
   }
 
   Widget _form() {
+    final isCredito = _payments.any((p) =>
+        p.selectedPaymentMethod?.code == 'Credito' ||
+        p.selectedPaymentMethod?.code == 'credito');
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Form(
@@ -172,33 +177,34 @@ class _SalePaymentState extends State<SalePayment> {
                 ),
               ),
 
-              ElevatedButton.icon(
-                focusNode: FocusNode(skipTraversal: true),
-                onPressed: () {
-                  FocusScope.of(context).unfocus();
-                  setState(() {
-                    _payments.add(PaymentEntry());
-                  });
-                  Future.delayed(const Duration(milliseconds: 500), () {
-                    if (_scrollController.hasClients) {
-                      _scrollController.jumpTo(
-                        // jumpTo en lugar de animateTo
-                        _scrollController.position.maxScrollExtent,
-                      );
-                    }
-                  });
-                },
+              if (!isCredito)
+                ElevatedButton.icon(
+                  focusNode: FocusNode(skipTraversal: true),
+                  onPressed: () {
+                    FocusScope.of(context).unfocus();
+                    setState(() {
+                      _payments.add(PaymentEntry());
+                    });
+                    Future.delayed(const Duration(milliseconds: 500), () {
+                      if (_scrollController.hasClients) {
+                        _scrollController.jumpTo(
+                          // jumpTo en lugar de animateTo
+                          _scrollController.position.maxScrollExtent,
+                        );
+                      }
+                    });
+                  },
 
-                // Opcional: si quieres cambiar el color por defecto del ElevatedButton
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade400, // Fondo verde
-                  foregroundColor: Colors.white, // Texto/Ícono blanco
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  // Opcional: si quieres cambiar el color por defecto del ElevatedButton
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade400, // Fondo verde
+                    foregroundColor: Colors.white, // Texto/Ícono blanco
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  ),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Agregar más pagos'),
                 ),
-                icon: const Icon(Icons.add),
-                label: const Text('Agregar más pagos'),
-              ),
 
               if (_payments.length > 1)
                 ElevatedButton.icon(
@@ -334,6 +340,10 @@ class _SalePaymentState extends State<SalePayment> {
               data; // ← guarda en el entry, no en posBloc global
         });
 
+        if (data?.code == 'Credito' || data?.code == 'credito') {
+          posBloc.setPaymentMethod(data);
+        }
+
         if (data?.code != 'Credito' && data?.code != 'credito') {
           posBloc.setPaymentTerm(null);
           entry.paymentMethodController.text = '';
@@ -431,8 +441,7 @@ class _SalePaymentState extends State<SalePayment> {
 
     return Column(
       children: [
-        if (entry.selectedPaymentMethod?.code == 'cash' ||
-            DEFPAYMENTM == 'cash')
+        if (entry.selectedPaymentMethod?.code == 'cash')
           _defaultValues(index).paddingSymmetric(vertical: 6),
         if (entry.selectedPaymentMethod?.code != 'Credito' &&
             entry.selectedPaymentMethod?.code != 'credito')
@@ -531,6 +540,7 @@ class _SalePaymentState extends State<SalePayment> {
             return null;
           },
           onChanged: (value) {
+            print('value 545 $value ');
             setState(() {
               entry.resetCounts();
               if (value != '') {
@@ -544,6 +554,8 @@ class _SalePaymentState extends State<SalePayment> {
                   // Si quieres sumar todos los pagos al bloc:
                   final total =
                       _payments.fold<int>(0, (sum, e) => sum + e.valueP);
+
+                  print('total $total');
                   posBloc.setPaymentValue(total);
                 } catch (e) {
                   entry.valueP = 0;
@@ -728,8 +740,7 @@ class _SalePaymentState extends State<SalePayment> {
           : () async {
               final subTotal = posBloc.getSubTotal();
               final paid = _payments.fold<int>(0, (sum, e) => sum + e.valueP);
-              if ((_formKey.currentState?.validate() ?? false) &&
-                  subTotal <= paid) {
+              if ((_formKey.currentState?.validate() ?? false)) {
                 setState(() {
                   _sending = true;
                 });

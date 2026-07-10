@@ -234,7 +234,7 @@ class SalesProvider {
       'payment_method': posBloc.getPaymentMethod!.toJson(),
       'sale_data': saleData,
       'pos_note': posBloc.getInvoiceNote ?? '',
-      'payment': posBloc.getPaymentValue!.toDouble(),
+      'payment': posBloc.getPaymentValue?.toDouble() ?? 0.0,
       'total': posBloc.getSubTotal(),
       'iva': posBloc.getIVAs(),
       'company_data': dataBloc.getBillerCompany,
