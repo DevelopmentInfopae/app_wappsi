@@ -340,19 +340,20 @@ class _SalePaymentState extends State<SalePayment> {
               data; // ← guarda en el entry, no en posBloc global
         });
 
-        if (data?.code == 'Credito' || data?.code == 'credito') {
-          posBloc.setPaymentMethod(data);
-        }
+        posBloc.setPaymentMethod(data);
 
         if (data?.code != 'Credito' && data?.code != 'credito') {
           posBloc.setPaymentTerm(null);
           entry.paymentMethodController.text = '';
           if (data?.code != 'cash') {
-            entry.valuePController.text =
+            final newValue =
                 index == 0 ? getFormatedCurrency(posBloc.getSubTotal()) : '';
+            entry.valuePController.text = newValue;
+            _updatePaymentValue(entry, newValue);
           }
         } else {
           entry.valuePController.text = '';
+          _updatePaymentValue(entry, '');
         }
       },
       selectedItem: entry.selectedPaymentMethod, // ← selected del entry
@@ -517,6 +518,7 @@ class _SalePaymentState extends State<SalePayment> {
 
   Widget _value(int index) {
     final entry = _payments[index];
+    print('entry ${entry.valueP}');
 
     return Row(
       children: [
@@ -540,33 +542,8 @@ class _SalePaymentState extends State<SalePayment> {
             return null;
           },
           onChanged: (value) {
-            print('value 545 $value ');
-            setState(() {
-              entry.resetCounts();
-              if (value != '') {
-                try {
-                  entry.valueP = int.parse(
-                    value
-                        .replaceAll('\$', '')
-                        .replaceAll(',', '')
-                        .replaceAll('.', ''),
-                  );
-                  // Si quieres sumar todos los pagos al bloc:
-                  final total =
-                      _payments.fold<int>(0, (sum, e) => sum + e.valueP);
-
-                  print('total $total');
-                  posBloc.setPaymentValue(total);
-                } catch (e) {
-                  entry.valueP = 0;
-                }
-              } else {
-                entry.valueP = 0;
-                final total =
-                    _payments.fold<int>(0, (sum, e) => sum + e.valueP);
-                posBloc.setPaymentValue(total);
-              }
-            });
+            // No esta entrando aca}
+            _updatePaymentValue(entry, value);
           },
         ).expand(),
         AppButton(
@@ -577,17 +554,33 @@ class _SalePaymentState extends State<SalePayment> {
           padding: EdgeInsets.zero,
           width: 35,
           onTap: () {
-            setState(() {
-              entry.resetCounts();
-              entry.valueP = 0;
-              entry.valuePController.text = '';
-              final total = _payments.fold<int>(0, (sum, e) => sum + e.valueP);
-              posBloc.setPaymentValue(total);
-            });
+            entry.valuePController.text = '';
+            _updatePaymentValue(entry, '');
           },
         ),
       ],
     );
+  }
+
+  void _updatePaymentValue(PaymentEntry entry, String value) {
+    setState(() {
+      entry.resetCounts();
+      if (value != '') {
+        try {
+          final cleanValue = value.replaceAll('\$', '').replaceAll(
+              ',', ''); // solo quita separador de miles, deja el punto decimal
+
+          entry.valueP = double.parse(cleanValue)
+              .round(); // parsea como double y redondea a entero
+        } catch (e) {
+          entry.valueP = 0;
+        }
+      } else {
+        entry.valueP = 0;
+      }
+      final total = _payments.fold<int>(0, (sum, e) => sum + e.valueP);
+      posBloc.setPaymentValue(total);
+    });
   }
 
   Widget _defaultValues(int index) {
